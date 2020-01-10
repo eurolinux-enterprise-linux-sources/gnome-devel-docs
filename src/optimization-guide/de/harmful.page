@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="harmful" xml:lang="de">
+    <info>
+     <link type="guide" xref="index#harm"/>
+    
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2009, 2012, 2013, 2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Christian Kirbach</mal:name>
+      <mal:email>christian.kirbach@googlemail.com</mal:email>
+      <mal:years>2010</mal:years>
+    </mal:credit>
+  </info>
+    <title>Laufwerkszugriffe werden als nachteilig angesehen</title>
+    <p>Laufwerkszugriffe sind die wohl aufwändigsten Vorgänge, die Sie überhaupt ausführen können. Sie wissen das womöglich nicht aufgrund der Anzahl der Ausführungen, aber glauben Sie mir, dass sie es sind. Folglich vermeiden Sie bitte das folgende ungünstige Verhalten:</p>
+    <list type="unordered">
+        <item>
+            <p>Viele kleine Dateien auf dem gesamten Laufwerk verteilen.</p>
+        </item>
+        <item>
+            <p>Öffnen, stat() ausführen und lesen vieler Dateien vom gesamten Laufwerk</p>
+        </item>
+        <item>
+            <p>Obiges mit Dateien tun, die zu verschiedenen Zeitpunkten erstellt wurden, so dass sie fragmentiert sind und noch mehr Plattenaktivität verursachen.</p>
+        </item>
+        <item>
+            <p>Obiges mit Dateien tun, die sich in verschiedenen Ordnern befinden, so dass auf verschiedene Zylindergruppen zugegriffen wird und so noch mehr Plattenaktivität verursacht wird.</p>
+        </item>
+        <item>
+            <p>Wiederholt obiges tun, obwohl es nur einmal getan werden muss.</p>
+        </item>
+    </list>
+    <p>Mögliche Wege, wie Sie Ihren Code suchfreundlich optimieren können:</p>
+    <list type="unordered">
+        <item>
+            <p>Fassen Sie Daten in einer einzigen Datei zusammen.</p>
+        </item>
+        <item>
+            <p>Halten Sie Daten im gleichen Ordner vor.</p>
+        </item>
+        <item>
+            <p>Speichern Sie Daten zwischen, so dass sie nicht fortwährend erneut eingelesen werden müssen.</p>
+        </item>
+        <item>
+            <p>Geben Sie Daten frei, so dass sie nicht beim Laden von Anwendungen immer wieder erneut gelesen werden müssen.</p>
+        </item>
+        <item>
+            <p>Erwägen Sie, alle Daten in einer einzigen Binärdatei zwischenzuspeichern, die sauber aufgebaut ist und mit mmap verarbeitbar ist.</p>
+        </item>
+    </list>
+    <p>Die Probleme mit Plattenzugriffen verstärken sich beim Lesen, was wir leider eben gerade tun. Merken Sie sich, dass im Allgemeinen Lesen synchron und Schreiben asynchron verläuft. Das verschlimmert nur das Problem mit jedem seriellen Lesevorgang und trägt zu Programmverzögerungen bei.</p>
+</page>

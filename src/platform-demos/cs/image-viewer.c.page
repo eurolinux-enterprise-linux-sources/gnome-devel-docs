@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.c" xml:lang="cs">
+
+  <info>
+    <title type="text">Prohlížeč obrázků (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>O trošku složitější aplikace Gtk než jednoduché „Hello world“.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-18" status="review"/>
+    <credit type="author">
+      <name>Dokumentační projekt GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  </info>
+
+<title>Prohlížeč obrázků</title>
+
+<synopsis>
+  <p>V této lekci se seznámíme s následujícími věcmi:</p>
+  <list>
+    <item><p>Některými základními koncepty programování v C s GObject</p></item>
+    <item><p>Jak psát aplikaci Gtk v C</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Vytvoření projektu ve studiu Anjuta</title>
+  <p>Než začnete s kódováním, musíte ve studiu Anjuta vytvořit nový projekt. Tím se vytvoří všechny soubory, které budete později potřebovat k sestavení a spuštění kódu. Je to také užitečné kvůli udržení všeho pohromadě.</p>
+  <steps>
+    <item>
+    <p>Spusťte IDE Anjuta a klikněte na <guiseq><gui>Soubor</gui> <gui>Nový</gui> <gui>Projekt</gui></guiseq>, aby se otevřel průvodce projektem.</p>
+    </item>
+    <item>
+    <p>Na kartě <gui>C</gui> zvolte <gui>GTK+ (jednoduchý)</gui>, klikněte na <gui>Pokračovat</gui> a na několika následujících stránkách vyplňte své údaje. Jako název projektu a složky použijte <file>image-viewer</file>.</p>
+   	</item>
+    <item>
+    <p>Ujistěte se, že <gui>Použít GtkBuilder k tvorbě uživatelského rozhraní</gui> je vypnuto, protože jej chceme v této lekci vytvořit ručně. Jestli se chcete naučit, jak používat návrhář uživatelského rozhraní, podívejte se do lekce <link xref="guitar-tuner.c">Kytarová ladička</link>.</p>
+    </item>
+    <item>
+    <p>Klikněte na <gui>Použít</gui> a vytvoří se vám projekt. Otevřete <file>src/main.c</file> na kartě <gui>Projekt</gui> nebo <gui>Soubor</gui>. Měli byste vidět kód, který začíná řádky:</p>
+    <code mime="text/x-csrc">
+#include &lt;config.h&gt;
+#include &lt;gtk/gtk.h&gt;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Prvotní sestavení kódu</title>
+  <p>C je celkem „upovídaný“ jazyk, takže nebuďte překvapeni, že soubor obsahuje poměrně hodně kódu. Většina toho je kód šablony. Načte (prázdné) okno a zobrazí jej. Dále to podrobněji rozebereme. Pokud jste již pochopili základy, tak tento seznam můžete přeskočit:</p>
+
+  <list>
+  <item>
+    <p>Tři řádky <code>#include</code> na začátku vkládají knihovny <code>config</code> (užitečné definice pro sestavení pomocí autotools), <code>gtk</code> (uživatelské rozhraní) a <code>gi18n</code> (internacionalizace). Funkce z těchto knihoven se používají ve zbytku kódu.</p>
+   </item>
+   <item>
+    <p>Funkce <code>create_window</code> vytvoří nové (prázdné) okno a napojí signál, který zajistí ukončení aplikace, když je zavřeno okno.</p>
+    <p>Napojení signálu je způsob, jak definovat, co se má stát, když zmáčknete tlačítko nebo se prostě něco přihodí. Zde je zavolána metoda <code>destroy</code> (a ukončení aplikace) při zavření okna.</p>
+   </item>
+   <item>
+    <p>Funkce <code>main</code> se spustí jako výchozí, když spustíte aplikaci napsanou v jazyce C. Volá pár funkcí, které nastaví a spustí aplikaci. Funkce <code>gtk_main</code> spustí hlavní smyčku GTK, která spustí uživatelské rozhraní a začne naslouchat událostem (jako je kliknutí nebo zmáčknutí klávesy).</p>
+   </item>
+   <item>
+    <p>Podmíněná definice <code>ENABLE_NLS</code> nastavuje <code>gettext</code>, což je základní konstrukce pro překládání aplikací do národních jazyků. Tyto funkce určují, jak mají překladové nástroje pracovat s vaší aplikací za běhu.</p>
+   </item>
+  </list>
+
+  <p>Kód je připravený k použití, takže jej můžete zkompilovat kliknutím na <guiseq><gui>Sestavit</gui> <gui>Sestavit projekt</gui></guiseq> (nebo zmáčknutím <keyseq><key>Shift</key> <key>F7</key></keyseq>).</p>
+  <p>V následujícím okně zmáčkněte <gui>Spustit</gui>, aby se nakonfigurovalo ladicí sestavení. Stačí to udělat jen jednou, pro první sestavení.</p>
+</section>
+
+<section id="ui">
+<title>Vytvoření uživatelského rozhraní</title>
+<p>Nyní prázdné okno oživíme. GTK uspořádává uživatelské rozhraní pomocí widgetů <code>GtkContainer</code>, které mohou obsahovat další widgety i další kontejnery. Zde použijeme nejjednodušší dostupný kontejner <code>GtkBox</code>:</p>
+<code mime="text/x-csrc">
+static GtkWidget*
+create_window (void)
+{
+	GtkWidget *window;
+	GtkWidget *button;
+	GtkWidget *image;
+	GtkWidget *box;
+
+	/* Vytvoří uživatelské rozhraní */
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (window), "image-viewer-c");
+
+	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
+	button = gtk_button_new_with_label (_("Open image"));
+	image = gtk_image_new ();
+
+	gtk_box_pack_start (GTK_BOX (box), image, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+
+	gtk_container_add (GTK_CONTAINER (window), box);
+
+	/* Napojí signály */
+
+	/* Při otevírání souboru zobrazí dialogové okno pro výběr souboru */
+	g_signal_connect (button, "clicked", G_CALLBACK (on_open_image), image);
+
+	/* Skončit, když je zavřeno okno */
+	g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+
+	return window;
+}
+</code>
+  <steps>
+    <item>
+    <p>První řádek vytvoří widgety, které potřebujeme použít: tlačítko pro otevření obrázku, widget pro vlastní zobrazení obrázku a box, který použijeme jako kontejner. Makra, jako je <code>GTK_BOX</code> se používají pro dynamické typovou kontrolu a přetypování, což je potřeba, protože C nepodporuje samo o sobě objektově orientované programování.</p>
+    </item>
+    <item>
+    <p>Volání <code>gtk_box_pack_start</code> přidává dva widgety do boxu a definuje jejich chování. Obrázek se roztáhne přes veškeré dostupné místo, zatímco tlačítko bude jen tak velké, jak je potřeba. Všimněte si, že jsme u widgetů výslovně nenastavili velikost. GTK to obvykle nepotřebuje, což usnadňuje udělat rozvržení, které vypadá dobře při různých velikostech okna. Následně je box přidán do okna.</p>
+    </item>
+    <item>
+    <p>Potřebujeme nadefinovat, co se stane, když uživatel klikne na tlačítko. GTK používá koncept <em>signálů</em>. Když je kliknuto na tlačítko, spustí se signál <em>clicked</em>, který můžeme napojit na nějakou akci. To se udělá pomocí funkce <code>g_signal_connect</code>, která řekne GTK, aby zavolalo funkci <code>on_image_open</code>, když je na tlačítko kliknuto a předalo funkci obrázek jako dodatečný argument. Funkci <em>zpětného volání</em> nadefinujeme v další části.</p>
+    </item>
+    <item>
+    <p>Poslední <code>g_signal_connect()</code> zajistí, že se aplikace ukončí při zavření okna.</p>
+    </item>
+    <item>
+    <p>Jako poslední krok zajistěte nahrazení volání <code>gtk_widget_show</code> ve funkci <code>main()</code> za <code>gtk_widget_show_all()</code>, aby se zobrazilo okno a všechny widgety v něm.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="image">
+<title>Zobrazení obrázku</title>
+<p>Nyní nadefinujeme obsluhu signálu pro signál <em>clicked</em> tzn. pro tlačítko zmíněné dříve. Přidejte tento kód před metodu <code>create_window()</code>.</p>
+<code mime="text/x-csrc">
+static void
+on_open_image (GtkButton* button, gpointer user_data)
+{
+	GtkWidget *image = GTK_WIDGET (user_data);
+	GtkWidget *toplevel = gtk_widget_get_toplevel (image);
+	GtkFileFilter *filter = gtk_file_filter_new ();
+	GtkWidget *dialog = gtk_file_chooser_dialog_new (_("Open image"),
+	                                                 GTK_WINDOW (toplevel),
+	                                                 GTK_FILE_CHOOSER_ACTION_OPEN,
+	                                                 GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+	                                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                                 NULL);
+
+	gtk_file_filter_add_pixbuf_formats (filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (dialog),
+	                             filter);
+
+	switch (gtk_dialog_run (GTK_DIALOG (dialog)))
+	{
+		case GTK_RESPONSE_ACCEPT:
+		{
+			gchar *filename =
+				gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+			gtk_image_set_from_file (GTK_IMAGE (image), filename);
+			break;
+		}
+		default:
+			break;
+	}
+	gtk_widget_destroy (dialog);
+}
+</code>
+  <p>Toto je trochu komplikovanější než vše, o co jsme se doposud pokusili, takže si to pojďme rozebrat:</p>
+  <list>
+    <item><p>Prvním argumentem signálu je vždy widget, který signál vyslal. Někdy za ním může následovat další argument související se signálem, ale <em>clicked</em> žádný nemá. Další je argument <code>user_data</code>, což je ukazatel na data, která předáváme, když signál napojujeme. V tomto případě je to náš objekt <code>GtkImage</code>.</p>
+    </item>
+    <item>
+      <p>Následující řádek, který stojí za pozornost, je ten, kde je pomocí <code>gtk_file_chooser_dialog_new</code> vytvořeno dialogové okno pro výběr souboru. Funkce přebírá název dialogového okna, rodičovské okno a několik voleb, jako je počet tlačítek a jim příslušející hodnoty.</p>
+    <p>Všimněte si, že používáme <em>standardní</em> názvy tlačítek z Gtk, místo abychom ručně psali „Cancel“ nebo „Open“. Výhodou použití standardních názvů je, že popisky tlačítek budou vždy přeloženy do uživatelova jazyka.</p>
+    </item>
+    <item>
+    <p>Následující dva řádky omezí dialogové okno <gui>Open</gui>, aby zobrazovalo jen soubory, které lze otevřít pomocí <code>GtkImage</code>. Nejprve je vytvořen filtr a pak do něj přidáme všechny druhy souborů podporované v <code>GdkPixbuf</code> (což zahrnuje většinu obrázkových formátů, včetně PNG a JPEG). Nakonec tento filtr nastavíme aby byl filtrem dialogového okna <gui>Open</gui>.</p>
+    </item>
+    <item>
+    <p><code>gtk_dialog_run</code> zobrazí dialogové okno <gui>Otevření</gui>. To bude čekat, až si uživatel vybere obrázek. Když to udělá, <code>gtk_dialog_run</code> vrátí hodnotu <code>GTK_RESPONSE_ACCEPT</code> (nebo by mohl vrátit <code>GTK_RESPONSE_CANCEL</code>, když uživatel klikne na <gui>Zrušit</gui>). V bloku <code>switch</code> se to otestuje.</p>
+    </item>
+    <item><p>Při předpokladu, že uživatel klikl na <gui>Open</gui>, následující řádek nastaví vlastnost <code>file</code> u <code>GtkImage</code> na název souboru s obrázkem, který uživatel vybral. <code>GtkImage</code> pak obrázek načte a zobrazí.</p>
+    </item>
+    <item>
+    <p>Na posledním řádku této metody zlikvidujeme dialogové okno <gui>Otevření</gui>, protože už jej nebudeme potřebovat. Tím se dialogové okno automaticky skryje.</p>
+    </item>
+  </list>
+</section>
+
+<section id="run">
+  <title>Sestavení a spuštění aplikace</title>
+  <p>Celý kód by nyní měl být připravený k fungování. Klikněte na <guiseq><gui>Sestavit</gui> <gui>Sestavit projekt</gui></guiseq>, aby se vše znovu sestavilo a pak na <guiseq><gui>Spustit</gui> <gui>Spustit</gui></guiseq>, aby se aplikace spustila.</p>
+  <p>Pokud jste tak ještě neučinili, zvolte aplikaci <file>Debug/src/image-viewer</file> v dialogovém okně, které se objeví. Nakonec klikněte na <gui>Spustit</gui> a užijte si ji!</p>
+</section>
+
+<section id="impl">
+ <title>Ukázková implementace</title>
+ <p>Pokud v této lekci narazíte na nějaké problémy, porovnejte si svůj kód s tímto <link href="image-viewer/image-viewer.c">ukázkovým kódem</link>.</p>
+</section>
+
+<section id="next">
+  <title>Další postup</title>
+  <p>Zde je pár nápadů, jak byste mohli tuto jednoduchou ukázku rozšířit:</p>
+  <list>
+   <item>
+   <p>Umožnit uživateli výběr složky místo souboru a poskytnout ovládání pro procházení všech obrázků v této složce.</p>
+   </item>
+   <item>
+   <p>Použít při načtení obrázku náhodné filtry a efekty a umožnit uživateli takto změněný obrázek uložit.</p>
+   <p><link href="http://www.gegl.org/api.html">GEGL</link> poskytuje mocné schopnosti pro práci s obrázky.</p>
+   </item>
+   <item>
+   <p>Umožnit uživateli načíst obrázky ze síťového sdílení, skenerů a dalších složitějších zdrojů.</p>
+   <p>Pro práci se síťovými přenosy můžete použít <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> a pro obsluhu skeneru <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link>.</p>
+   </item>
+  </list>
+</section>
+
+
+</page>

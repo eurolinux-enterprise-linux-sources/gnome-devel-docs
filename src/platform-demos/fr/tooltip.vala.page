@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="tooltip.vala" xml:lang="fr">
+  <info>
+  <title type="text">Tooltip (Vala)</title>
+    <link type="guide" xref="beginner.vala#misc"/>
+    <link type="seealso" xref="toolbar.vala"/>
+    <revision version="0.1" date="2013-06-18" status="review"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Ajouter des infobulles à vos éléments graphiques</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Infobulle</title>
+  <media type="image" mime="image/png" src="media/tooltip.png"/>
+  <p>Une barre d'outil avec une infobulle (une image) pour un bouton.</p>
+  <note><p>This example builds on the <link xref="toolbar.vala">Toolbar</link> example.</p></note>
+
+  <links type="section"/>
+    
+  <section id="code">
+  <title>Code utilisé pour générer cet exemple</title>
+    <code mime="text/x-csharp" style="numbered">/* This is the Window */
+class MyWindow : Gtk.ApplicationWindow {
+
+	/* Instance variables belonging to the window */
+	Gtk.Toolbar toolbar;
+	Gtk.ToolButton new_button;
+	Gtk.ToolButton open_button;
+	Gtk.ToolButton undo_button;
+	Gtk.ToolButton fullscreen_button;
+	Gtk.ToolButton leave_fullscreen_button;
+
+	/* Constructor */
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "Toolbar with Tooltips Example");
+
+		this.set_default_size (400, 200);
+		var grid = new Gtk.Grid ();
+		this.add (grid);
+		grid.show ();
+
+		create_toolbar ();
+		toolbar.set_hexpand (true);
+		grid.attach (toolbar, 0, 0, 1, 1);
+		toolbar.show ();
+
+		/* create the "undo" window action action */
+		var undo_action = new SimpleAction ("undo", null);
+		undo_action.activate.connect (undo_callback);
+		this.add_action (undo_action);
+
+		/* create the "fullscreen" window action */
+		var fullscreen_action = new SimpleAction ("fullscreen", null);
+		fullscreen_action.activate.connect (fullscreen_callback);
+		this.add_action (fullscreen_action);
+	}
+
+	/* Callback for query_tooltip signal */
+	bool undo_tooltip_callback (int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
+
+		/* set the text for the tooltip */
+        	tooltip.set_text ("Undo your last action");
+		
+		/* set an icon fot the tooltip */
+		tooltip.set_icon_from_stock("gtk-undo", Gtk.IconSize.MENU);
+
+        	/* show the tooltip */
+        	return true;
+	}
+
+	/* This function creates the toolbar, its  ToolButtons,
+	 * and assigns the actions names to the ToolButtons.*/
+	void create_toolbar () {
+		toolbar = new Gtk.Toolbar ();
+		toolbar.get_style_context ().add_class (Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
+
+		new_button = new Gtk.ToolButton.from_stock (Gtk.Stock.NEW);
+
+		/* tooltip with text */
+		new_button.set_tooltip_text ("Create a new file");
+
+		new_button.is_important = true; //decides whether to show the label
+		toolbar.add (new_button);
+		new_button.show ();
+		new_button.action_name = "app.new";
+
+		open_button = new Gtk.ToolButton.from_stock (Gtk.Stock.OPEN);
+
+		/* a tooltip using Pango markup language */
+		open_button.set_tooltip_markup ("Open an &lt;i&gt;existing&lt;/i&gt; file");
+
+		open_button.is_important = true;
+		toolbar.add (open_button);
+		open_button.show ();
+		open_button.action_name = "app.open";
+
+		undo_button = new Gtk.ToolButton.from_stock (Gtk.Stock.UNDO);
+	
+		/* For a tooltip to have an image, first we must set_has_tooltip to be 'true' */	
+		(undo_button as Gtk.Widget).set_has_tooltip (true);
+
+		/* Connect the query_tooltip signal to the callback */
+		undo_button.query_tooltip.connect (undo_tooltip_callback);
+	
+		undo_button.is_important = true;
+		toolbar.add (undo_button);
+		undo_button.show ();
+		undo_button.action_name = "win.undo";
+
+		fullscreen_button = new Gtk.ToolButton.from_stock (Gtk.Stock.FULLSCREEN);
+		fullscreen_button.is_important = true;
+		toolbar.add (fullscreen_button);
+		fullscreen_button.show ();
+		fullscreen_button.action_name = "win.fullscreen";
+
+		leave_fullscreen_button = new Gtk.ToolButton.from_stock (Gtk.Stock.LEAVE_FULLSCREEN)
+;
+		leave_fullscreen_button.is_important = true;
+		toolbar.add (leave_fullscreen_button);
+
+		leave_fullscreen_button.action_name = "win.fullscreen";
+	}
+
+	void undo_callback (SimpleAction simple, Variant? parameter) {
+			print ("You clicked \"Undo\".\n");
+	}
+
+	void fullscreen_callback (SimpleAction simple, Variant? parameter) {
+		if ((this.get_window ().get_state () &amp; Gdk.WindowState.FULLSCREEN) != 0) {
+			this.unfullscreen ();
+			leave_fullscreen_button.hide ();
+			fullscreen_button.show ();
+		}
+		else {
+			this.fullscreen ();
+			fullscreen_button.hide ();
+			leave_fullscreen_button.show ();
+		}
+	}
+}
+
+/* This is the application */
+class MyApplication : Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+
+	protected override void startup () {
+		base.startup ();
+
+		/* Create the "new" action and add it to the app*/
+		var new_action = new SimpleAction ("new", null);
+		new_action.activate.connect (new_callback);
+		this.add_action (new_action);
+
+		/* Create the "open" action, and add it to the app */
+		var open_action = new SimpleAction ("open", null);
+		open_action.activate.connect (open_callback);
+		this.add_action (open_action);
+
+		/* You could also add the action to the app menu
+		 * if you wanted to.
+		 */
+		//var menu = new Menu ();
+		//menu.append ("New", "app.new");
+		//this.app_menu = menu;
+	}
+
+	void new_callback (SimpleAction action, Variant? parameter) {
+		print ("You clicked \"New\".\n");
+	}
+
+	void open_callback (SimpleAction action, Variant? parameter) {
+			print ("You clicked \"Open\".\n");
+	}
+}
+
+/* The main function creates the application and runs it. */
+int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+  </section>
+
+  <section id="references">
+  <title>Références API</title>
+    <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+    <list>
+
+      <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Tooltip.html">Gtk.Tooltip</link></p></item>
+      <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Toolbar.html">Gtk.Toolbar</link></p></item>
+      <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Widget.query_tooltip.html">Gtk.Widget.query_tooltip</link></p></item>
+      <item><p><link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html#GTK-STOCK-UNDO:CAPS">Stock Items</link></p></item>
+    </list>
+  </section>
+</page>

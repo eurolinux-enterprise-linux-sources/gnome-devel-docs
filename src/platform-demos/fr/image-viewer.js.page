@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.js" xml:lang="fr">
+
+  <info>
+  <title type="text">Image viewer (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+
+    <desc>A little bit more than a simple "Hello world" application - write an image viewer in GTK+. Includes an introduction to the JavaScript language.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
+    <credit type="author">
+      <name>Jonh Wendell</name>
+      <email its:translate="no">jwendell@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasettii@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Image viewer</title>
+
+<synopsis>
+  <p>Dans ce tutoriel, nous allons écrire une application GTK très simple qui charge et affiche un fichier image. Vous allez apprendre comment :</p>
+  <list>
+    <item><p>écrire une interface utilisateur GTK de base en JavaScript,</p></item>
+    <item><p>travailler avec des événements en connectant des signaux à des gestionnaires de signaux,</p></item>
+    <item><p>mettre en forme des interfaces utilisateur GTK avec des conteneurs,</p></item>
+    <item><p>charger et afficher des fichiers image.</p></item>
+  </list>
+  <p>Vous avez besoin de ce qui suit pour pouvoir suivre ce tutoriel :</p>
+  <list>
+    <item><p>l'installation du paquet <link xref="getting-ready">Anjuta IDE</link>,</p></item>
+    <item><p>une copie installée de l'interpréteur <em>gjs</em>,</p></item>
+    <item><p>des connaissances de base d'un langage de programmation objet.</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Création d'un projet dans Anjuta</title>
+  <p>Avant de commencer à programmer, vous devez ouvrir un nouveau projet dans Anjuta. Ceci crée tous les fichiers qui vous sont nécessaires pour construire et exécuter votre programme plus tard. C'est aussi utile pour tout regrouper en un seul endroit.</p>
+  <steps>
+    <item>
+    <p>Lancez Anjuta et cliquez sur <guiseq><gui>Fichier</gui><gui>Nouveau</gui><gui>Projet</gui></guiseq> pour ouvrir l'assistant de création de projet.</p>
+    </item>
+    <item>
+    <p>Sélectionnez <gui>JavaScript générique</gui> dans l'onglet <gui>JS</gui>, cliquez sur <gui>Continuer</gui> et saisissez vos informations sur les pages suivantes. Mettez <file>visionneur_image</file> comme nom de projet et de répertoire.</p>
+   	</item>
+    <item>
+    <p>Cliquez sur <gui>Appliquer</gui> et le projet est créé. Ouvrez <file>src/main.js</file> depuis l'onglet <gui>Projet</gui> ou l'onglet <gui>Fichiers</gui>. Il contient un exemple de programme très basique.</p>
+    </item>
+  </steps>
+</section>
+
+
+<section id="js">
+  <title>Les bases JavaScript : Hello World</title>
+  <p>Avant de commencer à programmer le visionneur d'images, regardons de plus près la façon dont JavaScript est utilisé dans GNOME. Bien sûr, votre tout premier contact avec n'importe quel langage de programmation devrait être le « Hello World » du fichier <file>main.js</file> :</p>
+  <code mime="application/javascript">print("Hello world!");</code>
+  <p>Ceci doit vous sembler très normal si vous êtes familier avec la plupart des langages de programmation. La fonction <code>print</code> est appelée avec l'argument <code>"Hello world!"</code> qui est imprimé à l'écran. Notez que chaque ligne du programme se termine par un point-virgule.</p>
+</section>
+
+<section id="classes">
+  <title>Les classes en JavaScript</title>
+  <p>Voici la méthode standard pour définir une classe en JavaScript :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+function MyClass () {
+  this._init ();
+}
+
+MyClass.prototype = {
+
+  _init: function () {
+    this.propertyA = "This is an object's field";
+    this.propertyB = 10;
+  },
+
+  aMethod: function (arg1, arg2) {
+    print ("inside aMethod: " + arg1 + " " + arg2);
+  },
+
+  dumpProperties: function () {
+    print (this.propertyA);
+    print (this.propertyB);
+  }
+
+}]]></code>
+  <p>Ceci définit une classe appelée <code>MyClass</code>. Passons en revue chaque partie de la définition d'une classe :</p>
+  <steps>
+    <item>
+    <p><code>function MyClass</code> est le constructeur de la classe — son nom doit correspondre au nom de la classe. Vous avez accès à n'importe quel membre de la classe avec l'objet <code>this</code> ; ici, le générateur appelle la méthode <code>_init</code> de la classe.</p>
+    </item>
+    <item>
+    <p>Le bloc <code>MyClass.prototype</code> est l'endroit où vous définissez la <em>structure</em> de la classe. Chaque classe est constituée de méthodes (les fonctions) et de champs (les variables) ; il y a trois méthodes et deux champs dans cet exemple.</p>
+    </item>
+    <item>
+    <p>La première méthode définie ici est appelée <code>_init</code> et nous spécifions que c'est une fonction sans argument :</p>
+    <code>_init: function ()</code>
+    <p>Nous écrivons la fonction à l'intérieur d'accolades. Deux champs sont définis ici, <code>propertyA</code> et <code>propertyB</code>. Le premier est défini comme une chaîne et le second comme un nombre entier (10). La fonction ne retourne aucune valeur.</p>
+    </item>
+    <item>
+    <p>La méthode suivante est appelée <code>aMethod</code> et possède deux arguments qu'elle affiche quand vous l'appelez. La dernière méthode est <code>dumpProperties</code> et elle affiche les champs <code>propertyA</code> et <code>propertyB</code>.</p>
+    </item>
+    <item>
+    <p>Notez comment la définition de la classe (prototype) est structurée ; chaque définition de fonction est séparée par une virgule.</p>
+    </item>
+  </steps>
+
+  <p>Maintenant que MyClass a été défini, nous pouvons jouer avec :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+var o = new MyClass ();
+o.aMethod ("Hello", "world");
+o.propertyA = "Just changed its value!";
+o.dumpProperties ();]]></code>
+  <p>Ce code crée une nouvelle version de la classe appelée <code>o</code>, appelle <code>aMethod</code>, modifie <code>propertyA</code> en une chaîne différente et ensuite appelle <code>dumpProperties</code> (qui affiche les champs).</p>
+  <p>Enregistrez le code dans le fichier <file>main.js</file> et ensuite lancez-le avec <guiseq><gui>Exécuter</gui><gui>Exécuter</gui></guiseq> à partir du menu ou de la barre d'outils.</p>
+</section>
+
+<section id="gtk">
+  <title>Une première application Gtk</title>
+  <p>Voyons à quoi ressemble une application Gtk très basique écrite en JavaScript :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+const Gtk = imports.gi.Gtk;
+
+Gtk.init (null, null);
+
+var w = new Gtk.Window ({title: "Image Viewer Demo"});
+w.show ();
+
+Gtk.main ();]]></code>
+  <p>Regardons ce qui se passe :</p>
+  <list>
+    <item>
+    <p>La première ligne importe l'espace de nom Gtk (c.-à-d. cela inclut la bibliothèque Gtk). Les bibliothèques sont fournies par « GObject Introspection (gi) » qui fournit les liens de langage à beaucoup de bibliothèques GNOME.</p>
+    </item>
+    <item>
+    <p><code>Gtk.init</code> initialise la bibliothèque Gtk ; cette instruction est obligatoire pour tous les programmes Gtk.</p>
+    </item>
+    <item>
+    <p>La ligne suivante crée la fenêtre principale en créant un nouvel objet <code>Gtk.Window</code>. Vous pouvez transmettre plusieurs propriétés au constructeur de la fenêtre avec la syntaxe <code>{propriété: valeur, propriété: valeur, ...}</code>. Dans ce cas, le titre de la fenêtre est défini.</p></item>
+    <item><p>La ligne suivante affiche explicitement la fenêtre. Dans Gtk, chaque élément graphique est masqué par défaut.</p></item>
+    <item><p>Enfin, <code>Gtk.main</code> lance la boucle principale — en d'autres termes, il exécute le programme. La boucle principale écoute les événements (signaux) en provenance de l'interface utilisateur et appelle un gestionnaire de signal qui fera quelque chose d'utile. Nous en apprendrons davantage sur les signaux bientôt.</p></item>
+  </list>
+
+  <p>Enregistrez le code dans le fichier <file>main.js</file> et exécutez-le. Notez que l'application ne quitte pas quand vous fermez la fenêtre. C'est parce que nous n'avons pas encore défini de gestionnaire de signal qui prend en charge le signal <code>destroy</code> de fermeture. Nous le ferons prochainement, mais en attendant, pressez seulement <keyseq><key>Ctrl</key><key>C</key></keyseq> dans la fenêtre du terminal pour quitter le programme.</p>
+
+</section>
+
+<section id="classes2">
+  <title>Ajout de classes</title>
+  <p>La bonne méthode de programmation avec Gtk est l'utilisation de classes. Récrivons le bout de programme que l'on vient d'écrire en utilisant des classes :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+const Gtk = imports.gi.Gtk;
+
+function ImageViewer () {
+  this._init ();
+}
+
+ImageViewer.prototype = {
+  _init: function () {
+    this.window = new Gtk.Window ({title: "Image Viewer Demo"});
+    this.window.show ();
+  }
+}
+
+Gtk.init (null, null);
+var iv = new ImageViewer ();
+Gtk.main ();]]></code>
+  <!-- FIXME: Throws an error, "JS ERROR: !!!   Unhandled type int32 releasing GArgument" on Ubuntu 10.10 -->
+  <p>Notez que le programme reste le même ; on a juste déplacé le code de création de la fenêtre dans notre propre classe <code>ImageViewer</code>. Le constructeur de la classe appelle la méthode <code>_init</code> qui crée et affiche la fenêtre. Ensuite, on crée une instance de la classe avant de lancer la boucle principale (<code>Gtk.main</code>).</p>
+  <p>Ce programme est modulaire et peut être divisé facilement en plusieurs fichiers ce qui le rend plus propre et plus facile à lire.</p>
+</section>
+
+<section id="signals">
+  <title>Les signaux</title>
+  <p>Les signaux sont un des concepts clé de la programmation Gtk. Chaque fois que quelque chose arrive à un objet, il émet un signal ; par exemple, quand un bouton est cliqué, il renvoie le signal <code>clicked</code>. Si vous voulez que votre programme réagisse en conséquence, il faut connecter une fonction (un « gestionnaire de signal ») à ce signal. Voici un exemple :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+function button_clicked () {
+  print ("you clicked me!");
+}
+var b = new Gtk.Button ({label:"Click me"});
+b.connect ("clicked", button_clicked);]]></code>
+  <p>Les deux dernières lignes créent un bouton <code>Gtk.Button</code> appelé <code>b</code> et connectent son signal <code>clicked</code> à la fonction <code>button_clicked</code> définie au-dessus. Chaque fois que ce bouton est cliqué, le code de la fonction <code>button_clicked</code> est exécuté. Il affiche juste un message dans cet exemple.</p>
+  <p>Voici la syntaxe pour connecter n'importe quel signal à une fonction :</p>
+  <code mime="application/javascript"><![CDATA[
+object.connect (<signal_name>, <function_to_be_called>);]]></code>
+  <p>You can find signal definitions for any object in the <link href="https://developer.gnome.org/gtk3/stable/gtkobjects.html">GTK class reference</link>.</p>
+
+  <note>
+    <p>Vous pouvez simplifier le code avec une définition de fonction en ligne :</p>
+    <code mime="application/javascript"><![CDATA[
+b.connect ("clicked", function () { print ("you clicked me!"); });]]></code>
+  </note>
+
+</section>
+
+<section id="close">
+  <title>Fermeture de la fenêtre</title>
+  <p>Quand vous fermez une fenêtre Gtk, elle n'est pas vraiment fermée, mais masquée. Cela permet de la garder accessible (utile si on veut poser la question à l'utilisateur s'il veut oui ou non fermer la fenêtre, par exemple).</p>
+  <p>Dans notre cas, on veut réellement fermer la fenêtre. La façon la plus simple de le faire est de connecter le signal <code>hide</code> de l'objet fenêtre « GtkWindow » à une fonction qui ferme l'application. Retournez au fichier <file>image-viewer.js</file> et ajoutez le code suivant à la méthode <code>_init</code> dans la ligne au-dessus de <code>this.window.show</code> :</p>
+  <code mime="application/javascript" style="numbered">this.window.connect ("hide", Gtk.main_quit);</code>
+  <p>Ceci connecte le signal <code>hide</code> de la fenêtre à la fonction <code>main_quit</code> de Gtk, qui met fin à l'exécution de la boucle principale de Gtk. Lorsque cette boucle s'arrête, la fonction <code>Gtk.main</code> est quittée. Notre programme aurait continué d'exécuter n'importe quel code écrit après la ligne <code>Gtk.main ();</code>, mais comme nous n'avons plus de code après cela, le programme s'arrête.</p>
+</section>
+
+<section id="containers2">
+  <title>Les conteneurs : agencement de l'interface utilisateur</title>
+  <p>Les éléments graphiques (les contrôles, comme les boutons ou les étiquettes) peuvent être disposés dans la fenêtre à l'aide de <em>conteneurs</em>. Vous pouvez organiser l'agencement en mélangeant différents types de conteneurs, comme des boîtes ou des grilles.</p>
+  <p>Une fenêtre <code>Gtk.Window</code> est elle-même un type de conteneur, mais vous ne pouvez y insérer directement qu'un seul élément graphique. Nous aimerions avoir deux éléments graphiques, une image et un bouton, donc nous devons placer un conteneur de « plus haute capacité » dans la fenêtre pour tout contenir. Plusieurs <link href="http://library.gnome.org/devel/gtk/stable/GtkContainer.html">types de conteneurs</link> sont disponibles, mais nous allons utiliser ici une boîte <code>Gtk.Box</code>. Une boîte <code>Gtk.Box</code> peut contenir plusieurs éléments graphiques, disposés horizontalement ou verticalement. On pourrait créer des agencements plus complexes en mettant plusieurs boîtes dans une autre et ainsi de suite.</p>
+  <note>
+  <p>Il existe un concepteur graphique d'interface utilisateur appelé <app>Glade</app> intégré à <app>Anjuta</app> ce qui rend la conception d'interface utilisateur vraiment facile. Dans cet exemple simple, cependant, nous allons tout programmer à la main.</p>
+  </note>
+  <p>Ajoutons la boîte et les éléments graphiques à la fenêtre. Insérez le code suivant dans la méthode <code>_init</code> immédiatement au-dessus de la ligne <code>this.window.show</code> :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+var main_box = new Gtk.Box ({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
+this.window.add (main_box);]]></code>
+  <p>La première ligne crée une boîte <code>Gtk.Box</code> appelée <code>main_box</code> et définit deux de ses propriétés : l'<code>orientation</code> est fixée à verticale (donc les éléments graphiques sont disposés en colonne) et l'espacement <code>spacing</code> entre les éléments graphiques est fixé à 0 pixel. La ligne suivante ajoute cette nouvelle boîte <code>Gtk.Box</code> à la fenêtre.</p>
+  <p>Pour l'instant, la fenêtre ne contient qu'une boîte <code>Gtk.Box</code> vide et si vous exécutez le programme, vous ne verrez pas encore de changement (la boîte <code>Gtk.Box</code> est un conteneur transparent et vous ne le voyez donc pas).</p>
+</section>
+
+<section id="packing2">
+  <title>Placement : ajout d'éléments graphiques au conteneur</title>
+  <p>Pour ajouter des éléments graphiques à la boîte <code>Gtk.Box</code>, insérez le code suivant juste en dessous de la ligne <code>this.window.add (main_box)</code> :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+this.image = new Gtk.Image ();
+main_box.pack_start (this.image, true, true, 0);]]></code>
+  <p>La première ligne crée une nouvelle <code>Gtk.Image</code> appelée <code>image</code> qui servira à afficher un fichier image. Puis, l'élément graphique image est ajouté (<em>placé</em>) dans le conteneur <code>main_box</code> par la méthode <link href="http://library.gnome.org/devel/gtk/stable/GtkBox.html#gtk-box-pack-start"><code>pack_start</code></link> de <code>Gtk.Box</code> .</p>
+  <p><code>pack_start</code> prend 4 arguments : l'élément graphique enfant (<code>child</code>) qui doit être ajouté à la boîte <code>Gtk.Box</code> ; si la boîte <code>Gtk.Box</code> doit s'agrandir (<code>expand</code>) quand le nouvel élément graphique est ajouté ; si le nouvel élément graphique doit prendre tout le nouvel espace créé quand la boîte <code>Gtk.Box</code> s'agrandit (<code>fill</code>) ; et enfin combien d'espace libre (<code>padding</code>), en pixels, il doit y avoir entre l'élément graphique et ses voisins à l'intérieur de la <code>Gtk.Box</code>.</p>
+  <p>Si vous les laissez faire, les conteneurs Gtk (et les éléments graphiques) s'agrandissent dynamiquement pour occuper tout l'espace disponible. Vous ne positionnez pas les éléments graphiques dans la fenêtre en leur spécifiant des coordonnées x,y précises mais vous les positionnez les uns par rapport aux autres. Ceci permet un redimensionnement plus aisé de la fenêtre et les éléments graphiques devraient automatiquement prendre une taille raisonnable dans la plupart des cas.</p>
+  <p>Notez aussi de quelle manière les éléments graphiques sont organisés hiérarchiquement. Une fois placée dans la <code>Gtk.Box</code>, l'image <code>Gtk.Image</code> est considérée comme un <em>enfant</em> de la boîte <code>Gtk.Box</code>. Ceci vous permet de traiter tous les enfants d'un élément graphique comme un groupe ; par exemple, vous pouvez masquer la boîte <code>Gtk.Box</code> qui du coup, masque tous ses enfants en même temps.</p>
+  <p>Insérez maintenant ces deux lignes en dessous des deux que vous venez d'ajouter :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+var open_button = new Gtk.Button ({label: "Open a picture..."});
+main_box.pack_start (open_button, false, false, 0);]]></code>
+  <p>Ces lignes ressemblent aux deux premières, mais cette fois elles créent un bouton <code>Gtk.Button</code> et l'ajoute à la <code>main_box</code>. Notez que nous paramétrons ici l'argument <code>expand</code> (le second) sur <code>false</code>, alors qu'il était sur <code>true</code> pour l'image <code>Gtk.Image</code>. Ceci va conduire à ce que l'image prenne tout l'espace disponible et le bouton seulement l'espace nécessaire. Lors d'un redimensionnement de la fenêtre, la taille du bouton reste identique, alors que la taille de l'image va augmenter pour occuper le reste de la fenêtre.</p>
+  <p>Finalement, nous devons modifier la ligne <code>this.window.show ();</code> pour devenir :</p>
+  <code>this.window.show_all ();</code>
+  <p>Ceci affiche l'enfant de la fenêtre Gtk et tous ses enfants, enfants de ses enfants et ainsi de suite (souvenez-vous que les éléments graphiques Gtk sont tous masqués par défaut).</p>
+</section>
+
+<section id="loading2">
+  <title>Chargement de l'image : connexion au signal <code>clicked</code> du bouton</title>
+  <p>Quand l'utilisateur clique sur le bouton <gui>Open a picture</gui>, une boîte de dialogue devrait apparaître pour permettre le choix d'une image. Une fois ce choix effectué, la photo est chargée et affichée dans l'élément graphique image.</p>
+  <p>Connectez d'abord le signal <code>clicked</code> du bouton à une fonction de gestion de signal que vous appelez <code>_openClicked</code>. Mettez ce code immédiatement après la ligne <code>var open_button = new Gtk.Button</code> où le bouton a été créé :</p>
+  <code mime="application/javascript"><![CDATA[
+open_button.connect ("clicked", Lang.bind (this, this._openClicked));]]></code>
+  <p>Ici, nous utilisons l'assistant JavaScript <em>Lang</em>. Il nous permet de connecter une <em>class method</em> au signal plutôt qu'à une simple fonction (sans classe) que nous avions utilisée avant pour le signal de masquage <code>hide</code>. Ne vous préoccupez pas de cela pour le moment, ce n'est qu'un détail technique. Pour que cela fonctionne, vous devez aussi ajouter cette ligne en haut du fichier :</p>
+  <code mime="application/javascript">const Lang = imports.lang;</code>
+</section>
+
+<section id="loading3">
+  <title>Chargement de l'image : écriture de la fonction de rappel du signal</title>
+  <p>Nous pouvons maintenant créer la méthode <code>_openClicked()</code>. Insérez ce qui suit dans le bloc de code <code>ImageViewer.prototype</code>, après la méthode <code>_init</code> (et sans oublier la virgule) :</p>
+    <code mime="application/javascript" style="numbered"><![CDATA[
+  _openClicked: function () {
+    var chooser = new Gtk.FileChooserDialog ({title: "Select an image",
+                                              action: Gtk.FileChooserAction.OPEN,
+                                              transient_for: this.window,
+                                              modal: true});
+    chooser.add_button (Gtk.STOCK_CANCEL, 0);
+    chooser.add_button (Gtk.STOCK_OPEN, 1);
+    chooser.set_default_response (1);
+
+    var filter = new Gtk.FileFilter ();
+    filter.add_pixbuf_formats ();
+    chooser.filter = filter;
+
+    if (chooser.run () == 1)
+      this.image.file = chooser.get_filename ();
+
+    chooser.destroy ();
+  }]]></code>
+  <p>C'est un peu plus compliqué que tout ce que nous avons essayé jusqu'à présent, donc décortiquons cette partie étape par étape :</p>
+  <list>
+    <item>
+      <p>La ligne commençant par <code>var chooser</code> crée une boîte de dialogue <gui>Ouvrir</gui> qui permet à l'utilisateur de choisir des fichiers. Nous paramétrons quatre propriétés : le titre de la boîte de dialogue ; la fonction (le type) de la boîte de dialogue (c'est une boîte de dialogue « OPEN », mais on aurait pu utiliser (<code>SAVE</code>) (enregistrer) si notre intention avait été d'enregistrer un fichier) ; <code>transient_for</code>, qui définit la fenêtre parent de la boîte de dialogue ; et <code>modal</code> qui, s'il est fixé à <code>true</code> empêche l'utilisateur de cliquer sur un autre emplacement de l'application jusqu'à ce que la boîte de dialogue soit fermée.</p>
+    </item>
+    <item>
+    <p>Les deux lignes suivantes ajoutent les boutons <gui>Cancel</gui> (Annuler) et <gui>Open</gui> (Ouvrir) à la boîte de dialogue. Le second argument de la méthode <code>add_button</code> est la valeur (de type entier) qui est retournée lorsque le bouton est cliqué : 0 pour <gui>Annuler</gui> et 1 pour <gui>Ouvrir</gui>.</p>
+    <p>Notez que nous utilisons les noms de bouton de la <em>collection</em> (stock) Gtk au lieu de saisir manuellement « Cancel » ou « Open ». L'avantage d'utiliser les noms de la collection est que les étiquettes des boutons seront déjà traduites dans la langue de l'utilisateur.</p>
+    </item>
+    <item>
+    <p><code>set_default_response</code> détermine le bouton qui est activé quand l'utilisateur fait un double-clic sur un fichier ou appuie sur la touche <key>Entrée</key>. Ici, nous utilisons le bouton <gui>Open</gui> (qui a la valeur 1).</p>
+    </item>
+    <item>
+    <p>Les trois lignes suivantes limitent la boîte de dialogue <gui>Ouvrir</gui> à l'affichage des seuls fichiers pouvant être ouverts par <code>Gtk.Image</code>. Un objet filtre est d'abord créé ; ensuite nous ajoutons tous les types de fichier pris en charge par <code>Gdk.Pixbuf</code> (ce qui inclut la plupart des formats d'image comme PNG ou JPEG) au filtre. Enfin, nous appliquons ce filtre à la boîte de dialogue <gui>Open</gui>.</p>
+    </item>
+    <item>
+    <p><code>chooser.run</code> affiche la boîte de dialogue <gui>Open</gui>. La boîte de dialogue attend que l'utilisateur choisisse une image ; quand c'est fait, <code>chooser.run</code> retourne la valeur <output>1</output> (il retourne la valeur <output>0</output> si l'utilisateur clique sur <gui>Annuler</gui>). L'instruction <code>if</code> teste cette réponse.</p>
+    </item>
+    <item><p>Supposons que l'utilisateur a cliqué sur le bouton <gui>Ouvrir</gui>, la ligne suivante définit la propriété <code>file</code> du <code>Gtk.Image</code> au nom de fichier image sélectionné. <code>Gtk.Image</code> charge alors l'image choisie et l'affiche.</p>
+    </item>
+    <item>
+    <p>La dernière ligne de cette méthode détruit la boîte de dialogue <gui>Open</gui> car nous n'en avons plus besoin.</p>
+    </item>
+  </list>
+
+  </section>
+
+<section id="run">
+  <title>Exécution de l'application</title>
+  <p>Tout le programme nécessaire est maintenant en place, donc essayez de l'exécuter. Cela devrait fonctionner ; un visionneur d'images totalement fonctionnel (et une visite éclair de JavaScript et de Gtk) en très peu de temps !</p>
+</section>
+
+<section id="impl">
+ <title>Implémentation de référence</title>
+ <p>Si vous rencontrez des difficultés avec ce tutoriel, comparez votre programme à ce <link href="image-viewer/image-viewer.js">programme de référence</link>.</p>
+</section>
+
+<section id="next">
+  <title>Les étapes suivantes</title>
+  <p>Voici quelques idées sur la manière d'étendre ce simple exemple :</p>
+  <list>
+   <item>
+   <p>Faire que l'utilisateur puisse sélectionner un dossier plutôt qu'un fichier et fournir les contrôles pour naviguer parmi toutes les images d'un dossier.</p>
+   </item>
+   <item>
+   <p>Appliquer au hasard des filtres et des effets à l'image quand elle est chargée et permettre à l'utilisateur d'enregistrer l'image modifiée.</p>
+   <p><link href="http://www.gegl.org/api.html">GEGL</link> fournit de puissantes possibilités de manipulation d'image.</p>
+   </item>
+   <item>
+   <p>Permettre à l'utilisateur de charger des images depuis des sites de partage, des scanners ou d'autres sources plus sophistiquées.</p>
+   <p>Vous pouvez utiliser <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> pour gérer des transferts de fichiers en ligne et des choses du même type et <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> pour gérer les documents scannés.</p>
+   </item>
+  </list>
+</section>
+
+</page>

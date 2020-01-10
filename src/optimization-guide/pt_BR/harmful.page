@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="harmful" xml:lang="pt-BR">
+    <info>
+     <link type="guide" xref="index#harm"/>
+    
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Enrico Nicoletto</mal:name>
+      <mal:email>liverig@gmail.com</mal:email>
+      <mal:years>2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+    <title>Buscas em disco são consideradas prejudiciais</title>
+    <p>Buscas em disco são uma das operações mais custosas que você possivelmente pode realizar. Você pode não saber isto apenas olhando quantas delas realizamos porém, acredite em mim, elas são. Deste modo, por favor abstenha-se deste comportamento abaixo do normal que se segue:</p>
+    <list type="unordered">
+        <item>
+            <p>Colocando vários pequenos arquivos sobre todo o disco.</p>
+        </item>
+        <item>
+            <p>Abrindo, iniciando, e lendo vários arquivos sobre todo o disco</p>
+        </item>
+        <item>
+            <p>Fazer o que está acima em arquivos que são dispostos em tempos diferentes, garante que os arquivos são fragmentados e causem ainda mais buscas em disco.</p>
+        </item>
+        <item>
+            <p>Fazer o que está acima em arquivos que estão em diferentes diretórios, garante que os arquivos estão em diferentes grupos de cilindros e causem ainda mais buscas em disco.</p>
+        </item>
+        <item>
+            <p>Faça repetidamente o que está acima apenas quando for necessário fazer uma única vez.</p>
+        </item>
+    </list>
+    <p>Modos pelos quais você pode otimizar seu código para realizar pesquisas de forma amigável:</p>
+    <list type="unordered">
+        <item>
+            <p>Consolidar os dados em um único arquivo.</p>
+        </item>
+        <item>
+            <p>Manter os dados juntos no mesmo diretório.</p>
+        </item>
+        <item>
+            <p>Fazer cache dos dados a fim de não precisar relê-los constantemente.</p>
+        </item>
+        <item>
+            <p>Compartilhar os dados a fim de não precisar relê-los a partir do disco rígido quando cada aplicativo é carregado.</p>
+        </item>
+        <item>
+            <p>Considerar fazer cache de todos os dados em um único arquivo binário, o qual está corretamente alinhado e que pode ser mapeado.</p>
+        </item>
+    </list>
+    <p>Os problemas com pesquisas em disco são agravados pelas leituras as quais, infelizmente, são o que estamos fazendo. Lembre-se, leituras são geralmente síncronas enquanto escritas são assíncronas. Isto só agrava o problema, serializando cada leitura e contribuindo para a latência do programa.</p>
+</page>

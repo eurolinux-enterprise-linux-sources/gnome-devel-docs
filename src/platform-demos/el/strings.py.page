@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="strings.py" xml:lang="el">
+
+<info>
+  <title type="text">Συμβολοσειρές (Python)</title>
+  <link type="guide" xref="beginner.py#theory"/>
+  <link type="next" xref="label.py"/>
+  <revision version="0.1" date="2012-06-16" status="draft"/>
+
+  <desc>Μια εξήγηση πώς να αντιμετωπίσετε τις συμβολοσειρές σε Python και GTK+.</desc>
+  <credit type="author copyright">
+    <name>Sebastian Pölsterl</name>
+    <email its:translate="no">sebp@k-d-w.org</email>
+    <years>2011</years>
+  </credit>
+  <credit type="editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012</years>
+  </credit>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Συμβολοσειρές</title>
+
+<links type="section"/>
+
+<note style="warning"><p>Το GNOME ενθαρρύνει έντονα τη χρήση του python 3 για συγγραφή εφαρμογών!</p></note>
+
+<section id="python-2">
+<title>Συμβολοσειρές σε Python 2</title>
+
+<p>Ο Python 2 έρχεται με δύο διαφορετικά είδη αντικειμένων που μπορούν να χρησιμοποιηθούν για αναπαράσταση συμβολοσειρών, <code>str</code> και <code>unicode</code>. Περιπτώσεις του <code>unicode</code> χρησιμοποιούνται για να εκφράσουν συμβολοσειρές Unicode, ενώ περιπτώσεις του τύπου <code>str</code> είναι αναπαραστάσεις byte (η κωδικοποιημένη συμβολοσειρά). Στα αφανή, ο Python αντιπροσωπεύει συμβολοσειρές Unicode ως είτε 16- ή 32- δυαδικών ακέραιους, ανάλογα με το πώς ο διερμηνευτής Python μεταγλωττίστηκε.</p>
+
+<code>
+&gt;&gt;&gt; unicode_string = u"Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; print unicode_string
+Fußbälle
+</code>
+
+<p>Οι συμβολοσειρές Unicode μπορούν να μετατραπούν σε συμβολοσειρές 8 δυαδικών με <code>unicode.encode()</code>. Οι συμβολοσειρές 8 δυαδικών έχουν μια μέθοδο <code>str.decode()</code> που ερμηνεύει τη συμβολοσειρά χρησιμοποιώντας τη δεδομένη κωδικοποίηση (δηλαδή, είναι το αντίστροφο της <code>unicode.encode()</code>):</p>
+
+<code>
+&gt;&gt;&gt; type(unicode_string)
+&lt;type 'unicode'&gt;
+&gt;&gt;&gt; unicode_string.encode("utf-8")
+'Fu\xc3\x9fb\xc3\xa4lle'
+&gt;&gt;&gt; utf8_string = unicode_string.encode("utf-8")
+&gt;&gt;&gt; type(utf8_string)
+&lt;type 'str'&gt;
+&gt;&gt;&gt; unicode_string == utf8_string.decode("utf-8")
+True</code>
+
+<p>Δυστυχώς, ο Python 2.x επιτρέπει την ανάμειξη <code>unicode</code> και <code>str</code> εάν η συμβολοσειρά 8 δυαδικών συμβεί να περιέχει μόνο bytes μόνο 7 δυαδικών (ASCII), αλλά θα μπορούσε να πάρει <sys>UnicodeDecodeError</sys> εάν περιέχει μη ASCII τιμές.</p>
+
+</section>
+
+<section id="python-3">
+<title>Συμβολοσειρές σε Python 3</title>
+
+<p>Από τον Python 3.0, όλες οι συμβολοσειρές αποθηκεύονται ως Unicode σε ένα στιγμιότυπο του τύπου <code>str</code>. Κωδικοποιημένες συμβολοσειρές από την άλλη μεριά αναπαριστώνται ως δυαδικά δεδομένα στη φόρμα στιγμιοτύπων του τύπου bytes. Εννοιολογικά, ο <code>str</code> αναφέρεται σε κείμενο, ενώ τα bytes αναφέρονται σε δεδομένα. Χρησιμοποιήστε <code>encode()</code> για μετάβαση από <code>str</code> σε <code>bytes</code> και <code>decode()</code> για μετάβαση από <code>bytes</code> σε <code>str</code>.</p>
+
+<p>Επιπλέον, δεν είναι πια δυνατό να αναμείξετε συμβολοσειρές Unicode με κωδικοποιημένες συμβολοσειρές, επειδή θα καταλήξει σε ένα <code>TypeError</code>:</p>
+
+<code>
+&gt;&gt;&gt; text = "Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; data = b" sind rund"
+&gt;&gt;&gt; text + data
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: Can't convert 'bytes' object to str implicitly
+&gt;&gt;&gt; text + data.decode("utf-8")
+'Fußbälle sind rund'
+&gt;&gt;&gt; text.encode("utf-8") + data
+b'Fu\xc3\x9fb\xc3\xa4lle sind rund'</code>
+
+</section>
+
+<section id="gtk">
+<title>Unicode σε GTK+</title>
+
+<p>Το GTK+ χρησιμοποιεί κωδικοποιημένες συμβολοσειρές UTF-8 για όλα τα κείμενα. Αυτό σημαίνει ότι εάν καλέσετε μια μέθοδο που επιστρέφει μια συμβολοσειρά θα παίρνετε πάντα ένα στιγμιότυπο του τύπου <code>str</code>. Το ίδιο εφαρμόζεται στις μεθόδους που περιμένουν μια ή περισσότερες συμβολοσειρές ως παράμετρο, πρέπει να είναι κωδικοποιημένες UTF-8. Όμως, για ευκολία το PyGObject θα μετατρέπει αυτόματα οποιοδήποτε στιγμιότυπο unicode σε str εάν του δοθεί ως όρισμα:</p>
+
+<code>
+&gt;&gt;&gt; from gi.repository import Gtk
+&gt;&gt;&gt; label = Gtk.Label()
+&gt;&gt;&gt; unicode_string = u"Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; label.set_text(unicode_string)
+&gt;&gt;&gt; txt = label.get_text()
+&gt;&gt;&gt; type(txt)
+&lt;type 'str'&gt;</code>
+
+<p>Επιπλέον:</p>
+
+<code>
+&gt;&gt;&gt; txt == unicode_string</code>
+
+<p>Θα επέστρεφε <code>False</code>, με την προειδοποίηση <code>__main__:1: UnicodeWarning: η σύγκριση όμοιων Unicode απέτυχε να μετατρέψει και τα δυο ορίσματα σε Unicode - ερμηνεύοντας τα ως ανόμοια</code> (<code>Gtk.Label.get_text()</code> θα επιστρέφει πάντα ένα στιγμιότυπο <code>str</code>· συνεπώς, <code>txt</code> and <code>unicode_string</code> δεν είναι όμοια).</p>
+
+<p>Αυτό είναι ιδιαίτερα σημαντικό εάν θέλετε να διεθνοποιήσετε το πρόγραμμά σας χρησιμοποιώντας <link href="http://docs.python.org/library/gettext.html"><code>gettext</code></link>. Πρέπει να βεβαιωθείτε ότι η <code>gettext</code> θα επιστρέψει κωδικοποιημένες συμβολοσειρές 8 δυαδικών UTF-8 για όλες τις γλώσσες.</p>
+
+<p>Γενικά συνιστάται να μην χρησιμοποιείτε αντικείμενα <code>unicode</code> σε εφαρμογές GTK+ καθόλου και να χρησιμοποιείτε κωδικοποιημένα αντικείμενα <code>str</code> UTF-8 αφού το GTK+ δεν ενσωματώνει πλήρως αντικείμενα <code>unicode</code>.</p>
+
+<p>Με την Python 3.x τα πράγματα είναι πολύ πιο ομοιόμορφα, επειδή το PyGObject θα κωδικοποιήσει/αποκωδικοποιήσει αυτόματα προς/από UTF-8 εάν περάσετε μια συμβολοσειρά σε μια μέθοδο ή εάν μια μέθοδος επιστρέφει μια συμβολοσειρά. Συμβολοσειρές, ή κείμενο, θα αναπαριστώνται πάντα ως στιγμιότυπα <code>str</code>.</p>
+
+</section>
+
+<section id="references">
+<title>Αναφορές</title>
+
+<p><link href="http://python-gtk-3-tutorial.readthedocs.org/en/latest/unicode.html">How To Deal With Strings - The Python GTK+ 3 Tutorial</link></p>
+
+</section>
+
+</page>

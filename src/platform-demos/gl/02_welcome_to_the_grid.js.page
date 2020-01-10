@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="02_welcome_to_the_grid.js" xml:lang="gl">
+  <info>
+    <link type="guide" xref="beginner.js#tutorials"/>
+    <link type="seealso" xref="grid.js"/>
+    <link type="seealso" xref="image.js"/>
+    <link type="seealso" xref="label.js"/>
+    <revision version="0.1" date="2012-07-28" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Aprenda como dispor compoñentes de IU, como imaxes e etiquetas.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Fran Dieguez</mal:name>
+      <mal:email>frandieguez@gnome.org</mal:email>
+      <mal:years>2012-2013.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>2. Benvido á grella</title>
+  <synopsis>
+    <p>Este titorial mostraralle como crear widgets básicos, ou partes da interface de usuario de GNOME, como as imaxes e etiquetas. Aprenderá como dispolas todas na Grella, que lle permite poñer widgets exactamente como quere.</p>
+    <note style="warning"><p>Ollou xa <link xref="hellognome.js">o primeiro titorial nesta serie</link>? Debería facelo antes de continuar.</p></note>
+  </synopsis>
+
+  <links type="section"/>
+
+  <section id="native">
+    <title>Facelo nativo</title>
+
+    <p>No anterior titorial, creamos o que era basicamente o marco de xanela de GNOME para un aplicativo web. Todo o código específico de GNOME que precisamos aprender estaba relacionado sobre o WebView -- o widget que contén o noso aplicativo -- nun ApplicationWindow, e dicíndolle que se mostre. O aplicativo por si mesmo foi escrito en HTML e JavaScript, como se fora unha páxina web.</p>
+    <p>Desta vez imos usar só widgets de GNOME nativos. Un widget é simplemente unha cousa, como un campo de verificación ou unha imaxe, e GNOME ten unha gran cantidade de widgets onde escoller. Chamámolos widgets «nativos» para distinguilos das cousas como un botón e cabeceira no aplicativo web que escribimos. Xa que no lugar de usar código web, estes serán 100% GNOME, usando GTK+.</p>
+    <note style="tip"><p>GTK+ significa «GIMP Toolkit». É como unha caixa de ferramentas de widgets que pode obter, mentres constrúe os seus aplicativos. Foi escrito orixinalmente para <link href="http://www.gimp.org/">GIMP</link>, que é un editor de imaxes software libre.</p></note>
+  </section>
+
+  <section id="setup">
+    <title>Configurar o seu aplicativo</title>
+
+    <p>Antes de profundizar en calquera widget da caixa de ferramentas de GTK+, primeiro debemos escribir un código básico de arrinque que o noso aplicativo require.</p>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Esta parte sempre vai ao inicio do seu código. Dependendo do que faga con el, pode querer declarar máis imports aquí. O que estamos escribindo hoxe é moi básico, polo que vai ser todo o que imos precisar; Gtk para os widgets e Lang para que poidamos usar Lang.bind para conectar os sinais do aplicativo «activate» e «startup» ás funcións requiridas.</p>
+    <p>Falando diso:</p>
+    <code mime="application/javascript">
+const WelcomeToTheGrid = new Lang.Class({
+    Name: 'Benvida á Grella',
+
+    // Crear o aplicativo
+    _init: function() {
+        this.application = new Gtk.Application();
+
+        // Conectar os sinais 'activate' e 'startup' ás funcións callback
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Función callback para o sinal 'activate' presente cando a xanela se active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Función callback para o sinal 'startup' cando se constrúa a IU
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Isto é o inicio do aplicativo en si, e a función _init o que o crea. Dille a _buildUI que cree un ApplicationWindow, que imos chamar a _window, e dílle á nosa anela presentarse a si mesmo onde sexa preciso.</p>
+    <p>Esta parte, de nogo é principalmente copiar e pegar, pero sempre quererá darlle un nome único ao seu aplicativo.</p>
+
+    <code mime="application/javascript">
+    // Construír a IU do aplicativo
+    _buildUI: function() {
+
+        // Crear a xanela do aplicativo
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 10,
+            title: "Benvida á grella"});
+</code>
+    <p>Finalmente, iniciamos coa función _buildUI creando un novo ApplicationWindow. Especificamos como ten que ir o aplicativo, debe aparecer no centro da pantalla e debería ter cando menos 10 píxeles de espacio entre o borde da xanela e calquera widget dentro dela. Tamén fornécelle un título, o cal aparecerá na parte superior da xanela.</p>
+  </section>
+
+  <section id="toolbox">
+    <title>Ollando a caixa de ferramentas de GTK+</title>
+    <p>Que widgets debería usar? Ben, digamos que quere escribir un aplicativo que se semelle a isto:</p>
+
+    <media type="image" mime="image/png" src="media/02_jsgrid_01.png"/>
+
+    <p>Precisaremos, cando menos, unha imaxe e unha etiqueta de texto para ir con ela. Comecemos pola imaxe</p>
+    <code mime="application/javascript">
+        // Crear a imaxe
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
+</code>
+
+    <p>pode descargar o ficheiro da imaxe usado neste exemplo <link href="https://live.gnome.org/TarynFox?action=AttachFile&amp;do=get&amp;target=gnome-image.png">aquí</link>. Asegúrese de que o pon no mesmo cartafol onde está escribindo o código.</p>
+
+    <code mime="application/javascript">
+        // Create a label
+        this._label = new Gtk.Label ({ label: "Benvido a GNOME, tamén!" });
+</code>
+    <p>Este código engade a etiqueta embaixo. Pode ver como creamos widgets, aquí; cada unha é unha parte de GTK, e podemos darlle propiedades para personalizar o seu comportamento. Neste caso, estabelecemos a propiedade de ficheiro da imaxe para que sexa o nome do ficheiro da imaxe que queremos e a propiedade de etiqueta da etiqueta que quere embaixo da imaxe.</p>
+    <note style="tip"><p>Si, sona redundante que unha etiqueta teña unha propiedade de etiqueta, pero non é así. Outros widgets que conteñen texto teñen unha propiedade de etiqueta, polo que é <em>consistente</em> para o widget de etiqueta que teñen unha tamén.</p></note>
+    <p>Non se pode engadir estes widgets á súa xanela en orde como se faría cos elementos HTML. Isto é porque ApplicationWindow só pode conter un widget.</p>
+    <p>Como o solucionamos? Facendo que o widget sexa un widget contedor, que poderá conter máis dun widget e organizalos. Polo tanto: A grella.</p>
+    <code mime="application/javascript">
+        // Create the Grid
+        this._grid = new Gtk.Grid ();
+</code>
+
+    <p>We're not giving it any properties yet. Those will come later, as we learn how to use the Grid's powers. First, let's attach the Image and Label we made to our Grid.</p>
+    <code mime="application/javascript">
+        // Anexar a imaxe e a etiqueta á grella
+        this._grid.attach (this._image, 0, 0, 1, 1);
+        this._grid.attach (this._label, 0, 1, 1, 1);
+</code>
+
+    <p>Este código semella moi complicado, pero non é así. Isto é o que significan ditos números:</p>
+    <list type="numbered">
+      <item><p>The <em>first</em> number is what left-to-right position to put things in, starting from 0. Any widget that uses a 0 here goes all the way to the left.</p></item>
+      <item><p>The <em>second</em> number is what top-to-bottom position to put a given widget in, starting from 0. The Label goes beneath the Image, so we give the Image a 0 and the Label a 1 here.</p></item>
+      <item><p>The <em>third</em> and <em>fourth</em> numbers are how many columns and rows a widget should take up. We'll see how these work in a minute.</p></item>
+    </list>
+
+    <code mime="application/javascript"><![CDATA[
+        // Add the grid to the window
+        this._window.add (this._grid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+
+});
+
+// Run the application
+let app = new WelcomeToTheGrid ();
+app.application.run (ARGV);
+]]></code>
+    <p>Now that we've created the Grid and attached all our widgets to it, we add it to the window and tell the window to show itself, as the last part of the _buildUI function. As always, to finish up we create a new instance of the application's class and tell it to run.</p>
+    <p>Save your application as welcome_to_the_grid.js. Then, to run your application just open a terminal, go to the directory where your application is at, and type</p>
+      <screen> <output style="prompt">$ </output>gjs welcome_to_the_grid.js </screen>
+
+    <media type="image" mime="image/png" src="media/02_jsgrid_02.png"/>
+
+    <p>There we go! But wait. That doesn't look right. Why is the Label crammed up next to the Image like that? That doesn't look as nice, and it makes it harder to read. What can we do about this?</p>
+  </section>
+
+  <section id="tweaking">
+    <title>Tweaking the Grid</title>
+
+    <p>One thing we can do, is we can give the Label a margin_top property when we create it. This works sort of like setting a margin for an HTML element using inline CSS styling.</p>
+    <code mime="application/javascript"><![CDATA[
+        // Create a label
+        this._label = new Gtk.Label ({
+            label: "Welcome to GNOME, too!",
+            margin_top: 20 });
+]]></code>
+
+    <p>Of course, if we do that then if we replace the Label with something else -- or add in another widget -- then we have to repeat the margin_top on it too. Otherwise we end up with something like this:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_03.png"/>
+
+    <p>We could give the Image a margin_bottom property, but that won't work when the new Label is in a separate column. So how about we try this instead:</p>
+    <code mime="application/javascript"><![CDATA[
+        // Create the Grid
+        this._grid = new Gtk.Grid ({
+            row_spacing: 20 });
+]]></code>
+
+    <p>That makes it so that there are always 20 pixels of space in between each horizontal row.</p>
+    <note style="tip"><p>Yes, you can also set the column_spacing property on a Grid, or the margin_left and margin_right properties on any widget. Try them out, if you like!</p></note>
+  </section>
+
+  <section id="adding">
+    <title>Engadir máis widgets</title>
+
+    <p>If we did want to add a second Label, how would we do it so that it actually looked like it belonged there? One way is to center the Image on top, so that it's above both Labels instead of just the one on the left. That's where those other numbers in the Grid's attach method come in:</p>
+    <code mime="application/javascript"><![CDATA[
+        // Create a second label
+        this._labelTwo = new Gtk.Label ({
+            label: "The cake is a pie." });
+
+        // Attach the image and labels to the grid
+        this._grid.attach (this._image, 0, 0, 2, 1);
+        this._grid.attach (this._label, 0, 1, 1, 1);
+        this._grid.attach (this._labelTwo, 1, 1, 1, 1);
+]]></code>
+
+    <p>After we create the second Label, we attach it to the Grid to the right of the first Label. Remember, the first two numbers count columns and rows from left to right and top to bottom, starting with 0. So if the first Label is in column 0 and row 1, we can put the second in column 1 and row 1 to put it to the right of the first Label.</p>
+    <p>Note the number 2 in the attach statement for the Image. That's what does the trick here. That number is how many columns the Image spans, remember? So when we put it together, we get something like this:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_04.png"/>
+
+    <p>There are two things you should take note of, here.</p>
+    <list>
+      <item><p>Setting the Image to span two columns doesn't stretch the picture itself horizontally. Instead, it stretches the invisible box taken up by the Image widget to fill both columns, then places the Image in the center of that box.</p></item>
+      <item><p>Even though we've set the Grid's row_spacing and the ApplicationWindow's border_width properties, we haven't yet set anything that puts a border in between the two Labels. They were separate earlier when the Image was in only one column, but now that it spans both GNOME doesn't see a reason to keep them apart.</p></item>
+    </list>
+
+    <p>There are at least three ways we can get around that last one. First, we can set a margin_left or margin_right on one of the Labels:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_05.png"/>
+
+    <p>Second, we can set the Grid's column_homogeneous property to true.</p>
+    <code mime="application/javascript"><![CDATA[
+        // Create the Grid
+        this._grid = new Gtk.Grid ({
+            column_homogeneous: true,
+            row_spacing: 20 });
+]]></code>
+
+    <p>Iso fai que se vexa algo como isto:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_06.png"/>
+
+    <p>And third, we can set the Grid's column_spacing property, the same way we set its row_spacing.</p>
+    <code mime="application/javascript"><![CDATA[
+        // Create the Grid
+        this._grid = new Gtk.Grid ({
+            column_spacing: 20,
+            row_spacing: 20 });
+]]></code>
+    <p>Iso fai que se vexa como isto:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_07.png"/>
+  </section>
+
+  <section id="stock">
+    <title>Cargar as imaxes de inventario</title>
+
+    <p>GNOME has a lot of stock images on hand already, that we can use if we don't feel like creating our own or if we want a universally-recognized icon. Here's how we create a stock image, compared to how we create a normal one:</p>
+    <code mime="application/javascript"><![CDATA[
+        // Create an image
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
+
+        // Create a second image using a stock icon
+        this._icon = new Gtk.Image ({ stock: 'gtk-about' });
+]]></code>
+    <p>After that, we attach it to the Grid to the left of the first Label. (We aren't using the second one for this example.)</p>
+    <code mime="application/javascript"><![CDATA[
+        // Attach the images and label to the grid
+        this._grid.attach (this._image, 0, 0, 2, 1);
+        this._grid.attach (this._icon,  0, 1, 1, 1);
+        this._grid.attach (this._label, 1, 1, 1, 1);
+]]></code>
+    <p>Iso fornécenos isto, cando o executamos:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_08.png"/>
+
+    <p>That's what the stock "About" icon looks like. You can see a list of all the stock items starting with gtk-about in <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html#GTK-STOCK-ABOUT:CAPS">GNOME's developer documentation</link>. It was written for C programmers, but you don't need to know C to use it; just look at the part in quotation marks, like "gtk-about", and copy that part to use the icon next to it.</p>
+    <note style="tip"><p>We put single quotes around 'gtk-about' here because, unlike text strings that have double quotes around them, that part will never need to be translated into another language. In fact, if it <em>were</em> translated it'd break the icon, because its name is still "gtk-about" no matter which language you speak.</p></note>
+  </section>
+
+
+  <section id="next">
+    <title>What's next?</title>
+    <p>Before we go on to the next tutorial, let's try something a little different:</p>
+    <code mime="application/javascript"><![CDATA[
+        // Create a button
+        this._button = new Gtk.Button ({
+            label: "Welcome to GNOME, too!"});
+
+        // Attach the images and button to the grid
+        this._grid.attach (this._image,  0, 0, 2, 1);
+        this._grid.attach (this._icon,   0, 1, 1, 1);
+        this._grid.attach (this._button, 1, 1, 1, 1);
+]]></code>
+
+    <p>That's right, we turned the Label into a Button just by changing the name! If you run the application and click on it, though, you'll find that it doesn't do anything. How do we make our Button do something? That's what we'll find out, in <link xref="03_getting_the_signal.js">our next tutorial</link>.</p>
+    <p>If you like, feel free to spend some time experimenting with Grids, Labels, and Images, including stock images.</p>
+    <note style="tip"><p>One trick you can use to make more complex layouts is to nest Grids inside of each other. This lets you group together related widgets, and rearrange them easily. Take a look at the <link xref="radiobutton.js">RadioButton</link> code sample if you'd like to see how this is done.</p></note>
+  </section>
+
+  <section id="complete">
+    <title>Exemplos de código</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const WelcomeToTheGrid = new Lang.Class({
+    Name: 'Welcome to the Grid',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application();
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 10,
+            title: "Welcome to the Grid"});
+
+        // Create the Grid
+        this._grid = new Gtk.Grid ({
+            // column_homogeneous: true,
+            // column_spacing: 20,
+            row_spacing: 20 });
+
+        // Create an image
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
+
+        // Create a second image using a stock icon
+        this._icon = new Gtk.Image ({ stock: 'gtk-about' });
+
+        // Create a label
+        this._label = new Gtk.Label ({
+            label: "Welcome to GNOME, too!",
+            /* margin_top: 20 */ });
+
+        /* Create a second label
+        this._labelTwo = new Gtk.Label ({
+            label: "The cake is a pie." }); */
+
+        /* Create a button
+        this._button = new Gtk.Button ({
+            label: "Welcome to GNOME, too!"}); */
+
+        // Attach the images and button to the grid
+        this._grid.attach (this._image,  0, 0, 2, 1);
+        this._grid.attach (this._icon,   0, 1, 1, 1);
+        this._grid.attach (this._label,  1, 1, 1, 1);
+
+        // this._grid.attach (this._label, 0, 1, 1, 1);
+        // this._grid.attach (this._labelTwo, 1, 1, 1, 1);
+
+        // this._grid.attach (this._button, 1, 1, 1, 1);
+
+        // Add the grid to the window
+        this._window.add (this._grid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+
+});
+
+// Run the application
+let app = new WelcomeToTheGrid ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+</page>

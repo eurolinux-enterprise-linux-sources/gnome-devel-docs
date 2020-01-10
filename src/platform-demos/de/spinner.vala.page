@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinner.vala" xml:lang="de">
+  <info>
+  <title type="text">Spinner (Vala)</title>
+    <link type="guide" xref="beginner.vala#display-widgets"/>
+    <revision version="0.1" date="2012-05-06" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A spinner animation</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2011, 2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Spinner</title>
+  <media type="image" mime="image/png" src="media/spinner.png"/>
+  <p>This Spinner is stopped and started by pressing the spacebar.</p>
+
+<code mime="text/x-csharp" style="numbered">public class MyWindow : Gtk.ApplicationWindow {
+
+	Gtk.Widget spinner;
+
+	internal MyWindow (MyApplication app) {
+
+		Object (application: app, title: "Spinner Example");
+
+		this.set_default_size (200, 200);
+		this.border_width = 30;
+
+		spinner = new Gtk.Spinner ();
+
+		this.add (spinner);
+		(spinner as Gtk.Spinner).active = true;
+		spinner.show ();
+	}
+
+	protected override bool key_press_event (Gdk.EventKey event) {
+
+		//print (Gdk.keyval_name(event.keyval) +"\n");
+		if (Gdk.keyval_name(event.keyval) == "space") {
+
+			if ((spinner as Gtk.Spinner).active) {
+				(spinner as Gtk.Spinner).stop ();
+				//spinner.visible = false;
+			}
+			else {
+				(spinner as Gtk.Spinner).start ();
+				//spinner.visible = true;
+			}
+		}
+		return true;
+	}
+}
+
+public class MyApplication : Gtk.Application {
+
+	protected override void activate () {
+		MyWindow window = new MyWindow (this);
+		window.show ();
+	}
+
+	internal MyApplication () {
+		Object (application_id: "org.example.spinner");
+	}
+}
+
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>
+  In this sample we used the following:
+</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Widget.html">Gtk.Widget</link></p></item>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Spinner.html">Gtk.Spinner</link></p></item>
+  <item><p><link href="http://www.valadoc.org/gdk-3.0/Gdk.keyval_name.html">Gdk.keyval_name</link></p></item>
+</list>
+</page>

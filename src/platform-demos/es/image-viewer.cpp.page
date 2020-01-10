@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.cpp" xml:lang="es">
+
+  <info>
+    <link type="guide" xref="cpp#examples"/>
+
+    <desc>Algo más que una sencilla aplicación «Hola mundo» en GTKmm.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-18" status="review"/>
+    <credit type="author">
+      <name>Proyecto de documentación de GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Visor de imágenes</title>
+
+<synopsis>
+  <p>En este tutorial aprenderá:</p>
+  <list>
+    <item><p>Algunos conceptos básicos de programación en C++/GObject</p></item>
+    <item><p>Cómo escribir una aplicación GTK en C++</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Crear un proyecto en Anjuta</title>
+  <p>Antes de empezar a programar, deberá configurar un proyecto nuevo en Anjuta. Esto creará todos los archivos que necesite para construir y ejecutar el código más adelante. También es útil para mantener todo ordenado.</p>
+  <steps>
+    <item>
+    <p>Inicie Anjuta y pulse <guiseq><gui>Archivo</gui><gui>Nuevo</gui><gui>Proyecto</gui></guiseq> para abrir el asistente de proyectos.</p>
+    </item>
+    <item>
+    <p>Elija <gui>GTKmm (simple)</gui> de la pestaña <gui>C++</gui>, pulse <gui>Adelante</gui> y rellene los detalles en las siguientes páginas. Use <file>visor-imagenes</file> como nombre de proyecto y de carpeta.</p>
+   	</item>
+    <item>
+    <p>Asegúrese de que <gui>Usar GtkBuilder para la interfaz del usuario</gui> está desactivado, ya que, en este tutorial, la IU se creará manualmente. Revise el tutorial del <link xref="guitar-tuner.cpp">afinador de guitarra</link> si quiere aprender a usar el constructor de interfaces.</p>
+    </item>
+    <item>
+    <p>Pulse <gui>Aplicar</gui> y se creará el proyecto. Abra <file>src/main.cc</file> desde las pestañas <gui>Proyecto</gui> o <gui>Archivo</gui>. Debería ver algo de código que comience con las líneas:</p>
+    <code mime="text/x-csrc">
+#include &lt;gtkmm.h&gt;
+#include &lt;iostream&gt;
+
+#include "config.h"&gt;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Construir el código por primera vez</title>
+  <p>Esto es una configuración de código C++ usando GTKmm. Se ofrecen más detalles a continuación; omita esta lista si entiende los conceptos básicos:</p>
+  <list>
+  <item>
+    <p>Las tres líneas <code>#include</code> en la parte superior incluyen las bibliotecas <code>config</code> (definiciones útiles para construcción con autoconf), <code>gtkmm</code> (interfaz de usuario) <code>iostream</code> (C++-STL). Las funciones de estas bibliotecas se usan en el resto del código.</p>
+   </item>
+   <item>
+    <p>La función <code>main</code> crea una ventana (vacía) nueva y establece el título de la ventana.</p>
+   </item>
+   <item>
+    <p>La llamada <code>kit::run()</code> inicia el bucle principal de GTKmm, que ejecuta la interfaz de usuario y empieza a escuchar eventos (como pulsaciones del ratón y del teclado). Como se ha pasado la ventana como argumento a esta función, la aplicación se cerrará automáticamente cuando se cierre la ventana.</p>
+   </item>
+  </list>
+
+  <p>Este código está listo para usarse, por lo que puede compilarlo pulsando <guiseq><gui>Construir</gui><gui>Construir proyecto</gui></guiseq> (o pulsando <keyseq><key>Mayús</key><key>F7</key></keyseq>).</p>
+  <p>Pulse <gui>Ejecutar</gui> en la siguiente ventana que aparece para configurar una construcción de depuración. Esto sólo necesita hacer una vez para la primera construcción.</p>
+</section>
+
+<section id="ui">
+<title>Crear la interfaz de usuario</title>
+<p>Ahora se dará vida a la ventana vacía. GTKmm organiza la interfaz de usuario con varios <code>Gtk::Container</code> que pueden contener otros widgets e incluso otros contenedores. Aquí se usará el contenedor más sencillo disponible, una <code>Gtk::Box</code>:</p>
+<code mime="text/x-csrc">
+int
+main (int argc, char *argv[])
+{
+	Gtk::Main kit(argc, argv);
+
+	Gtk::Window main_win;
+	main_win.set_title ("image-viewer-cpp");
+
+	Gtk::Box* box = Gtk::manage(new Gtk::Box());
+	box-&gt;set_orientation (Gtk::ORIENTATION_VERTICAL);
+	box-&gt;set_spacing(6);
+	main_win.add(*box);
+
+	image = Gtk::manage(new Gtk::Image());
+	box-&gt;pack_start (*image, true, true);
+
+	Gtk::Button* button = Gtk::manage(new Gtk::Button("Open Image…"));
+	button-&gt;signal_clicked().connect (
+		sigc::ptr_fun(&amp;on_open_image));
+	box-&gt;pack_start (*button, false, false);
+
+	main_win.show_all_children();
+	kit.run(main_win);
+
+	return 0;
+}
+</code>
+  <steps>
+    <item>
+    <p>La primera línea crea los widgets que se quieren usar: un botón para abrir una imagen, el widget del visor de imágenes en sí y la caja que se usará como contenedor.</p>
+    </item>
+    <item>
+    <p>Las llamadas a <code>pack_start</code> añaden los dos widgets a la caja y definen su comportamiento. La imagen se expandirá en cualquier espacio disponible, mientras que el botón será tan grande como se necesite. Se dará cuenta de que no se establecen tamaños explícitos de los widgets. Generalmente, en GTKmm no se necesita ya que hace que sea mucho más sencillo tener una distribución que se ve bien con diferentes tamaños de la ventana. A continuación, se añade la caja a la ventana.</p>
+    </item>
+    <item>
+    <p>Se debe definir qué sucede cuando el usuario pulsa el botón. GTKmm usa el concepto de <em>señales</em>. Cuando se pulsa el botón, emite la señal <em>clicked</em>, que se puede conectar a alguna acción. Esto se ha hecho usando el método <code>signal_clicked().connect</code>, que indica a GTKmm que llame a la función <code>on_open_image</code> cuando se pulsa el botón y que pase la imagen como un argumento adicional a la función. El <em>retorno de la llamada</em> se definirá en la siguiente sección.</p>
+    </item>
+    <item>
+    <p>El último paso es mostrar todos los widgets en la ventana usando <code>show_all_children()</code>. Esto es equivalente a usar el método <code>show()</code> en cada uno de los widgets.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="show">
+<title>Mostrar la imagen</title>
+<p>Ahora se definirá el manejador de la señal <em>clicked</em> para el botón mencionado anteriormente. Añada este código antes del método <code>main</code>.</p>
+<code mime="text/x-csrc">
+Gtk::Image* image = 0;
+
+static void
+on_open_image ()
+{
+	Gtk::FileChooserDialog dialog("Open image",
+	                              Gtk::FILE_CHOOSER_ACTION_OPEN);
+	dialog.add_button (Gtk::Stock::OPEN,
+	                   Gtk::RESPONSE_ACCEPT);
+	dialog.add_button (Gtk::Stock::CANCEL,
+	                   Gtk::RESPONSE_CANCEL);
+
+	Glib::RefPtr&lt;Gtk::FileFilter&gt; filter =
+		Gtk::FileFilter::create();
+	filter-&gt;add_pixbuf_formats();
+	filter-&gt;set_name("Images");
+	dialog.add_filter (filter);
+
+	const int response = dialog.run();
+	dialog.hide();
+
+	switch (response)
+	{
+		case Gtk::RESPONSE_ACCEPT:
+			image-&gt;set(dialog.get_filename());
+			break;
+		default:
+			break;
+	}
+}
+</code>
+  <p>Esto es un poco más complicado que todo lo que se ha intentado hasta ahora, así que se puede desglosar:</p>
+  <list>
+      <item>
+      <p>El diálogo para elegir el archivo se crea usando el constructor de <code>Gtk::FileChooserDialog</code>. La función toma el título y el tipo del diálogo. En este caso, es un diálogo de tipo <em>Open</em>.</p>
+    </item>
+    <item>
+    <p>Las siguientes dos líneas añaden un botón <em>Abrir</em> y <em>Cerrar</em> en el diálogo.</p>
+    <p>Note que se está usando nombres de botones del <em>almacén</em> de GTK, en lugar de escribir manualmente «Cancelar» o «Abrir». La ventaja de usar nombres del almacén es que las etiquetas de los botones ya estarán traducidas en el idioma del usuario.</p>
+    <p>El segundo argumento del método <code>add_button()</code> es un valor para identificar el botón pulsado. Aquí también se usan valores predefinidos proporcionados por GTKmm.</p>
+    </item>
+    <item>
+    <p>Las dos líneas siguientes restringen el diálogo <gui>Abrir</gui> para que sólo muestre archivos que se puedan abrir con <code>Gtk::Image</code>. Primero se crea un objeto de filtro; luego se añaden los tipos de archivos soportados por el <code>Gdk::Pixbuf</code> (que incluye la mayoría de los formatos de imagen como PNG y JPEG) al filtro. Por último, se establece que este filtro sea el filtro del diálogo <gui>Abrir</gui>.</p>
+    <p><code>Glib::RefPtr</code> es un puntero inteligente usado aquí que se asegura de que el filtro se destruye cuando ya no se hace ninguna referencia a él.</p>
+    </item>
+    <item>
+    <p><code>dialog.run</code> muestra el diálogo <gui>Abrir</gui>. El diálogo esperará a que el usuario seleccione una imagen; cuando lo haga, <code>dialog.run</code> devolverá el valor <code>Gtk::RESPONSE_ACCEPT</code> (devolvería <code>Gtk::RESPONSE_CANCEL</code> si el usuario pulsara <gui>Cancel</gui>). La sentencia <code>switch</code> comprueba esto.</p>
+    </item>
+    <item>
+    <p>Se oculta el diálogo <gui>Abrir</gui> porque ya no se necesita más. El diálogo se ocultará de todos modos, ya que sólo es una variable local, y se destruye (y por lo tanto se oculta) cuando el ámbito termina.</p>
+    </item>
+    <item><p>Asumiendo que el usuario pulsó <gui>Abrir</gui>, la siguiente línea carga el archivo en la <code>Gtk::Image</code>, por lo que se muestra.</p>
+    </item>
+  </list>
+</section>
+
+<section id="build2">
+  <title>Construir y ejecutar la aplicación</title>
+  <p>Todo el código debería estar listo para ejecutarse. Pulse <guiseq><gui>Construir</gui><gui>Construir proyecto</gui></guiseq> para construir todo otra vez y pulse <guiseq><gui>Ejecutar</gui><gui>Ejecutar</gui></guiseq> para iniciar la aplicación.</p>
+  <p>Si todavía no lo ha hecho, elija la aplicación <file>Debug/src/visor-imagenes</file> en el diálogo que aparece. Finalmente, pulse <gui>Ejecutar</gui> y disfrute.</p>
+</section>
+
+<section id="impl">
+ <title>Implementación de referencia</title>
+ <p>Si tiene problemas con este tutorial, compare su código con este <link href="image-viewer/image-viewer.cc">código de referencia</link>.</p>
+</section>
+
+<section id="next">
+  <title>Siguientes pasos</title>
+  <p>Aquí hay algunas ideas sobre cómo puede extender esta sencilla demostración:</p>
+  <list>
+   <item>
+   <p>Haga que el usuario selecciona una carpeta en vez de un archivo, y proporcione controles para moverse por todas las imágenes de una carpeta.</p>
+   </item>
+   <item>
+   <p>Aplicar filtros aleatorios y efectos a la imagen cuando se carga y permitir al usuario guardar la imagen modificada.</p>
+   <p><link href="http://www.gegl.org/api.html">GEGL</link> proporciona la capacidad de manipular imágenes de manera potente.</p>
+   </item>
+   <item>
+   <p>Permitir al usuario cargar imágenes desde recursos de red compartidos, escáneres y otras fuentes más complicadas.</p>
+   <p>Puede usar <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> para gestionar transferencias de archivos de red y similares, y <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> para gestionar el escaneado.</p>
+   </item>
+  </list>
+</section>
+
+
+</page>

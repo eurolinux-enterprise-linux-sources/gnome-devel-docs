@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="radiobutton.py" xml:lang="cs">
+  <info>
+    <title type="text">RadioButton (Python)</title>
+    <link type="guide" xref="beginner.py#buttons"/>
+    <link type="seealso" xref="grid.py"/>
+    <link type="next" xref="buttonbox.py"/>
+    <revision version="0.1" date="2012-05-09" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Navzájem se vylučující přepínače</desc>
+  </info>
+
+  <title>RadioButton</title>
+  <media type="image" mime="image/png" src="media/radiobutton.png"/>
+  <p>Tři skupinové přepínače. V terminálu uvidíte, když dojde k jejich přepnutí.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Kód použitý k vygenerování tohoto příkladu</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="RadioButton Example", application=app)
+        self.set_default_size(250, 100)
+        self.set_border_width(20)
+
+        # Nový skupinový přepínač s popiskem
+        button1 = Gtk.RadioButton(label="Button 1")
+        # Napojí signál "toggled" vyslaný skupinovým přepínačem
+        # na funkci zpětného volání toggled_cb
+        button1.connect("toggled", self.toggled_cb)
+
+        # Další skupinový přepínač, ve stejné skupině jako button1
+        button2 = Gtk.RadioButton.new_from_widget(button1)
+        # S popiskem "Button 2"
+        button2.set_label("Button 2")
+        # Napojí signál "toggled" vyslaný skupinovým přepínačem
+        # na funkci zpětného volání toggled_cb
+        button2.connect("toggled", self.toggled_cb)
+        # Nastaví button2 jako neaktivní ve výchozím stavu
+        button2.set_active(False)
+
+        # Další skupinový přepínač, ve stejné skupině jako button1
+        # S popiskem "Button 3"
+        button3 = Gtk.RadioButton.new_with_label_from_widget(
+            button1, "Button 3")
+        # Napojí signál "toggled" vyslaný skupinovým přepínačem
+        # na funkci zpětného volání toggled_cb
+        button3.connect("toggled", self.toggled_cb)
+        # Nastaví button3 jako neaktivní ve výchozím stavu
+        button3.set_active(False)
+
+        # Mřížka pro umístění tlačítek
+        grid = Gtk.Grid.new()
+        grid.attach(button1, 0, 0, 1, 1)
+        grid.attach(button2, 0, 1, 1, 1)
+        grid.attach(button3, 0, 2, 1, 1)
+        # Přidá mřížku do okna
+        self.add(grid)
+
+    # Funkce zpětného volání
+    def toggled_cb(self, button):
+        # Řetězec popisující stav skupinového přepínače
+        state = "unknown"
+        # Kdykoliv je skupinový přepínač zapnut, je stav "on"
+        if button.get_active():
+            state = "on"
+        # Jinak je stav "off"
+        else:
+            state = "off"
+        # Kdykoliv je funkce zavolána (skupinový přepínač je zapnut nebo vypnut)
+        # vypíše se do terminálu, který skupinový přepínač byl zapnut/vypnut
+        print(button.get_label() + " was turned " + state)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Užitečné metody pro widget RadioButton</title>
+    <p>Na řádku 16 je signál <code>"toggled"</code> napojen na funkci zpětného volání <code>toggled_cb()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce zpětného volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+
+    <p>Jak jste mohli vidět v lekci <link xref="properties.py"/>, místo <code>button1 = Gtk.RadioButton(label="Button 1")</code> bychom mohli vytvořit tlačítko a pak mu nastavit popisek:</p>
+    <code>
+button1 = Gtk.RadioButton()
+button1.set_label("Button 1").</code>
+    <p>Ještě jeden způsob, jak vytvořit nový skupinový přepínač s popiskem je <code>button1 = Gtk.RadioButton.new_with_label(None, "Button 1")</code> (první argument je skupina skupinových přepínačů, kterou můžeme získat pomocí <code>get_group()</code>, druhý argument je text popisku).</p>
+  </section>
+
+  <section id="references">
+    <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkGrid.html">GtkGrid</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkRadioButton.html">GtkRadioButton</link></p></item>
+    </list>
+  </section>
+</page>

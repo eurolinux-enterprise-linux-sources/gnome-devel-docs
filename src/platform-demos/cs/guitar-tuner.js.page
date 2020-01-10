@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="guitar-tuner.js" xml:lang="cs">
+  <info>
+  <title type="text">Kytavorá ladička (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Používá GTK+ a GStreamer k sestavení jednoduché aplikace pro GNOME s funkcionalitou kytarové ladičky.</desc>
+  </info>
+
+  <title>Kytarová ladička</title>
+
+    <synopsis>
+      <p>V této lekci sestavíme malou aplikaci, kytarovou ladičku, pomocí jazyka JavaScript a knihoven GTK+ a GStreamer. Abyste tak mohli učinit a spustit si kód z příkladu, budete potřebovat nainstalovaný editor pro psaní kódu, terminál a GNOME 3.0 nebo novější.</p>
+   <list>
+      <item><p><link xref="#gstreamer">Roury systému GStreamer</link></p></item>
+      <item><p><link xref="#script">Skript pro spuštění aplikace</link></p></item>
+      <item><p><link xref="#imports">Importované knihovny</link></p></item>
+      <item><p><link xref="#mainwindow">Vytvoření hlavního okna pro aplikaci</link></p></item>
+      <item><p><link xref="#buttons">Tlačítka pro ladění</link></p></item>
+      <item><p><link xref="#playSound">Vyluzování zvuků systémem GStreamer</link></p></item>
+      <item><p><link xref="#connecting">Napojení tlačítek na playSound</link></p></item>
+      <item><p><link xref="#guitarjs">Celý program</link></p></item>
+      <item><p><link xref="#terminal">Spuštění aplikace z terminálu</link></p></item>
+    </list>
+  </synopsis>
+  <p>Po přečtení této lekce byste měli na obrazovce dostat toto:</p>
+  <media type="image" mime="image/png" src="media/guitar-tuner.png"/>
+  <section id="gstreamer">
+    <title>Roury systému GStreamer</title>
+    <p>GStreamer je základní multimediální rámec GNOME. Můžete jej použít k přehrávání, nahrávání a zpracování videa, zvuku, vysílání z webové kamery a podobně. Zde jej použijeme ke generování tónu s jednou frekvencí.</p>
+    <p>Koncepčně GStreamer funguje následovně: Vytvoříte <em>rouru</em> (pipeline) obsahující různé prvky zpracující směrem od <em>zdroje</em> (source) do <em>cíle</em> (sink), tj. výstupu. Zdrojem může být například soubor s obrázkem, videosoubor nebo hudební soubor, výstupem pak widget nebo zvuková karta.</p>
+    <p>Na cestě mezi zdrojem a cílem můžete použít různé filtry a převodníky k vytvoření efektů, převodníky formátů atd. Každý prvek roury má vlastnosti, které můžete použít ke změně jeho chování.</p>
+    <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
+      <p>Příklad roury systému GStreamer.</p>
+    </media>
+  </section>
+  <section id="script">
+    <title>Skript pro spuštění aplikace</title>
+    <code mime="application/javascript" style="numbered">
+  #!/usr/bin/gjs</code>
+    <p>Tento řádek říká, jak spustit skript. Musí být prvním řádek v souboru s kódem a soubor musí být spustitelný. Abyste získali práva na spuštění, jděte do terminálu a ve správné složce spusťte: chmod +x název_skriptu. Nebo můžete použít grafického správce souborů. Přejděte do správné složky s vašim kódem, klikněte na soubor s kódem pravým tlačítkem, zvolte vlastnosti, klikněte na kartu oprávnění a zaškrtněte políčko, které povoluje spuštění souboru jako programu.</p>
+  </section>
+  <section id="imports">
+    <title>Importované knihovny</title>
+    <code mime="application/javascript" style="numbered">
+var Gtk = imports.gi.Gtk;
+var Gst = imports.gi.Gst;
+
+const Mainloop = imports.mainloop;</code>
+    <p>Abychom dostali fungující program, potřebujeme naimportovat pár GObject Introspection, tj. knihoven, pro naše použití. Pro fungující uživatelské rozhraní potřebujeme Gtk a pro GStreamer potřebujeme Gst. Import se provádí hned na začátku, takže budou fungovat všude. Na začátku také naimportujeme konstrukt Mainloop, který se bude starat o časové omezení při vydávání ladicích tónů.</p>
+    </section>
+  <section id="mainwindow">
+    <title>Vytvoření hlavního okna pro aplikaci</title>
+    <code mime="application/javascript" style="numbered">
+Gtk.init(null, 0);
+Gst.init(null, 0);
+
+var guitarwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL, border_width: 100});
+guitarwindow.title = "Guitar Tuner";
+guitarwindow.connect("destroy", function(){Gtk.main_quit()});
+
+guitarwindow.show();
+Gtk.main();</code>
+    <p>Jen naimportovat Gtk a Gst nestačí, je třeba je inicializovat, aby fungovaly. Když jsou Gtk a Gst nastavené a běží, potřebujeme vytvořit okno pro aplikaci. Později do tohoto okna vložíme všechna tlačítka pro vydávání tónů. Aby se okno zobrazilo, musíme mu říci, ať se zobrazí, a také musíme spustit kód s <code>Gtk.main()</code>.</p>
+  </section>
+  <section id="buttons">
+   <title>Tlačítka pro ladění</title>
+   <code mime="application/javascript" style="numbered">
+var guitar_box = new Gtk.ButtonBox ({orientation: Gtk.Orientation.VERTICAL, spacing: 10});
+
+var E = new Gtk.Button({label: "E"});
+var A = new Gtk.Button({label: "A"});
+var D = new Gtk.Button({label: "D"});
+var G = new Gtk.Button({label: "G"});
+var B = new Gtk.Button({label: "B"});
+var e = new Gtk.Button({label: "e"});
+
+guitar_box.add(E);
+guitar_box.add(A);
+guitar_box.add(D);
+guitar_box.add(G);
+guitar_box.add(B);
+guitar_box.add(e);
+
+guitarwindow.add(guitar_box);
+
+guitar_box.show_all();</code>
+   <p>Protože <code>Gtk.Window</code> může obsahovat jen jediný widget, potřebujeme vytvořit nějaký další podkladový, který bude schopný do sebe přidat všechna tlačítka. V tomto příkladu použijeme <code>Buttonbox</code> (box na tlačítka). Po jeho vytvoření vytvoříme tlačítka s patřičnými popisky. Když máme tlačítka, musíme je přidat do kontejneru Buttonbox a ten musíme přidat do Gtk.Window a vše v boxu na tlačítka se musí zobrazit.</p>
+   <p>Po této fázi byste měli mít okno, které se ukáže na obrazovce a zobrazí šest tlačítek. Je v pořádku, že tlačítka nic nedělají, to budeme řešit později. Než vůbec můžeme někam napojit signály tlačítek, musíme ono „někam“ nejdříve naprogramovat.</p>
+  </section>
+  <section id="playSound">
+   <title>Vyluzování zvuků systémem GStreamer</title>
+   <code mime="application/javascript" style="numbered">
+var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5}
+
+function playSound(frequency){
+  var pipeline = new Gst.Pipeline({name: "note"});
+  var source = Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+
+  source.set_property('freq', frequency);
+  pipeline.add(source);
+  pipeline.add(sink);
+  source.link(sink);
+  pipeline.set_state(Gst.State.PLAYING);
+
+  Mainloop.timeout_add(500, function () {
+    pipeline.set_state(Gst.State.NULL);
+	  return false;
+  });
+}</code>
+   <p>Nejprve se musíme rozhodnout, jaké tóny chceme při zmáčknutí tlačítka vyloudit. O to se postará seznam frekvencí. Tím se dostáváme k tomu, jak vydat zvuk ve funkci <code>playSound</code>. Té jako vstup předáváme frekvenci (ty jsme právě nadefinovali do proměnné). Jako první musíme sestrojit rouru, zdroj a cíl. Zdroji nastavíme frekvenci. K rouře přidáme zdroj i cíl a pak řekneme, ať to hraje. Jako poslední věc použijeme objekt <code>Mainloop</code> k zastavení roury po 500 ms.</p>
+   <p>Nyní máme způsob, jak přehrát tón při kliknutí na tlačítko. Takže jako další krok propojíme zmáčknutí tlačítka s přehráním správného tónu.</p>
+  </section>
+  <section id="connecting">
+   <title>Napojení tlačítek na playSound</title>
+   <code mime="application/javascript" style="numbered">
+E.connect("clicked", function() {
+  playSound(frequencies.E);
+});
+A.connect("clicked", function(){
+  playSound(frequencies.A);
+});
+D.connect("clicked", function(){
+  playSound(frequencies.D);
+});
+G.connect("clicked", function(){
+  playSound(frequencies.G);
+});
+B.connect("clicked", function(){
+  playSound(frequencies.B);
+});
+e.connect("clicked", function(){
+  playSound(frequencies.e);
+});</code>
+   <p>Způsob propojení kliknutí na tlačítko a funkce <code>playSound</code> se správným tónem se provede pomocí metody <code>connect</code> widgetu tlačítka. Zvolíme napojované tlačítko a napíšeme <code>E.connect("clicked", function(){playSound(frequencies.E);});</code>. Metoda <code>connect</code> říká, že když se zmáčkne E, má se něco stát. Řetězec <code>"clicked"</code> říká, o jaký typ signálu se u tlačítka jedná a funkce <code>function(){};</code> volá <code>playSound</code> se správnou notou, která k tlačítku patří.</p>
+  </section>
+  <section id="guitarjs">
+    <title>Celý program</title>
+    <p>Takže všechny části spojené dohromady vypadají takto. Když spustíte tento kód, měli byste být schopni naladit si svoji kytaru (pokud máte správně zkalibrované reproduktory).</p>
+      <code mime="application/javascript" style="numbered">
+#!/usr/bin/gjs
+var Gtk = imports.gi.Gtk;
+var Gst = imports.gi.Gst;
+
+const Mainloop = imports.mainloop;
+
+Gtk.init(null, 0);
+Gst.init(null, 0);
+
+var guitarwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL, border_width: 100});
+guitarwindow.title = "Guitar Tuner";
+guitarwindow.connect("destroy", function(){Gtk.main_quit()});
+
+var guitar_box = new Gtk.ButtonBox ({orientation: Gtk.Orientation.VERTICAL, spacing: 10});
+
+var E = new Gtk.Button({label: "E"});
+var A = new Gtk.Button({label: "A"});
+var D = new Gtk.Button({label: "D"});
+var G = new Gtk.Button({label: "G"});
+var B = new Gtk.Button({label: "B"});
+var e = new Gtk.Button({label: "e"});
+
+var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5}
+
+
+function playSound(frequency){
+  var pipeline = new Gst.Pipeline({name: "note"});
+
+  var source = Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+
+  source.set_property('freq', frequency);
+  pipeline.add(source);
+  pipeline.add(sink);
+  source.link(sink);
+  pipeline.set_state(Gst.State.PLAYING);
+
+  Mainloop.timeout_add(500, function () {
+    pipeline.set_state(Gst.State.NULL);
+	  return false;
+});
+}
+
+E.connect("clicked", function() {
+  playSound(frequencies.E);
+});
+A.connect("clicked", function(){
+  playSound(frequencies.A);
+});
+D.connect("clicked", function(){
+  playSound(frequencies.D);
+});
+G.connect("clicked", function(){
+  playSound(frequencies.G);
+});
+B.connect("clicked", function(){
+  playSound(frequencies.B);
+});
+e.connect("clicked", function(){
+  playSound(frequencies.e);
+});
+
+guitar_box.add(E);
+guitar_box.add(A);
+guitar_box.add(D);
+guitar_box.add(G);
+guitar_box.add(B);
+guitar_box.add(e);
+
+guitarwindow.add(guitar_box);
+
+guitar_box.show_all();
+guitarwindow.show();
+Gtk.main();</code>
+  </section>
+
+<section id="terminal">
+  <title>Spuštění aplikace z terminálu</title>
+  <p>Pro spuštění aplikace otevřete terminál, přejděte do složky, kde je vaše aplikace uložená a pak ji spusťte</p> <screen> <output style="prompt">$ </output><input> GJS_PATH=`pwd` gjs guitarTuner.js</input> </screen>
+    </section>
+
+<section id="impl">
+ <title>Ukázková implementace</title>
+ <p>Pokud v této lekci narazíte na nějaké problémy, porovnejte si svůj kód s tímto <link href="guitar-tuner/guitar-tuner.js">ukázkovým kódem</link>.</p>
+</section>
+
+
+</page>

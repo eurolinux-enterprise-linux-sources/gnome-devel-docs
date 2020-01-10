@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="image.c" xml:lang="fr">
+  <info>
+    <title type="text">Image (C)</title>
+    <link type="guide" xref="c#display-widgets"/>
+    <revision version="0.1" date="2012-05-23" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un élément graphique qui affiche une image</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Image</title>
+   <media type="image" mime="image/png" src="media/image.png"/>
+   <p>Cette application Gtk affiche un fichier image issu du dossier en cours.</p>
+  <note><p>Si le fichier image n'est pas chargé correctement, l'image contient une icône en forme d'« image brisée ». Le <file>nomdufichier.png</file> doit être dans le dossier actuel pour que ce code fonctionne. Faites bon usage de votre photo favorite !</p></note>
+
+<code mime="text/x-csrc" style="numbered">#include &lt;gtk/gtk.h&gt;
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *image;
+
+  /*Create a window with a title and a default size*/
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "Welcome to GNOME");
+  gtk_window_set_default_size (GTK_WINDOW (window), 300, 300);
+
+  image = gtk_image_new_from_file ("gnome-image.png");
+
+  gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (image));
+
+  gtk_widget_show_all (GTK_WIDGET (window));
+}
+
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example",G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+  return status;
+}
+</code>
+<p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkWindow.html">GtkWindow</link></p></item>
+ <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkImage.html">GtkImage</link></p></item>
+</list>
+</page>

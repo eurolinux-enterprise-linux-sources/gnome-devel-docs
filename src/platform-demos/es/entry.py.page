@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.py" xml:lang="es">
+  <info>
+    <title type="text">Entry (Python)</title>
+    <link type="guide" xref="beginner.py#entry"/>
+    <link type="seealso" xref="strings.py"/>
+    <link type="next" xref="scale.py"/>
+    <revision version="0.2" date="2012-06-23" status="draft"/>
+
+    <credit type="author copyright editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no"/>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Sebastian Pölsterl</name>
+      <email its:translate="no">sebp@k-d-w.org</email>
+      <years>2011</years>
+    </credit>
+    <desc>Un campo de entrada de texto de una sola línea</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Entry</title>
+  <media type="image" mime="image/png" src="media/entry.png"/>
+  <p>Esta aplicación le saluda en la terminal con el nombre que le indique.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Código usado para generar este ejemplo</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="What is your name?", application=app)
+        self.set_default_size(300, 100)
+        self.set_border_width(10)
+
+        # a single line entry
+        name_box = Gtk.Entry()
+        # emits a signal when the Enter key is pressed, connected to the
+        # callback function cb_activate
+        name_box.connect("activate", self.cb_activate)
+
+        # add the Gtk.Entry to the window
+        self.add(name_box)
+
+    # the content of the entry is used to write in the terminal
+    def cb_activate(self, entry):
+        # retrieve the content of the widget
+        name = entry.get_text()
+        # print it in a nice form in the terminal
+        print("Hello " + name + "!")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Métodos útiles para un widget «Entry»</title>
+    <p>En la línea 14 la señal <code>«activate»</code> se conecta a la función de retorno de llamada <code>cb_activate()</code> usando <code><var>widget</var>.connect(<var>señal</var>, <var>función de retorno de llamada</var>)</code>. Consulte la <link xref="signals-callbacks.py"/> para obtener una explicación más detallada. Algunas de las señales que un widget «Gtk.Entry» puede emitir son: <code>«activate»</code> (cuando el usuario pulsa la tecla «Intro»); <code>«backspace»</code> (cuando el usuario pulsa las teclas «Retroceso» o «Mayús-Retroceso»); <code>«copy-clipboard»</code> («Ctrl-C» y «Ctrl-Insert»); <code>«paste-clipboard»</code> («Ctrl-V» o «Mayús-Insert»); <code>«delete-from-cursor»</code> («Suprimir», para borrar un carácter; «Ctrl-Suprimir», para borrar una palabra); <code>«icon-press»</code> (cuando el usuario pulsa un icono activable); <code>«icon-release»</code> (cuando el botón del ratón se suelta sobre un icono activable); <code>«insert-at-cursor»</code> (cuando el usuario inicia la inserción de una cadena fija en el cursor); <code>«move-cursor»</code> (cuando el usuario inicia un movimiento del cursor); <code>«populate-popup»</code> (antes de mostrar el menú contextual de una entrada; puede usarse para añadirle elementos).</p>
+    <list>
+      <item><p><code>get_buffer()</code> y <code>set_buffer(búfer)</code> donde <code>búfer</code> es un objeto «Gtk.EntryBuffer», pueden usarse para obtener y establecer el búfer de la entrada.</p></item>
+      <item><p><code>get_text()</code> y <code>set_text("texto")</code> pueden usarse para obtener y establecer el contenido de la entrada.</p></item>
+      <item><p><code>get_text_length()</code> obtiene la longitud del texto.</p></item>
+      <item><p><code>get_text_area()</code> obtiene el área en la que se dibuja el texto de la entrada.</p></item>
+      <item><p>Si se establece <code>set_visibility(False)</code>, los caracteres en la entrada se muestran como caracteres invisibles. Este es el mejor disponible en la tipografía actual, pero puede cambiarse con <code>set_invisible_char(ch)</code>, donde <code>ch</code> es un carácter Unicode. El último método se revierte con <code>unset_invisbile_char()</code>.</p></item>
+      <item><p><code>set_max_length(int)</code>, donde <code>int</code> es un entero, trunca todas las entradas más largas que <code>int</code> para tener la longitud máxima deseada.</p></item>
+      <item><p>De manera predeterminada, si presiona la tecla «Intro», el «Gtk.Entry» emite la señal <code>«activate»</code>. Si quisiera activar el widget predeterminado de la ventana (establecido usando <code>set_default(widget)</code> en la ventana), entonces use <code>set_activates_default(True)</code>.</p></item>
+      <item><p>Para poner un marco alrededor de la entrada: <code>set_has_frame(True)</code>.</p></item>
+      <item><p><code>set_placeholder_text("texto")</code> establece el texto que mostrar en la entrada cuando esté vacía y sin foco.</p></item>
+      <item><p><code>set_overwrite_mode(True)</code> y <code>set_overwrite_mode(False)</code> activa o desactiva el modo de sobreescritura.</p></item>
+      <item><p>Si tiene <code>set_editable(False)</code> el usuario no puede editar el texto en el widget.</p></item>
+      <item><p><code>set_completion(completado)</code>, donde <code>completado</code> es un <link href="http://developer.gnome.org/gtk3/unstable/GtkEntryCompletion.html"><code>Gtk.EntryCompletion</code></link>, configura el completado; o lo desactiva si <code>completado</code> es <code>None</code>.</p></item>
+      <item><p>Un widget de entrada puede mostrar progreso o información de actividad detrás del texto. Se usa <code>set_progress_fraction(fracción)</code>, donde <code>fracción</code> es un <code>float</code> entre <code>0.0</code> y <code>1.0</code> inclusive, para llenar la fracción dada de la barra. Se usa <code>set_progress_pulse_step()</code> para establecer la fracción de la anchura total de la entrada para mover el bloque que rebota por cada llamada a <code>progress_pulse()</code>. El último método indica que se realizó algún progreso, y hace que el indicador de progreso de la entrada entre al «modo de actividad», en el que un bloque rebota hacia adelante y atrás. Cada llamada a <code>progress_pulse()</code> hace que el bloque se mueva un poco (la cantidad de movimiento por pulso la determina, como se dijo anteriormente, <code>set_progress_pulse_step()</code>).</p></item>
+      <item><p>Una entrada también puede mostrar iconos. Estos pueden activarse cuando se pulsan, configurarse para arrastrarse, y tener consejos. Para añadir un icono, use <code>set_icon_from_stock(posición_icono, id_almacén)</code>, <code>set_icon_from_pixbuf(posición_icono, pixbuf)</code>, o <code>set_icon_from_icon_name(posición_icono, nombre_icono)</code>, donde <code>posición_icono</code> puede ser <code>Gtk.EntryIconPosition.PRIMARY</code> (para poner el icono al principio de la entrada) o <code>Gtk.EntryIconPosition.SECONDARY</code> (para poner el icono al final de la entrada). Para ponerle un consejo a un icono, use <code>set_icon_tooltip_text("texto del consejo")</code> o <code>set_icon_tooltip_markup("texto del consejo en el lenguaje de marcado Pango")</code>.</p></item>
+    </list>
+  </section>
+
+  <section id="references">
+    <title>Referencias de la API</title>
+    <p>En este ejemplo se usa lo siguiente:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkEntry.html">GtkEntry</link></p></item>
+    </list>
+  </section>
+</page>

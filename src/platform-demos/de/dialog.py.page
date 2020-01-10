@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="dialog.py" xml:lang="de">
+  <info>
+    <title type="text">Dialog (Python)</title>
+    <link type="guide" xref="beginner.py#windows"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="aboutdialog.py"/>
+    <revision version="0.1" date="2012-06-11" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A popup window</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2011, 2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Dialog</title>
+  <media type="image" mime="image/png" src="media/dialog.png"/>
+  <p>A dialog with the response signal connected to a callback function.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Code used to generate this example</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # construct a window (the parent window)
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GNOME Button", application=app)
+        self.set_default_size(250, 50)
+
+        # a button on the parent window
+        button = Gtk.Button("Click me")
+        # connect the signal "clicked" of the button with the function
+        # on_button_click()
+        button.connect("clicked", self.on_button_click)
+        # add the button to the window
+        self.add(button)
+
+    # callback function for the signal "clicked" of the button in the parent
+    # window
+    def on_button_click(self, widget):
+        # create a Gtk.Dialog
+        dialog = Gtk.Dialog()
+        dialog.set_title("A Gtk+ Dialog")
+        # The window defined in the constructor (self) is the parent of the dialog.
+        # Furthermore, the dialog is on top of the parent window
+        dialog.set_transient_for(self)
+        # set modal true: no interaction with other windows of the application
+        dialog.set_modal(True)
+        # add a button to the dialog window
+        dialog.add_button(button_text="OK", response_id=Gtk.ResponseType.OK)
+        # connect the "response" signal (the button has been clicked) to the
+        # function on_response()
+        dialog.connect("response", self.on_response)
+
+        # get the content area of the dialog, add a label to it
+        content_area = dialog.get_content_area()
+        label = Gtk.Label("This demonstrates a dialog with a label")
+        content_area.add(label)
+        # show the dialog
+        dialog.show_all()
+
+    def on_response(self, widget, response_id):
+        print("response_id is", response_id)
+        # destroy the widget (the dialog) when the function on_response() is called
+        # (that is, when the button of the dialog has been clicked)
+        widget.destroy()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+  <title>Useful methods for a Dialog widget</title>
+    <p>In line 16 the signal <code>"clicked"</code> is connected to the callback function <code>on_button_click()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
+  <list>
+    <item><p>Instead of <code>set_modal(True)</code> we could have <code>set_modal(False)</code> followed by <code>set_destroy_with_parent(True)</code> that would destroy the dialog window if the main window is closed.</p></item>
+    <item><p><code>add_button(button_text="The Answer", response_id=42)</code>, where <code>42</code> is any integer, is an alternative to <code>add_button(button_text="text", response_id=Gtk.ResponseType.RESPONSE)</code>, where <code>RESPONSE</code> could be one of <code>OK, CANCEL, CLOSE, YES, NO, APPLY, HELP</code>, which in turn correspond to the integers <code>-5, -6,..., -11</code>.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>API-Referenzen</title>
+  <p>
+    In this sample we used the following:
+  </p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkDialog.html">GtkDialog</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+  </list>
+  </section>
+</page>

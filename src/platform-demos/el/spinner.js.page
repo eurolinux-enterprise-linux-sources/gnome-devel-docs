@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinner.js" xml:lang="el">
+  <info>
+  <title type="text">Μετρητής (Spinner ) (JavaScript)</title>
+    <link type="guide" xref="beginner.js#display-widgets"/>
+    <revision version="0.1" date="2012-06-03" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Κίνηση μετρητή</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Μετρητής</title>
+  <media type="image" mime="image/png" src="media/spinner.png"/>
+  <p>Αυτός ο μετρητής σταματά και ξεκινά πατώντας το πλήκτρο διαστήματος.</p>
+
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Gdk = imports.gi.Gdk;
+const Lang = imports.lang;
+
+const SpinnerExample = new Lang.Class ({
+    Name: 'Spinner Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jsspinner',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+        // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' signal παρουσιάζει παράθυρα όταν είναι ενεργή
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+
+
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function () {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Spinner Example",
+            default_height: 200,
+            default_width: 200,
+            border_width: 30 });
+
+        // Δημιουργία ενός μετρητή που ξεκινά αυτόματα την αυξομείωση
+        this._spinner = new Gtk.Spinner ({active: true});
+        this._window.add (this._spinner);
+
+        // Σύνδεση ενός συμβάντος πατήματος πλήκτρου με τη συνάρτηση που την κάνει να ξεκινά ή να σταματά την μέτρηση
+        this._window.connect("key-press-event", Lang.bind(this, this._onKeyPress));
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+
+
+    _onKeyPress: function(widget, event) {
+
+        // Λήψη της τιμής του πλήκτρου που πατήθηκε
+        let keyval = event.get_keyval()[1];
+
+        // Αν ήταν το πλήκτρο διαστήματος, εναλλαγή στον μετρητή να ξεκινήσει ή να σταματήσει
+        if (keyval == Gdk.KEY_space) {
+            if (this._spinner.active == true)
+                this._spinner.stop();
+            else
+                this._spinner.start();
+        }
+    }
+
+
+});
+
+// Εκτέλεση της εφαρμογής
+let app = new SpinnerExample ();
+app.application.run (ARGV);
+</code>
+<p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+<list>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gdk.html">Gdk - Key Values</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+    <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Spinner.html">Gtk.Spinner</link></p></item>
+</list>
+</page>

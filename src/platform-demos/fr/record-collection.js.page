@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="record-collection.js" xml:lang="fr">
+
+  <info>
+  <title type="text">Record collection (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+
+    <desc>Création d'une petite base de données pour trier votre discothèque</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-02-22" status="review"/>
+    <credit type="author">
+      <name>Projet de Documentation GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasettii@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Record collection</title>
+
+<synopsis>
+  <p>Dans ce tutoriel, vous allez apprendre :</p>
+  <list>
+    <item><p>comment vous connecter à une base de données en utilisant « libgda »</p></item>
+    <item><p>comment insérer et parcourir des enregistrements dans une table de base de données</p></item>
+  </list>
+</synopsis>
+
+<section id="intro">
+  <title>Introduction</title>
+  <p>Cet exemple utilise le langage Javascript. Nous allons vous montrer comment vous connecter à une base de données et l'utiliser à partir d'un programme GTK en utilisant la bibliothèque GDA (GNOME Data Access). Vous devez bien sûr avoir déjà installé cette dernière.</p>
+  <p>La bibliothèque GDA (GNOME Data Access) vous permet d'accéder de manière universelle à différentes sortes et types de sources de données, depuis les plus traditionnels systèmes de bases de données relationnelles, jusqu'à des sources aussi diverses qu'un serveur de messagerie, un répertoire LDAP, etc. Pour de plus amples informations et pour une documentation et l'API complète, consultez le <link href="http://library.gnome.org/devel/libgda/stable/">Site Web de GDA</link>.</p>
+  <p>Bien que la plus grosse partie du programme se réfère à l'interface utilisateur (GUI), nous allons orienter notre tutoriel sur les fonctions bases de données (avec des explications sur certaines autres fonctions que nous jugeons pertinentes). Pour de plus amples informations sur les programmes GNOME en Javascript, consultez le tutoriel <link xref="image-viewer.js">Programme visionneur d'images</link>.</p>
+</section>
+
+<section id="anjuta">
+  <title>Création d'un projet dans Anjuta</title>
+  <p>Avant de commencer à programmer, vous devez ouvrir un nouveau projet dans Anjuta. Ceci crée tous les fichiers qui vous sont nécessaires pour construire et exécuter votre programme plus tard. C'est aussi utile pour tout regrouper en un seul endroit.</p>
+  <steps>
+    <item>
+    <p>Lancez Anjuta et cliquez sur <guiseq><gui>Fichier</gui><gui>Nouveau</gui><gui>Projet</gui></guiseq> pour ouvrir l'assistant de création de projet.</p>
+    </item>
+    <item>
+    <p>Cliquez sur l'onglet <gui>JS</gui>, choisissez <gui>JavaScript générique</gui>, cliquez sur <gui>Continuer</gui> et renseignez les champs requis avec vos informations. Mettez <file>discotheque</file> (sans accent) comme nom du projet et répertoire.</p>
+   	</item>
+    <item>
+    <p>Cliquez sur <gui>Appliquer</gui> et votre projet est créé. Ouvrez <file>src/main.js</file> depuis l'onglet <gui>Projet</gui> ou l'onglet <gui>Fichiers</gui>. Il contient un exemple de programme très basique.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="structure">
+  <title>Structure du programme</title>
+  <media type="image" mime="image/png" src="media/record-collection.png"/>
+  <p>Cet exemple est une application GTK simple (avec une seule fenêtre) pouvant insérer des enregistrements dans une table de base de données et également consulter tous les enregistrements de cette table. Cette table possède deux champs : <code>id</code>, un entier et <code>name</code>, une variable de type caractère. La première section de l'application (en haut) vous permet d'insérer un enregistrement dans la table. La dernière (en bas) vous permet d'afficher tous les enregistrements de cette table. Son contenu est mis à jour à chaque fois qu'un nouvel enregistrement est inséré et au démarrage de l'application.</p>
+</section>
+
+<section id="start">
+  <title>Début du plaisir</title>
+  <p>Commençons par examiner le squelette du programme :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Gda = imports.gi.Gda;
+const Lang = imports.lang;
+
+function Demo () {
+  this._init ();
+}
+
+Demo.prototype = {
+
+  _init: function () {
+    this.setupWindow ();
+    this.setupDatabase ();
+    this.selectData ();
+  }
+}
+
+Gtk.init (null, null);
+
+var demo = new Demo ();
+
+Gtk.main ();]]></code>
+  <list>
+    <item><p>Lignes 1‒4 : importations initiales. Faites surtout attention à la ligne 3, qui commande à Javascript l'importation de la bibliothèque GDA, la cible de ce tutoriel.</p></item>
+    <item><p>Lignes 6‒17 : définition de la classe <code>Demo</code>. Faites surtout attention aux lignes 13‒15, où nous appelons 3 méthodes qui font tout le travail. Elles sont détaillées plus bas.</p></item>
+    <item><p>Lignes 19‒23 : lancement de l'application.</p></item>
+  </list>
+</section>
+
+<section id="design">
+  <title>Conception de l'application</title>
+  <p>Examinons la méthode <code>setupWindow</code>. C'est elle qui crée l'interface utilisateur. Comme l'interface utilisateur n'est pas notre sujet, nous en expliquons seulement les parties pertinentes.</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+  setupWindow: function () {
+    this.window = new Gtk.Window ({title: "Data Access Demo", height_request: 350});
+    this.window.connect ("delete-event", function () {
+      Gtk.main_quit();
+      return true;
+      });
+
+    // main box
+    var main_box = new Gtk.Box ({orientation: Gtk.Orientation.VERTICAL, spacing: 5});
+    this.window.add (main_box);
+
+    // first label
+    var info1 = new Gtk.Label ({label: "<b>Insert a record</b>", xalign: 0, use_markup: true});
+    main_box.pack_start (info1, false, false, 5);
+
+    // "insert a record" horizontal box
+    var insert_box = new Gtk.Box ({orientation: Gtk.Orientation.HORIZONTAL, spacing: 5});
+    main_box.pack_start (insert_box, false, false, 5);
+
+    // ID field
+    insert_box.pack_start (new Gtk.Label ({label: "ID:"}), false, false, 5);
+    this.id_entry = new Gtk.Entry ();
+    insert_box.pack_start (this.id_entry, false, false, 5);
+
+    // Name field
+    insert_box.pack_start (new Gtk.Label ({label: "Name:"}), false, false, 5);
+    this.name_entry = new Gtk.Entry ({activates_default: true});
+    insert_box.pack_start (this.name_entry, true, true, 5);
+
+    // Insert button
+    var insert_button = new Gtk.Button ({label: "Insert", can_default: true});
+    insert_button.connect ("clicked", Lang.bind (this, this._insertClicked));
+    insert_box.pack_start (insert_button, false, false, 5);
+    insert_button.grab_default ();
+
+    // Browse textview
+    var info2 = new Gtk.Label ({label: "<b>Browse the table</b>", xalign: 0, use_markup: true});
+    main_box.pack_start (info2, false, false, 5);
+    this.text = new Gtk.TextView ({editable: false});
+    var sw = new Gtk.ScrolledWindow ({shadow_type:Gtk.ShadowType.IN});
+    sw.add (this.text);
+    main_box.pack_start (sw, true, true, 5);
+
+    this.count_label = new Gtk.Label ({label: "", xalign: 0, use_markup: true});
+    main_box.pack_start (this.count_label, false, false, 0);
+
+    this.window.show_all ();
+  },]]></code>
+  <list>
+    <item><p>Lignes 22 et 27 : création des 2 entrées (pour les 2 champs) dans lesquelles l'utilisateur saisit les choses à insérer dans la base de données.</p></item>
+    <item><p>Lignes 31‒34 : création du bouton « Insert ». Le signal <code>clicked</code> de ce bouton est connecté à la méthode privée <code>_insertClicked</code> de la classe. Cette méthode est décrite ci-dessous.</p></item>
+    <item><p>Ligne 39 : création de l'élément graphique (<code>TextView</code>) où nous affichons le contenu de la table.</p></item>
+    <item><p>Ligne 44 : création de l'étiquette où nous affichons le nombre d'enregistrements dans la table. Au début, elle est vide et est mise à jour ultérieurement.</p></item>
+  </list>
+</section>
+
+<section id="connect">
+  <title>Connexion à la base de données et initialisation</title>
+  <p>Le code permettant de se connecter à la base de données est dans la méthode <code>setupDatabase</code> ci-dessous :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+  setupDatabase: function () {
+    this.connection = new Gda.Connection ({provider: Gda.Config.get_provider("SQLite"),
+                                          cnc_string:"DB_DIR=" + GLib.get_home_dir () + ";DB_NAME=gnome_demo"});
+    this.connection.open ();
+
+    try {
+      var dm = this.connection.execute_select_command ("select * from demo");
+    } catch (e) {
+      this.connection.execute_non_select_command ("create table demo (id integer, name varchar(100))");
+    }
+  },]]></code>
+  <list>
+    <item>
+      <p>Lignes 2‒3 : création de l'objet <code>Connection</code> de GDA. Il faut transmettre quelques propriétés à son constructeur :</p>
+      <list>
+        <item>
+          <p><code>provider</code> : l'un des fournisseurs reconnus par GDA. GDA prend en charge SQLite, MySQL, PostgreSQL, Oracle et beaucoup d'autres. Pour les besoins de l'exemple, nous utilisons une base de données SQLite car elle est déjà incluse par défaut dans la plupart des distributions et elle est facile à utiliser (elle n'a besoin que d'un fichier comme base de données).</p>
+        </item>
+        <item>
+          <p><code>cnc_string</code> : la chaîne de connexion. Elle peut être différente en fonction du fournisseur. La syntaxe pour SQLite est : <code>DB_DIR=<var>CHEMIN</var>;DB_NAME=<var>NOM2FICHIER</var></code>. Dans cet exemple, nous accédons à une base de données nommée gnome_demo dans le dossier personnel de l'utilisateur (notez l'appel à la fonction <code>get_home_dir</code> de GLib).</p>
+        </item>
+      </list>
+      <note>
+        <p>Si le fournisseur n'est pas reconnu par GDA, ou si la chaîne de connexion n'est pas complète, la ligne 2 provoque une exception. Donc, en pratique, il faut gérer cette exception grâce à l'instruction JavaScript <code>try</code>...<code>catch</code>.</p>
+      </note>
+    </item>
+
+    <item><p>Ligne 4 : ouverture de la connexion. Pour le fournisseur SQLite, si la base de donnée n'existe pas, elle est créée à cette étape.</p></item>
+    <item>
+      <p>Lignes 6‒10 : tentative de faire une simple instruction « select » pour vérifier que la table existe (ligne 7). Si elle n'existe pas (parce que la base de données vient juste d'être créée), cette instruction provoque une exception qu'il faut gérer grâce au bloc <code>try</code>...<code>catch</code>. Dans ce cas, il faut exécuter l'instruction « create table » pour créer la table (ligne 9).</p>
+      <p>In order to run the SQL commands above we are using the GDA connection methods <code>execute_select_command</code> and <code>execute_non_select_command</code>. They are simple to use, and just require two arguments: The <code>Connection</code> object and the SQL command to be parsed.</p>
+    </item>
+  </list>
+
+  <p>À ce niveau, nous avons configuré la base de données et cette dernière est fonctionnelle.</p>
+</section>
+
+<section id="select">
+  <title>Sélection</title>
+  <p>Après connexion à la base de données, le constructeur de notre exemple appelle la méthode <code>selectData</code>. C'est elle qui récupère tous les enregistrements de la table et qui les affiche dans l'élément graphique <code>TextView</code>. Regardons à quoi elle ressemble :</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+  selectData: function () {
+    var dm = this.connection.execute_select_command  ("select * from demo order by 1, 2");
+    var iter = dm.create_iter ();
+
+    var text = "";
+
+    while (iter.move_next ()) {
+      var id_field = Gda.value_stringify (iter.get_value_at (0));
+      var name_field = Gda.value_stringify (iter.get_value_at (1));
+
+      text += id_field + "\t=>\t" + name_field + '\n';
+    }
+
+    this.text.buffer.text = text;
+    this.count_label.label = "<i>" + dm.get_n_rows () + " record(s)</i>";
+  },]]></code>
+  <list>
+    <item><p>Line 2: The <code>SELECT</code> command. We are using the GDA connection's <code>execute_select_command</code> method for that. It returns a <code>DataModel</code> object, which is later used to retrieve the rows.</p></item>
+    <item><p>Ligne 3 : création d'un objet <code>Iter</code> qui sert à itérer sur les enregistrements de <code>DataModel</code>.</p></item>
+    <item><p>Ligne 7 : Itération sur tous les enregistrements en les récupérant à l'aide de l'objet <code>Iter</code>. À cet endroit, la variable <code>Iter</code> contient les informations trouvées. La méthode <code>move_next</code> retourne le message <code>false</code> quand elle atteint le dernier enregistrement.</p></item>
+    <item>
+      <p>Lignes 8‒9 : nous faisons deux choses dans chaque ligne :</p>
+      <list>
+        <item><p>Utilisez la méthode <code>get_value_at</code> d'<code>Iter</code> qui n'a besoin que d'un argument : le numéro de colonne à récupérer, en commençant par 0. Comme notre commande <code>SELECT</code> ne retourne que deux colonnes, nous récupérons donc les colonnes 0 et 1.</p></item>
+        <item><p>La méthode <code>get_value_at</code> retourne l'information sur les champs au format <code>GValue</code> de GLib. Pour convertir ce format en chaîne de caractères, utilisez simplement la fonction globale <code>value_stringify</code> de GDA. C'est ce que nous faisons ici puis nous enregistrons les résultats dans les variables <code>id_field</code> et <code>name_field</code>.</p></item>
+      </list>
+    </item>
+    <item><p>Ligne 11 : concaténation des deux chaînes pour former une seule ligne de texte en les séparant par <code>"=&gt;"</code> et enregistrement dans la variable <code>text</code>.</p></item>
+    <item><p>Ligne 14 : à la fin de la boucle, tous les enregistrements sont formatés dans la variable <code>text</code>. À cette ligne, nous attribuons le contenu de cette variable au <code>TextView</code>.</p></item>
+    <item><p>Ligne 15 : affichage du nombre d'enregistrements dans la table avec la fonction <code>get_n_rows</code> de <code>DataModel</code>.</p></item>
+  </list>
+</section>
+
+<section id="insert">
+  <title>Insertion</title>
+  <p>Bien, nous savons comment nous connecter à une base de données et comment sélectionner des lignes dans une table. Il est temps maintenant d'apprendre à faire une insertion à l'aide de la commande <code>INSERT</code> dans la table. Souvenez-vous, dans la méthode <code>setupWindow</code>, nous avions relié le signal <code>clicked</code> du bouton <gui>Insert</gui> à la méthode <code>_insertClicked</code>. Voyons la mise en place de cette méthode.</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+  _insertClicked: function () {
+    if (!this._validateFields ())
+      return;
+
+    // Gda.execute_non_select_command (this.connection,
+    //   "insert into demo values ('" + this.id_entry.text + "', '" + this.name_entry.text + "')");
+
+    var b = new Gda.SqlBuilder ({stmt_type:Gda.SqlStatementType.INSERT});
+    b.set_table ("demo");
+    b.add_field_value_as_gvalue ("id", this.id_entry.text);
+    b.add_field_value_as_gvalue ("name", this.name_entry.text);
+    var stmt = b.get_statement ();
+    this.connection.statement_execute_non_select (stmt, null);
+
+    this._clearFields ();
+    this.selectData ();
+  },]]></code>
+  <p>
+    We have learned how to use the GDA connection's methods <code>execute_select_command</code> and <code>execute_non_select_command</code> to quickly execute SQL commands on the database. GDA allows one to build a SQL statement indirectly, by using its <code>SqlBuilder</code> object. What are the benefits of this? GDA will generate the SQL statement dynamically, and it will be valid for the connection provider used (it will use the same SQL dialect the provider uses). Let's study the code:
+  </p>
+  <list>
+    <item><p>Lignes 2‒3 : vérification du bon renseignement par l'utilisateur de tous les champs. Le code de la méthode privée <code>_validateFields</code> est vraiment simple et vous pouvez le consulter dans le programme source complet de l'exemple.</p></item>
+    <item><p>Ligne 5 : la façon la plus rapide pour faire l'insertion à l'aide de la commande <code>INSERT</code>. Celle-ci est mise en commentaire car nous voulons vous montrer comment utiliser l'objet <code>SqlBuilder</code> pour construire une instruction SQL qui soit indépendante de la base de données.</p></item>
+    <item><p> Ligne 7 : création de l'objet <code>SqlBuilder</code>. Nous devons transmettre le type d'instruction que nous voulons construire. Cela peut être <code>SELECT</code>, <code>UPDATE</code>, <code>INSERT</code> ou <code>DELETE</code>.</p></item>
+    <item><p>Ligne 8 : détermination du nom de la table sur laquelle l'instruction construite va agir (le code <code>INSERT INTO demo</code> est généré)</p></item>
+    <item><p>Lignes 9‒10 : détermination des champs et de leurs valeurs qui font partie de l'instruction. Le premier argument est le nom du champ (comme dans la table). Le second est la valeur pour ce champ.</p></item>
+    <item><p>Ligne 11 : fabrication de l'objet <code>Statement</code> généré dynamiquement et qui représente une instruction SQL.</p></item>
+    <item><p>Ligne 12 : enfin, exécution de l'instruction SQL (<code>INSERT</code>).</p></item>
+    <item><p>Ligne 14 : effacement des champs « id » et « name » à l'écran. Le code de la méthode privée <code>_clearFields</code> est vraiment simple et vous pouvez le consulter dans le programme source complet de l'exemple.</p></item>
+    <item><p>Ligne 15 : mise à jour de l'affichage à l'écran en faisant un nouveau <code>SELECT</code>.</p></item>
+  </list>
+  <note><p>Vous pouvez aussi faire usage de paramètres pour construire l'instruction. En utilisant les objets <code>SqlBuilder</code> et des paramètres, vous êtes moins exposé à des attaques du type injection SQL. Consultez la <link href="http://library.gnome.org/devel/libgda/stable/">documentation GDA</link> pour plus d'informations sur les paramètres.</p></note>
+</section>
+
+<section id="run">
+  <title>Exécution de l'application</title>
+  <p>Tout le programme nécessaire doit maintenant être en place, donc essayez de l'exécuter. Vous disposez maintenant d'une base de donnée pour votre discothèque !</p>
+</section>
+
+<section id="impl">
+ <title>Implémentation de référence</title>
+ <p>Si vous rencontrez des difficultés avec ce tutoriel, comparez votre programme à ce <link href="record-collection/record-collection.js">programme de référence</link>.</p>
+</section>
+</page>

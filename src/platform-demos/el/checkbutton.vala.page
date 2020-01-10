@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="checkbutton.vala" xml:lang="el">
+  <info>
+  <title type="text">CheckButton (Vala)</title>
+    <link type="guide" xref="beginner.vala#buttons"/>
+    <revision version="0.1" date="2012-05-09" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Δημιουργία γραφικών στοιχείων με ένα διακριτό κουμπί εναλλαγής</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>CheckButton</title>
+  <media type="image" mime="image/png" src="media/checkbutton.png"/>
+  <p>Αυτό το CheckButton εναλλάσσει τον τίτλο.</p>
+
+<code mime="text/x-csharp" style="numbered">/* A window in the application */
+class MyWindow : Gtk.ApplicationWindow {
+
+	/* The constructor */
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "CheckButton Example");
+
+		this.set_default_size (300, 100);
+		this.border_width = 10;
+
+		var checkbutton = new Gtk.CheckButton.with_label ("Show Title");
+
+		/* Connect the checkbutton to the
+		 * callback function (aka. signal handler).
+		 */
+		checkbutton.toggled.connect (this.toggled_cb);
+
+		/* Add the button to the this window */
+		this.add (checkbutton);
+
+		checkbutton.set_active (true);
+		checkbutton.show ();
+	}
+
+	/* The signal handler for the 'toggled' signal of the checkbutton. */
+	void toggled_cb (Gtk.ToggleButton checkbutton) {
+		if (checkbutton.get_active())
+			this.set_title ("CheckButton Example");
+		else
+			this.set_title ("");
+	}
+}
+
+/* This is the application */
+class MyApplication : Gtk.Application {
+
+	/* The constructor */
+	internal MyApplication () {
+		Object (application_id: "org.example.checkbutton");
+	}
+
+	/* Override the activate signal of GLib.Application */
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+
+}
+
+/* main creates and runs the application */
+int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.CheckButton.html">Gtk.CheckButton</link></p></item>
+</list>
+</page>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="label.py" xml:lang="el">
+  <info>
+    <title type="text">Ετικέτα (Python)</title>
+    <link type="guide" xref="beginner.py#display-widgets"/>
+    <link type="seealso" xref="properties.py"/>
+    <link type="seealso" xref="strings.py"/>
+    <link type="next" xref="properties.py"/>
+    <revision version="0.2" date="2012-06-18" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="author">
+      <name>Sebastian Pölsterl</name>
+      <email its:translate="no">sebp@k-d-w.org</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα γραφικό στοιχείο που εμφανίζει μια μικρή έως μεσαία ποσότητα κειμένου</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Ετικέτα</title>
+  <media type="image" mime="image/png" src="media/label.png"/>
+  <p>Μια απλή ετικέτα</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # constructor for a Gtk.ApplicationWindow
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(200, 100)
+
+        # create a label
+        label = Gtk.Label()
+        # set the text of the label
+        label.set_text("Hello GNOME!")
+        # add the label to the window
+        self.add(label)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+    <p>Ένας άλλος τρόπος για να πάρετε ότι έχουμε στο παράδειγμα είναι η δημιουργία της ετικέτας ως ένα στιγμιότυπο μιας άλλης κλάσης και προσθήκη του στο στιγμιότυπο του <code>MyWindow</code> στη μέθοδο <code>do_activate(self)</code>:</p>
+    <note>
+      <p>Οι γραμμές που έχουν επισημανθεί υποδεικνύουν των κώδικα που είναι διαφορετικός από το προηγούμενο απόσπασμα κώδικα</p>
+    </note>
+      <code mime="text/x-python">
+# a class to define a window
+class MyWindow(Gtk.ApplicationWindow):
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(200, 100)
+
+# a class to define a label
+<e:hi>
+class MyLabel(Gtk.Label):
+    def __init__(self):
+        Gtk.Label.__init__(self)
+        self.set_text("Hello GNOME!")
+</e:hi>
+
+class MyApplication(Gtk.Application):
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        # create an instance of MyWindow
+        win = MyWindow(self)
+
+        # create an instance of MyLabel
+<e:hi>
+        label = MyLabel()
+</e:hi>
+        # and add it to the window
+<e:hi>
+        win.add(label)
+</e:hi>
+        # show the window and everything on it
+        win.show_all()</code>
+
+  </section>
+
+  <section id="methods">
+  <title>Χρήσιμες μέθοδοι για γραφικά στοιχεία ετικέτας</title>
+  
+  <note style="tip">
+    <p>Μια εξήγηση πώς να δουλέψετε με τις συμβολοσειρές σε GTK+ μπορεί να βρεθεί στο <link xref="strings.py"/>.</p>
+  </note>
+
+  <list>
+    <item><p>Το <code>set_line_wrap(True)</code> σπάει τις γραμμές εάν το κείμενο της ετικέτας υπερβαίνει το μέγεθος του γραφικού στοιχείου.</p></item>
+    <item><p>Το <code>set_justify(Gtk.Justification.LEFT)</code> (ή <code>Gtk.Justification.RIGHT, Gtk.Justification.CENTER, Gtk.Justification.FILL</code>) ορίζει τη στοίχιση των γραμμών στο κείμενο της ετικέτας συγκρινόμενες μεταξύ τους. Η μέθοδος δεν έχει αποτέλεσμα σε ετικέτα μοναδικής γραμμής.</p></item>
+    <item><p>Για διακοσμημένο κείμενο μπορούμε να χρησιμοποιήσουμε το <code>set_markup("text")</code>, where <code>"text"</code> που είναι κείμενο στη <link href="http://developer.gnome.org/pango/stable/PangoMarkupFormat.html">γλώσσα σήμανσης Pango</link>. Ένα παράδειγμα:</p>
+      <code mime="text/x-python">
+label.set_markup("Text can be &lt;small&gt;small&lt;/small&gt;, &lt;big&gt;big&lt;/big&gt;, "
+                 "&lt;b&gt;bold&lt;/b&gt;, &lt;i&gt;italic&lt;/i&gt; and even point to somewhere "
+                 "in the &lt;a href=\"http://www.gtk.org\" "
+                 "title=\"Click to find out more\"&gt;internets&lt;/a&gt;.")</code>
+    </item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Αναφορές API</title>
+  <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkLabel.html">GtkLabel</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+  </list>
+  </section>
+</page>

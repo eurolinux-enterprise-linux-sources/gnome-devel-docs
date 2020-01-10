@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherGeonames.js" xml:lang="el">
+  <info>
+    <link type="guide" xref="weatherApp.js#main"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Τοπική βιβλιοθήκη geoNames</title>
+  <synopsis>
+    <p>Σε αυτό το τμήμα του οδηγού πρόκειται να κατασκευάσουμε μια τοπική βιβλιοθήκη geoNames χρησιμοποιώντας ασύγχρονες κλήσεις. Οι πληροφορίες του καιρού σε αυτό το παράδειγμα παρέχονται από τον geonames.org και η εφαρμογή χρησιμοποιεί το <link href="http://en.wikipedia.org/wiki/List_of_airports_by_ICAO_code:_E">κωδικούς ICAO</link> για να τοποθετήσει την αίτηση σας για τον καιρό. Για να γράψετε και να εκτελέσετε οι ίδιοι τα παραδείγματα του κώδικα, χρειάζεστε έναν επεξεργαστή για να γράψετε τον κώδικα, τερματικό και GNOME 3 ή μεγαλύτερο εγκατεστημένο στον υπολογιστή σας. Σε αυτόν τον οδηγό θα εξετάσουμε τα παρακάτω μέρη:</p>
+
+    <list>
+      <item><p><link xref="#geonamesimports">Τοπική βιβλιοθήκη για λήψη του καιρού</link></p></item>
+      <item><p><link xref="#geonamesfunction">Δημιουργώντας συναρτήσεις geoNames</link></p></item>
+      <item><p><link xref="#geonamesmethods">Μέθοδοι για το geoNames</link></p></item>
+      <item><p><link xref="#geonames.js">geonames.js </link></p></item>
+    </list>
+  </synopsis>
+
+  <section id="geonamesimports">
+  <title>Τοπική βιβλιοθήκη για λήψη του καιρού</title>
+  <p>Για αυτό θα χρειαστούμε ένα νέο αρχείο που θα είναι η τοπική μας βιβλιοθήκη.</p>
+  <code mime="application/javascript" style="numbered">
+const Soup = imports.gi.Soup;
+const _httpSession = new Soup.SessionAsync();
+Soup.Session.prototype.add_feature.call(_httpSession, new Soup.ProxyResolverDefault());
+</code>
+  <p>Στις πρώτες γραμμές θα εισάγουμε και θα αρχικοποιήσουμε τις απαιτούμενες βιβλιοθήκες για χρήση σε αυτή την τοπική βιβλιοθήκη. Το Soup επεξεργάζεται όλες τις αιτήσεις που πρέπει να κάνουμε με http.</p>
+  </section>
+
+  <section id="geonamesfunction">
+  <title>Δημιουργία συνάρτησης geoNames</title>
+  <code mime="application/javascript" style="numbered">
+function GeoNames(station) {
+  this.station = station;
+}
+
+GeoNames.prototype = {
+
+}
+</code>
+  <p>Εδώ δημιουργούμε τη συνάρτηση GeoNames που θα χειριστεί τη λήψη καιρού για μας. Το JavaScript επιτρέπει τη δημιουργία συναρτήσεων που έχουν λίγο μέσα στην αρχή και αργότερα τις επεκτείνει. Αυτό θα γίνει μέσα στα άγκιστρα {} του GeoNames.prototype</p>
+  </section>
+
+  <section id="geonamesmethods">
+  <title>Μέθοδοι για GeoNames</title>
+  <code mime="application/javascript" style="numbered">
+getWeather: function(callback) {
+    var request = Soup.Message.new('GET', 'http://api.geonames.org/weatherIcaoJSON?ICAO=' + this.station + '&amp;username=demo');
+    _httpSession.queue_message(request, function(_httpSession, message) {
+      if (message.status_code !== 200) {
+        callback(message.status_code, null);
+        return;
+      }
+      var weatherJSON = request.response_body.data;
+      var weather = JSON.parse(weatherJSON);
+      callback(null, weather);
+      });
+},
+
+getIcon: function(weather){
+    switch (weather.weatherObservation.weatherCondition){
+    case "drizzle":
+    case "light showers rain":
+    case "light rain":
+      return "weather-showers-scattered.svg";
+    case "rain":
+      return "weather-showers.svg";
+    case "light snow":
+    case "snow grains":
+      return "weather-snow.svg";
+    }
+    switch (weather.weatherObservation.clouds){
+      case "few clouds":
+      case "scattered clouds":
+        return "weather-few-clouds.svg";
+      case "clear sky":
+        return "weather-clear.svg"
+      case "broken clouds":
+      case "overcast":
+        return "weather-overcast.svg";
+    }
+    return "weather-fog.svg";
+}
+</code>
+  <p>Η πρώτη μέθοδος για το GeoNames είναι η getWeather και η δεύτερη η getIcon. Στην getWeather κάνουμε μια αίτηση http με soup, επεξεργασία σφαλμάτων και έπειτα ανάλυση της πληροφορίας από την αίτηση για μορφή που μπορούμε να χρησιμοποιήσουμε. Στο getIcon συγκρίνουμε απλά τα αποτελέσματα που παίρνουμε από getWeather στον διακόπτη που έχουμε για τη λήψη εικονιδίου που ταιριάζει στον τρέχοντα καιρό. Τώρα που έχουμε την τοπική μας βιβλιοθήκη έτοιμη, είναι καιρός να τη χρησιμοποιήσουμε.</p>
+  </section>
+
+
+  <section id="geonames.js">
+  <title>geonames.js</title>
+  <p>Εδώ είναι όλος ο κώδικας για την τοπική μας βιβλιοθήκη. Το αρχείο του κυρίως προγράμματος το καλεί ασύγχρονα.</p>
+  <code mime="application/javascript" style="numbered">
+const Soup = imports.gi.Soup;
+const _httpSession = new Soup.SessionAsync();
+Soup.Session.prototype.add_feature.call(_httpSession, new Soup.ProxyResolverDefault());
+
+function GeoNames(station) {
+  this.station = station;
+}
+
+GeoNames.prototype = {
+  getWeather: function(callback) {
+    var request = Soup.Message.new('GET', 'http://api.geonames.org/weatherIcaoJSON?ICAO=' + this.station + '&amp;username=demo');
+    _httpSession.queue_message(request, function(_httpSession, message) {
+      if (message.status_code !== 200) {
+        callback(message.status_code, null);
+        return;
+      }
+      var weatherJSON = request.response_body.data;
+      var weather = JSON.parse(weatherJSON);
+      callback(null, weather);
+      });
+    },
+
+  getIcon: function(weather){
+    switch (weather.weatherObservation.weatherCondition){
+    case "drizzle":
+    case "light showers rain":
+    case "light rain":
+      return "weather-showers-scattered.svg";
+    case "rain":
+      return "weather-showers.svg";
+    case "light snow":
+    case "snow grains":
+      return "weather-snow.svg";
+    }
+    switch (weather.weatherObservation.clouds){
+      case "few clouds":
+      case "scattered clouds":
+        return "weather-few-clouds.svg";
+      case "clear sky":
+        return "weather-clear.svg"
+      case "broken clouds":
+      case "overcast":
+        return "weather-overcast.svg";
+    }
+    return "weather-fog.svg";
+    }
+}
+}  </code>
+  </section>
+
+</page>

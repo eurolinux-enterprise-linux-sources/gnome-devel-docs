@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="colorbutton.vala" xml:lang="es">
+  <info>
+  <title type="text">ColorButton (Vala)</title>
+    <link type="guide" xref="beginner.vala#color-selectors"/>
+    <link type="seealso" xref="grid.vala"/>
+    <link type="seealso" xref="label.vala"/>
+    <revision version="0.1" date="2012-06-07" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un botón para mostrar el diálogo de selección de color</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ColorButton</title>
+  <media type="image" mime="image/png" src="media/colorbutton.png"/>
+  <p>Los valores RGB del color seleccionado se muestran en la etiqueta.</p>
+
+<code mime="text/x-csharp" style="numbered">/* This is the application. */
+public class MyApplication : Gtk.Application {
+	Gtk.Label label;
+
+	/* Override the 'activate' signal of GLib.Application. */
+	protected override void activate () {
+		/* Create the window of this application and show it. */
+		var window = new Gtk.ApplicationWindow (this);
+		window.title = "ColorButton";
+		window.set_default_size (150, 50);
+		window.set_border_width (10);
+
+		/* Create a new ColorButton with default blue. */
+		var blue = Gdk.RGBA ();
+		blue.parse ("blue");
+		var colorbutton = new Gtk.ColorButton.with_rgba (blue);
+
+		label = new Gtk.Label ("Click to choose a color");
+
+		var grid = new Gtk.Grid ();
+		grid.attach (colorbutton, 0, 0, 1, 1);
+		grid.attach_next_to (label, colorbutton, Gtk.PositionType.BOTTOM, 1, 1);
+
+		colorbutton.color_set.connect (this.on_color_set);
+
+		window.add (grid);
+		window.show_all ();
+	}
+
+	void on_color_set (Gtk.ColorButton button) {
+		var color =  button.get_rgba ();
+		label.set_text ("RGBA: " + color.to_string());
+	}
+}
+
+/* main creates and runs the application. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>En este ejemplo se usa lo siguiente:</p>
+<list>
+  <item><p><link href="http://valadoc.org/gtk+-3.0/Gtk.ColorButton.html">Gtk.ColorButton</link></p></item>
+  <item><p><link href="http://valadoc.org/gdk-3.0/Gdk.RGBA.html">Gdk.RGBA</link></p></item>
+</list>
+</page>

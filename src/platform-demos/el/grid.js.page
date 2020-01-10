@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="grid.js" xml:lang="el">
+  <info>
+  <title type="text">Πλέγμα (JavaScript)</title>
+    <link type="guide" xref="beginner.js#layout"/>
+    <revision version="0.1" date="2012-05-26" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+	<name>Taryn Fox</name>
+        <email its:translate="no">jewelfox@fursona.net</email>
+    </credit>
+
+    <desc>Πακετάρισμα γραφικών στοιχείων σε γραμμές και στήλες</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Πλέγμα</title>
+  <media type="image" mime="image/png" src="media/grid.png"/>
+  <p>Ένα γραφικό στοιχείο κουμπιού συνδεμένο με μια γραμμή προόδου, μέσα σε ένα πλέγμα που χειρίζεται τη διάταξη.</p>
+
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const GridExample = new Lang.Class ({
+    Name: 'Grid Example',
+
+    /* Create the application itself
+       This boilerplate code is needed to build any GTK+ application. */
+        _init: function () {
+            this.application = new Gtk.Application ({
+                application_id: 'org.example.jsgrid',
+                flags: Gio.ApplicationFlags.FLAGS_NONE
+            });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal initializes menus and builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+
+
+
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+            this._window = new Gtk.ApplicationWindow  ({ application: this.application,
+                                                         window_position: Gtk.WindowPosition.CENTER,
+                                                         title: "Grid Example"});
+
+        // Create the grid
+        this.Grid = new Gtk.Grid ();
+
+        // Create the widgets inside the grid
+        this.progressBar = new Gtk.ProgressBar ();
+        this.Button = new Gtk.Button ({ label: "Button" });
+        this.Button.connect ("clicked", Lang.bind(this, this._clickHandler));
+
+        // Assemble the grid
+        this._window.add (this.Grid);
+        this.Grid.attach (this.Button, 1, 1, 1, 1);
+        this.Grid.attach_next_to (this.progressBar, this.Button, Gtk.PositionType.BOTTOM, 1, 1);
+
+                // Show the window and all child widgets
+                this._window.show_all();
+    },
+
+    // Here's the function that says what happens when the button is clicked
+    _clickHandler: function () {
+        this.progressBar.pulse ();
+    }
+
+
+});
+
+// Run the application
+let app = new GridExample ();
+app.application.run (ARGV);
+</code>
+<p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Button.html">Gtk.Button</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.ProgressBar.html">Gtk.ProgressBar</link></p></item>
+</list>
+</page>

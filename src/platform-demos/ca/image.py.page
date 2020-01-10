@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="image.py" xml:lang="ca">
+  <info>
+    <title type="text">Image (Python)</title>
+    <link type="guide" xref="beginner.py#display-widgets"/>
+    <link type="seealso" xref="properties.py"/>
+    <link type="next" xref="strings.py"/>
+    <revision version="0.2" date="2012-06-14" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Sindhu S</name>
+      <email its:translate="no">sindhus@live.in</email>
+      <years>2014</years>
+    </credit>
+
+    <desc>A widget displaying an image</desc>
+  </info>
+
+  <title>Image</title>
+  <media type="image" mime="image/png" src="media/image.png"/>
+  <p>This GtkApplication displays an image file from the current directory.</p>
+
+  <note><p>
+    If the image file is not loaded successfully, the image will contain a
+    "broken image" icon. <file>filename.png</file> needs to be in the
+    current directory for this code to work.
+  </p></note>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Code used to generate this example</title>
+
+  <code mime="text/x-python" style="numbered">
+  from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # create a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(300, 300)
+
+        # create an image
+        image = Gtk.Image()
+        # set the content of the image as the file filename.png
+        image.set_from_file("gnome-image.png")
+        # add the image to the window
+        self.add(image)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+
+  </code>
+
+  <p>Another way to obtain what we have in the example is to create the image as
+  an instance of another class and add it to the instance of
+  <code>MyWindow</code> in the <code>do_activate(self)</code> method:</p>
+
+  <code mime="text/x-python">
+    # a class to create a window
+    class MyWindow(Gtk.ApplicationWindow):
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(300, 300)
+
+    # a class to create an image
+    class MyImage(Gtk.Image):
+    def __init__(self):
+        Gtk.Image.__init__(self)
+        self.set_from_file("gnome-image.png")
+
+    class MyApplication(Gtk.Application):
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        # create an instance of MyWindow
+        win = MyWindow(self)
+        # create an instance of MyImage and add it to the window
+        win.add(MyImage())
+        # show the window and everything on it
+        win.show_all()
+  </code>
+
+  <note>
+    <p>To use this code snippet, you will need to add the code that imports
+    <code>Gtk</code> and <code>GdkPixbuf</code> from <code>gi.repository</code>
+    and lines that instantiate the <code>MyApplication</code> window.</p>
+  </note>
+  </section>
+
+  <section id="methods">
+  <title>Useful methods for an Image widget</title>
+
+  <list>
+    <item>
+      <p>To load an image over a network use
+      <code>set_from_pixbuf(pixbuf)</code>, where <code>pixbuf</code> is a
+      <link href="https://developer.gnome.org/gdk-pixbuf/unstable/index.html">
+      GdkPixbuf</link>.</p>
+      <code mime="text/python">
+        from gi.repository import Gtk
+        from gi.repository import GdkPixbuf
+        import sys
+
+        class MyWindow(Gtk.ApplicationWindow):
+            # create a window
+            def __init__(self, app):
+                Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+                self.set_default_size(300, 300)
+
+                # create a pixbuf from file filename="gnome-image.png", with width=32
+                # and height=64 amd boolean preserve_aspect_ratio=False.
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("gnome-image.png", 64, 128, False)
+
+                # create an image
+                image = Gtk.Image()
+                # set the content of the image as the pixbuf
+                image.set_from_pixbuf(pixbuf)
+                # add the image to the window
+                self.add(image)
+        </code>
+        <p>If <code>preserve_aspect_ratio=True</code> we can use
+        <code>new_from_file_at_size(filename, width, height)</code>. If
+        <code>width</code> or <code>height</code> is <code>-1</code>, it is
+        not constrained.</p>
+        <p>For loading from an input stream, see <code>new_from_stream()</code>
+        and <code>new_from_stream_at_scale()</code> in the documentation.</p>
+    </item>
+  </list>
+  </section>
+
+  <section id="references">
+    <title>API References</title>
+
+    <p>In this sample we used the following:</p>
+    <list>
+      <item>
+        <p><link href="https://developer.gnome.org/gtk3/unstable/GtkImage.html">
+        GtkImage</link></p>
+      </item>
+      <item>
+        <p><link href="https://developer.gnome.org/gtk3/unstable/GtkWindow.html">
+        GtkWindow</link></p>
+      </item>
+    </list>
+
+  </section>
+</page>

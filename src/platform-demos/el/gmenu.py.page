@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.py" xml:lang="el">
+  <info>
+    <title type="text">GMenu (Python)</title>
+    <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="menubutton.py"/>
+    <revision version="0.1" date="2012-04-28" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Μια απλή εφαρμογή του GMenuModel</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>GMenu</title>
+  <media type="image" mime="image/png" src="media/gmenu.py.png"/>
+  <p>Μια GtkApplication με ένα απλό GMenu και SimpleActions</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+    <code mime="text/x-python" style="numbered">
+    from gi.repository import Gtk
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GMenu Example", application=app)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        # start the application
+        Gtk.Application.do_startup(self)
+
+        # create a menu
+        menu = Gio.Menu()
+        # append to the menu three options
+        menu.append("New", "app.new")
+        menu.append("About", "app.about")
+        menu.append("Quit", "app.quit")
+        # set the menu as menu of the application
+        self.set_app_menu(menu)
+
+        # create an action for the option "new" of the menu
+        new_action = Gio.SimpleAction.new("new", None)
+        # connect it to the callback function new_cb
+        new_action.connect("activate", self.new_cb)
+        # add the action to the application
+        self.add_action(new_action)
+
+        # option "about"
+        about_action = Gio.SimpleAction.new("about", None)
+        about_action.connect("activate", self.about_cb)
+        self.add_action(about_action)
+
+        # option "quit"
+        quit_action = Gio.SimpleAction.new("quit", None)
+        quit_action.connect("activate", self.quit_cb)
+        self.add_action(quit_action)
+
+    # callback function for "new"
+    def new_cb(self, action, parameter):
+        print("This does nothing. It is only a demonstration.")
+
+    # callback function for "about"
+    def about_cb(self, action, parameter):
+        print("No AboutDialog for you. This is only a demonstration.")
+
+    # callback function for "quit"
+    def quit_cb(self, action, parameter):
+        print("You have quit.")
+        self.quit()
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Χρήσιμες μέθοδοι για μια GSimpleAction και ένα GMenu</title>
+
+    <p>Στη γραμμή 33 το σήμα <code>"activate"</code> από την ενέργεια <code>new_action</code> (όχι το μενού!) συνδέεται με τη συνάρτηση επανάκλησης <code>new_cb()</code> χρησιμοποιώντας <code><var>action</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
+
+    <p>Χρήσιμες μέθοδοι για μια GSimpleAction:</p>
+    <list>
+      <item><p>Για τη δημιουργία μιας νέας ενέργειας που είναι <em>χωρίς κατάσταση</em>, δηλαδή, μια ενέργεια που δεν κρατά ή εξαρτάται από τη δεδομένη κατάσταση από την ίδια την ενέργεια, χρησιμοποιήστε</p>
+      <code>
+action = Gio.SimpleAction.new("name", parameter_type)</code>
+      <p>όπου <code>"name"</code> είναι το όνομα της ενέργειας και <code>parameter_type</code> είναι ο τύπος των παραμέτρων που δέχεται η ενέργεια όταν ενεργοποιείται. Αυτό μπορεί να είναι <code>None</code>, ή <code>GLib.VariantType.new('s')</code> εάν η παράμετρος είναι ο τύπος <code>str</code>, ή στη θέση του <code>'s'</code> ένας χαρακτήρας όπως περιγράφεται <link href="http://developer.gnome.org/glib/unstable/glib-GVariantType.html">εδώ</link>. Για τη δημιουργία μιας νέας ενέργειας <em>με κατάσταση</em> (δηλαδή όχι χωρίς κατάσταση), χρησιμοποιήστε</p>
+      <code>
+action = Gio.SimpleAction.new_stateful("name", parameter_type, initial_state)</code>
+      <p>όπου <code>initial_state</code> ορίζεται ως μια GVariant - για παράδειγμα <code>Glib.Variant.new_string('start')</code>; για μια λίστα δυνατοτήτων δείτε <link href="http://developer.gnome.org/glib/unstable/glib-GVariant.html">εδώ</link>.</p></item>
+      <item><p><code>set_enabled(True)</code> ορίζει την ενέργεια ως ενεργή· μια ενέργεια πρέπει να είναι ενεργή για να ενεργοποιηθεί ή για να έχει την κατάσταση της αλλαγμένη από εξωτερικές κλήσεις . Αυτό πρέπει να καλείται μόνο από την εφαρμογή της ενέργειας. Οι χρήστες της ενέργειας δεν πρέπει να προσπαθούν να τροποποιήσουν την ενεργή σημαία του.</p></item>
+      <item><p><code>set_state(state)</code>, όπου <code>state</code> είναι μια GVariant, που ορίζει την κατάσταση της ενέργειας, ενημερώνοντας την ιδιότητα 'state' στη δεδομένη τιμή. Αυτή πρέπει να καλείται μόνο από τον εκτελεστή της ενέργειας· Οι χρήστες της ενέργειας πρέπει να καλούν <code>change_state(state)</code> (όπου <code>state</code> είναι όπως πιο πάνω) για να ζητούν την αλλαγή.</p></item>
+    </list>
+
+    <p>Χρήσιμες μέθοδοι για ένα GMenu:</p>
+    <list>
+      <item><p>Για εισαγωγή ενός στοιχείου στο μενού στη θέση <code>position</code>, χρησιμοποιήστε <code>insert(position, label, detailed_action)</code>, όπου <code>label</code> είναι η ετικέτα που θα εμφανιστεί στο μενού και <code>detailed_action</code> είναι μια συμβολοσειρά αποτελούμενη από το όνομα της ενέργειας στην οποία προτάσσουμε το πρόθεμα <code>app.</code>. Μια πιο λεπτομερής συζήτηση αυτού μπορεί να βρεθεί στο <link xref="menubar.py#win-app"/>.</p>
+      <p>Για προσάρτηση ή πρόταξη ενός στοιχείου στο μενού χρησιμοποιήστε αντίστοιχα <code>append(label, detailed_action)</code> και <code>prepend(label, detailed_action)</code>.</p></item>
+      <item><p>Ένας άλλος τρόπος προσθήκης στοιχείων στο μενού είναι η δημιουργία τους ως <code>GMenuItem</code> και η χρήση <code>insert_item(position, item)</code>, <code>append_item(item)</code>, ή <code>prepend_item(item)</code>; έτσι για παράδειγμα πρέπει να έχουμε:</p>
+      <code>
+about = Gio.MenuItem.new("About", "app.about")
+menu.append_item(about)</code>
+      </item>
+      <item><p>Μπορούμε επίσης να προσθέσουμε μια ολόκληρη υποενότητα σε ένα μενού χρησιμοποιώντας <code>insert_section(position, label, section)</code>, <code>append_section(label, section)</code>, ή <code>prepend_section(label, section)</code>, όπου <code>label</code> είναι ο τίτλος της υποενότητας.</p></item>
+      <item><p>Για να προσθέσουμε ένα υπομενού που θα επεκταθεί και θα συμπτυχθεί, χρησιμοποιήστε <code>insert_submenu(position, label, section)</code>, <code>append_submenu(label, section)</code>, ή <code>prepend_submenu(label, section)</code>, όπου <code>label</code> είναι ο τίτλος της υποενότητας.</p></item>
+      <item><p>Για την αφαίρεση ενός στοιχείου από το μενού, χρησιμοποιήστε <code>remove(position)</code>.</p></item>
+      <item><p>Για ορισμό μιας ετικέτας για το μενού, χρησιμοποιήστε <code>set_label(label)</code>.</p></item>
+    </list>
+
+  </section>
+
+  <section id="references">
+    <title>Αναφορές API</title>
+    <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gio/unstable/GMenu.html">GMenu</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+      <item><p><link href="http://developer.gnome.org/glib/unstable/glib-GVariantType.html">GVariantType</link></p></item>
+      <item><p><link href="http://developer.gnome.org/glib/unstable/glib-GVariant.html">GVariant</link></p></item>
+    </list>
+  </section>
+</page>

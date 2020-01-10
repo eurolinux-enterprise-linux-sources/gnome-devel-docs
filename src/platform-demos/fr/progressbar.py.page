@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="progressbar.py" xml:lang="fr">
+  <info>
+    <title type="text">ProgressBar (Python)</title>
+    <link type="guide" xref="beginner.py#display-widgets"/>
+    <link type="next" xref="spinbutton.py"/>    
+    <revision version="0.2" date="2012-06-12" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un élément graphique qui matérialise visuellement la progression.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Barre de progression</title>
+  <media type="video" mime="application/ogv" src="media/progressbar.ogv">
+    <tt:tt xmlns:tt="http://www.w3.org/ns/ttml">
+      <tt:body>
+        <tt:div begin="0s" end="6s">
+          <tt:p>L'appui sur n'importe quelle touche démarre et arrête la barre de progression (ProgressBar).</tt:p>
+        </tt:div>
+      </tt:body>
+    </tt:tt>
+  </media>
+  <p>Pour démarrer ou arrêter cette barre de progression, appuyez sur n'importe quelle touche.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Code utilisé pour générer cet exemple</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import GLib
+from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="ProgressBar Example", application=app)
+        self.set_default_size(220, 20)
+
+        # a progressbar
+        self.progress_bar = Gtk.ProgressBar()
+        # add the progressbar to the window
+        self.add(self.progress_bar)
+
+        # the method self.pulse is called each 100 milliseconds
+        # and self.source_id is set to be the ID of the event source
+        # (i.e. the bar changes position every 100 milliseconds)
+        self.source_id = GLib.timeout_add(100, self.pulse)
+
+    # event handler
+    # any signal from the keyboard controls if the progressbar stops/starts
+    def do_key_press_event(self, event):
+        # if the progressbar has been stopped (therefore source_id == 0 - see
+        # "else" below), turn it back on
+        if (self.source_id == 0):
+            self.source_id = GLib.timeout_add(100, self.pulse)
+        # if the bar is moving, remove the source with the ID of source_id
+        # from the main context (stop the bar) and set the source_id to 0
+        else:
+            GLib.source_remove(self.source_id)
+            self.source_id = 0
+        # stop the signal emission
+        return True
+
+    # source function
+    # the progressbar is in "activity mode" when this method is called
+    def pulse(self):
+        self.progress_bar.pulse()
+        # call the function again
+        return True
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+  <title>Méthodes utiles pour un élément graphique barre de progression</title>
+  <list>
+    <item><p>Contrairement à <code>pulse()</code>, qui fait avancer ou reculer la barre, si nous voulons que notre barre de progression se remplisse par fractions (un nombre flottant <code>float</code> compris entre <code>0.0</code> et <code>1.0</code> inclus) toujours dans le même sens, nous utilisons la méthode <code>set_fraction(fraction)</code>.</p></item>
+    <item><p>To set a text and show it (superimposed over the bar) use <code>set_text(<var>"text"</var>)</code> and <code>set_show_text(True)</code>. If a text is not set and <code>set_show_text(True)</code> the text will be the percentage of the work that has been completed.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Références API</title>
+  <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkProgressBar.html">GtkProgressBar</link></p></item>
+    <item><p><link href="http://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html">GLib - The Main Event Loop</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gdk/stable/gdk-Keyboard-Handling">Gdk - Key Values</link></p></item>
+  </list>
+  </section>
+</page>

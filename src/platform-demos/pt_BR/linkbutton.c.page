@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="linkbutton.c" xml:lang="pt-BR">
+  <info>
+    <title type="text">LinkButton (C)</title>
+    <link type="guide" xref="c#buttons"/>
+    <revision version="0.1" date="2012-05-31" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Create buttons bound to a URL</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>LinkButton</title>
+
+  <media type="image" mime="image/png" src="media/linkbutton.png"/>
+  <p>This button links to the GNOME live webpage.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *linkbutton;
+
+  window = gtk_application_window_new (app);
+
+  gtk_window_set_title (GTK_WINDOW (window), "GNOME LinkButton");
+  gtk_window_set_default_size (GTK_WINDOW (window), 250, 50);
+
+  linkbutton = gtk_link_button_new ("Link to GNOME live!");
+  gtk_link_button_set_uri (GTK_LINK_BUTTON(linkbutton), "http://live.gnome.org");
+
+  gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (linkbutton));
+
+  gtk_widget_show_all (window);
+}
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>
+  In this sample we used the following:
+</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkLinkButton.html">GtkLinkButton</link></p></item>
+</list>
+</page>

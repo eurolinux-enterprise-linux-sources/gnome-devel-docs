@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="tour-get_object" xml:lang="es">
+
+  <info>
+    <link type="next" xref="tour-application"/>
+    <revision version="0.1" date="2013-06-17" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Gordon Hill</name>
+      <email its:translate="no">caseyweederman@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Añada la ventana especificada en el archivo de IU a la aplicación usando GtkBuilder.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2007-2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Carrión</mal:name>
+      <mal:email>mario@monouml.org</mal:email>
+      <mal:years>2006</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>GtkBuilder</title>
+  <links type="prevnext" style="top"/>
+  <links type="series" style="floatend">
+    <title>Primeros pasos en GNOME</title>
+  </links>
+
+  <p>GtkBuilder acepta descripciones de IU y las convierte en aplicaciones GTK+. En este caso, la descripción de la IU_ está en el archivo <file>helloworld.glade</file> y se puede leer con el método <code>get_object()</code>.</p>
+
+  <example>
+    <p>Cargue el archivo de IU usando <code>GtkBuilder</code> y recupere el objeto ventana usando el <gui>Nombre</gui> (o el <gui>ID</gui>) elegidos en Glade, y añada la ventana a la aplicación:</p>
+
+    <code>
+    _onStartup: function() {
+        let builder = new Gtk.Builder();
+        builder.add_from_file('helloworld.glade');
+        this._window = builder.get_object('window1');
+        this.application.add_window(this._window);
+    }
+});
+</code>
+  </example>
+  <links type="prevnext"/>
+</page>

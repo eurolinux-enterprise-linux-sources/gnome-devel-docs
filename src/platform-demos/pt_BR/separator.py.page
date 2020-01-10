@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="separator.py" xml:lang="pt-BR">
+  <info>
+    <title type="text">Separator (Python)</title>
+    <link type="guide" xref="beginner.py#ornaments"/>
+    <link type="seealso" xref="grid.py"/>
+    <link type="next" xref="scrolledwindow.py"/>
+    <revision version="0.1" date="2012-06-01" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A separator widget</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Separator</title>
+
+  <media type="image" mime="image/png" src="media/separator.png"/>
+  <p>A horizontal and a vertical separator divide some labels.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code used to generate this example</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Separator Example", application=app)
+
+        # three labels
+        label1 = Gtk.Label()
+        label1.set_text("Below, a horizontal separator.")
+
+        label2 = Gtk.Label()
+        label2.set_text("On the right, a vertical separator.")
+
+        label3 = Gtk.Label()
+        label3.set_text("On the left, a vertical separator.")
+
+        # a horizontal separator
+        hseparator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
+        # a vertical separator
+        vseparator = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL)
+
+        # a grid to attach labels and separators
+        grid = Gtk.Grid()
+        grid.attach(label1, 0, 0, 3, 1)
+        grid.attach(hseparator, 0, 1, 3, 1)
+        grid.attach(label2, 0, 2, 1, 1)
+        grid.attach(vseparator, 1, 2, 1, 1)
+        grid.attach(label3, 2, 2, 1, 1)
+        grid.set_column_homogeneous(True)
+        # add the grid to the window
+        self.add(grid)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="reference">
+    <title>API Reference</title>
+    <p>In this sample we used the following:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkSeparator.html">GtkSeparator</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkGrid.html">GtkGrid</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkLabel.html">GtkLabel</link></p></item>
+    </list>
+  </section>
+
+</page>

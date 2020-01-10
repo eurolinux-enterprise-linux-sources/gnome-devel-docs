@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.py" xml:lang="fr">
+
+  <info>
+    <title type="text">Guitar tuner (Python)</title>
+    <link type="guide" xref="py#examples"/>
+
+    <desc>Use GTK+ and GStreamer to build a simple guitar tuner application for GNOME. Shows off how to use the interface designer.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="stub"/>
+    <credit type="author">
+      <name>Projet de Documentation GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Guitar tuner</title>
+
+<synopsis>
+  <p>Dans ce tutoriel, nous allons écrire un programme qui émet des sons servant à accorder une guitare. Nous allons apprendre comment :</p>
+  <list>
+    <item><p>créer un projet basique dans Anjuta,</p></item>
+    <item><p>créer une interface graphique simple avec le concepteur d'interface utilisateur d'Anjuta,</p></item>
+    <item><p>utiliser GStreamer pour émettre des sons.</p></item>
+  </list>
+  <p>Vous avez besoin de ce qui suit pour pouvoir suivre ce tutoriel :</p>
+  <list>
+    <item><p>l'installation du paquet <link xref="getting-ready">Anjuta IDE</link>,</p></item>
+    <item><p>de connaissances de base du langage de programmation Python.</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/guitar-tuner.png"/>
+
+<section id="anjuta">
+  <title>Création d'un projet dans Anjuta</title>
+  <p>Avant de commencer à programmer, vous devez ouvrir un nouveau projet dans Anjuta. Ceci crée tous les fichiers qui vous sont nécessaires pour construire et exécuter votre programme plus tard. C'est aussi utile pour tout regrouper en un seul endroit.</p>
+  <steps>
+    <item>
+    <p>Lancez Anjuta et cliquez sur <guiseq><gui>Fichier</gui><gui>Nouveau</gui><gui>Projet</gui></guiseq> pour ouvrir l'assistant de création de projet.</p>
+    </item>
+    <item>
+    <p>Sélectionnez <gui>PyGTK (automake)</gui> dans l'onglet <gui>Python</gui>, cliquez sur <gui>Continuer</gui> et saisissez vos informations sur les pages suivantes. Utilisez <file>guitar-tuner</file> comme nom de projet et de répertoire.</p>
+   	</item>
+    <item>
+    <p>Cliquez sur <gui>Appliquer</gui> et le projet est créé. Ouvrez <file>src/guitar_tuner.py</file> depuis l'onglet <gui>Projet</gui> ou l'onglet <gui>Fichiers</gui>. Vous devez voir apparaître du code commençant par les lignes :</p>
+    <code mime="test/x-python"><![CDATA[
+from gi.repository import Gtk, GdkPixbuf, Gdk
+import os, sys]]></code>
+    </item>
+  </steps>
+</section>
+
+<section id="run">
+  <title>Exécution du programme pour la première fois</title>
+  <p>La plupart du code dans ce fichier est générique. Il charge une fenêtre (vide) à partir du fichier de description de l'interface et l'affiche. Vous trouverez plus de détails ci-dessous ; passez cette liste si vous comprenez les bases :</p>
+
+  <list>
+  <item>
+    <p>Les lignes <code>import</code> tout en haut, indiquent à Python de charger l'interface utilisateur et les bibliothèques système nécessaires.</p>
+   </item>
+   <item>
+    <p>Nous déclarons une classe qui est la classe principale de notre application. Dans la méthode <code>__init__</code>, la fenêtre principale est chargée depuis le fichier GtkBuilder (<file>src/guitar-tuner.ui</file>) et les signaux sont connectés.</p>
+    <p>Connecter des signaux, c'est décider de ce qui doit se passer quand on appuie sur un bouton ou quand quelque chose d'autre se produit. Ici, la méthode <code>destroy</code> est appelée (et quitte l'application) quand la fenêtre est fermée.</p>
+   </item>
+   <item>
+    <p>La fonction <code>main</code> est exécutée par défaut quand vous lancez une application Python. Elle crée juste une instance de la classe principale et démarre la boucle principale pour afficher la fenêtre.</p>
+   </item>
+  </list>
+
+  <p>Le programme est prêt à être utilisé et vous pouvez l'exécuter avec <guiseq><gui>Exécuter</gui><gui>Exécuter</gui></guiseq>.</p>
+</section>
+
+<section id="ui">
+  <title>Création de l'interface utilisateur</title>
+  <p>Une description de l'interface utilisateur est contenue dans le fichier GtkBuilder. Pour la modifier, ouvrez le fichier <file>src/guitar_tuner.ui</file>. Ceci vous bascule vers le concepteur d'interface. La fenêtre de conception se trouve au centre ; les éléments graphiques et leurs propriétés sont sur la droite et la palette des composants graphiques disponibles est sur la gauche.</p>
+  <p>La disposition de toute interface utilisateur dans GTK+ est organisée à l'aide de boîtes et de tableaux. Dans cet exemple, prenons une <gui>GtkButtonBox</gui> verticale pour y mettre six <gui>GtkButtons</gui>, un pour chacune des six cordes de la guitare.</p>
+
+<media type="image" mime="image/png" src="media/guitar-tuner-glade.png"/>
+
+  <steps>
+   <item>
+   <p>Choisissez une <gui>GtkButtonBox</gui> (Boîte) dans la section <gui>Conteneurs</gui> de la <gui>Palette</gui> à droite et mettez-la dans la fenêtre. Dans l'onglet <gui>Propriétés</gui>, définissez le nombre d'éléments à 6 (pour les six cordes) et l'orientation à verticale.</p>
+   </item>
+   <item>
+    <p>Ensuite, choisissez un <gui>GtkButton</gui> (Bouton) dans la palette et mettez-le dans la première partie de la boîte.</p>
+   </item>
+   <item>
+    <p>Pendant que le bouton est encore sélectionné, modifiez la propriété <gui>Étiquette</gui> dans l'onglet <gui>Composants graphiques</gui> à <gui>E</gui>. C'est la corde E du bas.</p>
+    </item>
+    <item>
+     <p>Passez à l'onglet <gui>Signaux</gui> (dans l'onglet <gui>Composants graphiques</gui>) et recherchez le signal <code>clicked</code> du bouton. Vous pouvez l'utiliser pour connecter un gestionnaire de signal qui sera appelé quand le bouton est cliqué. Pour cela, cliquez sur le signal et saisissez <code>on_button_clicked</code> dans la colonne <gui>Gestionnaire</gui> et appuyez sur <key>Entrée</key>.</p>
+    </item>
+    <item>
+    <p>Répétez cette procédure pour les autres boutons, ce qui ajoute les 5 autres cordes nommées <em>A</em>, <em>D</em>, <em>G</em>, <em>B</em> et <em>e</em>.</p>
+    </item>
+    <item>
+    <p>Enregistrez le fichier de conception de l'interface utilisateur (en cliquant sur <guiseq><gui>Fichier</gui><gui>Enregistrer</gui></guiseq>) et laissez-le ouvert.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="signal">
+  <title>Écriture du gestionnaire de signal</title>
+  <p>Dans le concepteur d'interface utilisateur, il a été fait en sorte que tous les boutons appellent la même fonction, <gui>on_button_clicked</gui> quand ils sont cliqués. Nous devons ajouter cette fonction dans notre fichier source.</p>
+<p>Pour cela, ouvrez <file>guitar_tuner.py</file> pendant que le fichier interface utilisateur est encore ouvert. Allez au même onglet <gui>Signaux</gui> que vous aviez déjà utilisé pour nommer le signal. Prenez la ligne où vous aviez défini le signal <gui>clicked</gui> et faites-la glisser dans la classe du fichier source. Le code suivant s'ajoute à votre fichier source :</p>
+<code mime="text/x-csrc"><![CDATA[
+def on_button_clicked (self, button):
+]]></code>
+
+  <p>Ce récepteur de signal possède deux arguments : le pointeur classique de Python et <code>Gtk.Button</code> qui appelle la fonction.</p>
+  <p>Laissons le gestionnaire de signal vide pour l'instant et écrivons le code qui produit les sons.</p>
+</section>
+
+<section id="gstreamer">
+  <title>Les pipelines GStreamer</title>
+  <p>GStreamer est l'architecture multimédia de GNOME — vous pouvez vous en servir pour des jeux, des enregistrements, pour traiter des flux vidéo, audio, de webcam entre autres. Ici, nous allons nous en servir pour émettre des tonalités à une seule fréquence.</p>
+  <p>Le concept de GStreamer est le suivant : il y a création d'un <em>pipeline</em> contenant plusieurs éléments de traitement en provenance d'une <em>source</em> à destination d'un <em>collecteur</em> (sortie). La source peut être un fichier image, une vidéo ou un fichier musical, par exemple, et la sortie un élément graphique ou une carte son.</p>
+  <p>Entre la source et le collecteur, vous pouvez appliquer différents filtres et convertisseurs pour prendre en charge les effets, les conversions de format et ainsi de suite. Chaque élément du pipeline possède des propriétés pouvant être utilisées pour modifier son comportement.</p>
+  <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
+    <p>Un exemple de pipeline GStreamer.</p>
+  </media>
+</section>
+
+<section id="pipeline">
+  <title>Configuration du pipeline</title>
+  <p>Dans ce petit exemple, nous utilisons une source génératrice de son de fréquence pure appelée <code>audiotestsrc</code> et envoyons sa sortie au périphérique son par défaut du système, <code>autoaudiosink</code>. Il nous faut seulement configurer la fréquence du générateur accessible depuis la propriété <code>freq</code> de <code>audiotestsrc</code>.</p>
+
+  <p>Modifiez la ligne import au début du fichier <file>guitar_tuner.py</file> en :</p>
+  <code mime="test/x-python"><![CDATA[from gi.repository import Gtk, Gst, GObject ]]></code>
+  <p><code>Gst</code> contient la bibliothèque de GStreamer. Il vous faut aussi initialiser correctement GStreamer ce qui est réalisé dans la méthode <code>main()</code> par cet appel à ajouter au-dessus de la ligne <code>app = GUI()</code> :</p>
+  <code mime="test/x-python"><![CDATA[Gst.init_check(sys.argv)]]></code>
+  <p>Copiez ensuite la fonction suivante quelque part dans la classe de <file>guitar_tuner.py</file> :</p>
+  <code mime="test/x-python"><![CDATA[
+def play_sound(self, frequency):
+	pipeline = Gst.Pipeline(name='note')
+	source = Gst.ElementFactory.make('audiotestsrc', 'src')
+	sink = Gst.ElementFactory.make('autoaudiosink', 'output')
+
+	source.set_property('freq', frequency)
+	pipeline.add(source)
+	pipeline.add(sink)
+	source.link(sink)
+	pipeline.set_state(Gst.State.PLAYING)
+
+	GObject.timeout_add(self.LENGTH, self.pipeline_stop, pipeline)]]></code>
+  <steps>
+    <item>
+    <p>Les trois premières lignes créent les éléments GStreamer source et sink (collecteur) et un élément pipeline (qui sera utilisé comme conteneur pour les deux autres éléments). Le pipeline est nommé « note » ; la source est nommée « source » et est définie comme étant le connecteur <code>audiotestsrc</code> et le collecteur est nommé « output » et est défini comme étant le connecteur <code>autoaudiosink</code> (qui est la sortie par défaut de la carte son).</p>
+    </item>
+    <item>
+    <p>L'appel à <code>source.set_property</code> définit la propriété <code>freq</code> de l'élément source à <code>frequency</code> qui est transmis comme argument de la fonction <code>play_sound</code>. Il s'agit simplement de la fréquence de la note de musique en Hertz ; certaines fréquences utiles seront définies plus tard.</p>
+    </item>
+    <item>
+    <p>Les deux lignes suivantes appellent <code>pipeline.add</code> qui place la source et le collecteur dans le pipeline. Le pipeline peut contenir beaucoup d'autres éléments GStreamer. En général, vous pouvez ajouter autant d'éléments que vous voulez au pipeline en faisant autant d'appels supplémentaires à <code>add</code>.</p>
+    </item>
+    <item>
+    <p>Ensuite, <code>pipeline.set_state</code> est utilisé pour démarrer la lecture en basculant l'état du pipeline à « playing » (lecture) (<code>Gst.State.PLAYING</code>).</p>
+    </item>
+  </steps>
+
+</section>
+
+<section id="playback">
+  <title>Arrêt de la lecture</title>
+  <p>Comme nous ne voulons pas jouer indéfiniment une note ennuyeuse, la dernière chose que fait <code>play_sound</code> est d'appeler <code>GObject.timeout_add</code> qui définit un délai avant la coupure du son ; cela attend <code>LENGTH</code> millisecondes avant d'appeler la fonction <code>pipeline_stop</code> et continuera à l'appeler jusqu'à ce que <code>pipeline_stop</code> renvoie la valeur <code>False</code>.</p>
+  <p>Écrivons maintenant la fonction <code>pipeline_stop</code> qui est appelée par <code>GObject.timeout_add</code>. Insérez le code suivant <em>au-dessus</em> de la fonction <code>play_sound</code> :</p>
+  <code mime="test/x-python"><![CDATA[
+def pipeline_stop(self, pipeline):
+	pipeline.set_state(Gst.State.NULL)
+	return False
+]]></code>
+  <p>Vous devez définir la constante <code>LENGTH</code> dans la classe, donc ajoutez ce code au début de la classe principale :</p>
+  <code mime="test/x-python"><![CDATA[
+LENGTH = 500
+]]></code>
+  <p>The call to <code>pipeline.set_state</code> stops the playback of the pipeline.</p>
+</section>
+
+<section id="tones">
+  <title>Définition des notes</title>
+  <p>Nous voulons jouer la note adéquate quand l'utilisateur clique sur un bouton. Avant tout, nous devons connaître la fréquence de chacune des six cordes de la guitare qui sont définies (au début de la classe principale) dans un dictionnaire de façon à pouvoir facilement les associer aux noms des cordes :</p>
+  <code mime="test/x-python"><![CDATA[
+# Frequencies of the strings
+frequencies = {
+	'E': 329.63,
+	'A': 440,
+	'D': 587.33,
+	'G': 783.99,
+	'B': 987.77,
+	'e': 1318.5
+}
+]]></code>
+  <p>Maintenant, nous allons étoffer le gestionnaire de signal <code>on_button_clicked</code> défini auparavant. Nous aurions pu connecter chaque bouton à un gestionnaire différent, mais cela aurait dupliqué beaucoup de code. Au lieu de ça, nous allons plutôt utiliser l'étiquette du bouton pour déterminer le bouton cliqué :</p>
+  <code mime="test/x-python"><![CDATA[
+def on_button_clicked(self, button):
+	label = button.get_child()
+	text = label.get_label()
+
+	self.play_sound (self.frequencies[text])
+]]></code>
+  <p>Le bouton qui a été cliqué est transmis comme argument (<code>button</code>) à <code>on_button_clicked</code>. On peut obtenir l'étiquette de ce bouton en utilisant <code>button.get_child</code> puis en extrayant le texte de cette étiquette avec <code>label.get_label</code>.</p>
+  <p>Le texte de cette étiquette est alors utilisé comme clé du dictionnaire et la fonction <code>play_sound</code> est appelée avec la fréquence appropriée à cette note. Cela joue la note ; nous avons un accordeur de guitare opérationnel !</p>
+</section>
+
+<section id="run2">
+  <title>Exécution de l'application</title>
+  <p>Tout le programme nécessaire doit maintenant être fonctionnel. Cliquez sur <guiseq><gui>Exécuter</gui><gui>Exécuter</gui></guiseq> pour lancer l'application. Amusez-vous bien !</p>
+</section>
+
+<section id="impl">
+ <title>Implémentation de référence</title>
+ <p>Si vous rencontrez des difficultés avec ce tutoriel, comparez votre programme à ce <link href="guitar-tuner/guitar-tuner.py">programme de référence</link>.</p>
+</section>
+
+<section id="next">
+  <title>Les étapes suivantes</title>
+  <p>Voici quelques idées sur la manière d'étendre ce simple exemple :</p>
+  <list>
+   <item>
+   <p>Faire que le programme joue automatiquement les notes de manière cyclique.</p>
+   </item>
+   <item>
+   <p>Faire que le programme lise des enregistrements de vraies cordes de guitare pincées.</p>
+   <p>Pour y parvenir, vous devrez configurer un pipeline GStreamer un peu plus sophistiqué qui vous permette de charger et lire des fichiers musicaux. Vous devrez choisir des éléments GStreamer <link href="http://gstreamer.freedesktop.org/documentation/plugins.html">décodeur et démuxeur</link> basés sur le format des sons enregistrés — par exemple, les MP3 utilisent des éléments différents de ceux des fichiers Ogg Vorbis.</p>
+   <p>Il vous faudra aussi peut-être connecter les éléments de façon plus complexe. Vous aurez sans doute besoin de consulter les <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/chapter-intro-basics.html">concepts GStreamer</link> que nous ne couvrons pas dans ce tutoriel, comme les <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-intro-basics-pads.html">pads</link>. La commande <cmd>gst-inspect</cmd> peut également vous être utile.</p>
+   </item>
+   <item>
+   <p>Analyser automatiquement les notes jouées par l'utilisateur.</p>
+   <p>Vous pourriez branchez un microphone et enregistrez les sons obtenus en utilisant l'<link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-autoaudiosrc.html">entrée source</link>. Peut-être qu'une espèce d'<link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-plugin-spectrum.html">analyseur de spectre</link> peut vous aider à trouver les notes jouées ?</p>
+   </item>
+  </list>
+</section>
+
+</page>

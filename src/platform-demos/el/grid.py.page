@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="grid.py" xml:lang="el">
+  <info>
+    <title type="text">Πλέγμα (Python)</title>
+    <link type="guide" xref="beginner.py#layout"/>
+    <link type="seealso" xref="label.py"/>
+    <link type="next" xref="separator.py"/>
+    <revision version="0.2" date="2012-08-01" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Πακετάρισμα γραφικών στοιχείων σε γραμμές και στήλες</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Πλέγμα</title>
+
+  <media type="image" mime="image/png" src="media/grid_simple.png"/>
+  <p>Μερικές ετικέτες σε ένα πλέγμα.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+    <code mime="text/python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Grid Example", application=app)
+
+        # three labels
+        label_top_left = Gtk.Label(label="This is Top Left")
+        label_top_right = Gtk.Label(label="This is Top Right")
+        label_bottom = Gtk.Label(label="This is Bottom")
+
+        # a grid
+        grid = Gtk.Grid()
+
+        # some space between the columns of the grid
+        grid.set_column_spacing(20)
+
+        # in the grid:
+        # attach the first label in the top left corner
+        grid.attach(label_top_left, 0, 0, 1, 1)
+        # attach the second label
+        grid.attach(label_top_right, 1, 0, 1, 1)
+        # attach the third label below the first label
+        grid.attach_next_to(
+            label_bottom, label_top_left, Gtk.PositionType.BOTTOM, 2, 1)
+
+        # add the grid to the window
+        self.add(grid)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο πλέγματος</title>
+
+    <list>
+      <item><p>Για να προσαρτήσετε ένα <code>child</code> γραφικό στοιχείο σε θέση <code>left, top</code> σε μια υποδοχή του δοσμένου <code>width, height</code> χρησιμοποιήστε <code>attach(child, top, left, width, height)</code>. Εάν ένα <code>sibling</code> γραφικό στοιχείο είναι ήδη στη θέση, μπορούμε να χρησιμοποιήσουμε επίσης <code>attach_next_to(child, sibling, side, width, height)</code>, όπου <code>side</code> είναι ένα από τα <code>Gtk.PositionType.LEFT, Gtk.PositionType.RIGHT, Gtk.PositionType.TOP, Gtk.PositionType.BOTTOM</code>.</p></item>
+      <item><p><code>insert_row(position)</code> και <code>insert_column(position)</code> κάνουν ακριβώς ότι λένε· τα θυγατρικά που προσαρτώνται σε αυτή τη θέση ή από κάτω της μετακινούνται μια γραμμή κάτω και τα θυγατρικά που καλύπτουν κατά μήκος αυτή τη θέση επεκτείνονται για να καλύψουν τη νέα γραμμή. <code>insert_next_to(sibling, side)</code> εισάγει μια γραμμή ή στήλη στη συγκεκριμένη θέση. Η νέα γραμμή ή στήλη τοποθετείται δίπλα στο <code>sibling</code>, στην πλευρά που ορίστηκε από <code>side</code>; εάν η πλευρά είναι <code>Gtk.PositionType.TOP</code> ή <code>Gtk.PositionType.BOTTOM</code>, εισάγεται μια γραμμή, εάν η πλευρά είναι <code>Gtk.PositionType.LEFT</code> του <code>Gtk.PositionType.RIGHT</code>, εισάγεται μια στήλη.</p></item>
+      <item><p><code>set_row_homogeneous(True)</code> και <code>set_column_homogeneous(True)</code> βεβαιώνουν ότι (αντίστοιχα) κάθε γραμμή ή στήλη έχει το ίδιο πλάτος ή ύψος.</p></item>
+      <item><p><code>set_row_spacing(spacing)</code> και <code>set_column_spacing(spacing)</code> εξαναγκάζουν ένα διάκενο μεταξύ (αντίστοιχα) γραμμών ή στηλών. Η τιμή του <code>spacing</code> μπορεί να είναι μεταξύ <code>0</code>, που είναι η προεπιλεγμένη τιμή και <code>32767</code>.</p></item>
+    </list>
+
+  </section>
+
+  <section id="references">
+    <title>Αναφορές API</title>
+    <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplication.html">GtkApplication</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplicationWindow.html">GtkApplicationWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkLabel.html">GtkLabel</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkImage.html">GtkImage</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkGrid.html">GtkGrid</link></p></item>
+    </list>
+  </section>
+</page>

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="model-view-controller.py" xml:lang="el">
+
+<info>
+    <title type="text">Η σχεδίαση προτύπου/προβολής/ελεγκτή (Python)</title>
+  <link type="guide" xref="beginner.py#theory"/>
+  <link type="next" xref="combobox_multicolumn.py"/>
+  <revision version="0.1" date="2012-06-30" status="stub"/>
+
+  <desc>Η σχεδίαση προτύπου/προβολής/ελεγκτή</desc>
+  <credit type="author copyright">
+    <name>Sebastian Pölsterl</name>
+    <email its:translate="no">sebp@k-d-w.org</email>
+    <years>2011</years>
+  </credit>
+  <credit type="author copyright editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012</years>
+  </credit>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Η σχεδίαση προτύπου/προβολής/ελεγκτή</title>
+
+<links type="section"/>
+
+<section id="overview">
+<title>Επισκόπηση</title>
+
+<p>Αμφότερα τα γραφικά στοιχεία <link xref="treeview_simple_liststore.py">TreeView</link> και <link xref="combobox.py">ComboBox</link> κατασκευάζονται στη σχεδίαση <em>πρότυπο/προβολή/ελεγκτής</em>. Το <em>πρότυπο</em> (μια εφαρμογή του <code>Gtk.TreeModel</code>, συνήθως <code>Gtk.TreeStore</code> ή <code>Gtk.ListStore</code>) αποθηκεύει τα δεδομένα· η <em>προβολή</em> (π.χ. <code>Gtk.TreeView</code>, <code>Gtk.ComboBox</code>, ή <code>Gtk.ComboBoxText</code>) δέχεται ειδοποιήσεις αλλαγής και εμφανίζει το περιεχόμενο του προτύπου. Ο <em>ελεγκτής</em>, τελικά, αλλάζει την κατάσταση του προτύπου (μέσα από κάποιες μεθόδους στην εφαρμογή του προτύπου - όπως <code>append()</code> ή <code>remove()</code>) και ειδοποιεί την προβολή αυτών των αλλαγών (μέσα από σήματα όπως <code>"changed"</code>).</p>
+
+</section>
+
+<section id="model">
+<title>Το πρότυπο</title>
+
+<p>Η κύρια διαφορά μεταξύ των δύο κύριων εφαρμογών του <code>Gtk.TreeModel</code> είναι ότι η <code>Gtk.ListStore</code> περιέχει απλές γραμμές δεδομένων χωρίς θυγατρικά, ενώ η <code>Gtk.TreeStore</code> περιέχει επίσης γραμμές δεδομένων, αλλά κάθε γραμμή μπορεί να έχει θυγατρικές γραμμές (που με τη σειρά τους μπορούν να έχουν θυγατρικές γραμμές κ.ο.κ).</p>
+
+<p>Τα δεδομένα στο πρότυπο μπορούν να ανακτηθούν ή να τροποποιηθούν χρησιμοποιώντας την επανάληψη δένδρου και δείκτη στήλης, ή <code>Gtk.TreeIter</code>, ή <code>Gtk.TreePath</code>.</p>
+
+<p>Όπως με την ενσωματωμένη λίστα αντικειμένων του Python μπορείτε να χρησιμοποιήσετε <code>len()</code> για να πάρετε τον αριθμό των γραμμών και χρησιμοποιήστε τμήματα για ανάκτηση ή ορισμό τιμών. Αλλιώς, η μέθοδος <code>append()</code> επιστρέφει ένα στιγμιότυπο <code>Gtk.TreeIter</code>, που δείχνει στη θέση της νεοεισαγμένης γραμμής. Μπορείτε επίσης να ανακτήσετε μια <code>Gtk.TreeIter</code> καλώντας <code>get_iter()</code>.</p>
+
+<p>Καθώς η <code>Gtk.ListStore</code> περιέχει μόνο ένα επίπεδο, δηλαδή κόμβους που δεν έχουν οποιουσδήποτε θυγατρικούς κόμβους, μια διαδρομή είναι βασικά ένας δείκτης της γραμμής που θέλετε να προσπελάσετε. Στην περίπτωση της <code>Gtk.TreeStore</code>, μια διαδρομή είναι μια λίστα δεικτών ή μιας συμβολοσειράς. Η μορφή συμβολοσειράς είναι μια λίστα αριθμών διαχωριζόμενων με μία άνω-κάτω τελεία. Κάθε αριθμός αναφέρεται στην αντιστάθμιση αυτής της στάθμης. Έτσι, η διαδρομή <code>"0"</code> αναφέρεται στον ριζικό κόμβο και η διαδρομή <code>"2:4"</code> αναφέρεται στον πέμπτο θυγατρικό του τρίτου κόμβου.</p>
+
+<p>Χρήσιμες μέθοδοι για ένα <code>Gtk.TreeModel</code>:</p>
+<list>
+  <item><p>Η <code>get_iter(path)</code> επιστρέφει ένα στιγμιότυπο <code>Gtk.TreeIter</code> που δείχνει στη <code>path</code>. Αυτό αναμένεται να είναι μια λίστα αριθμών διαχωριζόμενων με διπλή τελεία, ή μια πλειάδα. Για παράδειγμα, η συμβολοσειρά <code>"10:4:0"</code> είναι ισοδύναμη με την πλειάδα <code>(10, 4, 0)</code>, καθώς και οι δυο μπορούν να δημιουργήσουν μια διαδρομή βάθους 3 που να δείχνει στην 11η θυγατρική του ριζικού κόμβου, την 5η θυγατρική της 11ης θυγατρικής και 1η θυγατρική της 5ης θυγατρικής.</p></item>
+  <item><p>Η <code>iter_next(treeiter)</code> επιστρέφει ένα στιγμιότυπο <code>Gtk.TreeIter</code> που δείχνει τον κόμβο που ακολουθεί την treeiter στο τρέχον επίπεδο ή <code>None</code> εάν δεν υπάρχει επόμενη επανάληψη.</p></item>
+  <item><p>Η <code>iter_has_child(treeiter)</code> επιστρέφει <code>True</code> εάν η <code>treeiter</code> έχει θυγατρικά, αλλιώς <code>False</code>.</p></item>
+  <item><p>Η <code>iter_children(treeiter)</code> επιστρέφει ένα στιγμιότυπο <code>Gtk.TreeIter</code> που δείχνει στην πρώτη θυγατρική της <code>treeiter</code> ή <code>None</code> εάν η <code>treeiter</code> δεν έχει θυγατρικές.</p></item>
+  <item><p>Η <code>get_iter_first()</code> επιστρέφει ένα στιγμιότυπο <code>Gtk.TreeIter</code> που δείχνει στον πρώτο επαναλήπτη στο δένδρο (αε αυτόν στη διαδρομή <code>"0"</code>) ή <code>None</code> εάν το δένδρο είναι κενό.</p></item>
+</list>
+
+<p>Χρήσιμες μέθοδοι για μια <code>Gtk.ListStore</code>:</p>
+<list>
+  <item><p>Η <code>append(row)</code> προσαρτά μια νέα γραμμή σε αυτή την αποθήκη λίστας, όπου <code>row</code> μπορεί να είναι μια λίστα τιμών για κάθε στήλη· η <code>row</code> μπορεί επίσης να παραλειφθεί ή <code>None</code> και σε αυτήν την περίπτωση μια κενή γραμμή θα προσαρτηθεί. Η μέθοδος επιστρέφει μια <code>Gtk.TreeIter</code> που δείχνει στην προσαρτημένη γραμμή.</p></item>
+  <item><p>Η <code>remove(iter)</code> αφαιρεί την <code>iter</code> από την <code>Gtk.ListStore</code> και επιστρέφει <code>True</code> εάν η επανάληψη είναι έγκυρη και <code>False</code> εάν η επανάληψη δεν είναι. Μετά την αφαίρεση, η <code>iter</code> ορίζεται να είναι η επόμενη έγκυρη γραμμή.</p></item>
+</list>
+
+<p>Χρήσιμες μέθοδοι για μία <code>Gtk.TreeStore</code>:</p>
+<list>
+  <item><p>Η <code>append(parent, row)</code> προσαρτά μια νέα γραμμή σε αυτήν την αποθήκη δένδρου· ο <code>parent</code> πρέπει να είναι μια έγκυρη Gtk.TreeIter. Εάν ο γονικός δεν είναι <code>None</code>, τότε θα προσαρτήσει τη νέα γραμμή μετά την τελευταία θυγατρική του γονικού, αλλιώς θα προσαρτήσει μια γραμμή στο κορυφαίο επίπεδο· η <code>row</code> μπορεί να είναι μια λίστα τιμών για κάθε στήλη, ή μπορεί να παραληφθεί ή <code>None</code>· στην τελευταία περίπτωση μια κενή γραμμή θα προσαρτηθεί. Η μέθοδος επιστρέφει μια <code>Gtk.TreeIter</code> που δείχνει την προσαρτημένη γραμμή.</p></item>
+  <item><p>Η <code>remove(iter)</code> αφαιρεί την <code>iter</code> από την <code>Gtk.ListStore</code> και επιστρέφει <code>True</code> εάν η επανάληψη είναι έγκυρη και <code>False</code> εάν η επανάληψη δεν είναι. Μετά την αφαίρεση, η <code>iter</code> ορίζεται να είναι η επόμενη έγκυρη γραμμή.</p></item>
+</list>
+
+</section>
+
+<section id="treeview">
+<title>Η προβολή: η περίπτωση TreeView</title>
+
+<p>Μια Treeview δείχνει τη δομή των θυγατρικών και γονικών στοιχείων ως ένα δένδρο. Δείτε για παράδειγμα <link xref="treeview_treestore.py">αυτό το παράδειγμα</link>.</p>
+
+<p>Η <code>Gtk.TreeViewColumn</code> χρησιμοποιείται για οργάνωση των κάθετων στηλών.</p>
+
+<p>Χρήσιμες μέθοδοι για μια <code>Gtk.TreeView</code>:</p>
+<list>
+  <item><p>Ο <code>set_model(model)</code> ορίζει το πρότυπο για αυτήν την προβολή δένδρου. Εάν αυτή η προβολή δένδρου έχει ήδη ένα σύνολο προτύπων, θα το αφαιρέσει πριν τη ρύθμιση του νέου προτύπου. Εάν το πρότυπο είναι <code>None</code>, τότε θα αναιρέσει το παλιό πρότυπο.</p></item>
+  <item><p>Η <code>get_model()</code> επιστρέφει το πρότυπο αυτής της προβολής δένδρου στο οποίο βασίζεται, <code>None</code> εάν το πρότυπο έχει αναιρεθεί.</p></item>
+  <item><p>Η <code>append_column(column)</code> προσαρτά <code>column</code> στη λίστα των στηλών.</p></item>
+  <item><p>Η <code>get_selection()</code> παίρνει την <code>Gtk.TreeSelection</code> συσχετισμένη με αυτήν την προβολή δένδρου.</p></item>
+</list>
+
+<p>Χρήσιμες μέθοδοι για μια <code>Gtk.TreeViewColumn</code>:</p>
+<list>
+  <item><p>Η <code>add_attribute(renderer, attribute, value)</code> προσθέτει μια απεικόνιση γνωρίσματος σε αυτήν τη στήλη. Το <code>attribute</code> είναι η παράμετρος στον <code>renderer</code> για να οριστεί από την <code>value</code></p></item>
+  <item><p>Η <code>pack_start(renderer, expand)</code> πακετάρει τον <code>renderer</code> στην αρχή αυτής της στήλης. Εάν η <code>expand</code> είναι <code>False</code>, τότε στον <code>renderer</code> δεν κατανέμεται περισσότερος χώρος από όσο χρειάζεται. Οποιοσδήποτε αχρησιμοποίητος χώρος διαιρείται εξίσου μεταξύ των κελιών για τα οποία η επέκταση είναι <code>True</code>.</p></item>
+  <item><p>Το <code>pack_end(renderer, expand)</code> προσθέτει τον <code>renderer</code> στο τέλος αυτής της στήλης. Εάν η <code>expand</code> είναι <code>False</code>, τότε στον <code>renderer</code> δεν κατανέμεται περισσότερος χώρος από όσο χρειάζεται. Οποιοσδήποτε αχρησιμοποίητος χώρος διαιρείται εξίσου μεταξύ των κελιών για τα οποία η <code>expand</code> είναι <code>True</code>.</p></item>
+  <item><p>Η <code>set_sort_column_id(sort_column_id)</code> ορίζει τη στήλη του προτύπου σύμφωνα με το οποίο αυτή η στήλη (της προβολής) πρέπει να ταξινομηθεί. Αυτό επίσης κάνει την κεφαλίδα της στήλης επιλέξιμη.</p></item>
+  <item><p>Η <code>set_sort_indicator(setting)</code> ορίζει εάν ένα μικρό βέλος εμφανίζεται στην κεφαλίδα της στήλης· η <code>setting</code> μπορεί ή να είναι <code>True</code> (ο δείκτης προβάλλεται) ή <code>False</code>.</p></item>
+  <item><p>Η <code>set_sort_order(order)</code> αλλάζει τη σειρά με την οποία η στήλη ταξινομείται· η <code>order</code> μπορεί να είναι είτε <code>Gtk.SortType.ASCENDING</code> ή <code>Gtk.SortType.DESCENDING</code>.</p></item>
+</list>
+
+</section>
+
+<section id="combobox">
+<title>Η προβολή: η περίπτωση ComboBox</title>
+
+<p>Ένα <code>Gtk.ComboBox</code> επιτρέπει την επιλογή ενός στοιχείου από ένα πτυσσόμενο μενού, δείτε <link xref="combobox.py">αυτό το παράδειγμα</link>. Για μια λίστα κειμενικών επιλογών, μπορεί κάποιος να χρησιμοποιήσει πιο απλό <code>Gtk.ComboBoxText</code>. Αμφότερα τα <code>Gtk.ComboBox</code> και <code>Gtk.ComboBoxText</code> μπορούν να περιέχουν μια καταχώριση.</p>
+
+<p>Χρήσιμες μέθοδοι για ένα <code>Gtk.ComboBox</code>:</p>
+<list>
+  <item><p>Η στατική μέθοδος <code>new_with_entry()</code> δημιουργεί ένα νέο κενό <code>Gtk.ComboBox</code> με μια εισαγωγή· η στατική μέθοδος <code>new_with_model(model)</code> δημιουργεί μια νέα με το αρχικοποιημένο πρότυπο στο <code>model</code>· και η στατική μέθοδος <code>new_with_model_and_entry(model)</code> είναι ένας συνδυασμός των δύο.</p></item>
+  <item><p>Η <code>get_active_iter()</code> επιστρέφει μια <code>Gtk.TreeIter</code> που δείχνει στο τρέχον ενεργό στοιχείο. Εάν δεν υπάρχει ενεργό στοιχείο, επιστρέφεται <code>None</code>.</p></item>
+  <item><p>Ο <code>set_model(model)</code> ορίζει το χρησιμοποιούμενο πρότυπο από αυτό το σύνθετο πλαίσιο για να είναι <code>model</code> και θα αναιρέσει ένα προηγούμενο πρότυπο συνόλου (εάν υπάρχει κάποιο). Εάν το <code>model</code> είναι <code>None</code>, τότε θα αναιρέσει το πρότυπο. Σημειώστε ότι αυτή η συνάρτηση δεν καθαρίζει τους απεικονιστές κελιών.</p></item>
+  <item><p>Ο <code>set_entry_text_column(text_column)</code> ορίζει τη στήλη προτύπου την οποία αυτό το σύνθετο πλαίσιο πρέπει να χρησιμοποιήσει για να πάρει συμβολοσειρές από <code>text_column</code>. Η στήλη <code>text_column</code> σε αυτό το πρότυπο αυτού του σύνθετου πλαισίου πρέπει να είναι του τύπου <code>str</code> (αυτό είναι κατάλληλο μόνο εάν αυτό το σύνθετο πλαίσιο δημιουργήθηκε με την ιδιότητα “has-entry” ορισμένη σε αληθή).</p></item>
+  <item><p>Ο <code>set_wrap_width(width)</code> ορίζει το πλάτος αναδίπλωσης αυτού του σύνθετου πλαισίου να είναι <code>width</code>. Το πλάτος αναδίπλωσης είναι βασικά ο προτιμώμενος αριθμός των στηλών όταν θέλετε το αναδυόμενο να εμφανιστεί σε ένα πλέγμα.</p></item>
+</list>
+
+<p>Χρήσιμες μέθοδοι για ένα <code>Gtk.ComboBoxText</code>:</p>
+<list>
+  <item><p>Η στατική μέθοδος <code>new_with_entry()</code> δημιουργεί ένα νέο κενό <code>Gtk.ComboBoxText</code> με μια εγγραφή.</p></item>
+  <item><p>Η <code>append_text(text)</code> προσαρτά το <code>text</code> στη λίστα των αποθηκευμένων συμβολοσειρών σε αυτό το σύνθετο πλαίσιο.</p></item>
+  <item><p>Η <code>get_active_text()</code> επιστρέφει την τρέχουσα ενεργή συμβολοσειρά σε αυτό το σύνθετο πλαίσιο ή <code>None</code> εάν δεν επιλέγεται τίποτα. Εάν αυτό το σύνθετο πλαίσιο περιέχει μια εγγραφή, αυτή η συνάρτηση θα επιστρέψει τα περιεχόμενα της (που δεν θα είναι αναγκαστικά ένα στοιχείο από τη λίστα).</p></item>
+</list>
+
+</section>
+
+<section id="cellrenderer">
+<title>Η προβολή: οι απεικονιστές κελιού</title>
+
+<p>Η προβολή κάνει χρήση των <code>Gtk.CellRenderer</code> των ποικίλων τύπων σχεδίασης των δεδομένων.</p>
+
+<p>Εφαρμογές του <code>Gtk.CellRenderer</code> και χρήσιμες μέθοδοι:</p>
+<list>
+  <item><p><code>Gtk.CellRendererText</code> - αποδίδει κείμενο σε ένα κελί</p></item>
+  <item><p><code>Gtk.CellRendererToggle</code> - αποδίδει μια εναλλαγή ή ραδιοπλήκτρο σε ένα κελί. Χρήσιμες μέθοδοι:</p>
+    <list>
+    <item><p><code>set_active(setting)</code> - ενεργοποιεί ή απενεργοποιεί έναν απεικονιστή κελιών</p></item>
+    <item><p><code>get_active()</code> - επιστρέφει εάν ο απεικονιστής κελιών είναι ενεργός</p></item>
+    <item><p><code>set_radio(radio)</code> - εάν το ραδιοπλήκτρο είναι <code>True</code>, ο απεικονιστής κελιών αποδίδει μια εναλλαγή του ραδιοπλήκτρου (δηλαδή μια εναλλαγή σε μια ομάδα αμοιβαία αποκλειόμενων εναλλαγών)· εάν <code>False</code>, αποδίδει μια εναλλαγή ελέγχου (μια αυτόνομη επιλογή τιμής Μπουλ)</p></item>
+    <item><p><code>get_radio()</code> - επιστρέφει εάν αποδίδουμε ραδιοεναλλαγές αντί για πλαίσια ελέγχου.</p></item>
+    </list>
+  </item>
+  <item><p><code>Gtk.CellRendererPixbuf</code> - αποδίδει μια εικόνα σε ένα κελί</p></item>
+  <item><p><code>Gtk.CellRendererCombo</code> - αποδίδει κείμενο σε ένα κελί· αλλά ενώ το <code>Gtk.CellRendererText</code> προσφέρει μια απλή εγγραφή για επεξεργασία του κειμένου, το <code>Gtk.CellRendererCombo</code> προσφέρει ένα γραφικό στοιχείο <code>Gtk.ComboBox</code> για επεξεργασία του κειμένου. Μπορεί να χρησιμοποιηθεί με και χωρίς ένα συσχετισμένο γραφικό στοιχείο Gtk.Entry, ανάλογα με την τιμή της ιδιότητας “has-entry”.</p></item>
+  <item><p><code>Gtk.CellRendererProgress</code> - αποδίδει μια αριθμητική τιμή ως μια γραμμή προόδου σε ένα κελί· μπορεί να εμφανίσει ένα κείμενο στην κορυφή της γραμμής προόδου</p></item>
+  <item><p><code>Gtk.CellRendererSpinner</code> - αποδίδει μια κίνηση μέτρησης σε ένα κελί</p></item>
+  <item><p><code>Gtk.CellRendererSpin</code> - αποδίδει ένα κουμπί περιστροφής σε ένα κελί</p></item>
+  <item><p><code>Gtk.CellRendererAccel</code> - αποδίδει έναν επιταχυντή πληκτρολογίου σε ένα κελί</p></item>
+</list>
+
+</section>
+
+<section id="selection">
+<title>Ο ελεγκτής: η επιλογή</title>
+
+<p>Οι περισσότερες εφαρμογές θα χρειαστεί να αντιμετωπίσουν μόνο εμφανιζόμενα δεδομένα, αλλά επίσης να δεχθούν συμβάντα εισαγωγής από τους χρήστες. Για να γίνει αυτό, πάρτε απλά μια αναφορά σε ένα αντικείμενο επιλογής και συνδεθείτε στο σήμα <code>"changed"</code>.</p>
+
+<code mime="text/x-python">
+select = tree.get_selection()
+select.connect("changed", on_tree_selection_changed)
+</code>
+
+<p>Έπειτα για να ανακτήσετε δεδομένα για την επιλεγμένη γραμμή:</p>
+
+<code mime="text/x-python">
+def on_tree_selection_changed(selection):
+    model, treeiter = selection.get_selected()
+    if treeiter != None:
+        print "You selected", model[treeiter][0]
+</code>
+
+<p>Χρήσιμες μέθοδοι για <code>Gtk.TreeSelection</code>:</p>
+
+<list>
+  <item><p><code>set_mode(type)</code> ορίζει τον τύπο της επιλογής, όπου τύπος είναι ένας από</p>
+  <list>
+    <item><p><code>Gtk.SelectionMode.NONE</code> - καμιά επιλογή δεν είναι δυνατή</p></item>
+    <item><p><code>Gtk.SelectionMode.SINGLE</code> - κανένα ή ένα στοιχείο μπορεί να επιλεγεί</p></item>
+    <item><p><code>Gtk.SelectionMode.BROWSE</code> - ακριβώς ένα στοιχείο επιλέγεται. Σε μερικές περιπτώσεις, όπως αρχικά ή κατά τη διάρκεια μιας λειτουργίας αναζήτησης, είναι δυνατό να μην επιλεγεί κανένα στοιχείο. Αυτό που είναι πραγματικά υποχρεωτικό είναι να μην μπορεί να αποεπιλέξει ο χρήστης ένα τρέχον επιλεγμένο στοιχείο εκτός από την επιλογή ενός άλλου στοιχείου.</p></item>
+    <item><p><code>Gtk.SelectionMode.MULTIPLE</code> - οποιοσδήποτε αριθμός στοιχείων μπορεί να επιλεγεί. Το πάτημα εναλλάσσει την κατάσταση ενός στοιχείου. Το πλήκτρο Ctrl μπορεί να χρησιμοποιηθεί για μεγέθυνση της επιλογής και το πλήκτρο Shift για επιλογή μεταξύ εστίασης και του θυγατρικού στο οποίο δείχνει. Μερικά γραφικά στοιχεία μπορούν επίσης να επιτρέψουν πάτημα-μεταφορά για επιλογή μιας περιοχής στοιχείων.</p></item>
+  </list>
+  </item>
+  <item><p><code>get_selected()</code> επιστρέφει μια πλειάδα <code>(model, treeiter)</code>, όπου <code>model</code> είναι το τρέχον πρότυπο και <code>treeiter</code> ένα <code>Gtk.TreeIter</code> που δείχνει στην τρέχουσα επιλεγμένη γραμμή, ή τίποτα εάν δεν επιλεγούν γραμμές. Η μέθοδος δεν δουλεύει εάν η κατάσταση επιλογής οριστεί σε <code>Gtk.SelectionMode.MULTIPLE</code>· σε αυτήν την περίπτωση, χρησιμοποιήστε <code>get_selected_rows()</code>, που επιστρέφει μια λίστα στιγμιοτύπων <code>Gtk.TreePath</code> όλων των επιλεγμένων γραμμών.</p></item>
+</list>
+
+</section>
+
+<section id="references">
+<title>Αναφορές</title>
+
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeModel.html">GtkTreeModel</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeView.html">GtkTreeView</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeViewColumn.html">GtkTreeViewColumn</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkComboBox.html">GtkComboBox</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCellRenderer.html">GtkCellRenderer</link></p></item>
+</list>
+
+</section>
+
+</page>

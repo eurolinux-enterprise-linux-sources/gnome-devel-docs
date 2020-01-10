@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.c" xml:lang="fr">
+
+  <info>
+    <title type="text">Guitar tuner (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>Use GTK+ and GStreamer to build a simple guitar tuner application for GNOME. Shows off how to use the interface designer.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="review"/>
+    <credit type="author">
+      <name>Projet de Documentation GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Guitar tuner</title>
+
+<synopsis>
+  <p>Dans ce tutoriel, nous allons écrire un programme qui émet des sons servant à accorder une guitare. Nous allons apprendre comment :</p>
+  <list>
+    <item><p>créer un projet basique dans Anjuta,</p></item>
+    <item><p>créer une interface graphique simple avec le concepteur d'interface utilisateur d'Anjuta,</p></item>
+    <item><p>utiliser GStreamer pour émettre des sons.</p></item>
+  </list>
+  <p>Vous avez besoin de ce qui suit pour pouvoir suivre ce tutoriel :</p>
+  <list>
+    <item><p>l'installation du paquet <link xref="getting-ready">Anjuta IDE</link>,</p></item>
+    <item><p>des connaissances de base de la programmation en langage C</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/guitar-tuner.png"/>
+
+<section id="anjuta">
+  <title>Création d'un projet dans Anjuta</title>
+  <p>Avant de commencer à programmer, vous devez ouvrir un nouveau projet dans Anjuta. Ceci crée tous les fichiers qui vous sont nécessaires pour construire et exécuter votre programme plus tard. C'est aussi utile pour tout regrouper en un seul endroit.</p>
+  <steps>
+    <item>
+    <p>Lancez Anjuta et cliquez sur <guiseq><gui>Fichier</gui><gui>Nouveau</gui><gui>Projet</gui></guiseq> pour ouvrir l'assistant de création de projet.</p>
+    </item>
+    <item>
+    <p>Choose <gui>GTK+ (Simple)</gui> from the <gui>C</gui> tab, click <gui>Continue</gui>, and fill out your details on the next few pages. Use <file>guitar-tuner</file> as project name and directory.</p>
+   	</item>
+    <item>
+    <p>Assurez-vous que <gui>Configuration des paquets externes</gui> est basculée sur <gui>I</gui>. Sur la page suivante, choisissez <em>gstreamer-0.10</em> dans la liste pour inclure la bibliothèque GStreamer à votre projet.</p>
+    </item>
+    <item>
+    <p>Cliquez sur <gui>Appliquer</gui> et votre projet est créé. Ouvrez <file>src/main.c</file> depuis l'onglet <gui>Projet</gui> ou l'onglet <gui>Fichiers</gui>. Vous devez voir apparaître du code commençant par les lignes :</p>
+    <code mime="text/x-csrc"><![CDATA[
+#include <config.h>
+#include <gtk/gtk.h>]]></code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Première construction du programme</title>
+  <p>« C » est un langage plutôt verbeux, donc ne soyez pas surpris par la quantité de code que contient le fichier. La plupart du code est générique. Il charge une fenêtre (vide) à partir du fichier de description de l'interface et l'affiche. Vous trouverez plus de détails ci-dessous ; passez cette liste si vous comprenez les bases :</p>
+
+  <list>
+  <item>
+    <p>Les trois lignes <code>#include</code> du haut incorporent les bibliothèques <code>config</code> (définitions utiles pour la construction autoconf), <code>gtk</code> (interface utilisateur) et <code>gi18n</code> (pour internationalisation). Les fonctions de ces bibliothèques seront utilisées dans le reste du programme.</p>
+   </item>
+   <item>
+    <p>La fonction <code>create_window</code> crée une nouvelle fenêtre en ouvrant un fichier GtkBuilder (<file>src/guitar-tuner.ui</file>, défini quelques lignes plus haut), en connectant ses signaux et en l'affichant dans une fenêtre. Le fichier GtkBuilder contient une description de l'interface utilisateur et de tous ses éléments. Vous pouvez utiliser l'éditeur d'Anjuta pour concevoir des interfaces utilisateur GtkBuilder.</p>
+    <p>Connecter des signaux, c'est décider de ce qui doit se passer quand on appuie sur un bouton ou quand quelque chose d'autre se produit. Ici, la fonction <code>destroy</code> est appelée (et quitte l'application) quand la fenêtre est fermée.</p>
+   </item>
+   <item>
+    <p>La fonction <code>main</code> est exécutée par défaut quand vous lancez une application C. Elle appelle d'autres fonctions qui configurent puis lancent l'application. La fonction <code>gtk_main</code> démarre la boucle principale de GTK, qui lance l'interface utilisateur et commence à écouter les événements (comme des clics de souris ou des appuis sur des touches).</p>
+   </item>
+   <item>
+    <p>La définition conditionnelle <code>ENABLE_NLS</code> configure <code>gettext</code> qui est un environnement pour la traduction des applications. Ces fonctions définissent la façon dont les objets de traduction doivent prendre en charge votre application quand vous l'exécutez.</p>
+   </item>
+  </list>
+
+  <p>Le programme est prêt à être utilisé, donc vous pouvez le compiler en cliquant sur <guiseq><gui>Construire</gui><gui>Construire le projet</gui></guiseq> ou en appuyant sur <keyseq><key>Maj</key><key>F7</key></keyseq>.</p>
+  <p>Cliquez sur <gui>Exécuter</gui> dans la fenêtre suivante pour configurer une construction avec débogage. Vous ne devez le faire qu'une seule fois, lors de la première exécution.</p>
+</section>
+
+<section id="ui">
+  <title>Création de l'interface utilisateur</title>
+  <p>Une description de l'interface utilisateur est contenue dans le fichier GtkBuilder. Pour la modifier, ouvrez le fichier <file>src/guitar_tuner.ui</file>. Ceci vous bascule vers le concepteur d'interface. La fenêtre de conception se trouve au centre ; les éléments graphiques et leurs propriétés sont sur la gauche et la palette des composants graphiques disponibles est sur la droite.</p>
+  <p>La disposition de toute interface utilisateur dans GTK+ est organisée à l'aide de boîtes et de tableaux. Dans cet exemple, prenons une <gui>GtkButtonBox</gui> verticale pour y mettre six <gui>GtkButtons</gui>, un pour chacune des six cordes de la guitare.</p>
+
+<media type="image" mime="image/png" src="media/guitar-tuner-glade.png"/>
+
+  <steps>
+   <item>
+   <p>Choisissez une <gui>GtkButtonBox</gui> (Boîte) dans la section <gui>Conteneurs</gui> de la <gui>Palette</gui> à droite et mettez-la dans la fenêtre. Dans l'onglet <gui>Propriétés</gui>, définissez le nombre d'éléments à 6 (pour les six cordes) et l'orientation à verticale.</p>
+   </item>
+   <item>
+    <p>Ensuite, choisissez un <gui>GtkButton</gui> (Bouton) dans la palette et mettez-le dans la première partie de la boîte.</p>
+   </item>
+   <item>
+    <p>Pendant que le bouton est encore sélectionné, modifiez la propriété <gui>Étiquette</gui> dans l'onglet <gui>Composants graphiques</gui> à <gui>E</gui>. C'est la corde E du bas.</p>
+    </item>
+    <item>
+     <p>Passez à l'onglet <gui>Signaux</gui> (dans l'onglet <gui>Composants graphiques</gui>) et recherchez le signal <code>clicked</code> du bouton. Vous pouvez l'utiliser pour connecter un gestionnaire de signal qui sera appelé quand le bouton est cliqué. Pour cela, cliquez sur le signal et saisissez <code>on_button_clicked</code> dans la colonne <gui>Gestionnaire</gui> et appuyez sur <key>Entrée</key>.</p>
+    </item>
+    <item>
+    <p>Répétez cette procédure pour les autres boutons, ce qui ajoute les 5 autres cordes nommées <em>A</em>, <em>D</em>, <em>G</em>, <em>B</em> et <em>e</em>.</p>
+    </item>
+    <item>
+    <p>Enregistrez le fichier de conception de l'interface utilisateur (en cliquant sur <guiseq><gui>Fichier</gui><gui>Enregistrer</gui></guiseq>) et laissez-le ouvert.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="signal">
+  <title>Création du gestionnaire de signal</title>
+  <p>Dans le concepteur d'interface utilisateur, il a été fait en sorte que tous les boutons appellent la même fonction, <gui>on_button_clicked</gui> quand ils sont cliqués. Nous devons ajouter cette fonction dans notre fichier source.</p>
+  <p>Pour cela, ouvrez <file>main.c</file> pendant que le fichier de l'interface utilisateur est encore ouvert. Allez au même onglet <gui>Signaux</gui> que vous aviez déjà utilisé pour nommer le signal. Prenez la ligne où vous aviez défini le signal <gui>clicked</gui> et faites la glisser quelque part à l'extérieur d'une fonction dans le fichier source. Le code suivant s'ajoute à votre fichier source :</p>
+<code mime="text/x-csrc"><![CDATA[
+void on_button_clicked (GtkWidget* button, gpointer user_data)
+{
+
+}]]></code>
+  <p>Ce récepteur de signal a deux arguments : un pointeur vers le <code>GtkWidget</code> qui a appelé la fonction (dans notre cas, toujours un <code>GtkButton</code>) et un pointeur sur des « données utilisateur » (user_data) que vous pouvez définir, mais que nous n'utilisons pas ici (les données utilisateur peuvent être définies par un appel à la fonction <code>gtk_builder_connect_signals</code> ; il sert normalement à transmettre un pointeur à une structure de données auxquelles vous pouvez avoir besoin d'accéder à l'intérieur du gestionnaire de signal).</p>
+  <p>Laissons le gestionnaire de signal vide pour l'instant et écrivons le code qui produit les sons.</p>
+</section>
+
+<section id="gstreamer">
+  <title>Les pipelines GStreamer</title>
+  <p>GStreamer est l'architecture multimédia de GNOME — vous pouvez vous en servir pour des jeux, des enregistrements, pour traiter des flux vidéo, audio, de webcam entre autres. Ici, nous allons nous en servir pour émettre des tonalités à une seule fréquence.</p>
+  <p>Le concept de GStreamer est le suivant : il y a création d'un <em>pipeline</em> contenant plusieurs éléments de traitement en provenance d'une <em>source</em> à destination d'un <em>collecteur</em> (sortie). La source peut être un fichier image, une vidéo ou un fichier musical, par exemple, et la sortie un élément graphique ou une carte son.</p>
+  <p>Entre la source et le collecteur, vous pouvez appliquer différents filtres et convertisseurs pour prendre en charge les effets, les conversions de format et ainsi de suite. Chaque élément du pipeline possède des propriétés pouvant être utilisées pour modifier son comportement.</p>
+  <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
+    <p>Un exemple de pipeline GStreamer.</p>
+  </media>
+</section>
+
+<section id="pipeline">
+  <title>Configuration du pipeline</title>
+  <p>Dans ce petit exemple, nous utilisons une source génératrice de son de fréquence pure appelée <code>audiotestsrc</code> et envoyons sa sortie au périphérique son par défaut du système, <code>autoaudiosink</code>. Il nous faut seulement configurer la fréquence du générateur accessible depuis la propriété <code>freq</code> de <code>audiotestsrc</code>.</p>
+
+  <p>Insert the following line into <file>main.c</file>, just below the <code><![CDATA[#include <gtk/gtk.h>]]></code> line:</p>
+  <code mime="text/x-csrc"><![CDATA[#include <gst/gst.h>]]></code>
+  <p>Cela inclut la bibliothèque de GStreamer. Ajoutez aussi une ligne pour initialiser GStreamer ; mettez le code suivant dans la ligne au-dessus de <code>gtk_init</code> dans la fonction <code>main</code> :</p>
+  <code><![CDATA[gst_init (&argc, &argv);]]></code>
+  <p>Ensuite, copiez la fonction suivante dans le fichier <file>main.c</file> au-dessus de la fonction vide <code>on_button_clicked</code> :</p>
+  <code mime="text/x-csrc"><![CDATA[static void
+play_sound (gdouble frequency)
+{
+	GstElement *source, *sink;
+	GstElement *pipeline;
+
+	pipeline = gst_pipeline_new ("note");
+	source   = gst_element_factory_make ("audiotestsrc",
+	                                     "source");
+	sink     = gst_element_factory_make ("autoaudiosink",
+	                                     "output");
+
+	/* set frequency */
+	g_object_set (source, "freq", frequency, NULL);
+
+	gst_bin_add_many (GST_BIN (pipeline), source, sink, NULL);
+	gst_element_link (source, sink);
+
+	gst_element_set_state (pipeline, GST_STATE_PLAYING);
+
+	/* stop it after 500ms */
+	g_timeout_add (LENGTH, (GSourceFunc) pipeline_stop, pipeline);
+}]]></code>
+
+  <steps>
+    <item>
+    <p>Les cinq premières lignes créent les éléments GStreamer source et sink (collecteur) et un élément pipeline (qui sera utilisé comme conteneur pour les deux autres éléments). Le pipeline est nommé « note » ; la source est nommée « source » et définie comme étant le connecteur <code>audiotestsrc</code> et le collecteur est nommé « output » et défini comme étant le connecteur <code>autoaudiosink</code> (qui est la sortie par défaut de la carte son).</p>
+    </item>
+    <item>
+    <p>L'appel à <code>g_object_set</code> définit la propriété <code>freq</code> de l'élément source à <code>frequency</code> qui est transmis comme argument de la fonction <code>play_sound</code>. Il s'agit simplement de la fréquence de la note de musique en Hertz ; certaines fréquences utiles seront définies plus tard.</p>
+    </item>
+    <item>
+    <p><code>gst_bin_add_many</code> place la source et le collecteur dans le pipeline. Le pipeline est un <code>GstBin</code> qui est juste un élément qui peut contenir beaucoup d'autres éléments GStreamer. En général, vous pouvez ajouter autant d'éléments que vous voulez au pipeline en ajoutant d'autres d'arguments à <code>gst_bin_add_many</code>.</p>
+    </item>
+    <item>
+    <p>Ensuite, <code>gst_element_link</code> est utilisé pour connecter les éléments ensemble, de sorte que la sortie de la source (une note) va à l'entrée du collecteur (et est ensuite envoyée à la carte son). <code>gst_element_set_state</code> sert enfin à démarrer la lecture en basculant l'état du pipeline à « playing » (lecture) (<code>GST_STATE_PLAYING</code>).</p>
+    </item>
+  </steps>
+
+</section>
+
+<section id="stop">
+  <title>Arrêt de la lecture</title>
+  <p>Comme nous ne voulons pas jouer indéfiniment une note ennuyeuse, la dernière chose que fait <code>play_sound</code> est d'appeler <code>g_timeout_add</code> qui définit un délai avant la coupure du son ; cela attend <code>LENGTH</code> millisecondes avant d'appeler la fonction <code>pipeline_stop</code> et continuera à l'appeler jusqu'à ce que <code>pipeline_stop</code> renvoie la valeur <code>FALSE</code>.</p>
+  <p>Écrivons maintenant la fonction <code>pipeline_stop</code> qui est appelée par <code>g_timeout_add</code>. Insérez le code suivant <em>au-dessus</em> de la fonction <code>play_sound</code> :</p>
+  <code mime="text/x-csrc"><![CDATA[
+#define LENGTH 500 /* Length of playing in ms */
+
+static gboolean
+pipeline_stop (GstElement* pipeline)
+{
+	gst_element_set_state (pipeline, GST_STATE_NULL);
+	g_object_unref (pipeline);
+
+	return FALSE;
+}]]></code>
+  <p>The call to <code>gst_element_set_state</code> stops the playback of the pipeline and <code>g_object_unref</code> unreferences the pipeline, destroying it and freeing its memory.</p>
+</section>
+
+<section id="tones">
+  <title>Définition des notes</title>
+  <p>Nous voulons jouer la note adéquate quand l'utilisateur clique sur un bouton. Avant tout, nous devons connaître la fréquence de chacune des six cordes de la guitare qui sont définies (au début du fichier <file>main.c</file>) ainsi :</p>
+  <code mime="text/x-csrc"><![CDATA[
+/* Frequencies of the strings */
+#define NOTE_E 329.63
+#define NOTE_A 440
+#define NOTE_D 587.33
+#define NOTE_G 783.99
+#define NOTE_B 987.77
+#define NOTE_e 1318.5]]></code>
+  <p>Maintenant, nous allons étoffer le gestionnaire de signal <code>on_button_clicked</code> défini auparavant. Nous aurions pu connecter chaque bouton à un gestionnaire différent, mais cela aurait dupliqué beaucoup de code. Au lieu de ça, nous allons plutôt utiliser l'étiquette du bouton pour déterminer le bouton cliqué :</p>
+  <code mime="text/x-csrc"><![CDATA[
+/* Callback for the buttons */
+void on_button_clicked (GtkButton* button,
+                        gpointer user_data)
+{
+	const gchar* text = gtk_button_get_label (button);
+
+	if (g_str_equal (text, _("E")))
+	    play_sound (NOTE_E);
+	else if (g_str_equal (text, _("A")))
+	    play_sound (NOTE_A);
+	else if (g_str_equal (text, _("G")))
+	    play_sound (NOTE_G);
+	else if (g_str_equal (text, _("D")))
+	    play_sound (NOTE_D);
+	else if (g_str_equal (text, _("B")))
+	    play_sound (NOTE_B);
+	else if (g_str_equal (text, _("e")))
+	    play_sound (NOTE_e);
+}
+]]></code>
+  <p>A pointer to the <code>GtkButton</code> that was clicked is passed as an argument (<code>button</code>) to <code>on_button_clicked</code>. We can get the text of that button using <code>gtk_button_get_label</code>.</p>
+  <p>The text is then compared to the notes that we have using <code>g_str_equal</code>, and <code>play_sound</code> is called with the frequency appropriate for that note. This plays the tone; we have a working guitar tuner!</p>
+</section>
+
+<section id="run">
+  <title>Construction et lancement de l'application</title>
+  <p>À ce stade, tout le programme est fonctionnel. Cliquez sur <guiseq><gui>Construire</gui><gui>Construire le projet</gui></guiseq> pour tout reconstruire et faites <guiseq><gui>Exécuter</gui><gui>Exécuter</gui></guiseq> pour lancer l'application.</p>
+  <p>Si ce n'est déjà fait, choisissez l'application <file>Debug/src/guitar-tuner</file> dans la boîte de dialogue qui s'affiche. Enfin, cliquez sur <gui>Exécuter</gui> et amusez-vous !</p>
+</section>
+
+<section id="impl">
+ <title>Implémentation de référence</title>
+ <p>Si vous rencontrez des difficultés avec ce tutoriel, comparez votre programme à ce <link href="guitar-tuner/guitar-tuner.c">programme de référence</link>.</p>
+</section>
+
+<section id="next">
+  <title>Les étapes suivantes</title>
+  <p>Voici quelques idées sur la manière d'étendre ce simple exemple :</p>
+  <list>
+   <item>
+   <p>Faire que le programme joue automatiquement les notes de manière cyclique.</p>
+   </item>
+   <item>
+   <p>Faire que le programme lise des enregistrements de vraies cordes de guitare pincées.</p>
+   <p>Pour y parvenir, vous devrez configurer un pipeline GStreamer un peu plus sophistiqué qui vous permette de charger et lire des fichiers musicaux. Vous devrez choisir des éléments GStreamer <link href="http://gstreamer.freedesktop.org/documentation/plugins.html">décodeur et démuxeur</link> basés sur le format des sons enregistrés — par exemple, les MP3 utilisent des éléments différents de ceux des fichiers Ogg Vorbis.</p>
+   <p>Il vous faudra aussi peut-être connecter les éléments de façon plus complexe. Vous aurez sans doute besoin de consulter les <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/chapter-intro-basics.html">concepts GStreamer</link> que nous ne couvrons pas dans ce tutoriel, comme les <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-intro-basics-pads.html">pads</link>. La commande <cmd>gst-inspect</cmd> peut également vous être utile.</p>
+   </item>
+   <item>
+   <p>Analyser automatiquement les notes jouées par l'utilisateur.</p>
+   <p>Vous pourriez branchez un microphone et enregistrez les sons obtenus en utilisant l'<link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-autoaudiosrc.html">entrée source</link>. Peut-être qu'une espèce d'<link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-plugin-spectrum.html">analyseur de spectre</link> peut vous aider à trouver les notes jouées ?</p>
+   </item>
+  </list>
+</section>
+
+</page>

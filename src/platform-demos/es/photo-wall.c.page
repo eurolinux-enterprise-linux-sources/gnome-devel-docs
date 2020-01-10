@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="photo-wall.c" xml:lang="es">
+  <info>
+    <title type="text">Mural de fotos (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>Un visor de imágenes Clutter</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-22" status="review"/>
+    <credit type="author">
+      <name>Chris Kühl</name>
+      <email its:translate="no">chrisk@openismus.com</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Mural de fotos</title>
+
+<synopsis>
+  <p>Para este ejemplo se construirá un sencillo visor de imágenes usando Clutter. Aprenderá:</p>
+  <list>
+    <item><p>Cómo dimensionar y posicionar varios <code>ClutterActor</code></p></item>
+    <item><p>Cómo situar una imagen en un <code>ClutterActor</code></p></item>
+    <item><p>Cómo hacer transiciones sencillas usando el entorno de trabajo de animaciones de Clutter</p></item>
+    <item><p>Cómo hacer que un <code>ClutterActor</code> responda a los eventos del ratón</p></item>
+    <item><p>Cómo obtener nombres de archivos de una carpeta</p></item>
+  </list>
+</synopsis>
+
+<section id="intro">
+  <title>Introducción</title>
+  <p>Clutter es una biblioteca para crear interfaces de usuarios dinámicas usando OpenGL para la aceleración gráfica. Este ejemplo demuestra una pequeña, pero importante parte de la biblioteca Clutter para crear un sencillo pero atractivo programa para ver imágenes.</p>
+  <p>Para ayudarle a conseguir su objetivo, también se utilizarán algunos fragmentos comunes de GLib. Más importante es que se usará un <code>GPtrArray</code>, una matriz dinámica de punteros, para mantener los nombres de ruta de archivos. También se usará <code>GDir</code>, una utilidad para trabajar dentro de carpetas, para acceder a la carpeta de imágenes y obtener las rutas de archivo.</p>
+</section>
+
+<section id="anjuta">
+  <title>Crear un proyecto en Anjuta</title>
+  <p>Antes de empezar a programar, deberá configurar un proyecto nuevo en Anjuta. Esto creará todos los archivos que necesite para construir y ejecutar el código más adelante. También es útil para mantener todo ordenado.</p>
+  <steps>
+    <item>
+    <p>Inicie Anjuta y pulse <guiseq><gui>Archivo</gui><gui>Nuevo</gui><gui>Proyecto</gui></guiseq> para abrir el asistente de proyectos.</p>
+    </item>
+    <item>
+    <p>Seleccione <gui>GTK+ (simple)</gui> en la pestaña <gui>C</gui>, pulse <gui>Continuar</gui>, y rellene los detalles en las siguientes páginas. Use <file>mural-de-fotos</file> como nombre del proyecto y de la carpeta.</p>
+   	</item>
+    <item>
+    <p>Asegúrese de que <gui>Usar GtkBuilder para la interfaz del usuario</gui> está desactivado, ya que, en este tutorial, la IU se creará manualmente. Revise el tutorial del <link xref="guitar-tuner.c">afinador de guitarra</link> usando el constructor de interfaces.</p>
+    </item>
+    <item>
+    <p>Active <gui>Configurar paquetes externos</gui>. En la página siguiente, seleccione <em>clutter-1.0</em> de la lista para incluir la biblioteca Clutter en su proyecto.</p>
+    </item>
+    <item>
+    <p>Pulse <gui>Aplicar</gui> y se creará el proyecto. Abra <file>src/main.c</file> desde las pestañas <gui>Proyecto</gui> o <gui>Archivo</gui>. Debería ver algo de código que comience con las líneas:</p>
+    <code mime="text/x-csrc">
+#include &lt;config.h&gt;
+#include &lt;gtk/gtk.h&gt;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="look">
+  <title>Un vistazo al mural de fotos</title>
+  <p>El visor de imágenes muestra al usuario un mural de imágenes.</p>
+  <media type="image" mime="image/png" src="media/photo-wall.png"/>
+  <p>Cuando se pulsa una imagen, esta se anima para que rellene el área de visualización. Cuando se pulsa la imagen que tiene el foco, vuelve a su tamaño original usando una animación que dura 500 milisegundos.</p>
+  <media type="image" mime="image/png" src="media/photo-wall-focused.png"/>
+</section>
+
+<section id="setup">
+  <title>Configuración inicial</title>
+  <p>El siguiente fragmento de código contiene muchas definiciones y variables que se usarán en las siguientes secciones. Úselo como referencia para las próximas secciones. Copie este código al principio de <file>src/main.c</file>:</p>
+<code mime="text/x-csrc" style="numbered">
+#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
+#include &lt;clutter/clutter.h&gt;
+
+#define STAGE_WIDTH  800
+#define STAGE_HEIGHT 600
+
+#define THUMBNAIL_SIZE 200
+#define ROW_COUNT (STAGE_HEIGHT / THUMBNAIL_SIZE)
+#define COL_COUNT (STAGE_WIDTH  / THUMBNAIL_SIZE)
+#define THUMBNAIL_COUNT (ROW_COUNT * COL_COUNT)
+
+#define ANIMATION_DURATION_MS 500
+
+#define IMAGE_DIR_PATH "./berlin_images/"
+
+static GPtrArray *img_paths;
+
+static ClutterPoint unfocused_pos;
+
+</code>
+</section>
+
+<section id="code">
+  <title>Saltar dentro del código</title>
+  <p>Se empezará echando un vistazo a la función <code>main()</code> completa. Luego se verá el resto de secciones del código en detalle. Cambie el archivo <file>src/main.c</file> para que contenga la función <code>main()</code>. Puede eliminar la función <code>create_window()</code>, ya que no se usa en este ejemplo.</p>
+  <code mime="text/x-csrc" style="numbered">
+int
+main(int argc, char *argv[])
+{
+    ClutterColor stage_color = { 16, 16, 16, 255 };
+    ClutterActor *stage = NULL;
+
+    if (clutter_init (&amp;argc, &amp;argv) != CLUTTER_INIT_SUCCESS)
+        return 1;
+
+    stage = clutter_stage_new();
+    clutter_actor_set_size(stage, STAGE_WIDTH, STAGE_HEIGHT);
+    clutter_actor_set_background_color(stage, &amp;stage_color);
+    clutter_stage_set_title(CLUTTER_STAGE (stage), "Photo Wall");
+    g_signal_connect(stage, "destroy", G_CALLBACK(clutter_main_quit), NULL);
+
+    load_image_path_names();
+
+    guint row = 0;
+    guint col = 0;
+    for(row=0; row &lt; ROW_COUNT; ++row)
+    {
+        for(col=0; col &lt; COL_COUNT; ++col)
+        {
+            const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col);
+            GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL);
+            ClutterContent *image = clutter_image_new ();
+            ClutterActor *actor = clutter_actor_new ();
+
+            if (pixbuf != NULL)
+            {
+                clutter_image_set_data(CLUTTER_IMAGE(image),
+                                       gdk_pixbuf_get_pixels(pixbuf),
+                                       gdk_pixbuf_get_has_alpha(pixbuf)
+                                           ? COGL_PIXEL_FORMAT_RGBA_8888
+                                           : COGL_PIXEL_FORMAT_RGB_888,
+                                       gdk_pixbuf_get_width(pixbuf),
+                                       gdk_pixbuf_get_height(pixbuf),
+                                       gdk_pixbuf_get_rowstride(pixbuf),
+                                       NULL);
+            }
+
+            clutter_actor_set_content(actor, image);
+            g_object_unref(image);
+            g_object_unref(pixbuf);
+
+            initialize_actor(actor, row, col);
+            clutter_actor_add_child(stage, actor);
+        }
+    }
+
+    /* Show the stage. */
+    clutter_actor_show(stage);
+
+    /* Start the clutter main loop. */
+    clutter_main();
+
+    g_ptr_array_unref(img_paths);
+
+    return 0;
+}</code>
+  <list>
+    <item><p>Línea 4: <code>ClutterColor</code> se define configurando los valores de rojo, verde, azul y de transparencia (alfa). Los valores van de 0 a 255. Para la transparencia, el valor 255 es opaco.</p></item>
+    <item><p>Línea 7: debe inicializar Clutter. Si olvida hacerlo, obtendrá mensajes muy extraños. Queda advertido.</p></item>
+    <item><p>Líneas 10-14: aquí es donde se crea un <code>ClutterStage</code> nuevo. Entonces se establece el tamaño usando el definido en la sección anterior y la dirección del <code>ClutterColor</code> que ya está definida.</p>
+      <note><p>Un <code>ClutterStage</code> es el nivel superior de un <code>ClutterActor</code> en el que se ubican otros <code>ClutterActor</code>.</p></note>
+</item>
+    <item><p>Línea 16: aquí se llama a la función para obtener las rutas de las imágenes. Esto se verá en breve.</p></item>
+    <item><p>Líneas 18-49: aquí es donde se configuran los <code>ClutterActor</code>, se cargan las imágenes y se colocan en su sitio en el mural de imágenes. Esto se verá con más detalle en la siguiente sección.</p></item>
+    <item><p>Línea 52: mostrar el escenario y <em>todos sus hijos</em>, es decir, las imágenes.</p></item>
+    <item><p>Línea 55: iniciar el bucle principal de Clutter.</p></item>
+  </list>
+</section>
+
+<section id="actors">
+  <title>Configurar los actores de imagen</title>
+ <note><p>En Clutter, un actor es el elemento visual más simple. Básicamente, todo lo que ve es un actor.</p></note>
+<p>En esta sección, se va a mirar más detenidamente el bucle usado para configurar los <code>ClutterActor</code> que mostrarán las imágenes.</p>
+  <code mime="text/x-csrc" style="numbered">
+guint row = 0;
+guint col = 0;
+for(row=0; row &lt; ROW_COUNT; ++row)
+{
+    for(col=0; col &lt; COL_COUNT; ++col)
+    {
+        const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col);
+        GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL);
+        ClutterContent *image = clutter_image_new ();
+        ClutterActor *actor = clutter_actor_new ();
+
+        if (pixbuf != NULL)
+        {
+            clutter_image_set_data(CLUTTER_IMAGE(image),
+                                   gdk_pixbuf_get_pixels(pixbuf),
+                                   gdk_pixbuf_get_has_alpha(pixbuf)
+                                       ? COGL_PIXEL_FORMAT_RGBA_8888
+                                       : COGL_PIXEL_FORMAT_RGB_888,
+                                   gdk_pixbuf_get_width(pixbuf),
+                                   gdk_pixbuf_get_height(pixbuf),
+                                   gdk_pixbuf_get_rowstride(pixbuf),
+                                   NULL);
+        }
+
+        clutter_actor_set_content(actor, image);
+        g_object_unref(image);
+        g_object_unref(pixbuf);
+
+        initialize_actor(actor, row, col);
+        clutter_actor_add_child(stage, actor);
+    }
+}
+
+</code>
+<list>
+  <item><p>Línea 7: aquí se quiere obtener la ruta a la ubicación número <var>n</var> en el <code>GPtrArray</code> que contiene los nombres de las rutas de las imágenes. La posición número <var>n</var> se calcula basándose en <code>row</code> y <code>col</code>.</p>
+  </item>
+  <item><p>Líneas 8-23: aquí es donde se crea el <code>ClutterActor</code> en sí y se ubica la imagen en el actor. El primer argumento es la ruta a la que se accede con el nodo de la <code>GSList</code>. El segundo argumento es para informar de un error, pero se ignora para simplificar.</p>
+  </item>
+  <item><p>Línea 47: esta añade el <code>ClutterActor</code> al escenario, que es un contenedor. Asume propiedad del <code>ClutterActor</code>, que es algo que querrá cuando profundice en el desarrollo de GNOME. Para obtener más detalles, consulte la <link href="http://library.gnome.org/devel/gobject/stable/gobject-memory.html">documentación de <code>GObject</code></link>.</p>
+  </item>
+</list>
+</section>
+
+<section id="load">
+  <title>Cargar las imágenes</title>
+  <p>Tómese un pequeño descanso de Clutter para ver cómo se pueden obtener los nombres de archivos desde la carpeta de imágenes.</p>
+  <code mime="text/x-csrc" style="numbered">
+static void
+load_image_path_names()
+{
+    /* Ensure we can access the directory. */
+    GError *error = NULL;
+    GDir *dir = g_dir_open(IMAGE_DIR_PATH, 0, &amp;error);
+    if(error)
+    {
+        g_warning("g_dir_open() failed with error: %s\n", error-&gt;message);
+        g_clear_error(&amp;error);
+        return;
+    }
+
+    img_paths = g_ptr_array_new_with_free_func (g_free);
+
+    const gchar *filename = g_dir_read_name(dir);
+    while(filename)
+    {
+        if(g_str_has_suffix(filename, ".jpg") || g_str_has_suffix(filename, ".png"))
+        {
+            gchar *path = g_build_filename(IMAGE_DIR_PATH, filename, NULL);
+            g_ptr_array_add (img_paths, path);
+        }
+        filename = g_dir_read_name(dir);
+    }
+}</code>
+  <list>
+    <item><p>Líneas 5 y 12: esto abre la carpeta o, si ocurre un error, termina después de mostrar un mensaje de error.</p></item>
+    <item><p>Líneas 16-25: la primera línea obtiene otro nombre de archivo del <code>GDir</code> abierto anteriormente. Si hay un archivo de imagen (se comprueba mirando si la extensión es «.png» o «.jpg») en la carpeta, se procede a anteponer la ruta de la carpeta de la imagen al nombre del archivo y se antepone en la lista creada anteriormente. Por último, se intenta obtener el nombre de la siguiente ruta y se vuelve a entrar en el bucle si se encuentra otro archivo.</p></item>
+  </list>
+</section>
+
+<section id="actors2">
+  <title>Configurar los actores</title>
+  <p>Eche un vistazo al tamaño y al posicionamiento de los <code>ClutterActor</code> y a cómo se deja listo el <code>ClutterActor</code> para la interacción del usuario.</p>
+  <code mime="text/x-csrc" style="numbered">
+/* This function handles setting up and placing the rectangles. */
+static void
+initialize_actor(ClutterActor *actor, guint row, guint col)
+{
+    clutter_actor_set_size(actor, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+    clutter_actor_set_position(actor, col * THUMBNAIL_SIZE, row * THUMBNAIL_SIZE);
+    clutter_actor_set_reactive(actor, TRUE);
+
+    g_signal_connect(actor,
+                     "button-press-event",
+                     G_CALLBACK(actor_clicked_cb),
+                     NULL);
+}</code>
+  <list>
+    <item>
+      <p>Línea 7: configurar un actor como «reactivo» significa que reacciona a los eventos tales como <code>button-press-event</code> en nuestro caso. Para el mural de fotos, todos los <code>ClutterActor</code> del mural deben ser inicialmente reactivos.</p>
+    </item>
+    <item>
+      <p>Líneas 9‒12: ahora se conecta el evento <code>button-press-event</code> al retorno de la llamada <code>actor_clicked_cb</code> que veremos más adelante.</p>
+    </item>
+  </list>
+  <p>En este punto tiene un mural de fotos que está listo para verse.</p>
+</section>
+
+<section id="click">
+  <title>Reaccionar a las pulsaciones</title>
+  <p>
+
+  </p>
+  <code mime="text/x-csrc" style="numbered">
+static gboolean
+actor_clicked_cb(ClutterActor *actor,
+                 ClutterEvent *event,
+                 gpointer      user_data)
+{
+    /* Flag to keep track of our state. */
+    static gboolean is_focused = FALSE;
+    ClutterActorIter iter;
+    ClutterActor *child;
+
+    /* Reset the focus state on all the images */
+    clutter_actor_iter_init (&amp;iter, clutter_actor_get_parent(actor));
+    while (clutter_actor_iter_next(&amp;iter, &amp;child))
+      clutter_actor_set_reactive(child, is_focused);
+
+    clutter_actor_save_easing_state(actor);
+    clutter_actor_set_easing_duration(actor, ANIMATION_DURATION_MS);
+
+    if(is_focused)
+    {
+        /* Restore the old location and size. */
+        clutter_actor_set_position(actor, unfocused_pos.x, unfocused_pos.y);
+        clutter_actor_set_size(actor, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+    }
+    else
+    {
+        /* Save the current location before animating. */
+        clutter_actor_get_position(actor, &amp;unfocused_pos.x, &amp;unfocused_pos.y);
+        /* Only the currently focused image should receive events. */
+        clutter_actor_set_reactive(actor, TRUE);
+
+        /* Put the focused image on top. */
+        clutter_actor_set_child_above_sibling(clutter_actor_get_parent(actor), actor, NULL);
+
+        clutter_actor_set_position(actor, (STAGE_WIDTH - STAGE_HEIGHT) / 2.0, 0);
+        clutter_actor_set_size(actor, STAGE_HEIGHT, STAGE_HEIGHT);
+    }
+
+    clutter_actor_restore_easing_state(actor);
+
+    /* Toggle our flag. */
+    is_focused = !is_focused;
+
+    return TRUE;
+}</code>
+  <list>
+    <item><p>Líneas 1‒4: hay que asegurarse de que la función de retorno de llamada coincide con la firma requerida para la señal <code>button_clicked_event</code>. En este ejemplo, sólo se usará el primer argumento, el <code>ClutterActor</code> pulsado actualmente.</p>
+<note>
+  <p>Unas pocas palabras sobre los argumentos que no se están usando en este ejemplo. El <code>ClutterEvent</code> es diferente dependiendo de qué evento se está manejando. Por ejemplo, un evento de clave produce un <code>ClutterKeyEvent</code> desde el que puede obtener la clave pulsada, entre otra información. Para eventos de pulsaciones del ratón, obtiene un <code>ClutterButtonEvent</code> con el que pueden obtener los valores <code>x</code> e <code>y</code>. Consulte la documentación de Clutter para obtener información sobre otros tipos de <code>ClutterEvent</code>.</p>
+  <p>El <code>user_data</code> es lo que se usa para pasar datos a la función. Se puede pasar un puntero a cualquier tipo de datos. Si necesita pasar varios datos al retorno de la llamada, puede colocarlos en una estructura y pasar un puntero a su dirección.</p>
+</note></item>
+    <item><p>Línea 7: se establece un indicador estático para seguir el estado en el que se está: modo mural o modo de foco. Se inicia en modo mural, por lo que ninguna imagen tiene el foco. Por ello, el indicador se establece inicialmente a <code>FALSE</code>.</p></item>
+    <item><p>Líneas 12-14: configuran los actores de imágenes para recibir eventos si obtienen el foco.</p></item>
+    <item><p>Línea 16-17: aquí se establece la duración de la animación y se guarda el estado actual.</p></item>
+    <item><p>Líneas 21-23: llegar a este código significa que actualmente solo una imagen tiene el foco, y se quiere volver al modo mural. Establecer una posición en un <code>ClutterActor</code> comienza una animación con la duración configurada en la línea 17.</p>
+    </item>
+    <item><p>Línea 24: llegar a esta línea de código significa que actualmente se está en el modo mural y se va a dar el foco a un <code>ClutterActor</code>. Aquí se guarda la posición inicial, por lo que se puede volver a ella más adelante.</p></item>
+    <item><p>Línea 25: establecer la propiedad <code>reactive</code> del <code>ClutterActor</code> a <code>TRUE</code> hace que este <code>ClutterActor</code> reaccione a los eventos. En el estado «con foco», el único <code>ClutterActor</code> que se quiere que reciba eventos es el <code>ClutterActor</code> que se está viendo. Al pulsar sobre el <code>ClutterActor</code> volverá a su posición inicial.</p></item>
+    <item><p>Líneas 27-36: aquí es donde se guarda la posición actual de la imagen, se configura para recibir eventos y se hace que aparezca sobre las otras, comenzando la animación para que llene el escenario.</p></item>
+    <item><p>Línea 39: aquí se restaura el estado a lo que era antes de que se cambiara en la línea 16.</p></item>
+    <item><p>Línea 42: aquí se alterna la opción <code>is_focused</code> al estado actual.</p></item>
+<item><p>Como se ha mencionado anteriormente, los <code>ClutterActor</code> con valores de <code>depth</code> más altos recibirán eventos, pero pueden permitir que los <code>ClutterActor</code> que están por denajo de ellos también reciban eventos. Al devolver <code>TRUE</code> se dejarán de enviar eventos havia abajo, mientras que <code>FALSE</code> hará que los eventos pasen hacia abajo.</p>
+ <note>
+   <p>Recuerde, sin embargo, que para que los <code>ClutterActor</code> reciban eventos deben establecerse como <code>reactive</code>.</p>
+ </note>
+</item>
+ </list>
+</section>
+
+<section id="run">
+  <title>Construir y ejecutar la aplicación</title>
+  <p>Todo el código debería estar listo para ejecutarse. Todo lo que necesita son algunas imágenes para cargar. De manera predeterminada, las imágenes se cargan desde la carpeta <file>berlin_images</file>. Si quiere, puede cambiar la línea <code>#define IMAGE_DIR_PATH</code> del principio para que haga referencia a su carpeta de fotos, o crear una carpeta <file>berlin_images</file> pulsando en <guiseq><gui>Proyecto</gui><gui>Carpeta nueva...</gui></guiseq> y creando una carpeta <file>berlin_images</file> como subcarpeta de la carpeta <file>mural-fotos</file>. Asegúrese de poner al menos doce imágenes en la carpeta.</p>
+  <p>Cuando lo haya hecho, pulse <guiseq><gui>Construir</gui><gui>Construir proyecto</gui></guiseq> para construir todo otra vez, y entonces pulse <guiseq><gui>Ejecutar</gui><gui>Ejecutar</gui></guiseq> para iniciar la aplicación.</p>
+  <p>Si todavía no lo ha hecho, elija la aplicación <file>Debug/src/photo-wall</file> en el diálogo que aparece. Finalmente, pulse <gui>Ejecutar</gui> y disfrute.</p>
+</section>
+
+<section id="impl">
+ <title>Implementación de referencia</title>
+ <p>Si tiene problemas con este tutorial, compare su código con este <link href="photo-wall/photo-wall.c">código de referencia</link>.</p>
+</section>
+
+</page>

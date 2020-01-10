@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinner.js" xml:lang="de">
+  <info>
+  <title type="text">Spinner (JavaScript)</title>
+    <link type="guide" xref="beginner.js#display-widgets"/>
+    <revision version="0.1" date="2012-06-03" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A spinner animation</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2011, 2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Spinner</title>
+  <media type="image" mime="image/png" src="media/spinner.png"/>
+  <p>This Spinner is stopped and started by pressing the spacebar.</p>
+
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Gdk = imports.gi.Gdk;
+const Lang = imports.lang;
+
+const SpinnerExample = new Lang.Class ({
+    Name: 'Spinner Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jsspinner',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+
+
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Spinner Example",
+            default_height: 200,
+            default_width: 200,
+            border_width: 30 });
+
+        // Create a spinner which starts spinning automatically
+        this._spinner = new Gtk.Spinner ({active: true});
+        this._window.add (this._spinner);
+
+        // Connect a keypress event to the function that makes it start or stop spinning
+        this._window.connect("key-press-event", Lang.bind(this, this._onKeyPress));
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+
+
+    _onKeyPress: function(widget, event) {
+
+        // Get the value of the key that was pressed
+        let keyval = event.get_keyval()[1];
+
+        // If it was the spacebar, toggle the spinner to start or stop
+        if (keyval == Gdk.KEY_space) {
+            if (this._spinner.active == true)
+                this._spinner.stop();
+            else
+                this._spinner.start();
+        }
+    }
+
+
+});
+
+// Run the application
+let app = new SpinnerExample ();
+app.application.run (ARGV);
+</code>
+<p>
+  In this sample we used the following:
+</p>
+<list>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gdk.html">Gdk - Key Values</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+    <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Spinner.html">Gtk.Spinner</link></p></item>
+</list>
+</page>

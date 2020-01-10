@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="hello-world.py" xml:lang="cs">
+
+  <info>
+  <title type="text">Hello World (Python)</title>
+    <link type="guide" xref="py#tutorial" group="#first"/>
+
+    <revision version="0.1" date="2013-06-17" status="review"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+    </credit>
+
+    <desc>Základní aplikace „Hello, world“</desc>
+  </info>
+
+  <title>Jak sestavit a nainstalovat program „Hello World“ a jak pro něj vytvořit balíček <file>tar.xz</file></title>
+    <media type="image" mime="image/png" style="floatend" src="media/hello-world.png"/>
+    <synopsis>
+      <p>Tato lekce ukazuje jak:</p>
+      <list style="numbered">
+        <item><p>vytvořit malou aplikaci „Hello, World“ pomocí jazyka Python a GTK+</p></item>
+        <item><p>vytvořit soubor <file>.desktop</file></p></item>
+        <item><p>nastavit sestavovací systém</p></item>
+      </list>
+    </synopsis>
+
+
+
+  <links type="section"/>
+
+  <section id="HelloWorld"><title>Vytvoření programu</title>
+
+    <links type="section"/>
+
+    <section id="imports"><title>Importované knihovny</title>
+      <code mime="text/x-python">from gi.repository import Gtk
+import sys</code>
+      <p>Aby náš skript fungoval s GNOME, musíme naimportovat knihovny GNOME přes GObject Introspection. Zde importujeme vazbu jazyka a GTK+, tj. knihovnu, která obsahuje grafické widgety používané k vytvoření aplikací GNOME.</p>
+    </section>
+
+    <section id="mainwindow"><title>Vytvoření hlavního okna pro aplikaci</title>
+      <code mime="text/x-python">class MyWindow(Gtk.ApplicationWindow):
+
+    # konstruktor pro Gtk.ApplicationWindow
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Hello World!", application=app)
+        self.set_default_size(200, 100)
+
+class MyApplication(Gtk.Application):
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)</code>
+
+    <p><code>Gt.Application</code> inicializuje GTK+. Rovněž napojí tlačítko <gui>×</gui>, které je vytvořeno automaticky spolu s oknem, na signál <code>"destroy"</code>.</p>
+    <p>Můžeme začít sestavovat naše první okno. Provedeme to vytvořením proměnné s názvem <var>MyWindow</var>, které přiřadíme <code>new Gtk.ApplicationWindow</code>.</p>
+    <p>Nastavíme vlastnost okna nazvanou <var>title</var>. Může jí být libovolný řetězec, který bude sloužit jako jeho název v záhlaví. Je dobré lpět na kódování UTF-8.</p>
+    <p>Nyní máme okno, která má název a funkční „zavírací“ tlačítko. Pojďme přidat pořádný text „Hello World“.</p>
+    </section>
+
+    <section id="label"><title>Popisek pro okno</title>
+      <code mime="text/x-python"># Přidá widget Label do vašeho okna
+
+        # Vytvoří popisek
+        label = Gtk.Label()
+
+        # Nastaví popisku text
+        label.set_text("Hello GNOME!")
+
+        # Přidá popisek do okna
+        self.add(label)</code>
+
+      <p>Textový popisek je jeden z widgetů GTK+, který můžeme použít na základě toho, že jsme importovali knihovnu GTK+. Abychom jej mohli použít, vytvoříme proměnnou nazvanou <var>label</var> a nastavíme text, který popisek obsahuje. Nakonec vytvoříme a spustíme aplikaci.</p>
+
+      <code mime="text/x-python"># Spustí aplikaci
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)</code>
+
+      <p>Gtk.Application může v jednu chvíli obsahovat jen jeden widget. Pokud chcete sestrojit složitější program, budete uvnitř okna potřebovat vytvořit kontejnerový widget, jako je <code>Gtk.Grid</code>, a všechny ostatní widgety přidat do něj.</p>
+   </section>
+
+
+    <section id="py"><title>hello-world.py</title>
+      <p>Celý soubor:</p>
+      <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # Konstruktor pro Gtk.ApplicationWindow
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(200, 100)
+
+        # Vytvoří popisek
+        label = Gtk.Label()
+        # Nastaví text popisku
+        label.set_text("Hello GNOME!")
+        # Přidá popisek do okna
+        self.add(label)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+    </section>
+
+    <section id="terminal"><title>Spuštění aplikace z terminálu</title>
+      <p>Když chcete tuto aplikaci spustit, nejprve ji uložte jako <file>hello-world.py</file>. Pak otevřete terminál, přejděte do složky, kde je aplikace uložená, a spusťte:</p>
+      <screen><output style="prompt">$ </output><input>python hello-world.py</input></screen>
+    </section>
+  </section>
+
+  <section id="desktop.in"><title>Soubor <file>.desktop.in</file></title>
+      <p>Spouštění aplikace z terminálu je užitečné na začátku při postupném vytváření aplikace. Abychom dostali plně funkční <link href="https://developer.gnome.org/integration-guide/stable/mime.html.cs">aplikaci integrovanou</link> s GNOME 3, potřebujeme spouštěč do pracovního prostředí. K tomu musíte vytvořit soubor <file>.desktop</file>. Soubor <file>.desktop</file> popisuje název aplikace, použitou ikonu a různé integrační drobnosti. Hlubší rozebrání souboru <file>.desktop</file> můžete najít <link href="http://developer.gnome.org/desktop-entry-spec/">zde</link>. Ze souboru <file>.desktop.in</file> se vytvoří soubor <file>.desktop</file>.</p>
+
+    <p>Příklad ukazuje minimální požadavky pro soubor <code>.desktop.in</code>.</p>
+    <code mime="text/desktop" style="numbered">[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Hello World
+Comment=Say Hello
+Exec=@prefix@/bin/hello-world
+Icon=application-default-icon
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Utility;
+</code>
+
+    <p>Nyní se pojďme podívat na některé části souboru <code>.desktop.in</code>.</p>
+    <terms>
+      <item><title>Name</title><p>Název aplikace.</p></item>
+      <item><title>Comment</title><p>Krátký popis aplikace.</p></item>
+      <item><title>Exec</title><p>Určuje příkaz, který se má spustit, když aplikaci vyberete v nabídce. V tomto příkladu Exec jednoduše říká, kde najít soubor <file>hello-world</file> a tento soubor se už postará o zbytek.</p></item>
+      <item><title>Terminal</title><p>Určuje, jestli příkaz v klíči Exec běží v terminálu.</p></item>
+    </terms>
+
+    <p>Abyste vaši aplikaci umístili do správné kategorie, musíte potřebné kategorie přidat na řádek <code>Categories</code>. Více informací o různých kategoriích můžete najít ve <link href="http://standards.freedesktop.org/menu-spec/latest/apa.html">specifikaci nabídky</link>.</p>
+    <p>V tomto příkladu používáme existující ikonu. Pro vlastní ikonu potřebujete mít soubor SVG se svojí ikonou uložený v <file>/usr/share/icons/hicolor/scalable/apps</file>. Napište název svého souboru s ikonou do souboru .desktop.in na řádek 7. Více informací o ikonách: <link href="https://live.gnome.org/GnomeGoals/AppIcon">Instalace ikon pro motivy</link> a <link href="http://freedesktop.org/wiki/Specifications/icon-theme-spec">Specifikace/icon-theme-spec na freedesktop.org</link>.</p>
+  </section>
+
+  <section id="autotools"><title>Sestavovací systém</title>
+    <p>Aby se vaše aplikace stala opravdu součástí systému GNOME 3, je potřeba ji nainstalovat za pomoci autotools. Autotools nainstaluje všechny nutné soubory na správná místa.</p>
+    <p>K tomu budete potřebovat následující soubory:</p>
+    <links type="section"/>
+
+      <section id="autogen"><title>autogen.sh</title>
+        <code mime="application/x-shellscript" style="numbered">#!/bin/sh
+
+set -e
+
+test -n "$srcdir" || srcdir=`dirname "$0"`
+test -n "$srcdir" || srcdir=.
+
+olddir=`pwd`
+cd "$srcdir"
+
+# Toto nám spustí autoconf, automake, atd.
+autoreconf --force --install
+
+cd "$olddir"
+
+if test -z "$NOCONFIGURE"; then
+  "$srcdir"/configure "$@"
+fi
+</code>
+
+      <p>Když máme soubor <file>autogen.sh</file> připravený a uložený, spusťte:</p>
+      <screen><output style="prompt">$ </output><input>chmod +x autogen.sh</input></screen>
+    </section>
+
+
+    <section id="makefile"><title>Makefile.am</title>
+      <code mime="application/x-shellscript" style="numbered"># Skutečný spustitelný program je nastaven do primitiva SCRIPTS
+# # Prefix bin_ říká, kam to nakopírovat
+bin_SCRIPTS = hello-world.py
+# # Seznam souborů, které se mají šířit
+EXTRA_DIST=  \
+	$(bin_SCRIPTS)
+#
+#     # Soubory .desktop
+desktopdir = $(datadir)/applications
+desktop_DATA = \
+	hello-world.desktop
+</code>
+    </section>
+
+
+    <section id="configure"><title>configure.ac</title>
+      <code mime="application/x-shellscript" style="numbered"># Tento soubor je zpracován pomocí autoconf, aby se vytvořil skript configure
+AC_INIT([Hello World], 1.0)
+AM_INIT_AUTOMAKE([1.10 no-define foreign dist-xz no-dist-gzip])
+AC_CONFIG_FILES([Makefile hello-world.desktop])
+AC_OUTPUT
+</code>
+    </section>
+
+
+    <section id="readme"><title>README</title>
+       <p>Informace, které by si měl uživatel pro začátek přečíst. Tento soubor může být prázdný.</p>
+
+       <p>Když máme soubory <file>hello-world</file>, <file>hello-world.desktop.in</file>, <file>Makefile.am</file>, <file>configure.ac</file> a <file>autogen.sh</file> se správnými informacemi a v pořádku, může soubor <file>README</file> obsahovat následující instrukce:</p>
+      <code mime="text/readme" style="numbered">To build and install this program:
+
+./autogen.sh --prefix=/home/your_username/.local
+make install
+
+-------------
+Running the first line above creates the following files:
+
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+hello-world.desktop
+install-sh
+missing
+Makefile.in
+Makefile
+
+Running "make install", installs the application in /home/your_username/.local/bin
+and installs the hello-world.desktop file in /home/your_username/.local/share/applications
+
+You can now run the application by typing "Hello World" in the Overview.
+
+----------------
+To uninstall, type:
+
+make uninstall
+
+----------------
+To create a tarball type:
+
+make distcheck
+
+This will create hello-world-1.0.tar.xz
+</code>
+    </section>
+
+    <!-- TODO: How to make a custom icon with autotools -->
+
+  </section>
+</page>

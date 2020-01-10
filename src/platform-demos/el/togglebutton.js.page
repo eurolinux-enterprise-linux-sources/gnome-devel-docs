@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="togglebutton.js" xml:lang="el">
+  <info>
+  <title type="text">Κουμπί εναλλαγής (ToggleButton) (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-06-16" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Παραμένει πατημένο μέχρι να το πατήσετε ξανά</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Κουμπί εναλλαγής (ToggleButton)</title>
+  <media type="image" mime="image/png" src="media/togglebutton.png"/>
+  <p>Ένα κουμπί εναλλαγής (ToggleButton) είναι σαν ένα κανονικό <link xref="button.js">κουμπί</link>, εκτός από το ότι παραμένει πατημένο όταν το πατάτε. Μπορείτε να το χρησιμοποιήσετε σαν έναν διακόπτη ναι/όχι, για να ελέγξετε πράγματα όπως τον <link xref="spinner.js">μετρητή</link> σε αυτό το παράδειγμα.</p>
+  <p>Μια μέθοδος get_active του ToggleButton επιστρέφει αληθές εάν πατηθεί και ψευδές εάν δεν πατηθεί. Η μέθοδος του set_active χρησιμοποιείται εάν θέλετε να αλλάξετε την κατάσταση του χωρίς να χρειάζεται να το πατήσετε. Όταν αλλάζει η κατάσταση από πατημένο σε αναδυόμενο και αντίστροφα, στέλνει το σήμα "αλλαγμένο", που μπορείτε να συνδέσετε με μια συνάρτηση για να κάνει κάτι.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Δημιουργία του παραθύρου εφαρμογής</title>
+    <code mime="application/javascript">
+const ToggleButtonExample = new Lang.Class({
+    Name: 'ToggleButton Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jstogglebutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup'με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση RadioButtonExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <code mime="application/javascript">
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 300,
+            default_width: 300,
+            border_width: 30,
+            title: "ToggleButton Example"});
+</code>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+  </section>
+
+  <section id="togglebutton">
+    <title>Δημιουργία του κουμπιού εναλλαγής (ToggleButton) και άλλων γραφικών στοιχείων</title>
+    <code mime="application/javascript">
+        // Δημιοργία του μετρητή που το κουμπί σταματά και αρχίζει
+        this._spinner = new Gtk.Spinner ({hexpand: true, vexpand: true});
+</code>
+
+    <p>Θέλουμε αυτός ο <link xref="spinner.js">μετρητής</link> να επεκταθεί κάθετα και οριζόντια, για να καταλάβει όσο το δυνατό περισσότερο χώρο μέσα στο παράθυρο.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία του κουμπιού εναλλαγής που ξεκινά και σταματά τον μετρητή
+        this._toggleButton = new Gtk.ToggleButton ({label: "Start/Stop"});
+        this._toggleButton.connect ('toggled', Lang.bind (this, this._onToggle));
+</code>
+
+    <p>Η δημιουργία ενός ToggleButton είναι παρεμφερής με τη δημιουργία ενός κανονικού <link xref="button.js">κουμπιού</link>. Η μεγαλύτερη διαφορά είναι ότι χειρίζεστε ένα "αλλαγμένο" σήμα αντί για ένα "πατημένο" σήμα. Αυτός ο κώδικας συνδέει τη συνάρτηση _onToggle με αυτό το σήμα, έτσι ώστε καλείται όποτε το ToggleButton μας εναλλάσσεται.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία ενός πλέγματος και τοποθέτηση όλων μέσα του
+        this._grid = new Gtk.Grid ({
+            row_homogeneous: false,
+            row_spacing: 15});
+        this._grid.attach (this._spinner, 0, 0, 1, 1);
+        this._grid.attach (this._toggleButton, 0, 1, 1, 1);
+</code>
+    <p>Εδώ δημιουργούμε ένα απλό <link xref="grid.js">πλέγμα</link> για να οργανώσουμε μέσα του όλα, έπειτα επισυνάπτουμε τον μετρητή και το ToggleButton σε αυτό.</p>
+
+    <code mime="application/javascript">
+        // Προσθήκη του πλέγματος στο παράθυρο
+        this._window.add (this._grid);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών  γραφικών στοιχείων
+        this._window.show_all();
+    },
+</code>
+    <p>Τώρα προσθέτουμε το πλέγμα στο παράθυρο και λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και τα θυγατρικά γραφικά στοιχεία όταν η εφαρμογή ξεκινά.</p>
+    </section>
+
+    <section id="toggled">
+    <title>Κάνοντας να συμβεί κάτι όταν το ToggleButton εναλλάσσεται</title>
+
+    <code mime="application/javascript">
+    _onToggle: function() {
+
+        // Έναρξη ή παύση του μετρητή
+        if (this._toggleButton.get_active ())
+            this._spinner.start ();
+        else this._spinner.stop ();
+
+    }
+
+});
+</code>
+    <p>Όποτε κάποιος εναλλάσσει το κουμπί, αυτή η συνάρτηση ελέγχει ποια είναι η κατάστασή του κατόπιν χρησιμοποιώντας get_active και ξεκινά ή σταματά τον μετρητή ανάλογα. Το θέλουμε μόνο να περιστραφεί ενώ το κουμπί είναι πατημένο, έτσι εάν η get_active επιστρέφει αληθές αρχίζουμε τον μετρητή. Αλλιώς, του λέμε να σταματήσει.</p>
+
+    <code mime="application/javascript">
+// Εκτέλεση της εφαρμογής
+let app = new ToggleButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>Τελικά, δημιουργούμε ένα νέο παράδειγμα της τελειωμένης κλάσης RadioButtonExample και εκτελούμε την εφαρμογή.</p>
+  </section>
+
+  <section id="complete">
+    <title>Δείγμα πλήρους κώδικα</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const ToggleButtonExample = new Lang.Class({
+    Name: 'ToggleButton Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jstogglebutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 300,
+            default_width: 300,
+            border_width: 30,
+            title: "ToggleButton Example"});
+
+        // Δημιουργία του μετρητή που το κουμπί σταματά και ξεκινά
+        this._spinner = new Gtk.Spinner ({hexpand: true, vexpand: true});
+
+        // Δημιουργία του κουμπιού εναλλαγής που ξεκινά και σταματά τον μετρητή
+        this._toggleButton = new Gtk.ToggleButton ({label: "Start/Stop"});
+        this._toggleButton.connect ('toggled', Lang.bind (this, this._onToggle));
+
+        // Δημιουργία ενός πλέγματος και τοποθέτηση όλων μέσα του
+        this._grid = new Gtk.Grid ({
+            row_homogeneous: false,
+            row_spacing: 15});
+        this._grid.attach (this._spinner, 0, 0, 1, 1);
+        this._grid.attach (this._toggleButton, 0, 1, 1, 1);
+
+        // Προσθήκη του πλέγματος στο παράθυρο
+        this._window.add (this._grid);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+
+
+    _onToggle: function() {
+
+        // Έναρξη ή παύση του μετρητή
+        if (this._toggleButton.get_active ())
+            this._spinner.start ();
+        else this._spinner.stop ();
+
+    }
+
+});
+
+// Εκτέλεση της εφαρμογής
+let app = new ToggleButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Τεκμηρίωση σε βάθος</title>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Spinner.html">Gtk.Spinner</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ToggleButton.html">Gtk.ToggleButton</link></p></item>
+</list>
+  </section>
+</page>

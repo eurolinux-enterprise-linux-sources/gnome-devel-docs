@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="dialog.py" xml:lang="el">
+  <info>
+    <title type="text">Διάλογος (Python)</title>
+    <link type="guide" xref="beginner.py#windows"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="aboutdialog.py"/>
+    <revision version="0.1" date="2012-06-11" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα αναδυόμενο παράθυρο</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Διάλογος</title>
+  <media type="image" mime="image/png" src="media/dialog.png"/>
+  <p>Ένας διάλογος με το σήμα απάντησης συνδεμένο σε μια συνάρτηση επανάκλησης.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # construct a window (the parent window)
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GNOME Button", application=app)
+        self.set_default_size(250, 50)
+
+        # a button on the parent window
+        button = Gtk.Button("Click me")
+        # connect the signal "clicked" of the button with the function
+        # on_button_click()
+        button.connect("clicked", self.on_button_click)
+        # add the button to the window
+        self.add(button)
+
+    # callback function for the signal "clicked" of the button in the parent
+    # window
+    def on_button_click(self, widget):
+        # create a Gtk.Dialog
+        dialog = Gtk.Dialog()
+        dialog.set_title("A Gtk+ Dialog")
+        # The window defined in the constructor (self) is the parent of the dialog.
+        # Furthermore, the dialog is on top of the parent window
+        dialog.set_transient_for(self)
+        # set modal true: no interaction with other windows of the application
+        dialog.set_modal(True)
+        # add a button to the dialog window
+        dialog.add_button(button_text="OK", response_id=Gtk.ResponseType.OK)
+        # connect the "response" signal (the button has been clicked) to the
+        # function on_response()
+        dialog.connect("response", self.on_response)
+
+        # get the content area of the dialog, add a label to it
+        content_area = dialog.get_content_area()
+        label = Gtk.Label("This demonstrates a dialog with a label")
+        content_area.add(label)
+        # show the dialog
+        dialog.show_all()
+
+    def on_response(self, widget, response_id):
+        print("response_id is", response_id)
+        # destroy the widget (the dialog) when the function on_response() is called
+        # (that is, when the button of the dialog has been clicked)
+        widget.destroy()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+  <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο διαλόγου</title>
+    <p>Στη γραμμή 16 το σήμα <code>"clicked"</code> συνδέεται με τη συνάρτηση επανάκλησης <code>on_button_click()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
+  <list>
+    <item><p>Αντί για <code>set_modal(True)</code> μπορούμε <code>set_modal(False)</code> ακολουθούμενο από <code>set_destroy_with_parent(True)</code> που μπορεί να καταστρέψει το παράθυρο διαλόγου εάν το κύριο παράθυρο κλείσει.</p></item>
+    <item><p><code>add_button(button_text="The Answer", response_id=42)</code>, όπου <code>42</code> είναι οποιοσδήποτε ακέραιος, είναι μια εναλλακτική στο <code>add_button(button_text="text", response_id=Gtk.ResponseType.RESPONSE)</code>, όπου <code>RESPONSE</code> μπορεί να είναι ένα από τα <code>OK, CANCEL, CLOSE, YES, NO, APPLY, HELP</code>, που με τη σειρά του αντιστοιχεί σε ακέραιους <code>-5, -6,..., -11</code>.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Αναφορές API</title>
+  <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkDialog.html">GtkDialog</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+  </list>
+  </section>
+</page>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.c" xml:lang="el">
+
+  <info>
+    <title type="text">Προβολέας εικόνων (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>Κάτι περισσότερο από απλή εφαρμογή Gtk όπως το "Γεια σου κόσμε".</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-18" status="review"/>
+    <credit type="author">
+      <name>Έργο τεκμηρίωσης GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Προβολή εικόνων</title>
+
+<synopsis>
+  <p>Σε αυτό το μάθημα, θα μάθετε:</p>
+  <list>
+    <item><p>Μερικές βασικές έννοιες του προγραμματισμού C/GObject</p></item>
+    <item><p>Πώς να γράψετε μια εφαρμογή Gtk σε C</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Δημιουργία έργου με το Anjuta</title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+    <p>Ξεκινήστε το Anjuta και πατήστε <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+    <p>Επιλέξτε <gui>GTK+ (απλό)</gui> από την καρτέλα <gui>C</gui>, πατήστε <gui>συνέχεια</gui>, και συμπληρώστε τις λεπτομέρειές σας στις επόμενες λίγες σελίδες. Χρησιμοποιήστε το <file>image-viewer</file> ως όνομα του έργου και του καταλόγου.</p>
+   	</item>
+    <item>
+    <p>Βεβαιωθείτε ότι απενεργοποιήσατε το <gui>χρήση του GtkBuilder για διεπαφή χρήση</gui> επειδή θα φτιάξουμε τη διεπαφή χρήστη χειροκίνητα σε αυτό το μάθημα. Σημειώστε το μάθημα <link xref="guitar-tuner.c">ρυθμιστής κιθάρας</link> εάν θέλετε να μάθετε τη χρήση του κατασκευαστή διεπαφής.</p>
+    </item>
+    <item>
+    <p>Πατήστε <gui>εφαρμογή</gui> και το έργο θα δημιουργηθεί για σας. Ανοίξτε το <file>src/main.c</file> από τις καρτέλες <gui>έργο</gui> ή <gui>αρχείο</gui>. Θα πρέπει να δείτε κάποιο κώδικα που ξεκινάει με τις γραμμές:</p>
+    <code mime="text/x-csrc">
+#include &lt;config.h&gt;
+#include &lt;gtk/gtk.h&gt;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Κατασκευάστε τον κώδικα για πρώτη φορά</title>
+  <p>Η C είναι μια μάλλον περιγραφική γλώσσα, έτσι μην εκπλαγείτε που το αρχείο περιέχει πολύ κώδικα. Ο περισσότερος κώδικας είναι πρότυπο κώδικα. Φορτώνει ένα (κενό) παράθυρο και το εμφανίζει. Περισσότερες λεπτομέρειες υπάρχουν πιο κάτω· προσπεράστε αυτή τη λίστα αν καταλαβαίνετε τα βασικά:</p>
+
+  <list>
+  <item>
+    <p>Οι τρεις γραμμές <code>#include</code> στην κορυφή περιλαμβάνουν τον <code>config</code> (ορίζει χρήσιμη κατασκευή του autoconf), <code>gtk</code> (διεπαφή χρήστη) και βιβλιοθήκες <code>gi18n</code> (διεθνοποίηση). Συναρτήσεις από αυτές τις βιβλιοθήκες χρησιμοποιούνται στον υπόλοιπο κώδικα.</p>
+   </item>
+   <item>
+    <p>Η συνάρτηση <code>create_window</code> δημιουργεί ένα νέο (άδειο) παράθυρο και συνδέει ένα σήμα για έξοδο της εφαρμογής όταν το παράθυρο κλείνει.</p>
+    <p>Σύνδεση σημάτων είναι πώς καθορίζετε τι συμβαίνει όταν πατάτε ένα κουμπί, ή όταν συμβεί κάποιο άλλο συμβάν. Εδώ, καλείται η συνάρτηση <code>destroy</code> (και τερματίζει την εφαρμογή) όταν κλείνετε το παράθυρο.</p>
+   </item>
+   <item>
+    <p>Η συνάρτηση <code>main</code> τρέχει από προεπιλογή όταν ξεκινάτε μια εφαρμογή C. Καλεί λίγες συναρτήσεις που ρυθμίζουν και έπειτα εκτελούν την εφαρμογή. Η συνάρτηση <code>gtk_main</code> ξεκινά τον κύριο βρόχο του GTK, που εκτελεί τη διεπαφή χρήστη και ξεκινά την απάντηση για συμβάντα (όπως κλικ και πατήματα κουμπιών).</p>
+   </item>
+   <item>
+    <p>Ο υπό όρους ορισμός <code>ENABLE_NLS</code> εγκαθιστά <code>gettext</code>, που είναι ο σκελετός για μετάφραση εφαρμογών. Αυτές οι συναρτήσεις ορίζουν πώς τα εργαλεία μετάφρασης θα χειριστούν την εφαρμογή σας όταν τις εκτελείτε.</p>
+   </item>
+  </list>
+
+  <p>Αυτός ο κώδικας είναι έτοιμος να χρησιμοποιηθεί, οπότε μπορείτε να τον μεταγλωττίσετε με κλικ <guiseq><gui>κατασκευή</gui><gui>κατασκευή έργου</gui></guiseq> (ή πιέζοντας <keyseq><key>Shift</key><key>F7</key></keyseq>).</p>
+  <p>Πατήστε <gui>Execute</gui> στο επόμενο παράθυρο που εμφανίζεται για ρύθμιση κατασκευής αποσφαλμάτωσης. Χρειάζεται να το κάνετε αυτό μόνο μια φορά, για την πρώτη κατασκευή.</p>
+</section>
+
+<section id="ui">
+<title>Δημιουργία της διεπαφής χρήστη</title>
+<p>Τώρα δίνουμε ζωή στο άδειο παράθυρο. Το GTK οργανώνει τη διεπαφή χρήστη με το <code>GtkContainer</code> που μπορεί να περιέχει άλλα γραφικά στοιχεία και ακόμα άλλους περιέκτες. Εδώ θα χρησιμοποιήσουμε τον απλούστερο διαθέσιμο περιέκτη, έναν <code>GtkBox</code>:</p>
+<code mime="text/x-csrc">
+static GtkWidget*
+create_window (void)
+{
+	GtkWidget *window;
+	GtkWidget *button;
+	GtkWidget *image;
+	GtkWidget *box;
+
+	/* Ρύθμιση της διεπαφής χρήστη */
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (window), "image-viewer-c");
+
+	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
+	button = gtk_button_new_with_label (_("Open image"));
+	image = gtk_image_new ();
+
+	gtk_box_pack_start (GTK_BOX (box), image, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+
+	gtk_container_add (GTK_CONTAINER (window), box);
+
+	/* Σήματα σύνδεσης */
+
+	/* Εμφάνιση ανοικτού διαλόγου κατά το άνοιγμα αρχείου */
+	g_signal_connect (button, "clicked", G_CALLBACK (on_open_image), image);
+
+	/* Έξοδος όταν το παράθυρο κλείνει */
+	g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+
+	return window;
+}
+</code>
+  <steps>
+    <item>
+    <p>Οι πρώτες γραμμές δημιουργούν τα επιθυμητά γραφικά στοιχεία για χρήση: ένα κουμπί για άνοιγμα μιας εικόνας, το ίδιο το γραφικό στοιχείο προβολής της εικόνας και το πλαίσιο που θα χρησιμοποιήσουμε ως περιέκτη. Οι μακροεντολές όπως <code>GTK_BOX</code> χρησιμοποιούνται για έλεγχο δυναμικού τύπου και αλλαγές που απαιτούνται καθώς η C δεν υποστηρίζει προσανατολισμό αντικειμένου εκτός πλαισίου.</p>
+    </item>
+    <item>
+    <p>Οι κλήσεις στο <code>gtk_box_pack_start</code> προσθέτουν τα δύο γραφικά στοιχεία στο πλαίσιο και ορίζουν τη συμπεριφορά τους. Η εικόνα θα επεκταθεί σε κάθε διαθέσιμο χώρο, ενώ το κουμπί θα είναι απλά τόσο μεγάλο όσο χρειάζεται. Θα παρατηρήσετε ότι δεν ορίζουμε ρητά μεγέθη στα γραφικά στοιχεία. Στο GTK αυτό συνήθως δεν χρειάζεται επειδή είναι πιο απλό να έχετε μια διάταξη που φαίνεται καλή με διαφορετικά μεγέθη παραθύρων. Στη συνέχεια, το πλαίσιο προστίθεται στο παράθυρο.</p>
+    </item>
+    <item>
+    <p>Χρειαζόμαστε να ορίσουμε τι συμβαίνει όταν ο χρήστης πατά σε ένα πλήκτρο. Το GTK χρησιμοποιεί την έννοια των <em>σημάτων</em>. Όταν το κουμπί πατιέται, ξεκινά το σήμα <em>πατημένο</em>, που μπορούμε να συνδέσουμε με κάποια ενέργεια. Αυτό γίνεται χρησιμοποιώντας τη συνάρτηση <code>g_signal_connect</code> που λέει στο GTK να καλέσει τη συνάρτηση <code>on_open_image</code> όταν το κουμπί πατιέται και να περάσει την εικόνα ως πρόσθετο όρισμα σε αυτή τη συνάρτηση. Θα ορίσουμε την <em>επανάκληση</em> στην επόμενη ενότητα.</p>
+    </item>
+    <item>
+    <p>Ο τελευταίος <code>g_signal_connect()</code> επιβεβαιώνει ότι η εφαρμογή φεύγει όταν το παράθυρο κλείνει.</p>
+    </item>
+    <item>
+    <p>Ως τελευταίο βήμα, βεβαιωθείτε να αντικαταστήσετε την κλήση <code>gtk_widget_show</code> στη συνάρτηση <code>main()</code> από <code>gtk_widget_show_all()</code> για να εμφανιστεί το παράθυρο και όλα τα γραφικά στοιχεία που περιέχει.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="image">
+<title>Εμφάνιση της εικόνας</title>
+<p>Θα ορίσουμε τώρα τον χειριστή σήματος για το σήμα <em>πατημένο</em> ή για το κουμπί που αναφέραμε πριν. Προσθέστε αυτόν τον κώδικα πριν τη μέθοδο <code>create_window()</code>.</p>
+<code mime="text/x-csrc">
+static void
+on_open_image (GtkButton* button, gpointer user_data)
+{
+	GtkWidget *image = GTK_WIDGET (user_data);
+	GtkWidget *toplevel = gtk_widget_get_toplevel (image);
+	GtkFileFilter *filter = gtk_file_filter_new ();
+	GtkWidget *dialog = gtk_file_chooser_dialog_new (_("Open image"),
+	                                                 GTK_WINDOW (toplevel),
+	                                                 GTK_FILE_CHOOSER_ACTION_OPEN,
+	                                                 GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+	                                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                                 NULL);
+
+	gtk_file_filter_add_pixbuf_formats (filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (dialog),
+	                             filter);
+
+	switch (gtk_dialog_run (GTK_DIALOG (dialog)))
+	{
+		case GTK_RESPONSE_ACCEPT:
+		{
+			gchar *filename =
+				gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+			gtk_image_set_from_file (GTK_IMAGE (image), filename);
+			break;
+		}
+		default:
+			break;
+	}
+	gtk_widget_destroy (dialog);
+}
+</code>
+  <p>Αυτό είναι λίγο πιο περίπλοκο από όσα έχουμε κάνει μέχρι τώρα, για αυτό θα το χωρίσουμε σε κομμάτια:</p>
+  <list>
+    <item><p>Το πρώτο όρισμα του σήματος είναι πάντοτε το γραφικό στοιχείο που έστειλε το σήμα. Μερικές φορές άλλα ορίσματα σχετικά με το σήμα έρχονται μετά από αυτό, αλλά το <em>πατημένο</em> δεν έχει. Επόμενο όρισμα είναι το <code>user_data</code> που είναι ένας δείκτης στα δεδομένα που περάσαμε όταν συνδέσαμε το σήμα. Σε αυτήν την περίπτωση είναι το αντικείμενό μας <code>GtkImage</code>.</p>
+    </item>
+    <item>
+      <p>Η επόμενη ενδιαφέρουσα γραμμή είναι όταν ο διάλογος επιλογής του αρχείου δημιουργείται χρησιμοποιώντας το <code>gtk_file_chooser_dialog_new</code>. Η συνάρτηση παίρνει τον τίτλο του διαλόγου, το ανιόν παράθυρο του διαλόγου και πολλές επιλογές όπως ο αριθμός των κουμπιών και οι αντίστοιχες τιμές τους.</p>
+    <p>Σημειώστε όταν χρησιμοποιούμε τα <em>προκαθορισμένα</em> ονόματα κουμπιών που υπάρχουν στο Gtk, αντί να γράψουμε οι ίδιοι "Ακύρωση" ή "Άνοιγμα". Το πλεονέκτημα στη χρήση των προκαθορισμένων ονομάτων είναι ότι οι ετικέτες των κουμπιών θα έχουν ήδη μεταφραστεί στη γλώσσα του χρήστη.</p>
+    </item>
+    <item>
+    <p>Οι επόμενες δύο γραμμές περιορίζουν το διάλογο <gui>άνοιγμα</gui> να εμφανίζει μόνο αρχεία που μπορούν να ανοιχθούν από το GtkImage. Ένα αντικείμενο φίλτρου δημιουργείται πρώτα· έπειτα προσθέτουμε όλα τα είδη των αρχείων που υποστηρίζονται από <code>GdkPixbuf</code> (που περιλαμβάνει τις περισσότερες μορφές όπως PNG και JPEG) στο φίλτρο. Τέλος, ορίζουμε αυτό το φίλτρο να είναι το φίλτρο του διαλόγου <gui>άνοιγμα</gui>.</p>
+    </item>
+    <item>
+    <p>Ο <code>gtk_dialog_run</code> εμφανίζει το διάλογο <gui>άνοιγμα</gui>. Ο διάλογος θα περιμένει τον χρήστη να διαλέξει μια εικόνα· όταν διαλέξει, ο <code>gtk_dialog_run</code> θα επιστρέψει την τιμή <code>GTK_RESPONSE_ACCEPT</code> (θα επιστρέψει <code>GTK_RESPONSE_CANCEL</code> αν ο χρήστης πατήσει <gui>ακύρωση</gui>). Η πρόταση <code>switch</code> ελέγχει για αυτό.</p>
+    </item>
+    <item><p>Αν υποθέσουμε ότι ο χρήστης πάτησε το <gui>άνοιγμα</gui>, η επόμενη γραμμή ορίζει την ιδιότητα <code>file</code> του GtkImage στο όνομα του αρχείου εικόνας που επέλεξε ο χρήστης. Το GtkImage θα φορτώσει τότε και θα εμφανίσει την επιλεγμένη εικόνα.</p>
+    </item>
+    <item>
+    <p>Στην τελευταία γραμμή αυτής της μεθόδου, καταστρέφουμε τον διάλογο <gui>άνοιγμα</gui> γιατί δεν τον χρειαζόμαστε πια. Καταστρέφοντας τον αυτόματα κρύβεται ο διάλογος.</p>
+    </item>
+  </list>
+</section>
+
+<section id="run">
+  <title>Κατασκευή και εκτέλεση της εφαρμογής</title>
+  <p>Όλος ο κώδικας πρέπει να είναι έτοιμος τώρα. Κλικ <guiseq><gui>κατασκευή</gui><gui>κατασκευή έργου</gui></guiseq> για ανακατασκευή των πάντων και έπειτα <guiseq><gui>τρέξιμο</gui><gui>εκτέλεση</gui></guiseq> για έναρξη της εφαρμογής.</p>
+  <p>Εάν δεν το έχετε ήδη κάνει, επιλέξτε την εφαρμογή <file>Debug/src/image-viewer</file> στον διάλογο που εμφανίζεται. Τελικά, πατήστε <gui>τρέξιμο</gui> και απολαύστε!</p>
+</section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Αν αντιμετωπίσετε πρόβλημα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="image-viewer/image-viewer.c">κώδικα αναφοράς</link>.</p>
+</section>
+
+<section id="next">
+  <title>Επόμενα βήματα</title>
+  <p>Εδώ είναι κάποιες ιδέες για το πώς μπορείτε να επεκτείνετε αυτή την απλή παρουσίαση:</p>
+  <list>
+   <item>
+   <p>Βάλτε τον χρήστη να επιλέξει ένα κατάλογο αντί για αρχείο και δώστε ελέγχους να γυρίζουν όλες τις εικόνες σε έναν κατάλογο.</p>
+   </item>
+   <item>
+   <p>Εφαρμόστε τυχαία φίλτρα και εφέ στην εικόνα όταν αυτή φορτωθεί και επιτρέψτε στον χρήστη να αποθηκεύσει την επεξεργασμένη εικόνα.</p>
+   <p>Το <link href="http://www.gegl.org/api.html">GEGL</link> παρέχει ισχυρές δυνατότητες επεξεργασίας εικόνας.</p>
+   </item>
+   <item>
+   <p>Επιτρέψτε στον χρήστη να φορτώνει εικόνες από μερισμό δικτύου, από σαρωτές και από άλλες περίπλοκες πηγές.</p>
+   <p>Μπορείτε να χρησιμοποιήσετε το <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> για χειρισμό μεταφορών αρχείων δικτύου και τα παρόμοια, και τη <link href="http://library.gnome.org/devel/gnome-scan/unstable/">Σάρωση του GNOME</link> για χειρισμό σάρωσης.</p>
+   </item>
+  </list>
+</section>
+
+
+</page>

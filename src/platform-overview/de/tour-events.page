@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="tour-events" xml:lang="de">
+
+  <info>
+    <link type="next" xref="tour-get_object"/>
+    <revision version="0.1" date="2013-06-17" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Gordon Hill</name>
+      <email its:translate="no">caseyweederman@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Binden Sie mit Lang Funktionen an Events.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2009-2012, 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Christian Kirbach</mal:name>
+      <mal:email>christian.kirbach@gmail.com</mal:email>
+      <mal:years>2011, 2012, 2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Aljosha Papsch</mal:name>
+      <mal:email>al@rpapsch.de</mal:email>
+      <mal:years>2012</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Aktionen und Signale</title>
+
+  <links type="prevnext" style="top"/>
+  <links type="series" style="floatend">
+    <title>Erste Schritte mit GNOME</title>
+  </links>
+
+  <p>Gtk verfügt über eine Reihe von vordefinierten Events, die Sie in Ihrer Anwendung nutzen können.</p>
+  <example>
+    <p>Deklarieren Sie <code>HelloWorld</code> als neue <code>Lang</code>-Klasse. Gjs benötigt Klassen zur Definition der Name-Eigenschaft.</p>
+
+    <code>
+const HelloWorld = new Lang.Class({
+    Name: 'HelloWorld',
+</code>
+
+    <p><code>_init</code> wird aufgerufen, wenn eine neue Instanz erzeugt wird. Erstellen Sie eine <code>GtkApplication</code> und verbinden Sie dann <code>activate</code> mit dem existierenden Gtk-Event <code>_onActivate</code> und <code>startup</code>, um mit <code>_onStartup</code> zu starten:</p>
+
+    <code>
+    _init: function() {
+        this.application = new Gtk.Application();
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+</code>
+
+    <p>Zeigen Sie das Fenster nach der Aktivierung der Anwendung anzeigen:</p>
+    <code>
+    _onActivate: function(){
+        this._window.show_all();
+    },
+</code>
+  </example>
+  <links type="prevnext"/>
+</page>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="model-view-controller.py" xml:lang="es">
+
+<info>
+    <title type="text">El diseño modelo/vista/controlador (Python)</title>
+  <link type="guide" xref="beginner.py#theory"/>
+  <link type="next" xref="combobox_multicolumn.py"/>
+  <revision version="0.1" date="2012-06-30" status="stub"/>
+
+  <desc>El diseño modelo/vista/controlador</desc>
+  <credit type="author copyright">
+    <name>Sebastian Pölsterl</name>
+    <email its:translate="no">sebp@k-d-w.org</email>
+    <years>2011</years>
+  </credit>
+  <credit type="author copyright editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012</years>
+  </credit>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+<title>El diseño modelo/vista/controlador</title>
+
+<links type="section"/>
+
+<section id="overview">
+<title>Visión general</title>
+
+<p>Tanto los widgets <link xref="treeview_simple_liststore.py">TreeView</link> como los <link xref="combobox.py">ComboBox</link> se construyen sobre el diseño <em>modelo/vista/controlador</em>. El <em>modelo</em> (una implementación de <code>Gtk.TreeModel</code>, generalmente <code>Gtk.TreeStore</code> o <code>Gtk.ListStore</code>) almacena los datos; la <em>vista</em> (por ejemplo, <code>Gtk.TreeView</code>, <code>Gtk.ComboBox</code>, o <code>Gtk.ComboBoxText</code>) recibe las notificaciones de cambio y muestra el contenido del modelo. El <em>controlador</em>, finalmente, cambia el estado del modelo (a través de algunos métodos en la implementación del modelo, como <code>append()</code> o <code>remove()</code>) y le notifica a la vista de estos cambios (a través de señales como <code>«changed»</code>).</p>
+
+</section>
+
+<section id="model">
+<title>El modelo</title>
+
+<p>La principal diferencia entre las dos implementaciones primarias de <code>Gtk.TreeModel</code> es que <code>Gtk.ListStore</code> contiene filas simples de datos sin hijos, mientras que <code>Gtk.TreeStore</code> también contiene filas de datos, pero cada fila puede tener filas hijas (que a su vez pueden tener filas hijas, y así sucesivamente).</p>
+
+<p>Los datos en el modelo pueden obtenerse o modificarse usando el «iter» del árbol y el índice de columna, <code>Gtk.TreeIter</code>, o <code>Gtk.TreePath</code>.</p>
+
+<p>Con el objeto de lista empotrado de Python puede usar <code>len()</code> para obtener el número de filas y usar fragmentos para obtener o establecer valores. De lo contrario, el método <code>append()</code> devuelve una instancia de <code>Gtk.TreeIter</code>, que apunta al lugar de la fila insertada recientemente. También puede obtener un <code>Gtk.TreeIter</code> llamando a <code>get_iter()</code>.</p>
+
+<p>Como <code>Gtk.ListStore</code> sólo contiene un nivel, es decir que los nodos no tienen nodos hijos, una ruta es esencialmente el índice de la fila a la que quiere acceder. En el caso de <code>Gtk.TreeStore</code>, una ruta es una lista de índices o una cadena. La forma de la cadena es una lista de números separados por «:». Cada número se refiere al desplazamiento en ese nivel. Entonces, la ruta <code>«0»</code> se refiere al nodo raíz y la ruta <code>«2:4»</code> al quinto hijo del tercer nodo.</p>
+
+<p>Métodos útiles para un <code>Gtk.TreeModel</code>:</p>
+<list>
+  <item><p><code>get_iter(ruta)</code> devuelve una instancia de <code>Gtk.TreeIter</code> que apunta a <code>ruta</code>. Se espera que sea una lista de números separados por «:», o una tupla. Por ejemplo, la cadena <code>«10:4:0»</code> equivale a la tupla <code>(10, 4, 0)</code>, ya que las dos crearían una ruta de profundidad 3 apuntando al 11º hijo del nodo raíz, el 5º hijo de ese 11º hijo, y el 1er hijo de ese 5º hijo.</p></item>
+  <item><p><code>iter_next(treeiter)</code> devuelve una instancia de <code>Gtk.TreeIter</code> apuntando siguiendo el «treeiter» en el nivel actual o <code>None</code> si no hay un «iter» siguiente.</p></item>
+  <item><p><code>iter_has_child(treeiter)</code> devuelve <code>True</code> si <code>treeiter</code> tiene hijos, <code>False</code> de lo contrario.</p></item>
+  <item><p><code>iter_children(treeiter)</code> devuelve una instancia de <code>Gtk.TreeIter</code> apuntando al primer hijo de <code>treeiter</code> o <code>None</code> si <code>treeiter</code> no tiene hijos.</p></item>
+  <item><p><code>get_iter_first()</code> devuelve una instancia de <code>Gtk.TreeIter</code> apuntando al primer iterador en el árbol (el que está en la ruta <code>«0»</code>) o <code>None</code> si el árbol está vacío.</p></item>
+</list>
+
+<p>Métodos útiles para un <code>Gtk.ListStore</code>:</p>
+<list>
+  <item><p><code>append(fila)</code> añade una fila nueva a este «ListStore», donde <code>fila</code> puede ser una lista de valores para cada columna; <code>row</code> también puede omitirse o ser <code>None</code>, y en ese caso se añade una fila vacía. El método devuelve un <code>Gtk.TreeIter</code> apuntando a la fila añadida.</p></item>
+  <item><p><code>remove(iter)</code> elimina <code>iter</code> del <code>Gtk.ListStore</code>, y devuelve <code>True</code> si el iter es válido, y <code>False</code> si no lo es. Después de eliminarse, <code>iter</code> se establece a la siguiente fila válida.</p></item>
+</list>
+
+<p>Métodos útiles para un <code>Gtk.TreeStore</code>:</p>
+<list>
+  <item><p><code>append(padre, fila)</code> añade una fila nueva a este «TreeStore»; <code>padre</code> debe ser un «Gtk.TreeIter» válido. Si «padre» no es <code>None</code>, entonces añadirá la fila nueva después del último hijo de «padre», de lo contrario añadirá una fila al nivel superior; <code>fila</code> puede ser una lista de valores para cada columna; o puede omitirse o ser <code>None</code>; en este último caso se añadirá una fila vacía. El método devuelve un <code>Gtk.TreeIter</code> apuntando a la fila añadida.</p></item>
+  <item><p><code>remove(iter)</code> elimina <code>iter</code> del <code>Gtk.ListStore</code>, y devuelve <code>True</code> si el iter es válido, y <code>False</code> si no lo es. Después de eliminarse, <code>iter</code> se establece a la siguiente fila válida.</p></item>
+</list>
+
+</section>
+
+<section id="treeview">
+<title>La vista: el caso de «TreeView»</title>
+
+<p>Una vista de árbol muestra la estructura de elementos padres e hijos como un árbol. Consulte <link xref="treeview_treestore.py">este ejemplo</link>.</p>
+
+<p>La <code>Gtk.TreeViewColumn</code> se usa para organizar las columnas verticales.</p>
+
+<p>Métodos útiles para un <code>Gtk.TreeView</code>:</p>
+<list>
+  <item><p><code>set_model(modelo)</code> establece el modelo para esta vista de árbol. Si ya tiene un modelo, lo eliminará antes de establecer el nuevo. Si el modelo es <code>None</code>, entonces quitará el modelo viejo. </p></item>
+  <item><p><code>get_model()</code> devuelve el modelo en el que está basada esta vista de árbol, <code>None</code> si no tiene modelo.</p></item>
+  <item><p><code>append_column(columna)</code> añade la <code>columna</code> a la lista de columnas.</p></item>
+  <item><p><code>get_selection()</code> obtiene la <code>Gtk.TreeSelection</code> asociada a esta vista de árbol.</p></item>
+</list>
+
+<p>Métodos útiles para un <code>Gtk.TreeViewColumn</code>:</p>
+<list>
+  <item><p><code>add_attribute(renderizador, atributo, valor)</code> añade un mapeo de atributo a esta columna. <code>atributo</code> es el parámetro en <code>renderizador</code> al que se le asigna el <code>valor</code>.</p></item>
+  <item><p><code>pack_start(renderizador, expandir)</code> empaqueta el <code>renderizador</code> en el principio de esta columna. Si <code>expandir</code> es <code>False</code>, entonces no se le asigna a <code>renderizador</code> más espacio del que necesita. Cualquier espacio sin utilizar se divide equitativamente entre las celdas en las que «expandir» es <code>True</code>.</p></item>
+  <item><p><code>pack_end(renderizador, expandir)</code> añade el <code>renderizador</code> al final de esta columna. Si <code>expandir</code> es <code>False</code>, entonces no se le asigna a <code>renderizador</code> más espacio del que necesita. Cualquier espacio sin utilizar se divide equitativamente entre celdas en las que <code>expandir</code> es <code>True</code>.</p></item>
+  <item><p><code>set_sort_column_id(id_columna_ordenada)</code> establece la columna del modelo por la que debe ordenarse la vista. Esto también hace que se pueda pulsar la cabecera de la columna.</p></item>
+  <item><p><code>set_sort_indicator(opción)</code> establece si se muestra una pequeña flecha en la cabecera de la columna; <code>opción</code> puede ser <code>True</code> (se muestra el indicador) o <code>False</code>.</p></item>
+  <item><p><code>set_sort_order(orden)</code> cambia el orden por el que se ordena la columna; <code>orden</code> puede ser <code>Gtk.SortType.ASCENDING</code> o <code>Gtk.SortType.DESCENDING</code>.</p></item>
+</list>
+
+</section>
+
+<section id="combobox">
+<title>La vista: el caso de la «ComboBox»</title>
+
+<p>Una <code>Gtk.ComboBox</code> permite la selección de un elemento desde un menú desplegable, consulte <link xref="combobox.py">este ejemplo</link>. Para una lista de opciones textuales, también se puede usar <code>Gtk.ComboBoxText</code>, que es más simple. Tanto <code>Gtk.ComboBox</code> como <code>Gtk.ComboBoxText</code> pueden contener una entrada.</p>
+
+<p>Métodos útiles para un <code>Gtk.ComboBox</code>:</p>
+<list>
+  <item><p>El método estático <code>new_with_entry()</code> crea una <code>Gtk.ComboBox</code> nueva vacía con una entrada; el método estático <code>new_with_model(modelo)</code> crea una con el modelo inicializado a <code>modelo</code> nueva; y el método estático <code>new_with_model_and_entry(modelo)</code> es una combinación de los dos.</p></item>
+  <item><p><code>get_active_iter()</code> devuelve un <code>Gtk.TreeIter</code> que apunta al elemento activo actual. Si no existe, devuelve <code>None</code>.</p></item>
+  <item><p><code>set_model(modelo)</code> establece el modelo que esta caja combinada usa a <code>modelo</code>, y quita un modelo anterior (si existiera). Si <code>modelo</code> es <code>None</code>, entonces lo quitará. Tenga en cuenta que esta función no limpia los renderizadores de celda.</p></item>
+  <item><p><code>set_entry_text_column(columna_texto)</code> establece la columna del modelo de la que esta caja combinada obtendrá las cadenas a <code>columna_texto</code>. La columna <code>columna_texto</code> en el modelo de esta caja combinada debe ser del tipo <code>str</code> (esto sólo es relevante si esta caja combinada se creó con la propiedad «has-entry» establecida a «True»).</p></item>
+  <item><p><code>set_wrap_width(anchura)</code> establece la anchura del ajuste de línea de esta caja combinada a <code>anchura</code>. La anchura de ajuste de línea es básicamente el número preferido de columnas en el que quiere que el diálogo emergente se distribuya en una rejilla.</p></item>
+</list>
+
+<p>Métodos útiles para un <code>Gtk.ComboBoxText</code>:</p>
+<list>
+  <item><p>El método estático <code>new_with_entry()</code> crea una <code>Gtk.ComboBoxText</code> nueva vacía con una entrada.</p></item>
+  <item><p><code>append_text(texto)</code> añade <code>texto</code> a la lista de cadenas almacenadas en esta caja combinada.</p></item>
+  <item><p><code>get_active_text()</code> devuelve la cadena actualmente activa en esta caja combinada, o <code>None</code> si no hay ninguna seleccionada. Si esta caja combinada contiene una entrada, esta función devolverá su contenido (que no será necesariamente un elemento de la lista).</p></item>
+</list>
+
+</section>
+
+<section id="cellrenderer">
+<title>La vista: los «CellRenderer»</title>
+
+<p>La vista hace uso de <code>Gtk.CellRenderer</code> de varios tipos para dibujar los datos.</p>
+
+<p>Implementaciones de <code>Gtk.CellRenderer</code> y métodos útiles:</p>
+<list>
+  <item><p><code>Gtk.CellRendererText</code>: muestra texto en una celda</p></item>
+  <item><p><code>Gtk.CellRendererToggle</code>: muestra un interruptor o botón de radio en una celda. Métodos útiles:</p>
+    <list>
+    <item><p><code>set_active(opción)</code>: activa o desactiva un renderizador de celda</p></item>
+    <item><p><code>get_active()</code>: devuelve si el renderizador de celda está activado</p></item>
+    <item><p><code>set_radio(radio)</code>: si «radio» es <code>True</code>, el renderizador de celda muestra un interruptor de radio (es decir, un interruptor en un grupo mutuamente exclusivo); si es <code>False</code>, muestra una casilla de verificación (una opción booleana independiente)</p></item>
+    <item><p><code>get_radio()</code>: devuelve si se están mostrando botones de radio en lugar de casillas de verificación.</p></item>
+    </list>
+  </item>
+  <item><p><code>Gtk.CellRendererPixbuf</code>: muestra una imagen en una celda</p></item>
+  <item><p><code>Gtk.CellRendererCombo</code>: muestra texto en una celda; pero mientras que <code>Gtk.CellRendererText</code> ofrece una entrada simple para editar el texto, <code>Gtk.CellRendererCombo</code> ofrece un widget <code>Gtk.ComboBox</code> para editarlo. Puede usarse con o sin un widget «Gtk.Entry» asociado, dependiendo del valor de la propiedad «has-entry».</p></item>
+  <item><p><code>Gtk.CellRendererProgress</code>: muestra un valor numérico en forma de barra de progreso en una celda; puede mostrar un texto sobre ella</p></item>
+  <item><p><code>Gtk.CellRendererSpinner</code>: muestra una animación giratoria en una celda</p></item>
+  <item><p><code>Gtk.CellRendererSpin</code>: muestra un botón incremental en una celda</p></item>
+  <item><p><code>Gtk.CellRendererAccel</code>: muestra un acelerador de teclado en una celda</p></item>
+</list>
+
+</section>
+
+<section id="selection">
+<title>El controlador: la selección</title>
+
+<p>La mayoría de las aplicaciones no solo necesitarán mostrar datos, sino también recibir eventos de entrada de los usuarios. Para hacer esto, simplemente obtenga una referencia a un objeto de selección y conéctela a la señal <code>«changed»</code>.</p>
+
+<code mime="text/x-python">
+select = tree.get_selection()
+select.connect("changed", on_tree_selection_changed)
+</code>
+
+<p>Después, para obtener datos de la fila seleccionada:</p>
+
+<code mime="text/x-python">
+def on_tree_selection_changed(selection):
+    model, treeiter = selection.get_selected()
+    if treeiter != None:
+        print "You selected", model[treeiter][0]
+</code>
+
+<p>Métodos útiles para un <code>Gtk.TreeSelection</code>:</p>
+
+<list>
+  <item><p><code>set_mode(tipo)</code> establece el tipo de la selección, donde «tipo» puede ser</p>
+  <list>
+    <item><p><code>Gtk.SelectionMode.NONE</code>: la selección no es posible</p></item>
+    <item><p><code>Gtk.SelectionMode.SINGLE</code>: se puede seleccionar uno o ningún elemento</p></item>
+    <item><p><code>Gtk.SelectionMode.BROWSE</code>: se selecciona exactamente un elemento. En algunas circunstancias, como inicialmente o durante una operación de búsqueda, es posible que ningún elemento esté seleccionado. Lo que realmente se prohíbe es que el usuario deseleccione un elemento actualmente seleccionado excepto si selecciona otro.</p></item>
+    <item><p><code>Gtk.SelectionMode.MULTIPLE</code>: se puede seleccionar cualquier número de elementos. Las pulsaciones cambien el estado de un elemento. Se puede usar la tecla «Ctrl» para agrandar la selección, y «Mayús» para seleccionar entre el foco y el hijo al que apunta. Algunos widgets también pueden permitir arrastrar y soltar para seleccionar un rango de elementos.</p></item>
+  </list>
+  </item>
+  <item><p><code>get_selected()</code> devuelve una tupla <code>(modelo, treeiter)</code>, donde <code>modelo</code> es el modelo actual y <code>treeiter</code> un <code>Gtk.TreeIter</code> que apunta a la fila actualmente seleccionada, o «None» si no la hay. El método no funciona si el modo de selección es <code>Gtk.SelectionMode.MULTIPLE</code>; en ese caso, use <code>get_selected_rows()</code> en su lugar, que devuelve una lista de instancias <code>Gtk.TreePath</code> de todas las filas seleccionadas.</p></item>
+</list>
+
+</section>
+
+<section id="references">
+<title>Referencias</title>
+
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeModel.html">GtkTreeModel</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeView.html">GtkTreeView</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeViewColumn.html">GtkTreeViewColumn</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkComboBox.html">GtkComboBox</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCellRenderer.html">GtkCellRenderer</link></p></item>
+</list>
+
+</section>
+
+</page>

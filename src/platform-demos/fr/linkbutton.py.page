@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="linkbutton.py" xml:lang="fr">
+  <info>
+    <title type="text">LinkButton (Python)</title>
+    <link type="guide" xref="beginner.py#buttons"/>
+    <link type="next" xref="checkbutton.py"/>
+    <revision version="0.1" date="2012-05-23" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un bouton relié à un URL</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>LinkButton</title>
+
+  <media type="image" mime="image/png" src="media/linkbutton.png"/>
+  <p>Un bouton qui crée un lien vers une page Web.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code utilisé pour générer cet exemple</title>
+
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GNOME LinkButton", application=app)
+        self.set_default_size(250, 50)
+
+        # a linkbutton pointing to the given URI
+        button = Gtk.LinkButton(uri="http://live.gnome.org")
+        # with given text
+        button.set_label("Link to GNOME live!")
+
+        # add the button to the window
+        self.add(button)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+  <section id="methods">
+    <title>Méthodes utiles pour un élément graphique LinkButton</title>
+    <list>
+      <item><p>La méthode <code>get_visited()</code> renvoie l'état « visited » (<code>True</code> ou <code>False</code>) de l'URI vers lequel pointe le LinkButton. Le bouton se change en visited quand il est cliqué.</p></item>
+      <item><p>La méthode <code>set_visited(vrai)</code> définit l'état « visited » de l'URI vers lequel pointe le LinkButton à <code>vrai</code> (même chose pour <code>faux</code>).</p></item>
+      <item><p>Each time the button is clicked, the signal <code>"activate-link"</code> is emitted. For an explanation of signals and callback functions, see <link xref="signals-callbacks.py"/>.</p></item>
+    </list>
+  </section>
+  <section id="references">
+    <title>Références API</title>
+    <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkLinkButton.html">GtkLinkButton</link></p></item>
+    </list>
+  </section>
+</page>

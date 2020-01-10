@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-help-appmenu" xml:lang="cs">
+
+  <info>
+    <link type="seealso" xref="dev-help"/>
+    <revision version="0.1" date="2013-06-19" status="review"/>
+
+    <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="editor">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Lucas Lommer</mal:name>
+      <mal:email>llommer@svn.gnome.org</mal:email>
+      <mal:years>2009.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Marek Černocký</mal:name>
+      <mal:email>marek@manet.cz</mal:email>
+      <mal:years>2015.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Jak přidat <gui>Nápovědu</gui> do nabídky aplikace.</title>
+
+  <links type="series" style="floatend">
+    <title>Nastaven nápovědy</title>
+  </links>
+
+  <p>Většina aplikací GNOME má nabídku. Položka <gui style="menuitem">Nápověda</gui> by se měla nacházet nad položkou <gui style="menuitem">O aplikaci</gui>.</p>
+
+  <example>
+  <note>
+    <p>Tento příklad vycházející z aplikace <app href="https://git.gnome.org/browse/cheese/tree/src/cheese-main.vala">Chees</app> předpokládá, že aplikace je napsána v jazyce Vala. U jiných jazyků se to může lechce lišit.</p>
+  </note>
+
+  <p>Abyste přidali položku <gui style="menuitem">Nápověda</gui> do seznamu akcí:</p>
+  <code>
+   private const GLib.ActionEntry action_entries[] = {
+        <input>{ "help", on_help },</input>
+        { "about", on_about },
+        { "quit", on_quit }
+    };
+
+   add_action_entries (action_entries, my_Gtk_Application);
+</code>
+
+  <p>Abyste přidali položku <gui style="menuitem">Nápověda</gui> do nabídky aplikace:</p>
+
+<code>
+  var menu = new GLib.Menu ();
+  var section = new GLib.Menu ();
+
+  <input>var item = new GLib.MenuItem (_("_Help"), "app.help");
+  item.set_attribute ("accel", "s", "F1");
+  section.append_item (item);</input>
+</code>
+
+  <p>Pro zobrazení nápovědy pomocí prohlížeče <app>Yelp</app>, když uživatel klikne na položku nabídky <gui style="menuitem">Nápověda</gui>:</p>
+
+<code>
+  private void on_help ()
+  {
+    var screen = main_window.get_screen ();
+    try
+    {
+      Gtk.show_uri (screen, <input>"help:cheese"</input>, Gtk.get_current_event_time ());
+    }
+    catch (Error err)
+    {
+      message ("Error opening help: %s", err.message);
+    }
+  }
+</code>
+
+  <p>Jako odkaz na konkrétní oddíl v <file>index.page</file> použijte <code>"help:<input>název_aplikace</input>/index#<input>sectionid</input>"</code>.</p>
+
+  </example>
+</page>

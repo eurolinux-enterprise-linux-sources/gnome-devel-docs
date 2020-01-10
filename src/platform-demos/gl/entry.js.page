@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.js" xml:lang="gl">
+  <info>
+  <title type="text">Entry (JavaScript)</title>
+    <link type="guide" xref="beginner.js#entry"/>
+    <revision version="0.1" date="2012-06-03" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A single-line text entry field</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Fran Dieguez</mal:name>
+      <mal:email>frandieguez@gnome.org</mal:email>
+      <mal:years>2012-2013.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Entry</title>
+  <media type="image" mime="image/png" src="media/entry.png"/>
+  <p>This application greets you by name through a pop-up window.</p>
+
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const EntryExample = new Lang.Class({
+    Name: 'Entry Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsentry',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 100,
+            default_width: 300,
+            border_width: 10,
+            title: "What is your name?"});
+
+        // Create the text entry box
+        this.entry = new Gtk.Entry ();
+        this._window.add(this.entry);
+
+        // Connect the text entry box to a function that responds to what you type in
+        this.entry.connect("activate", Lang.bind (this, this._hello));
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+
+
+    _hello: function() {
+
+        // Create a popup dialog to greet the person who types in their name
+        this._greeter = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            text: "Hello, " + this.entry.get_text() + "!",
+            message_type: Gtk.MessageType.OTHER,
+            buttons: Gtk.ButtonsType.OK,
+        });
+
+        // Show the popup dialog
+        this._greeter.show();
+
+        // Bind the OK button to the function that closes the popup
+        this._greeter.connect ("response", Lang.bind(this, this._okClicked));
+    },
+
+    _okClicked: function () {
+        this._greeter.destroy();
+    }
+
+});
+
+// Run the application
+let app = new EntryExample ();
+app.application.run (ARGV);
+</code>
+<p>Neste exemplo empregaremos o seguinte:</p>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Entry.html">Gtk.Entry</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.MessageDialog.html">Gtk.MessageDialog</link></p></item>
+</list>
+</page>

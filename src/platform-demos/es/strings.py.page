@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="strings.py" xml:lang="es">
+
+<info>
+  <title type="text">Cadenas (Python)</title>
+  <link type="guide" xref="beginner.py#theory"/>
+  <link type="next" xref="label.py"/>
+  <revision version="0.1" date="2012-06-16" status="draft"/>
+
+  <desc>Una explicación de cómo trabajar con cadenas en Python y GTK+.</desc>
+  <credit type="author copyright">
+    <name>Sebastian Pölsterl</name>
+    <email its:translate="no">sebp@k-d-w.org</email>
+    <years>2011</years>
+  </credit>
+  <credit type="editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012</years>
+  </credit>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Cadenas</title>
+
+<links type="section"/>
+
+<note style="warning"><p>GNOME recomienda fuertemente el uso de Python 3 para escribir aplicaciones.</p></note>
+
+<section id="python-2">
+<title>Cadenas en Python 2</title>
+
+<p>Python 2 viene con dos tipos de objetos diferentes que pueden usarse para representar cadenas, <code>str</code> y <code>unicode</code>. Las instancias de <code>unicode</code> se usan para expresar cadenas de Unicode, mientras que las instancias del tipo <code>str</code> son representaciones de bytes (la cadena codificada). A nivel funcional, Python representa las cadenas de Unicode como enteros de 16 ó 32 bits, dependiendo de cómo se compiló su intérprete.</p>
+
+<code>
+&gt;&gt;&gt; unicode_string = u"Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; print unicode_string
+Fußbälle
+</code>
+
+<p>Las cadenas de Unicode pueden convertirse a cadenas de 8 bits con <code>unicode.encode()</code>. Las cadenas de 8 bits de Python tienen un método <code>str.decode()</code> que interpreta la cadena usando la codificación dada (es decir, es la inversa de <code>unicode.encode()</code>):</p>
+
+<code>
+&gt;&gt;&gt; type(unicode_string)
+&lt;type 'unicode'&gt;
+&gt;&gt;&gt; unicode_string.encode("utf-8")
+'Fu\xc3\x9fb\xc3\xa4lle'
+&gt;&gt;&gt; utf8_string = unicode_string.encode("utf-8")
+&gt;&gt;&gt; type(utf8_string)
+&lt;type 'str'&gt;
+&gt;&gt;&gt; unicode_string == utf8_string.decode("utf-8")
+True</code>
+
+<p>Desafortunadamente, Python 2.x le permite mezclar <code>unicode</code> y <code>str</code> si la cadena de 8 bits contuviera sólo bytes de 7 bits (ASCII), pero obtendría <sys>UnicodeDecodeError</sys> si contuviera valores no ASCII.</p>
+
+</section>
+
+<section id="python-3">
+<title>Cadenas en Python 3</title>
+
+<p>Desde Python 3.0, todas las cadenas se almacenan como Unicode en una instancia del tipo <code>str</code>. Las cadenas codificadas, por otro lado, se representan como datos binarios en la forma de instancias del tipo de bytes. Conceptualmente, <code>str</code> se refiere a texto, mientras que bytes se refieren a datos. Use <code>encode()</code> para ir de <code>str</code> a <code>bytes</code>, y <code>decode()</code> para ir de <code>bytes</code> a <code>str</code>.</p>
+
+<p>Además, ya no es posible mezclar cadenas de Unicode con cadenas codificadas, porque se producirá un <code>TypeError</code>:</p>
+
+<code>
+&gt;&gt;&gt; text = "Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; data = b" sind rund"
+&gt;&gt;&gt; text + data
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: Can't convert 'bytes' object to str implicitly
+&gt;&gt;&gt; text + data.decode("utf-8")
+'Fußbälle sind rund'
+&gt;&gt;&gt; text.encode("utf-8") + data
+b'Fu\xc3\x9fb\xc3\xa4lle sind rund'</code>
+
+</section>
+
+<section id="gtk">
+<title>Unicode en GTK+</title>
+
+<p>GTK+ usa cadenas codificadas con UTF-8 para todo el texto. Esto significa que si llama a un método que devuelve una cadena, siempre obtendrá una instancia del tipo <code>str</code>. Lo mismo se aplica a métodos que esperan una o más cadenas como parámetro, deben estar codificadas con UTF-8. Sin embargo, por comodidad, PyGObject convertirá automáticamente cualquier instancia de Unicode a «str» si se proporciona como argumento:</p>
+
+<code>
+&gt;&gt;&gt; from gi.repository import Gtk
+&gt;&gt;&gt; label = Gtk.Label()
+&gt;&gt;&gt; unicode_string = u"Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; label.set_text(unicode_string)
+&gt;&gt;&gt; txt = label.get_text()
+&gt;&gt;&gt; type(txt)
+&lt;type 'str'&gt;</code>
+
+<p>Además:</p>
+
+<code>
+&gt;&gt;&gt; txt == unicode_string</code>
+
+<p>devolvería <code>False</code>, con la advertencia <code>__main__:1: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal</code> (<code>Gtk.Label.get_text()</code> devolverá siempre una instancia de <code>str</code>; por lo tanto, <code>txt</code> y <code>unicode_string</code> no son iguales).</p>
+
+<p>Esto es especialmente importante si quiere internacionalizar su programa usando <link href="http://docs.python.org/library/gettext.html"><code>gettext</code></link>. Tiene que asegurarse de que <code>gettext</code> devuelva cadenas de 8 bits codificadas con UTF-8 para todos los idiomas.</p>
+
+<p>En general se recomienda no usar ningún objeto de <code>unicode</code> en aplicaciones de GTK+, y sólo usar objetos <code>str</code> codificados con UTF-8 dado que GTK+ no integra completamente objetos <code>unicode</code>.</p>
+
+<p>En Python 3.x las codificación de cadenas es más consistente, porque PyGObject automáticamente codifica/decodifica hacia/desde UTF-8 si le pasa una cadena a un método o un método devuelve una cadena. Las cadenas, o el texto, siempre se representarán sólo como instancias de <code>str</code>.</p>
+
+</section>
+
+<section id="references">
+<title>Referencias</title>
+
+<p><link href="http://python-gtk-3-tutorial.readthedocs.org/en/latest/unicode.html">Cómo manejar cadenas: el tutorial de GTK+ 3 en Python</link></p>
+
+</section>
+
+</page>

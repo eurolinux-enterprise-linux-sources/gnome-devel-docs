@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="introduction" xml:lang="gl">
+   <info>
+     <link type="guide" xref="index#intro"/>
+   
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Fran Dieguez</mal:name>
+      <mal:email>frandieguez@gnome.org</mal:email>
+      <mal:years>2011-2013.</mal:years>
+    </mal:credit>
+  </info>
+         <title>Que se está optimizando?</title>
+        <p>Ao optimizar GNOME o primeiro que hai que lembrar é isto: non se está tentando mellorar o programa, estase tentando mellorando facer que as persoas usen o equipo máis felices.</p>
+        <p>Programas mellores fan á xente máis feliz pero existen algunhas mellores que faranos máis felices que outras: tempo de resposta, tempo de inicio, facilidade para acceder a ordes e que o equipo non teña que usar a memoria de intercambio cando máis de dous programas estean abertos.</p>
+        <p>A optimización tradicional contempla conceptos como o uso de CPI, o tamaño do código, o número de pulsacións do reato e o uso de memoria de programa. Elixiuse esta segunda lista para correlar como a primeira, porén existe unha diferenza importante. Á persoa que usa GNOME non lle importa a segunda lista, pero sí a primeira. Ao optimizar os programas de GNOME reducirase o uso de CPU, o uso de memoria e todo aquelo, pero son conceptos para o fin, non o obxectivo final. Optimízase para as persoas.</p>
+
+	<section id="doing-the-optimization">        
+          <title>Realizar a optimización</title>
+        <p>Na sección anterior omitiuse un calificador importante: optimizar algo debe ser medíbel. Non se pode medir a felicidade. Porén pódese medir o tempo de inicio dun programa para saber se se mellorou. A felicidade do usuario aumentará pois.</p>
+        <p>
+            Optimization is the process of measurement, refinement and re-measurement. So the first thing you must do is find a way to measure what you are optimizing. Ideally this measurement is a single number, for example: the time taken to perform a task. This is your benchmark, it is the only way to tell if you are winning or losing. There is a big difference between a program that <em>should</em> be fast and a program that <em>is</em> fast.
+        </p>
+        <p>Unha vez que ten unha proba de rendemento básica debe atopar por que o seu código non o está facendo tan ben como debería. É tentado facelo inspeccionando: simplemente mirar o código e tratar de atopar algo que parece que precisa unha mellora. Estará perdendo o tempo, usar un perfilador para obter unha lista detallada do que o seu programa está facendo é, realmente, a única forma de estar seguro.</p>
+        <p>Xeralmente o problema está illado en pequenas partes do código. Elixa a peor parte e concéntrese nesa primeiro. Unha vez que o teña feito, volva ao perfilador e repita o proceso. Segundo proceda, as melloras obtidas en cada paso faranse cada vez máis pequenas, nalgún punto terá que decidir que os resultados son suficientes. Se os seus esforzos só están obtendo un 10% de melloras entón fai tempo que pasou o punto en que debería ter parado.</p>
+        <p>Non esqueza a visión xeral. Por exemplo, fronte a só tentar incrementar o rendemento dunha parte do código, pregúntese se realmente se precisa dita parte. Pode ser fornecida por outra parte do seu código? Poden os resultados de cálculos previos gardados e ser reusados? Podería non ser nin preciso optimizalo se é un lugar onde nunca vai ir o usuario para que poida notalo. Ou peor aínda, que o código xa estea optimizado e está facendo un cálculo moi grande agora para evitar facelo máis tarde. O código non se executa en separación e tampouco o fai nun proceso de optimizado.</p>
+	</section>
+
+	<section id="hints">
+        <title>Suxestións</title>
+
+        <terms>
+          <item>
+            <title>O fundamental</title>
+            <list type="ordered">
+            <item>
+                <p>Volva a executar a súa proba de rendemento despois de cada cambio que realice sobre o código e manteña un rexistro de todo o que cambia e de como afecta ao rendemento. Isto permítelle desfacer erros e tamén axúdalle a non repetilos.</p>
+            </item>
+            <item>
+                <p>Asegúrse de que o seu código é correcto e está libre de erros antes de optimizalo. Comprobe que permanece correcto e libre de erros desois de telo optimizado.</p>
+            </item>
+            <item>
+                <p>Optimizar ao nivel máis alto antes de optimizar os detalles.</p>
+            </item>
+            <item>
+                <p>Use o algoritmo correcto. O clásico exemplo de libro de texto é usar ordenación rápida no lugar de ordenación por burbulla. Existen moitos outros, algúns aforran memoria, alguns aforran CPU. Tamén debe ver que atallos de teclado pode crear: pode facelo máis rápido que unha ordenación rápida se está preparado para tomar certos compromisos.</p>
+            </item>
+            <item>
+                <p>A optimización é intercambio. Obter resultados mellora os cálculos pero aumenta a memoria en uso. Gardar datos ao disco aforra memoria pero custa tempo ao cargalos de novo desde o disco.</p>
+            </item>
+            <item>
+                <p>Asegúrese de elixir certa variedade de entradas que optimizar. SE non o fai é doado que remate cun trozo de código coidadosamente optimizado par aun campo e non para outros.</p>
+            </item>
+            <item>
+                <p>Evite as operacións caras: múltiples lecturas de disco pequenas. Use un montón de memoria para que a área de intercambio («swap») fágase innecesario. Evite calquera cousa que escriba ou lea innecesariamente do disco. A rede tamén é lenta. Evite tamén operacións gráficas que precisan unha resposta do servidor X.</p>
+	    </item>
+	    </list>
+        </item>
+        <item>
+            <title>Trampas para os imprudentes</title>
+            <list type="ordered">
+            <item>
+                <p>Estea atento aos efectos colaterais. Xeralmente son interaccións estranas entre diferentes seccións do código, unha extensión dunha parte pode retardar outra.</p>
+            </item>
+            <item>
+                <p>Ao cronometrar o tempo do código, incluso nun sistema parado, os eventos fora do programa engaden ruido aos resultados de tempo. Faga unha medida sobre múltiples execucións. Se o código é moi pequeno a resolución do tempo tamén é un problema. Neste caso mida o tempo que o equipo tarda en executar o código 100 ou 1000 veces. Se os tempos que está obtendo son algo superiores a uns poucos segundos todo debería estar correcto.</p>
+            </item>
+            <item>
+                <p>É moi doado perferse co perfilador. Existen historias de programadores optimizando o búcle de inactividade porque é onde se perdía todo o seu tempo. Non optimice código do que o usuario non se preocupe.</p>
+            </item>
+            <item>
+                <p>Lembre os resultados do servidor X. O uso de memoria do seu programa non inclúe os pixmaps almacenados nos procesos do servidor X, pero aínda seguen usando memoria. Use xrestop para ver os recursos que está usando o seu programa.</p>
+            </item>
+	    </list>
+        </item>
+	<item>
+          <title>Consellos de baixo nivel</title>
+            <list type="ordered">
+            <item>
+                <p>Ao optimizar o uso de memoria considere a diferenza entre o uso de pico e o uso medio de memoria. Algunha memoria sempre está reservada, isto xeralmente é malo. Algunha está temporalmente reservada, isto pode ser aceptábel. Ferramentas como massif usan o concepto de espazo-tempo, o produto da memoria usada e o tempo durante o que estivo reservada.</p>
+            </item>
+            <item>
+                <p>Controle o tempo de trozos de código simplificados que só fan cousas esenciais, isto fornece un límite absoluto inferior no tempo que usará o código. Por exemplo, ao optimizar un búcle, controle o tempo do búcle baleiro. Se aínda é moito tempo calquera intento de optimización non axudará e deberá cambiar o seu deseño. Asegúrese de que o compilador non desoptimiza o búcle baleiro.</p>
+            </item>
+            <item>
+                <p>mova o código fora dos bucles internos. Un anaco de código máis complicado que se executa unha soa vez é moito máis rápido que un trozo de código máis sinxelo que se executa mil veces. Evite chamar habitualmente a código lento.</p>
+            </item>
+            <item>
+                <p>
+                      Give the compiler as many hints as possible. Use the const keyword. Use <code>G_INLINE_FUNC</code> for short, frequently called, functions. Look up <code>G_GNUC_PURE</code>, <code>G_LIKELY</code> and the other glib miscellaneous macros. Use the macros instead of gcc-specific keywords to ensure portability.
+                </p>
+            </item>
+            <item>
+                <p>Non use linguaxes de ensamblado. O código non é portábel e pode ser máis rápido nun procesador que noutro, ademais non está garantizado que sea rápido en cada procesador que admite esa arquitectura (p.ex. Athlon contra Pentium 4).</p>
+            </item>
+            <item>
+                <p>Non rescriba unha rutina existente dunha biblioteca a non ser que estea seguro de que é demasiado lenta. Moitas rutinas de bibliotecas de uso intensivo pola CPU xa se optimizaron. Algunhas rutinas de bibliotecas son lentas, especialmente aquelas que realizan chamadas ao sistema operativo.</p>
+            </item>
+            <item>
+                <p>Minimice o número de bibliotecas ás que liga. Canto menor sexa o número de bibliotecas a ligar, máis rápido se iniciará o programa. É unha tarefa difícil en GNOME.</p>
+            </item>
+	    </list>
+        </item>
+	<item>
+          <title>Trucos de alto nivel</title>
+          <list type="ordered">
+            <item>
+                <p>A ventaxa da concurrencia. Isto non significa simplemente usar varios procesadores, tamén significa aproveitarse do tempo que o usuario pasa pensando en que fará despois, para realizar algúns cálculos anticipados. Faga cálculos mentres se agarda a carga de datos desde o disco. Aprovéitese dos recursos múltiples, úseos todos á vez.</p>
+            </item>
+            <item>
+                <p>Engane. O usuario só ten que pensar que o equipo é rápido, non importa se realmente o é ou non. É o tempo entre a orde e a resposta o que importa, non importa se a resposta esta precalculada, cacheada ou se traballará nela en calquera momento posterior conveniente, sempre que o usuario obteña o que agarda.</p>
+            </item>
+            <item>
+                <p>Facer cousas no búcle ocioso. É máis doado programar usando multifíos e facer cousas por detrás dos ollos do usuario. Teña coidado, se pasa gasta moito tempo no bucle ocioso o seu programa podería volverse lento. Polo que de forma regular déalle de novo o control ao bucle principal.</p>
+            </item>
+            <item>
+                <p>Se todo isto falla, dígalle ao usuario que o código vai a executarse vai ser lento e móstrelle unha barra de progreso. Non estará tan contento con isto como se simplemente lle mostrara os resultados, porén cando menos saberá que o programa non se pechou ou ten problemas e pode ir a tomarse un café mentres.</p>
+            </item>
+	  </list>
+        </item>
+      </terms>
+    </section>
+  </page>

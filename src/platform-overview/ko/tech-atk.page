@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-atk" xml:lang="ko">
+
+  <info>
+    <link type="guide" xref="tech" group="atk"/>
+
+    <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email its:translate="no">shaunm@gnome.org</email>
+      <years>2011–2012</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>화면 리더 및 기타 도구 지원을 구현하는 접근성 도구</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016.</mal:years>
+    </mal:credit>
+  </info>
+
+<title>ATK</title>
+
+<p>접근성은 다양한 신체적 장애를 지닌 사람이 프로그램을 사용할 수 있게 하는 과정입니다. 장애의 종류는 시각 장애, 행동 장애, 청각 장애, 인지/언어 장애, 발작 장애가 있습니다. 대부분 사람은 이런 장애를 안고 살아가며, 프로그램의 접근성을 확보하면 어떤 사람에게는 장애가 없더라도 더 많은 사람이 프로그램을 제대로 사용할 수 있습니다.</p>
+
+<p>그놈에서는 접근성 툴킷을 의미하는 ATK 프레임워크로 접근성 보조 장치를 지원합니다. 이 프레임워크에서는 붙어있는 그래픽 인터페이스 구성 요소의 인터페이스 집합을 정의합니다. 예를 들면, 이 과정을 통해 화면 리더기에서 인터페이스의 텍스트를 읽어 스피커로 출력하고 컨트롤을 다룹니다. ATK 지원은 GTK+에 내장했으며, 그놈 플랫폼의 일부이기에 GTK+를 활용하는 프로그램은 타당한 접근성 기능을 자유롭게 지원합니다.</p>
+
+<p>ATK는 제각기 다른 위젯(텍스트 항목, 텍스트 영역, 단추, 메뉴)을 제각각의 접근성 기술에 붙이는 문제(스크린 리더, 점자 화면, 호흡 처리 장치)를 해결합니다. 각 위젯에서 접근 장치에 이르기까지 NxM 인터페이스를 작성하는 대신 ATK 인터페이스 하나로 위젯을 띄우면 됩니다. 그러면 접근성 장치를 접근 가능 위젯에 요청하여 이 인터페이스를 사용하도록 전환합니다. 이를테면, 음성 스크린 리더와 점자 화면 표시기는 문장 정보를 제공하는 모든 인터페이스 대신 ATK의 표준 "문장 정보 표시" 인터페이스로 활용합니다.</p>
+
+<p>그래도 프로그램을 개발할 때는 접근성 문제를 고려해야합니다. GTK+ 인터페이스에서 기본적으로 적절한 접근성 기능을 제공하지만, ATK에 추가 정보를 넣어 프로그램에 접근성 도구를 어떻게 갖추느냐에 따라 자주 개선할 수 있습니다. 개별 위젯을 개발한다면 ATK에 해당 속성을 노출해야 합니다. 또한 사용자에게 별도의 음성, 그래픽, 색상 중 오직 한가지 방식으로의 정보 전달을 피해야합니다. 개별 미디어를 인식할 수 있는 사용자에 의존하는 대신 정보를 제공하는 여러가지 수단을 두십시오.</p>
+
+<p>그놈 데스크톱에는 장애 사용자가 데스크톱과 프로그램에서 완전한 기능상 이점을 취하게 하는 다양한 접근성 도구를 갖추고 있습니다. ATK를 완벽하게 구현한 프로그램은 접근성 도구로 동작할 수 있습니다. 스크린 리더, 화면 돋보기, 화면 키보드, 혁신적인 텍스트 항목 예측 도구 <app>대셔</app>가 이 도구에 해당합니다.</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/accessibility-devel-guide/">개발자용 그놈 접근성 안내서</link></p></item>
+  <item><p><link href="https://developer.gnome.org/atk/stable/">ATK 참고서</link></p></item>
+</list>
+</page>

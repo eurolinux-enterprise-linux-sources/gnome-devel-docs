@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="GtkApplicationWindow.py" xml:lang="ca">
+  <info>
+    <title type="text">ApplicationWindow (Python)</title>
+    <link type="guide" xref="beginner.py#windows"/>
+    <link type="seealso" xref="properties.py"/>
+    <link type="next" xref="image.py"/>
+    <revision version="0.1" date="2012-06-10" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="author">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>GtkWindow subclass with GtkApplication support</desc>
+  </info>
+
+  <title>ApplicationWindow</title>
+  <media type="image" mime="image/png" src="media/window.png"/>
+  <p>The simplest GtkApplication Window which can support <link xref="gmenu.py"/>.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Code used to generate this example</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+# a Gtk ApplicationWindow
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # constructor: the title is "Welcome to GNOME" and the window belongs
+    # to the application app
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+
+
+class MyApplication(Gtk.Application):
+    # constructor of the Gtk Application
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    # create and activate a MyWindow, with self (the MyApplication) as
+    # application the window belongs to.
+    # Note that the function in C activate() becomes do_activate() in Python
+    def do_activate(self):
+        win = MyWindow(self)
+        # show the window and all its content
+        # this line could go in the constructor of MyWindow as well
+        win.show_all()
+
+    # start up the application
+    # Note that the function in C startup() becomes do_startup() in Python
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+# create and run the application, exit with the value returned by
+# running the program
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+  <section id="methods">
+  <title>Useful methods for a Gtk.ApplicationWindow widget</title>
+
+  <list>
+    <item><p><code>set_default_size(200, 100)</code> sets the default size of the window to a width of <code>200</code> and a height of <code>100</code>; if instead of a positive number we pass <code>-1</code> we have the default size.</p></item>
+    <item><p><code>set_position(Gtk.WindowPosition.CENTER)</code> centers the window. Other options are <code>Gtk.WindowPosition.NONE, Gtk.WindowPosition.MOUSE, Gtk.WindowPosition.CENTER_ALWAYS, Gtk.WindowPosition.CENTER_ON_PARENT</code>.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>API References</title>
+  <p>
+    In this sample we used the following:
+  </p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplication.html">GtkApplication</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplicationWindow.html">GtkApplicationWindow</link></p></item>
+  </list>
+  </section>
+</page>

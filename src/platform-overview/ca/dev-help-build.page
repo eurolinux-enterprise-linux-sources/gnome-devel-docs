@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-help-build" xml:lang="ca">
+
+  <info>
+    <link type="next" xref="dev-help-appmenu"/>
+    <revision version="0.1" date="2013-06-18" status="review"/>
+
+    <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="editor">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years/>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  </info>
+
+  <title>Set up your build system</title>
+
+  <links type="series" style="floatend">
+    <title>Set up help</title>
+  </links>
+
+  <p>Help is normally installed into the
+  <file its:translate="no">/usr/share/help/<input>locale</input>/<input>HELP_ID</input></file> directory.</p>
+
+  <p>Add the following lines in the file <file>configure.ac</file>:</p>
+  
+  <code>YELP_HELP_INIT</code>
+  
+  <code>AC_CONFIG_FILES([
+help/Makefile
+])</code>
+
+  <p>Add the following line to the <file>Makefile.am</file>:</p>
+  <code>SUBDIRS = help</code>
+  		
+  <p>Add a <file>help/Makefile.am</file>, it should list the help files in your
+  project that you want to install:</p>
+<code>
+@YELP_HELP_RULES@
+
+HELP_ID = <input>applicationname</input>
+
+# Media files
+HELP_MEDIA = \
+	figures/icon.png
+
+# Help pages
+HELP_FILES = \
+	index.page \
+	introduction.page \
+	anotherpage.page
+
+# Translated languages, blank if no translations exist
+HELP_LINGUAS = en_GB 
+</code>
+
+</page>

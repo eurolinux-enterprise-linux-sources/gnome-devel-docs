@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-launching-desktop" xml:lang="el">
+
+  <info>
+    <link type="next" xref="dev-launching-icons"/>
+    <revision version="0.1" date="2014-01-28" status="draft"/>
+
+    <credit type="author">
+      <name>David King</name>
+      <email its:translate="no">davidk@gnome.org</email>
+      <years>2014</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2010-2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012-2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Τζένη Πετούμενου</mal:name>
+      <mal:email>epetoumenou@gmail.com</mal:email>
+      <mal:years>2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μάριος Ζηντίλης</mal:name>
+      <mal:email>m.zindilis@dmajor.org</mal:email>
+      <mal:years>2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκυδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gnome.org</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Εγκατάσταση ενός αρχείου επιφάνειας εργασίας</title>
+
+  <links type="series" style="floatend">
+    <title>Εκκινήστε την εφαρμογή σας</title>
+  </links>
+
+  <p>Γράψτε και εγκαταστείστε ένα αρχείο επιφάνειας εργασίας έτσι ώστε οι χρήστες να μπορούν να ανακαλύψουν και να εκκινούν την εφαρμογή σας.</p>
+  
+  <p>Το GNOME χρησιμοποιεί την <link href="http://standards.freedesktop.org/desktop-entry-spec/latest/index.html">προδιαγραφή καταχώρησης επιφάνειας εργασίας του freedesktop.org</link> και τις <link href="http://standards.freedesktop.org/menu-spec/latest/">προδιαγραφές μενού της επιφάνειας εργασίας</link> για να περιγράφει τους εκκινητές εφαρμογών. Η εγκατάσταση ενός αρχείου επιφάνειας εργασίας είναι ο πρότυπος τρόπος εγγραφής της εφαρμογής σας στο GNOME και σε άλλες επιφάνειες εργασίας.</p>
+  
+  <p>Ένα αρχείο επιφάνειας εργασίας περιέχει το εκτέλεσιμο της εφαρμογής σας, το όνομα και τον τύπο, και μπορεί επίσης να περιλαμβάνει και ένα εικονίδιο, μια περιγραφή, και πολλές άλλες πληροφορίες σχετικά με την εκκίνηση μιας εφαρμογής.</p>
+
+  <p>Για μια υποθετική εφαρμογή <app>My Application</app>, ένα αρχείο επιφάνειας εργασίας θα έμοιαζε ως εξής:</p>
+  <example>
+    <listing>
+      <title><file>myapplication.desktop</file></title>
+<code>[Desktop Entry]
+Name=My Application
+Exec=myapplication
+Type=Application
+Icon=myapplication
+Comment=Μια περιγραφή της εφαρμογής
+Categories=GTK;GNOME;Utility;</code>
+    </listing>
+  </example>
+
+  <p>Η γραμμή κώδικα <code>[Desktop Entry]</code> δείχνει ότι αυτό είναι ένα αρχείο επιφάνειας εργασίας. Συνοδεύεται από κλειδιά που περιγράφουν τον εκκινητή της εφαρμογής. Το κλειδί <code>Name</code> είναι το όνομα της εφαρμογής, το οποίο θα εμφανίζεται στη διεπαφή χρήστη. Το εκτελέσιμο της εφαρμογής περιλαμβάνεται στο κλειδί <code>Exec</code>, είτε με την πλήρη διαδρομή ή ένα εκτελέσιμο για το οποίο γίνεται αναζήτηση στο <code>PATH</code>. Το τελευταίο κλειδί που χρειάσθηκε είναι το <code>Type</code>, το οποίο για τις εφαρμογές είναι πάντοτε το <code>Application</code>. Οι εναλλακτικοί τύποι συμπεριλαμβάνονται στις προδιαγραφές καταχώρησης επιφάνειας εργασίας.</p>
+
+  <p>Τα άλλα πεδία στο αρχείο επιφάνειας εργασίας είναι προαιρετικά, αλλά συστηνόμενα. Οι εφαρμογές θα πρέπει να εγκαθιστούν ένα εικονίδιο, και να συμπεριλαμβάνουν το όνομα του εικονιδίου (εξαιρουμένης της επεκτάσεως) στον κλειδί <code>Icon</code>. Το <code>Σχόλιο</code> είναι μια σύντομη περιγραφή της εφαρμογής. Για να βοηθηθούν οι χρήστες κατά την περιήγησή τους στις εφαρμογές, το κλειδί <code>Categories</code> θα πρέπει να περιλαμβάνει μια λίστα με κατηγορίες, διαχωριζόμενες από μία άνω τελεία, από τις προδιαγραφές μενού της επιφάνειας εργασίας.</p>
+
+  <p>Υπάρχουν διάφορα άλλα κλειδιά που μπορούν να προστεθούν στα αρχεία επιφάνειας εργασίας, που παρατίθενται σε λίστα και περιγράφονται στις προδιαγραφές καταχώρησης της επιφάνειας εργασίας.</p>
+ 
+</page>

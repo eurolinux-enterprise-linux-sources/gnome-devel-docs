@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="harmful" xml:lang="cs">
+    <info>
+     <link type="guide" xref="index#harm"/>
+    
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Marek Černocký</mal:name>
+      <mal:email>marek@manet.cz</mal:email>
+      <mal:years>2010, 2013</mal:years>
+    </mal:credit>
+  </info>
+    <title>Nastavení hlaviček disku má neblahý vliv</title>
+    <p>Natavení hlaviček disku je jedna z časově nejnákladnějších operací, které jen můžete provádět. Možná byste viditelně nepoznali jak často se provádí, ale věřte že se dělá. V důsledku toho se prosím vyhněte následujícímu ne zrovna optimálnímu chování:</p>
+    <list type="unordered">
+        <item>
+            <p>Umisťování velkého množství malých souborů po celém disku.</p>
+        </item>
+        <item>
+            <p>Otevírání, zjišťování stavu a čtení velkého množství souborů po celém disku.</p>
+        </item>
+        <item>
+            <p>Provádění předchozích věcí na souborech, které byly ukládány v různou dobu a tím pádem jsou nejspíše fragmentované a požadují nastavení hlaviček disku.</p>
+        </item>
+        <item>
+            <p>Provádění předchozích věcí na souborech, které jsou v různých složkách, tím pádem určitě na různých skupinách cylindrů, což způsobí další nastavení hlaviček disku.</p>
+        </item>
+        <item>
+            <p>Opakované dělání věcí uvedených v předchozím, když je stačí udělat jednou.</p>
+        </item>
+    </list>
+    <p>Cesty, kterými můžete optimalizovat svůj kód, aby minimalizoval nastavení hlaviček disku:</p>
+    <list type="unordered">
+        <item>
+            <p>Slučte data do jednoho souboru.</p>
+        </item>
+        <item>
+            <p>Udržujte data dohromady ve stejné složce.</p>
+        </item>
+        <item>
+            <p>Ukládejte data do mezipaměti, aby je nebylo potřeba číst stále dokola.</p>
+        </item>
+        <item>
+            <p>Sdílejte data tak, aby nemusela být znovu čtena z disku, když je chce každá z aplikací načíst.</p>
+        </item>
+        <item>
+            <p>Zvažte ukládání všech dat do mezipaměti v podobě jednoho binárního souboru, který je správně zarovnán a lze pro něj použít mmap.</p>
+        </item>
+    </list>
+    <p>Problémy s nastavením hlaviček disku jsou složité hlavně pro čtení, což je bohužel přesně to co děláme. Pamatujte, že čtení je obecně synchronní, zatímco zápis asynchronní. To problém jen komplikuje, serializuje každé čtení a přispívá k prodlouženým odezvám programu</p>
+</page>

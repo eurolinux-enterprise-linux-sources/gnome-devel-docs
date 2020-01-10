@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="record-collection.js" xml:lang="el">
+
+  <info>
+  <title type="text">Συλλογή εγγραφών (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+
+    <desc>Δημιουργία μιας μικρής εφαρμογής βάσης δεδομένων για παραγγελία της μουσικής σας συλλογής</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-02-22" status="review"/>
+    <credit type="author">
+      <name>Έργο τεκμηρίωσης GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasettii@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Συλλογή εγγραφών</title>
+
+<synopsis>
+  <p>Σε αυτό το μάθημα, θα μάθετε:</p>
+  <list>
+    <item><p>Πώς να συνδεθείτε με μια βάση δεδομένων χρησιμοποιώντας libgda</p></item>
+    <item><p>Πώς να εισάγετε και να περιηγηθείτε σε εγγραφές στον πίνακα βάσης δεδομένων</p></item>
+  </list>
+</synopsis>
+
+<section id="intro">
+  <title>Εισαγωγή</title>
+  <p>Αυτή η παρουσίαση χρησιμοποιεί τη γλώσσα Javascript. Πρόκειται να παρουσιάσουμε πώς να συνδεθείτε και να χρησιμοποιήσετε μια βάση δεδομένων από ένα πρόγραμμα GTK χρησιμοποιώντας τη βιβλιοθήκη GDA (πρόσβαση δεδομένων GNOME). Έτσι χρειαζόσαστε επίσης αυτή τη βιβλιοθήκη εγκατεστημένη.</p>
+  <p>Η πρόσβαση δεδομένων GNOME (GDA) είναι βιβλιοθήκη της οποίας ο σκοπός είναι να δώσει γενική πρόσβαση σε διαφορετικά είδη και τύπους πηγών δεδομένων. Αυτό οδηγεί από παραδοσιακά σχεσιακά συστήματα βάσης δεδομένων, σε οποιοδήποτε είδος πηγής δεδομένων, όπως εξυπηρετητή αλληλογραφίας, έναν κατάλογο LDAP, κλπ. Για περισσότερες πληροφορίες και για πλήρες API και τεκμηρίωση, επισκεφτείτε την <link href="http://library.gnome.org/devel/libgda/stable/">ιστότοπο GDA</link>.</p>
+  <p>Αν και ένα μεγάλο τμήμα του κώδικα συσχετίζεται με τη διεπαφή χρήστη (GUI), πρόκειται να εστιάσουμε το μάθημά μας στα μέρη της βάσης δεδομένων (αν και θα αναφερθούν άλλα μέρη που θεωρούνται σχετικά). Για να μάθετε περισσότερα για τα προγράμματα JavaScript στο GNOME, δείτε το μάθημα <link xref="image-viewer.js">πρόγραμμα προβολέα εικόνας</link>.</p>
+</section>
+
+<section id="anjuta">
+  <title>Δημιουργία έργου με το Anjuta</title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+    <p>Ξεκινήστε το Anjuta και πατήστε <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+    <p>Επιλέξτε <gui>γενικό Javascript</gui> από την καρτέλα <gui>JS</gui>, πατήστε <gui>Μπροστά</gui>, και συμπληρώστε τις λεπτομέρειές σας στις επόμενες λίγες σελίδες. Χρησιμοποιήστε ως όνομα του έργου και του καταλόγου το <file>record-collection</file>.</p>
+   	</item>
+    <item>
+    <p>Πατήστε <gui>τελειωμένο</gui> και το έργο θα δημιουργηθεί για εσάς. Ανοίξτε το <file>src/main.js</file> από τις καρτέλες <gui>έργο</gui> ή <gui>αρχείο</gui>. Περιλαμβάνει πολύ απλό παράδειγμα κώδικα.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="structure">
+  <title>Δομή προγράμματος</title>
+  <media type="image" mime="image/png" src="media/record-collection.png"/>
+  <p>Αυτή η παρουσίαση είναι μια απλή εφαρμογή GTK (με μοναδικό παράθυρο) ικανό να εισάγει εγγραφές στον πίνακα βάσης δεδομένων καθώς και περιήγηση όλων των εγγραφών του πίνακα. Ο πίνακας έχει δύο πεδία: <code>id</code>, ένας ακέραιος και <code>name</code>, έναν varchar. Η πρώτη ενότητα (στην κορυφή) της εφαρμογής επιτρέπει την εισαγωγή εγγραφής στον πίνακα. Η τελευταία ενότητα (πυθμένας) επιτρέπει να δείτε όλες τις εγγραφές αυτού του πίνακα. Το περιεχόμενο του ανανεώνεται κάθε φορά που μια νέα εγγραφή εισάγεται και στην εκκίνηση της εφαρμογής.</p>
+</section>
+
+<section id="start">
+  <title>Έναρξη της διασκέδασης</title>
+  <p>Ας αρχίσουμε εξετάζοντας τον σκελετό του προγράμματος:</p>
+  <code mime="application/javascript" style="numbered">
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Gda = imports.gi.Gda;
+const Lang = imports.lang;
+
+function Demo () {
+  this._init ();
+}
+
+Demo.prototype = {
+
+  _init: function () {
+    this.setupWindow ();
+    this.setupDatabase ();
+    this.selectData ();
+  }
+}
+
+Gtk.init (null, null);
+
+var demo = new Demo ();
+
+Gtk.main ();</code>
+  <list>
+    <item><p>Γραμμές 1-4: Αρχικές εισαγωγές. Δώστε ιδιαίτερη προσοχή στη γραμμή 3, που λέει στη Javascript να εισάγει τη βιβλιοθήκη GDA, το επίκεντρο μας σε αυτό το μάθημα.</p></item>
+    <item><p>Γραμμές 6-17: Ορίστε την κλάση μας <code>Demo</code>. Δώστε ιδιαίτερη προσοχή στις γραμμές 13-15, όπου καλούμε 3 μεθόδους που θα κάνουν όλη τη δουλειά. Αναλυτικά παρακάτω.</p></item>
+    <item><p>Γραμμές 19-23: έναρξη της εφαρμογής.</p></item>
+  </list>
+</section>
+
+<section id="design">
+  <title>Σχεδιασμός της εφαρμογής</title>
+  <p>Ας ρίξουμε μια ματιά στη μέθοδο <code>setupWindow</code>. Είναι υπεύθυνη για τη δημιουργία της διεπαφής χρήστη (UI). Καθώς η UI δεν είναι το επίκεντρο μας, θα εξηγήσουμε μόνο τα σχετικά μέρη.</p>
+  <code mime="application/javascript" style="numbered">
+  setupWindow: function () {
+    this.window = new Gtk.Window ({title: "Data Access Demo", height_request: 350});
+    this.window.connect ("delete-event", function () {
+      Gtk.main_quit();
+      return true;
+      });
+
+    // Κύριο πλαίσιο
+    var main_box = new Gtk.Box ({orientation: Gtk.Orientation.VERTICAL, spacing: 5});
+    this.window.add (main_box);
+
+    // Πρώτη ετικέτα
+    var info1 = new Gtk.Label ({label: "&lt;b&gt;Insert a record&lt;/b&gt;", xalign: 0, use_markup: true});
+    main_box.pack_start (info1, false, false, 5);
+
+    // Οριζόντιο πλαίσιο "insert a record" 
+    var insert_box = new Gtk.Box ({orientation: Gtk.Orientation.HORIZONTAL, spacing: 5});
+    main_box.pack_start (insert_box, false, false, 5);
+
+    // Πεδίο αναγνωριστικού
+    insert_box.pack_start (new Gtk.Label ({label: "ID:"}), false, false, 5);
+    this.id_entry = new Gtk.Entry ();
+    insert_box.pack_start (this.id_entry, false, false, 5);
+
+    // Πεδίο ονόματος
+    insert_box.pack_start (new Gtk.Label ({label: "Name:"}), false, false, 5);
+    this.name_entry = new Gtk.Entry ({activates_default: true});
+    insert_box.pack_start (this.name_entry, true, true, 5);
+
+    // Πλήκτρο εισαγωγής
+    var insert_button = new Gtk.Button ({label: "Insert", can_default: true});
+    insert_button.connect ("clicked", Lang.bind (this, this._insertClicked));
+    insert_box.pack_start (insert_button, false, false, 5);
+    insert_button.grab_default ();
+
+    // Προβολή κειμένου περιήγησης
+    var info2 = new Gtk.Label ({label: "&lt;b&gt;Browse the table&lt;/b&gt;", xalign: 0, use_markup: true});
+    main_box.pack_start (info2, false, false, 5);
+    this.text = new Gtk.TextView ({editable: false});
+    var sw = new Gtk.ScrolledWindow ({shadow_type:Gtk.ShadowType.IN});
+    sw.add (this.text);
+    main_box.pack_start (sw, true, true, 5);
+
+    this.count_label = new Gtk.Label ({label: "", xalign: 0, use_markup: true});
+    main_box.pack_start (this.count_label, false, false, 0);
+
+    this.window.show_all ();
+  },</code>
+  <list>
+    <item><p>Γραμμές 22 και 27: δημιουργία των 2 καταχωρίσεων (για τα δύο πεδία) στα οποία οι χρήστες θα πληκτρολογήσουν κάτι για να εισαχθεί στη βάση δεδομένων.</p></item>
+    <item><p>Γραμμές 31-34: δημιουργία του κουμπιού εισαγωγής. Συνδέουμε το σήμα του <code>clicked</code> στην ιδιωτική μέθοδο <code>_insertClicked</code> της κλάσης. Αυτή η μέθοδος αναλύεται παρακάτω.</p></item>
+    <item><p>Γραμμή 39: δημιουργία του γραφικού στοιχείου (<code>TextView</code>) όπου θα εμφανίσουμε τα περιεχόμενα του πίνακα.</p></item>
+    <item><p>Γραμμή 44: δημιουργία της ετικέτας όπου θα εμφανιστεί ο αριθμός των εγγραφών στον πίνακα. Αρχικά είναι άδειος, θα ενημερωθεί αργότερα.</p></item>
+  </list>
+</section>
+
+<section id="connect">
+  <title>Σύνδεση και αρχικοποίηση με τη βάση δεδομένων</title>
+  <p>Ο κώδικας που κάνει τη σύνδεση στη βάση δεδομένων είναι στην παρακάτω μέθοδο <code>setupDatabase</code>:</p>
+  <code mime="application/javascript" style="numbered">
+  setupDatabase: function () {
+    this.connection = new Gda.Connection ({provider: Gda.Config.get_provider("SQLite"),
+                                          cnc_string:"DB_DIR=" + GLib.get_home_dir () + ";DB_NAME=gnome_demo"});
+    this.connection.open ();
+
+    try {
+      var dm = this.connection.execute_select_command ("select * from demo");
+    } catch (e) {
+      this.connection.execute_non_select_command ("create table demo (id integer, name varchar(100))");
+    }
+  },</code>
+  <list>
+    <item>
+      <p>Γραμμές 2-3: δημιουργία του αντικειμένου της GDA <code>Connection</code>. Πρέπει να δώσουμε στον κατασκευαστή μερικές ιδιότητες:</p>
+      <list>
+        <item>
+          <p><code>provider</code>: Ένας από τους υποστηριζόμενους παρόχους. Το GDA υποστηρίζει SQLite, MySQL, PostgreSQL, Oracle και πολλούς άλλους. Για τους σκοπούς της παρουσίασης θα χρησιμοποιήσουμε τη βάση δεδομένων SQLite, επειδή εγκαθίσταται από προεπιλογή στις περισσότερες διανομές και είναι απλή στη χρήση (χρησιμοποιεί απλά ένα αρχείο ως βάση δεδομένων).</p>
+        </item>
+        <item>
+          <p><code>cnc_string</code>: Η συμβολοσειρά σύνδεσης. Μπορεί να αλλάζει από πάροχο σε πάροχο. Η σύνταξη για το SQLite είναι: <code>DB_DIR=<var>PATH</var>;DB_NAME=<var>FILENAME</var></code>. Σε αυτή την παρουσίαση προσπελάζουμε μια βάση δεδομένων που λέγεται gnome_demo στον προσωπικό κατάλογο χρήστη (σημειώστε την κλήση στη συνάρτηση .GLib's <code>get_home_dir</code>).</p>
+        </item>
+      </list>
+      <note>
+        <p>Εάν ο πάροχος δεν υποστηρίζεται από GDA, ή εάν λείπει στη συμβολοσειρά σύνδεσης κάποιο στοιχείο, η γραμμή 2 θα εγείρει μια εξαίρεση. Έτσι, στην πραγματική ζωή θα το χειριστούμε με μια πρόταση της JavaScript <code>try</code>...<code>catch</code>.</p>
+      </note>
+    </item>
+
+    <item><p>Γραμμή 4: άνοιγμα της σύνδεσης. Στον πάροχο SQLite, εάν η βάση δεδομένων δεν υπάρχει, θα δημιουργηθεί σε αυτό το βήμα.</p></item>
+    <item>
+      <p>Γραμμές 6-10: Προσπαθήστε να κάνετε μια απλή επιλογή για έλεγχο ύπαρξης του πίνακα (γραμμή 7). Εάν δεν υπάρχει (επειδή η βάση δεδομένων μόλις δημιουργήθηκε), αυτή η εντολή θα εγείρει μια εξαίρεση, που επεξεργάζεται από την ομάδα <code>try</code>...<code>catch</code>. Εάν συμβαίνει αυτό, τρέχουμε τη δημιουργία πρότασης πίνακα (γραμμή 9).</p>
+      <p>Για να εκτελέσουμε εντολές SQL στο παραπάνω παράδειγμα χρησιμοποιούμε τις μεθόδους σύνδεσης GDA <code>execute_select_command</code> και <code>execute_non_select_command</code>. Είναι εύκολες στη χρήση, και απαιτούν μόνο δύο ορίσματα: Το αντικείμενο <code>Connection</code> και την εντολή SQL.</p>
+    </item>
+  </list>
+
+  <p>Σε αυτό το σημείο έχουμε ρυθμίσει τη βάση δεδομένων και είμαστε έτοιμοι να τη χρησιμοποιήσουμε.</p>
+</section>
+
+<section id="select">
+  <title>Επιλογή</title>
+  <p>Μετά την σύνδεση με τη βάση δεδομένων, ο κατασκευαστής της παρουσίασής μας καλεί τη μέθοδο<code>selectData</code>. Είναι υπεύθυνη για τη λήψη όλων των εγγραφών στον πίνακα και την εμφάνισή τους στο γραφικό στοιχείο <code>TextView</code>. Ας ρίξουμε μια ματιά σε αυτό:</p>
+  <code mime="application/javascript" style="numbered">
+  selectData: function () {
+    var dm = this.connection.execute_select_command  ("select * from demo order by 1, 2");
+    var iter = dm.create_iter ();
+
+    var text = "";
+
+    while (iter.move_next ()) {
+      var id_field = Gda.value_stringify (iter.get_value_at (0));
+      var name_field = Gda.value_stringify (iter.get_value_at (1));
+
+      text += id_field + "\t=&gt;\t" + name_field + '\n';
+    }
+
+    this.text.buffer.text = text;
+    this.count_label.label = "&lt;i&gt;" + dm.get_n_rows () + " record(s)&lt;/i&gt;";
+  },</code>
+  <list>
+    <item><p>Γραμμή 2: Η εντολή <code>SELECT</code>. Χρησιμοποιούμε την μέθοδο σύνδεσης του GDA <code>execute_select_command</code>. Επιστρέφει ένα αντικείμενο <code>DataModel</code>, το οποίο χρησιμοποιείτε για να ανακτηθούν οι σειρές.</p></item>
+    <item><p>Γραμμή 3: Δημιουργία αντικειμένου <code>Iter</code>, που χρησιμοποιείται για επανάληψη στις εγγραφές του <code>DataModel</code>.</p></item>
+    <item><p>Γραμμή 7: Βρόχος μέσα από όλες τις εγγραφές, φέρνοντας τες με τη βοήθεια του αντικειμένου <code>Iter</code>. Σε αυτό το σημείο, η μεταβλητή <code>iter</code> περιέχει τα ενεργά ανακτημένα δεδομένα. Η μέθοδος του <code>move_next</code> επιστρέφει <code>false</code> όταν φτάνει την τελευταία εγγραφή.</p></item>
+    <item>
+      <p>Γραμμές 8-9: Κάνουμε δυο πράγματα σε κάθε γραμμή:</p>
+      <list>
+        <item><p>Χρήση της μεθόδου του <code>Iter</code> <code>get_value_at</code>, που απαιτεί μόνο ένα όρισμα: ο αριθμός της στήλης για ανάκτηση, που ξεκινά από 0. Καθώς η εντολή μας <code>SELECT</code> επιστρέφει μόνο δύο στήλες, ανακτούμε τις στήλες 0 και 1.</p></item>
+        <item><p>Η μέθοδος <code>get_value_at</code> επιστρέφει το πεδίο σε μορφή <code>GValue</code> του GLib. Ένας απλός τρόπος μετατροπής αυτής της μορφής σε συμβολοσειρά είναι χρησιμοποιώντας τη γενική συνάρτηση του GDA <code>value_stringify</code>. Αυτό κάνουμε εδώ και αποθηκεύουμε τα αποτελέσματα στις μεταβλητές <code>id_field</code> και <code>name_field</code>.</p></item>
+      </list>
+    </item>
+    <item><p>Γραμμή 11: Συνένωση των δύο πεδίων για τη δημιουργία μιας γραμμής κειμένου, διαχωριζόμενης με <code>"=&gt;"</code> και αποθήκευση της στη μεταβλητή <code>text</code>.</p></item>
+    <item><p>Γραμμή 14: Μετά το τέλος του βρόχου, έχουμε όλες τις μορφοποιημένες εγγραφές στη μεταβλητή <code>text</code>. Σε αυτή τη γραμμή ορίζουμε μόνο τα περιεχόμενα του <code>TextView</code> με αυτή τη μεταβλητή.</p></item>
+    <item><p>Γραμμή 15: Εμφάνιση του αριθμού των εγγραφών στον πίνακα, χρησιμοποιώντας τη μέθοδο <code>get_n_rows</code> του <code>DataModel</code>.</p></item>
+  </list>
+</section>
+
+<section id="insert">
+  <title>Εισαγωγή</title>
+  <p>Εντάξει, ξέρουμε πώς να συνδεθούμε με μια βάση δεδομένων και πώς να διαλέξουμε γραμμές από έναν πίνακα. Τώρα είναι ώρα να κάνουμε έναν <code>INSERT</code> στον πίνακα. Θυμόσαστε παραπάνω, στη μέθοδο <code>setupWindow</code> συνδέσαμε το <gui>Insert</gui> του κουμπιού με το σήμα <code>clicked</code> στη μέθοδο <code>_insertClicked</code>; Ας δούμε την υλοποίηση αυτής της μεθόδου.</p>
+  <code mime="application/javascript" style="numbered">
+  _insertClicked: function () {
+    if (!this._validateFields ())
+      return;
+
+    // Gda.execute_non_select_command (this.connection,
+    //   "insert into demo values ('" + this.id_entry.text + "', '" + this.name_entry.text + "')");
+
+    var b = new Gda.SqlBuilder ({stmt_type:Gda.SqlStatementType.INSERT});
+    b.set_table ("demo");
+    b.add_field_value_as_gvalue ("id", this.id_entry.text);
+    b.add_field_value_as_gvalue ("name", this.name_entry.text);
+    var stmt = b.get_statement ();
+    this.connection.statement_execute_non_select (stmt, null);
+
+    this._clearFields ();
+    this.selectData ();
+  },</code>
+  <p>Μάθαμε πως να χρησιμοποιούμε τις μεθόδους σύνδεσης GDA <code>execute_select_command</code> και <code>execute_non_select_command</code> για την εκτέλεση εντολών SQL σε μια βάση δεδομένων. Το GDA σας επιτρέπει να δημιουργήσετε μια εντολή SQL έμμεσα, χρησιμοποιώντας το αντικείμενο <code>SqlBuilder</code>. Ποια είναι τα πλεονεκτήματα; Το GDA θα δημιουργήσει δυναμικά μια εντολή SQL, και θα είναι έγκυρη για τον πάροχο σύνδεσης που θα χρησιμοποιηθεί (θα χρησιμοποιήσει την ίδια σύνταξη SQL που θα ορίσει ο πάροχος). Ας μελετήσουμε τον κώδικα:</p>
+  <list>
+    <item><p>Γραμμές 2-3: Ελέγξτε εάν ο χρήστης συμπλήρωσε όλα τα πεδία. Ο κώδικας για την ιδιωτική μέθοδο <code>_validateFields</code> είναι πραγματικά απλός και μπορείτε να τον διαβάσετε στην πλήρη παρουσίαση πηγαίου κώδικα.</p></item>
+    <item><p>Γραμμή 5: Ο γρηγορότερος τρόπος για εκτέλεση του <code>INSERT</code>. Σχολιάζεται, καθώς θέλουμε να εμφανίσουμε τη χρήση του αντικειμένου <code>SqlBuilder</code> για κατασκευή μιας πρότασης SQL φορητής μέσα από τις βάσεις δεδομένων.</p></item>
+    <item><p>Γραμμή 7: Δημιουργία του αντικειμένου <code>SqlBuilder</code>. Πρέπει να περάσουμε τον τύπο της πρότασης που πρόκειται να κατασκευάσουμε. Μπορεί να είναι <code>SELECT</code>, <code>UPDATE</code>, <code>INSERT</code> ή <code>DELETE</code>.</p></item>
+    <item><p>Γραμμή 8: Ορισμός του ονόματος του πίνακα στον οποίο η κατασκευασμένη πρόταση θα λειτουργήσει (θα παράξει <code>INSERT INTO demo</code>)</p></item>
+    <item><p>Γραμμές 9-10: Ορισμός των πεδίων και των τιμών τους που θα είναι τμήμα της πρότασης. Το πρώτο όρισμα είναι το όνομα πεδίου (όπως στον πίνακα). Το δεύτερο όρισμα είναι η τιμή για αυτό το πεδίο.</p></item>
+    <item><p>Γραμμή 11: Λήψη του δυναμικά δημιουργημένου αντικειμένου <code>Statement</code>, που αντιπροσωπεύει μια πρόταση SQL.</p></item>
+    <item><p>Γραμμή 12: Τελικά, εκτέλεση της πρότασης SQL (<code>INSERT</code>).</p></item>
+    <item><p>Γραμμή 14: Ελέγξτε την ταυτότητα και πεδία ονομάτων στην οθόνη. Ο κώδικας για την ιδιωτική μέθοδο <code>_validateFields</code> είναι πραγματικά απλός και μπορείτε να τον διαβάσετε στην πλήρη παρουσίαση πηγαίου κώδικα.</p></item>
+    <item><p>Γραμμή 15: Ανανέωση της προβολής στην οθόνη κάνοντας ένα άλλο <code>SELECT</code>.</p></item>
+  </list>
+  <note><p>Μπορείτε επίσης να χρησιμοποιήσετε παραμέτρους ενώ κατασκευάζετε την πρόταση. Χρησιμοποιώντας τα αντικείμενα <code>SqlBuilder</code> και παραμέτρους υφίστασθε λιγότερες επιθέσεις όπως ενέσεις SQL. Σημειώστε το <link href="http://library.gnome.org/devel/libgda/stable/">τεκμηρίωση GDA</link> για περισσότερες πληροφορίες σχετικά με τις παραμέτρους.</p></note>
+</section>
+
+<section id="run">
+  <title>Τρέξτε την εφαρμογή</title>
+  <p>Όλος ο απαιτούμενος κώδικας πρέπει να είναι τώρα στη θέση, έτσι προσπαθήστε να τρέξετε τον κώδικα. Έχετε τώρα μια βάση δεδομένων για τη συλλογής σας των εγγραφών!</p>
+</section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Αν αντιμετωπίσετε πρόβλημα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="record-collection/record-collection.js">κώδικα αναφοράς</link>.</p>
+</section>
+</page>

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="hellognome.js" xml:lang="es">
+  <info>
+    <link type="guide" xref="beginner.js#tutorials"/>
+    <revision version="0.1" date="2012-07-17" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Su primera aplicación de GNOME</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>1. ¡Hola, GNOME!</title>
+  <synopsis>
+    <p>Este tutorial le mostrará cómo escribir su primera aplicación de GNOME en JavaScript. Usará JavaScript para escribir para GNOME de la misma manera que lo haría para la web. Después, aprenderá cómo usar widgets «nativos», para escribir aplicaciones que se ven como otras aplicaciones de GNOME.</p>
+    <note style="warning"><p>¿Ya tiene GNOME instalado en su equipo, y <link xref="set-up-gedit.js">gedit</link> configurado para escribir código? Querrá hacer estas cosas primero.</p></note>
+  </synopsis>
+
+  <links type="section"/>
+
+  <section id="webapp">
+    <title>Comience con una página web</title>
+
+    <p>Aquí hay código HTML, CSS, y JavaScript básico. ¿Le resulta familiar?</p>
+    <code mime="application/javascript" style="numbered">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Hello, GNOME!&lt;/title&gt;
+
+        &lt;!-- Use JavaScript to show a greeting when someone clicks the button --&gt;
+        &lt;script type="application/javascript"&gt;
+        function greeting () {
+            document.getElementById ("greeting").innerHTML = ("O hai!");
+        }
+        &lt;/script&gt;
+
+        &lt;!-- Very basic CSS style using the GNOME font --&gt;
+        &lt;style type="text/css"&gt;
+            body {
+                font-face: Cantarell, sans-serif;
+                text-align: center; }
+        &lt;/style&gt;
+
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;br /&gt; &lt;br /&gt;
+        &lt;button type="button" onclick="greeting()"&gt;Hello, GNOME!&lt;/button&gt;
+
+        &lt;!-- Empty H1 element gets filled in when the button is clicked --&gt;
+        &lt;h1 id="greeting"&gt;&lt;/h1&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code>
+
+    <p>Guarde esto como <file>hellognome.html</file>, y observe cómo se ve cuando lo ejecuta.</p>
+
+    <media type="image" mime="image/png" src="media/hellognomewebapp.png"/>
+
+    <p><em>Puede</em> ejecutar el código anterior abriendo <file>hellognome.html</file> en un navegador web. Pero aquí, se va a crear una aplicación de GNOME que ejecute la aplicación web de dentro, como ve en la captura de pantalla. Podrá redimensionar y maximizar la ventana, y pulsar en la «X» en la esquina para cerrarla, al igual que esperaría de cualquier otra aplicación de GNOME. La diferencia es que esta ejecutará el código web de dentro.</p>
+    <p>¿La mejor parte? Se va a continuar usando JavaScript para escribir todas las partes que hacen que la aplicación funcione con GNOME. Échele un vistazo al código y vea cómo se hace.</p>
+  </section>
+
+  <section id="window">
+    <title>Crear una ventana de GNOME para enmarcar la aplicación web</title>
+
+    <p>Primero, se necesita decirle a GNOME que esta es una aplicación de JavaScript, que usa gjs. gjs es la forma de GNOME de convertir su código de JavaScript en instrucciones que entiende, por lo que esta línea siempre debe ir al principio de sus aplicaciones.</p>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+</code>
+    <p>Después de eso, necesita decirle a GNOME qué bibliotecas quiere importar.</p>
+    <code mime="application/javascript">
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+const Webkit = imports.gi.WebKit;
+</code>
+    <p>Al igual que las bibliotecas adicionales como jQuery, que permiten hacer cosas adicionales con JavaScript, cada una de estas bibliotecas le da capacidades nuevas a las aplicaciones de GNOME:</p>
+    <steps>
+      <item><p><file>Gtk</file> y <file>Lang</file> son partes básicas de cualquier aplicación de GNOME, que le permiten crear ventanas y widgets, y juntarlos.</p></item>
+      <item><p><file>GLib</file> es una biblioteca de ayuda, que permite hacer cosas como decirle a GNOME dónde está el archivo <file>hellognome.html</file> que creó.</p></item>
+      <item><p>Y <file>Webkit</file> es un motor de procesamiento web, que usará básicamente para crear una ventana de navegador con la que abrir el archivo HTML.</p></item>
+    </steps>
+
+    <p>Ahora se crea la aplicación en sí:</p>
+    <code mime="application/javascript">
+const HelloGNOME = new Lang.Class ({
+    Name: 'Hello GNOME',
+</code>
+    <p>Esto le resultará familiar si ha trabajado con JavaScript orientado a objetos anteriormente. Así es; toda la aplicación es una clase llamada «HelloGNOME». Y como puede ver, se le ha dado una propiedad que dice cuál es su nombre.</p>
+
+    <code mime="application/javascript">
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ();
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+</code>
+    <p>Aquí hay código que prácticamente copiará y pegará por cada aplicación que construya en JavaScript. Crea una «Application» nueva, y después enlaza sus señales «activate» y «startup» a funciones que muestran la ventana y construyen su interfaz de usuario, respectivamente.</p>
+    <p>¿Qué significa eso? Bueno, todo en una aplicación de GNOME envía una señal cuando algo importante sucede. Un botón puede enviar la señal «clicked» cuando lo pulsa, por ejemplo. Su trabajo es conectar las señales a funciones que las manejen, y hagan las cosas que quiere que ocurran. Esto se hace usando el método «connect» de cada objeto, que toma dos argumentos: la señal que quiere manejar, y la función «Lang.bind», que hay que usar para decirle a «connect» qué función quiere que maneje la señal.</p>
+    <p>En este caso, se quiere que «_onActivate» maneje la señal «activate», y «_onStartup» la señal «startup». «_onActivate» sólo le dice a la ventana que se presente; para que, básicamente, cada vez que haga <keyseq><key>Alt</key> <key>Tab</key></keyseq> a la aplicación, aparezca como uno espera. «_onStartup» llama a «_buildUI», que es la función que crea la interfaz de usuario y que verá a continuación.</p>
+    <note style="tip"><p>Cuando copie y pegue el código anterior para sus propias aplicaciones, asegúrese de cambiar el nombre por uno único cada vez.</p></note>
+  </section>
+
+  <section id="ui">
+    <title>Diseñar la IU de la ventana</title>
+    <p>En la función «_buildUI», se le describirá a GNOME la ventana y sus elementos, uno a la vez. Después de eso, se conectará y se mostrará todo junto.</p>
+
+    <code mime="application/javascript">
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            title: "Welcome to GNOME",
+            default_height: 200,
+            default_width: 400,
+            window_position: Gtk.WindowPosition.CENTER });
+</code>
+
+    <p>El primer objeto que se crea es una «ApplicationWindow». Necesita un texto para la barra de título, y su propiedad «application» tiene que ser la aplicación que se creó anteriormente. Más allá de eso, hay varias maneras de personalizar su apariencia. Podrá encontrar más detalles en la página de referencia <link xref="GtkApplicationWindow.js">ApplicationWindow</link>. Como puede ver aquí, se le dio una altura y anchura predeterminada (medidas en píxeles), y se le dijo a GNOME que se quiere que la ventana aparezca en el centro de la pantalla.</p>
+    <code mime="application/javascript">
+        // Create a webview to show the web app
+        this._webView = new Webkit.WebView ();
+
+        // Put the web app into the webview
+        this._webView.load_uri (GLib.filename_to_uri (GLib.get_current_dir() +
+            "/hellognome.html", null));
+</code>
+    <p>¿Recuerda cómo se importó «Webkit» al comienzo? Aquí se está creando una instancia nueva de la clase «Webkit» llamada «WebView», que es más o menos una ventana de navegador que puede poner dentro de su aplicación. Después de eso, se le da el URI que quiere que cargue cuando la aplicación inicia.</p>
+    <p>Se <em>podría</em> darle sólo un URI web, como <link href="http://gnome.org">http://gnome.org</link>. En su lugar, aquí se usan algunas funciones de ayuda de GLib para decirle a «WebView» dónde está el archivo <file>hellognome.html</file>. «GLib.get_current_dir» devuelve la carpeta en la que se está ejecutando la aplicación, y «GLib.filename_to_uri» convierte la ruta del archivo y su nombre en un URI que la función «load_uri» del «WebView» entiende (el segundo parámetro de «filename_to_uri» debe ser «null» a menos que sepa para qué se usa y tenga una razón para cambiarlo).</p>
+    <code mime="application/javascript">
+        // Put the webview into the window
+        this._window.add (this._webView);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+});
+</code>
+    <p>Cada ventana puede contener un, y sólo un, widget. Normalmente usaría un widget contenedor como una <link xref="grid.js">Rejilla</link> para poner dentro múltiples widgets, y después usar la función «add» de la ventana para añadírsela. Aquí, sólo se necesita el «WebView», por lo que es todo lo que se añade. Después de eso, al final de la función «_buildUI» que crea la ventana, se le dice que se muestre con su contenido.</p>
+    <code mime="application/javascript">
+// Run the application
+let app = new HelloGNOME ();
+app.application.run (ARGV);
+</code>
+    <p>Finalmente, se crea una instancia nueva de la clase «HelloGNOME» y se le dice a GNOME que la ejecute.</p>
+  </section>
+
+  <section id="run">
+    <title>Ejecutar la aplicación de GNOME</title>
+
+    <p>Ahora que ha creado su primera aplicación de GNOME, es hora de probarla. No necesita compilarla o instalar algún software especial, GNOME tiene incluido gjs para permitirle ejecutar GNOME Shell. Sólo guarde <file>hellognome.html</file> y la aplicación en sí, <file>hellognome.js</file> en una carpeta a la que pueda acceder con la terminal (generalmente se abren en su carpeta personal, la que se llama como su usuario). Después de eso, abra una terminal, vaya allí, e introduzca:</p>
+    <screen> <output style="prompt">$ </output>gjs hellognome.js </screen>
+    <p>Debería ver más o menos la misma captura de pantalla de antes, con un botón que puede pulsar para hacer aparecer un mensaje corto.</p>
+
+    <note style="tip">
+        <p>Puede usar el comando de la terminal</p>
+        <screen> <output style="prompt">$ </output>cd <var>(nombre de la carpeta)</var> </screen>
+        <p>para navegar entre carpetas dentro de la terminal, y llegar donde guardó los archivos. También hay una extensión para Nautilus, el gestor de archivos de GNOME, que le permite pulsar en cualquier lado con el botón derecho para abrir una terminal allí. Búsquela en la aplicación que usa para instalar software nuevo (como «Añadir/Quitar programas» o el «Centro de software»).</p>
+    </note>
+  </section>
+
+  <section id="whatsnext">
+    <title>¿Qué viene ahora?</title>
+
+    <p><link xref="02_welcome_to_the_grid.js">Siga con el próximo tutorial</link> para aprender cómo construir aplicaciones de GNOME «nativas» que se ven como las otras, en lugar de una vista web con código HTML dentro. O échele un vistazo a algunas <link xref="beginner.js#samples">muestras de código</link>, si quiere ver código de ejemplo para cada widget de GTK+.</p>
+    <p>Finalmente, si sólo quiere construir aplicaciones de GNOME usando bibliotecas de JavaScript diseñadas para la web, puede simplemente parar aquí y hacerlo. Échele un vistazo a los <link xref="beginner.js#tutorials">últimos tutoriales</link> para aprender a crear un archivo «.desktop» para su aplicación, que le permitirá aparecer en el menú de actividades de su escritorio junto a las otras.</p>
+  </section>
+
+  <section id="complete">
+    <title>Código de ejemplo completo</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+const Webkit = imports.gi.WebKit;
+
+const HelloGNOME = new Lang.Class ({
+    Name: 'Hello GNOME',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ();
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            title: "Welcome to GNOME",
+            default_height: 200,
+            default_width: 400,
+            window_position: Gtk.WindowPosition.CENTER });
+
+        // Create a webview to show the web app
+        this._webView = new Webkit.WebView ();
+
+        // Put the web app into the webview
+        this._webView.load_uri (GLib.filename_to_uri (GLib.get_current_dir() +
+            "/hellognome.html", null));
+
+        // Put the webview into the window
+        this._window.add (this._webView);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+});
+
+// Run the application
+let app = new HelloGNOME ();
+app.application.run (ARGV);
+</code>
+  </section>
+</page>

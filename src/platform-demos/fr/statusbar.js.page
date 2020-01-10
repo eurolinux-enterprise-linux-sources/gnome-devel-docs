@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.js" xml:lang="fr">
+  <info>
+  <title type="text">Statusbar (JavaScript)</title>
+    <link type="guide" xref="beginner.js#display-widgets"/>
+    <revision version="0.1" date="2012-06-10" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Afficher les notifications dans une barre de statut donnée</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Barre de statut</title>
+  <media type="image" mime="image/png" src="media/statusbar2.png"/>
+  <p>Cette barre de statut enregistre le nombre de fois que vous avez cliqué sur un bouton. Des applications comme <link href="http://projects.gnome.org/gedit/">gedit</link> utilisent une barre de statut pour rendre les informations visibles d'un coup d'œil sans interrompre l'utilisateur.</p>
+  <p>Les nouveaux messages sont ajoutés au sommet de la pile d'une barre de statut et peuvent être affichés pour consulter les plus récents. Vous pouvez aussi effacer tous les messages d'un type spécifique d'un seul coup. Cet exemple d'application explique ces fonctions.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Bibliothèques à importer</title>
+    <code mime="application/javascript"><![CDATA[
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+]]></code>
+    <p>Ce sont les bibliothèques que nous devons importer pour faire fonctionner cette application. N'oubliez pas que la ligne qui informe GNOME que nous allons utiliser Gjs doit toujours se trouver au début.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Création de la fenêtre de l'application</title>
+    <code mime="application/javascript"><![CDATA[
+const StatusbarExample = new Lang.Class({
+    Name: 'Statusbar Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsstatusbar',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+]]></code>
+    <p>Tout le code de cet exemple va dans la classe StatusbarExample. Le code ci-dessus crée une <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pour nos éléments graphiques et la fenêtre qui les contient.</p>
+    <code mime="application/javascript"><![CDATA[
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 120,
+            default_width: 300,
+            title: "Button Clicker"});
+
+        // Create a paned interface
+        this._panes = new Gtk.Paned ({
+            orientation: Gtk.Orientation.VERTICAL });
+]]></code>
+    <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link> to put all our widgets into. The next step is to create a vertically-oriented Gtk.Paned interface, to divide the window up into two sections. This way the statusbar looks like those used in other applications, and it stays at the bottom of the window, even if the user resizes it.</p>
+  </section>
+
+  <section id="buttons">
+    <title>Création des boutons</title>
+    <code mime="application/javascript"><![CDATA[
+        // Create the main button
+        this._clickMe = new Gtk.Button ({
+            label: "Click Me!" });
+        this._clickMe.connect ("clicked", Lang.bind (this, this._clicked));
+
+        // Create the back button
+        this._backButton = new Gtk.Button ({
+            label: "gtk-go-back",
+            use_stock: true });
+        this._backButton.connect ("clicked", Lang.bind (this, this._back));
+
+        // Create the clear button
+        this._clearButton = new Gtk.Button ({
+            label: "gtk-clear",
+            use_stock: true });
+        this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
+]]></code>
+    <p>This code creates the three <link href="button.js.page">Gtk.Buttons</link> we'll use to push a new message to the statusbar, pop the last one off, and clear all existing messages. The "back" and "clear" buttons are <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">stock buttons</link>, which are automatically translated into any language GNOME supports.</p>
+
+    <code mime="application/javascript"><![CDATA[
+        // Put the buttons in a grid
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+        this._grid.attach (this._backButton, 0, 0, 1, 1);
+        this._grid.attach_next_to (this._clickMe, this._backButton, Gtk.PositionType.RIGHT, 1, 1);
+        this._grid.attach_next_to (this._clearButton, this._clickMe, Gtk.PositionType.RIGHT, 1, 1);
+
+        // Put the grid in a large frame that fills most of the window
+        this._topFrame = new Gtk.Frame ({
+            border_width: 20,
+            height_request: 90,
+            width_request: 300});
+        this._topFrame.add (this._grid);
+]]></code>
+    <p>Ce code génère la grille <link href="grid.js.page">Gtk.Grid</link> que nous utiliserons pour organiser les boutons et les mettre dans le bon ordre. Il génère ensuite un cadre <link href="paned.js.page">Gtk.Frame</link> qui occupe la majeure partie de la fenêtre et laisse beaucoup de marge autour des boutons, puis lui ajoute la grille. Il nous reste encore à placer le cadre dans le panneau interface et l'ajouter à l'ApplicationWindow.</p>
+  </section>
+
+  <section id="statusbar">
+    <title>Création de la barre de statut</title>
+    <code mime="application/javascript"><![CDATA[
+        // Create the statusbar
+        this._statusbar = new Gtk.Statusbar();
+
+        // Keep track of the number of times the button has been clicked
+        this.Clicks = 0;
+        this.ContextID = this._statusbar.get_context_id ("Number of Clicks");
+
+        // Give the statusbar an initial message
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+        // Put the statusbar in its own frame at the bottom
+        this._barFrame = new Gtk.Frame ({
+            height_request: 30 });
+        this._barFrame.add (this._statusbar);
+]]></code>
+    <p>Ici, nous créons la barre de statuts Gtk.Statusbar et lui ajoutons un message pour commencer. Puis, nous lui attribuons son propre cadre étroit au bas de la fenêtre.</p>
+    <p>Chaque message doit avoir un identifiant de contexte, une valeur entière qui peut vous être donnée par la fonction get_context_id(). Son seul paramètre est la valeur de la chaîne que vous utilisez pour décrire cet identifiant particulier. Normalement, il y a un identifiant différent selon le type de message, de façon à pouvoir utiliser la fonction remove() pour supprimer un message spécifique et non pas seulement le dernier au sommet de la pile. Voici un exemple simple avec un seul type de message, nous n'en utiliserons donc qu'un seul pour tout.</p>
+    <p>La fonction push(), ajoute un nouveau message au-dessus de la pile. Son premier paramètre est l'identifiant de contexte, et le second, le message.</p>
+    <code mime="application/javascript"><![CDATA[
+        // Assemble the frames into the paned interface
+        this._panes.pack1 (this._topFrame, true, false);
+        this._panes.pack2 (this._barFrame, false, false);
+
+        // Put the panes into the window
+        this._window.add (this._panes);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+]]></code>
+    <p>Ce code se termine par la création de la fenêtre, le placement du cadre dans le panneau et l'ordre donné à la fenêtre d'afficher tous ses éléments graphiques enfants.</p>
+  </section>
+
+  <section id="functions">
+    <title>Fonctions interagissant avec la barre de statut</title>
+    <code mime="application/javascript"><![CDATA[
+    _clicked: function() {
+
+        // Increment the number of clicks by 1
+        this.Clicks++;
+
+        // Update the statusbar with the new number of clicks
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    },
+
+
+
+    _back: function () {
+
+        // If there have been any clicks, decrement by 1 and remove last statusbar update
+        if (this.Clicks > 0 ) {
+            this.Clicks--;
+            this._statusbar.pop (this.ContextID);
+        };
+
+    },
+
+
+
+    _clear: function () {
+
+        // Reset the number of clicks
+        this.Clicks = 0;
+
+        // Wipe out all the messages pushed to the statusbar
+        this._statusbar.remove_all (this.ContextID);
+
+        // Reset the statusbar's message
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    }
+
+});
+]]></code>
+    <p>Voici des fonctions qui montrent comment ajouter un message à la pile, comment afficher celui qui se trouve au sommet et comment effacer tous les messages avec un identifiant de contexte particulier. La fonction pop() ne prend qu'un argument, l'identifiant de contexte du type de message le plus récent à afficher. La fonction remove_all() se comporte de la même façon, sauf qu'elle supprime de la pile tous les messages de ce type.</p>
+    <code mime="application/javascript"><![CDATA[
+// Run the application
+let app = new StatusbarExample ();
+app.application.run (ARGV);
+]]></code>
+    <p>Enfin, nous créons un nouvel exemple de la classe StatusbarExample terminée et nous démarrons l'application.</p>
+  </section>
+
+  <section id="complete">
+    <title>Exemple complet de code</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const StatusbarExample = new Lang.Class({
+    Name: 'Statusbar Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsstatusbar',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 120,
+            default_width: 300,
+            title: "Button Clicker"});
+
+        // Create a paned interface
+        this._panes = new Gtk.Paned ({
+            orientation: Gtk.Orientation.VERTICAL });
+
+        // Create the main button
+        this._clickMe = new Gtk.Button ({
+            label: "Click Me!" });
+        this._clickMe.connect ("clicked", Lang.bind (this, this._clicked));
+
+        // Create the back button
+        this._backButton = new Gtk.Button ({
+            label: "gtk-go-back",
+            use_stock: true });
+        this._backButton.connect ("clicked", Lang.bind (this, this._back));
+
+        // Create the clear button
+        this._clearButton = new Gtk.Button ({
+            label: "gtk-clear",
+            use_stock: true });
+        this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
+
+        // Put the buttons in a grid
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+        this._grid.attach (this._backButton, 0, 0, 1, 1);
+        this._grid.attach_next_to (this._clickMe, this._backButton, Gtk.PositionType.RIGHT, 1, 1);
+        this._grid.attach_next_to (this._clearButton, this._clickMe, Gtk.PositionType.RIGHT, 1, 1);
+
+        // Put the grid in a large frame that fills most of the window
+        this._topFrame = new Gtk.Frame ({
+            border_width: 20,
+            height_request: 90,
+            width_request: 300});
+        this._topFrame.add (this._grid);
+
+        // Create the statusbar
+        this._statusbar = new Gtk.Statusbar();
+
+        // Keep track of the number of times the button has been clicked
+        this.Clicks = 0;
+        this.ContextID = this._statusbar.get_context_id ("Number of Clicks");
+
+        // Give the statusbar an initial message
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+        // Put the statusbar in its own frame at the bottom
+        this._barFrame = new Gtk.Frame ({
+            height_request: 30 });
+        this._barFrame.add (this._statusbar);
+
+        // Assemble the frames into the paned interface
+        this._panes.pack1 (this._topFrame, true, false);
+        this._panes.pack2 (this._barFrame, false, false);
+
+        // Put the panes into the window
+        this._window.add (this._panes);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+
+
+    _clicked: function() {
+
+        // Increment the number of clicks by 1
+        this.Clicks++;
+
+        // Update the statusbar with the new number of clicks
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    },
+
+
+
+    _back: function () {
+
+        // If there have been any clicks, decrement by 1 and remove last statusbar update
+        if (this.Clicks &gt; 0 ) {
+            this.Clicks--;
+            this._statusbar.pop (this.ContextID);
+        };
+
+    },
+
+
+
+    _clear: function () {
+
+        // Reset the number of clicks
+        this.Clicks = 0;
+
+        // Wipe out all the messages pushed to the statusbar
+        this._statusbar.remove_all (this.ContextID);
+
+        // Reset the statusbar's message
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    }
+
+});
+
+// Run the application
+let app = new StatusbarExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Documentation approfondie</title>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Button.html">Gtk.Button</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Frame.html">Gtk.Frame</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Paned.html">Gtk.Paned</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Statusbar.html">Gtk.Statusbar</link></p></item>
+</list>
+  </section>
+</page>

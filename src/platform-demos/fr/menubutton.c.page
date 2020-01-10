@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubutton.c" xml:lang="fr">
+  <info>
+  <title type="text">MenuButton</title>
+    <link type="guide" xref="c#buttons"/>
+    <revision version="0.1" date="2013-07-01" status="review"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Un élément graphique qui affiche un menu quand il est cliqué</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MenuButton</title>
+  <media type="image" mime="image/png" src="media/menubutton.png"/>
+  <p>L'élément graphique GtkMenuButton sert à afficher un menu quand il est cliqué. Le menu peut provenir soit d'un GtkMenu, soit d'un GMenuModel abstrait. L'élément graphique GtkMenuButton peut contenir n'importe quel élément graphique enfant valide. Ceci dit, il peut contenir pratiquement n'importe quel autre GtkWidget standard. L'enfant le plus souvent utilisé est la flèche GtkArrow fournie.</p>
+
+  <note><p>You need to be running GNOME 3.6 or later for the MenuButton to work.</p></note>
+
+  <links type="section"/>
+    
+  <section id="code">
+  <title>Code utilisé pour générer cet exemple</title>
+    <code mime="text/x-csrc" style="numbered">#include &lt;gtk/gtk.h&gt;
+
+/* Callback function for the undo action */
+static void
+about_callback (GSimpleAction *simple,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+  g_print ("You clicked \"About\"\n");
+}
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GMenu *submenu;
+  GtkWidget *grid;
+  GMenu *menumodel;
+  GtkWidget *window;
+  GtkWidget *menubutton;
+  GSimpleAction *about_action;
+
+  window = gtk_application_window_new (app);
+  grid = gtk_grid_new ();
+
+  gtk_window_set_title (GTK_WINDOW (window), "MenuButton Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 600, 400);
+
+  menubutton = gtk_menu_button_new ();
+  gtk_widget_set_size_request (menubutton, 80, 35);
+
+  gtk_grid_attach (GTK_GRID (grid), menubutton, 0, 0, 1, 1);
+  gtk_container_add (GTK_CONTAINER (window), grid);
+
+  menumodel = g_menu_new ();
+  g_menu_append (menumodel, "New", "app.new");
+  g_menu_append (menumodel, "About", "win.about");
+
+  submenu = g_menu_new ();
+  g_menu_append_submenu (menumodel, "Other", G_MENU_MODEL (submenu));
+  g_menu_append (submenu, "Quit", "app.quit");
+  gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (menubutton), G_MENU_MODEL (menumodel));
+
+  about_action = g_simple_action_new ("about", NULL);
+  g_signal_connect (about_action, "activate", G_CALLBACK (about_callback),
+                    GTK_WINDOW (window));
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (about_action));
+
+  gtk_widget_show_all (window);
+}
+
+
+static void
+new_callback (GSimpleAction *simple,
+              GVariant      *parameter,
+              gpointer       user_data)
+{
+  g_print ("You clicked \"New\"\n");
+}
+
+static void
+quit_callback (GSimpleAction *simple,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+  GApplication *application = user_data;
+
+  g_application_quit (application);
+}
+
+static void
+startup (GApplication *app,
+         gpointer      user_data)
+{
+  GSimpleAction *new_action;
+  GSimpleAction *quit_action;
+
+  new_action = g_simple_action_new ("new", NULL);
+  g_signal_connect (new_action, "activate", G_CALLBACK (new_callback), app);
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (new_action));
+
+  quit_action = g_simple_action_new ("quit", NULL);
+  g_signal_connect (quit_action, "activate", G_CALLBACK (quit_callback), app);
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (quit_action));
+}
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect (app, "startup", G_CALLBACK (startup), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+  return status;
+}
+</code>
+  </section>
+
+  <section id="references">
+  <title>Références API</title>
+    <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkMenuButton.html">GtkMenuButton</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkMenu.html">GtkMenu</link></p></item>
+      <item><p><link href="https://developer.gnome.org/gio/unstable/GMenuModel.html">GMenuModel</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkArrow.html">GtkArrow</link></p></item>
+    </list>
+  </section>
+</page>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox.py" xml:lang="ca">
+  <info>
+    <title type="text">ComboBox (Python)</title>
+    <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
+    <link type="seealso" xref="model-view-controller.py"/>
+    <link type="next" xref="treeview_simple_liststore.py"/>
+    <revision version="0.1" date="2012-06-02" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A widget used to choose from a list of items</desc>
+  </info>
+
+  <title>ComboBox (one column)</title>
+  <media type="image" mime="image/png" src="media/combobox.png"/>
+  <p>This ComboBox prints to the terminal your selection when you change it.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code used to generate this example</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+distros = [["Select distribution"], ["Fedora"], ["Mint"], ["Suse"]]
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(200, -1)
+        self.set_border_width(10)
+
+        # the data in the model, of type string
+        listmodel = Gtk.ListStore(str)
+        # append the data in the model
+        for i in range(len(distros)):
+            listmodel.append(distros[i])
+
+        # a combobox to see the data stored in the model
+        combobox = Gtk.ComboBox(model=listmodel)
+
+        # a cellrenderer to render the text
+        cell = Gtk.CellRendererText()
+
+        # pack the cell into the beginning of the combobox, allocating
+        # no more space than needed
+        combobox.pack_start(cell, False)
+        # associate a property ("text") of the cellrenderer (cell) to a column (column 0)
+        # in the model used by the combobox
+        combobox.add_attribute(cell, "text", 0)
+
+        # the first row is the active one by default at the beginning
+        combobox.set_active(0)
+
+        # connect the signal emitted when a row is selected to the callback
+        # function
+        combobox.connect("changed", self.on_changed)
+
+        # add the combobox to the window
+        self.add(combobox)
+
+    def on_changed(self, combo):
+        # if the row selected is not the first one, write its value on the
+        # terminal
+        if combo.get_active() != 0:
+            print("You chose " + str(distros[combo.get_active()][0]) + ".")
+        return True
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Useful methods for a ComboBox widget</title>
+    <p>The ComboBox widget is designed around a <em>Model/View/Controller</em> design: the <em>Model</em> stores the data; the <em>View</em> gets change notifications and displays the content of the model; the <em>Controller</em>, finally, changes the state of the model and notifies the view of these changes. For more information and for a list of useful methods for ComboBox see <link xref="model-view-controller.py"/>.</p>
+    <p>In line 35 the <code>"changed"</code> signal is connected to the callback function <code>on_changed()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
+
+  </section>
+
+  <section id="references">
+    <title>API References</title>
+    <p>In this sample we used the following:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkComboBox.html">GtkComboBox</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkListStore.html">GtkListStore</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCellRendererText.html">GtkCellRendererText</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCellLayout.html">GtkCellLayout</link></p></item>
+      <item><p><link href="http://git.gnome.org/browse/pygobject/tree/gi/overrides/Gtk.py">pygobject - Python bindings for GObject Introspection</link></p></item>
+    </list>
+  </section>
+</page>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="window.js" xml:lang="es">
+  <info>
+  <title type="text">Ventana (JavaScript)</title>
+    <link type="guide" xref="beginner.js#windows"/>
+    <revision version="0.1" date="2012-04-14" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Una ventana básica que puede contener otros widgets.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Ventana</title>
+<table>
+  <tr>
+    <td>
+      <media type="image" mime="image/png" src="media/window.png"/>
+      <p>Una GtkApplication mínima</p>
+    </td>
+    <td>
+      <p>Use una <link href="GtkApplicationWindow.js">ventana de aplicación</link> si necesita soporte para GMenu.</p>
+    </td>
+  </tr>
+</table>
+      <code mime="application/javascript" style="numbered">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const Application = new Lang.Class ({
+    Name: 'Application',
+
+    //create the application
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.myapp',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+       this.application.connect('activate', Lang.bind(this, this._onActivate));
+    },
+
+    //callback function for 'activate' signal
+    _onActivate: function () {
+
+        MyWindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+        MyWindow.title = "Welcome to GNOME";
+
+       /* Here are a few ways we can customize our window.
+       Try uncommenting them or changing their values! */
+        //MyWindow.set_default_size (400,200);
+        //MyWindow.set_has_resize_grip (false);
+        //MyWindow.set_opacity (0.5);
+        //MyWindow.maximize ();
+
+        //show the window and all child widgets (none in this case)
+        MyWindow.show_all();
+        this.application.add_window(MyWindow);
+    }
+});
+
+//run the application
+let app = new Application ();
+app.application.run (ARGV);
+</code>
+<p>En este ejemplo se usa lo siguiente:</p>
+<list>
+<item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+<item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Window.html">Gtk.Window</link></p></item>
+</list>
+
+</page>

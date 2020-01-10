@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tooling" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#general-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Použití správných nástrojů pro různé úkoly</desc>
+  </info>
+
+  <title>Nástroje</title>
+
+  <p>Vývojářskými nástroji nejsou jen textový editor a kompilátor. Správné použití správných nástrojů může, mimo jiné, významně usnadnit ladění a sledování složitých problémů s přidělováním paměti a systémovým voláním. Některé z nejběžněji používaných nástrojů jsou popsány dále. Ostatní existující nástroje jsou povětšinou pro specializovanější situace a měly by být použity, když je to vhodné.</p>
+
+  <p>Obecný princip, který platí při vývoji, je mít vždy povoleno tolik ladicích voleb, kolik je jen možné, a ne je mít vypnuté až do doby těsně před vydáním. Tím že se kód neustále testuje všemi dostupnými ladicími nástroji, zachytíte chyby již v zárodku, dřív než se zakoření hluboko do kódu a bude těžší je odstranit.</p>
+
+  <p>Prakticky to znamená, mít zapnutá varování u kompilátoru a všech dalších nástrojů a zapnout selhání procesu sestavení s chybou při jejich výskytu.</p>
+
+  <synopsis>
+    <title>Shrnutí</title>
+
+    <list>
+      <item><p>Kompilujte často pomocí druhého kompilátoru. (<link xref="#gcc-and-clang"/>)</p></item>
+      <item><p>Povolte co největší počet varování kompilátoru a nastavte je jako kritická. (<link xref="#gcc-and-clang"/>)</p></item>
+      <item><p>Používejte GDB k ladění a krokování kódu. (<link xref="#gdb"/>)</p></item>
+      <item><p>Používejte Valgrind k analýze využití paměti, paměťových chyb, výkonu mezipaměti a procesoru a chyb s vlákny. (<link xref="#valgrind"/>)</p></item>
+      <item><p>Používejte gcov a lcov k pokrytí analytickými jednotkovými testy. (<link xref="#gcov-and-lcov"/>)</p></item>
+      <item><p>Používejte sanitizéry k analýze problémů s pamětí, vlákny a nedefinovaným chováním. (<link xref="#sanitizers"/>)</p></item>
+      <item><p>Kontrolu pomocí Coverity provádějte jako pravidelnou úlohu a chyby statické analýzy odstraňte hned, jak se objeví. (<link xref="#coverity"/>)</p></item>
+      <item><p>Používejte pravidelně statický analyzátor Clang a Tartan k odstranění místních chyb, které lze analyzovat staticky. (<link xref="#clang-static-analyzer"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="gcc-and-clang">
+    <title>GCC a Clang</title>
+
+    <p><link href="https://gcc.gnu.org/onlinedocs/gcc/">GCC</link> je standardní kompilátor pro Linux. Existuje i alternativa v podobě kompilátoru <link href="http://clang.llvm.org/docs/UsersManual.html">Clang</link> s obdobnou funkcionalitou. Jeden z nich (nejspíše GCC) si zvolte jako hlavní, ale příležitostně provádějte kompilaci kódu i druhým, abyste objevili trochu jinou skupinu chyb a varování v kódu. Clang dáva k dispozici také nástroj pro statickou analýzu, který můžete použít k odhalení chyb v kódu bez jeho kompilace nebo spuštění. Viz <link xref="#clang-static-analyzer"/>.</p>
+
+    <p>Oba dva kompilátory by se měly používat s co nejvíce zapnutými přepínači varování je možné. Přestože kompilátor může příležitostně poskytnout falešné varování, většina varování oprávněně ukazuje na problém v programovém kódu a proto by měla být opravena, a ne ignorována. Zásadou pro vývojáře je zapnout co nejvíce přepínačů varování a rovněž zadat <code>-Werror</code> (ten způsobí, že všechna varování způsobí selhání kompilace), aby byli přinuceni opravit varování hned, jak se objeví. To pomáhá zvyšovat kvalitu kódu. Naopak ignorování varování vede ve výsledků ke zdlouhavému ladění kvůli vyhledání chyby, která je způsobená problémem, který byl již dříve označen varováním. Stejně tak, když budete ignorovat varování až do konce vývojového cyklu, strávíte násobně více času jejich opravami na závěr.</p>
+
+    <p>Jak GCC, tak Clang, podporují velké množství přepínačů, ale jen některé z nich se vztahují k modernímu víceúčelovému kódu (ostatní jsou například zastaralé nebo závislé na architektuře). Najít vhodnou sadu přepínačů, které je třeba zapnout, může být trochu magie, a proto existuje makro <link href="http://www.gnu.org/software/autoconf-archive/ax_compiler_flags.html"> <code>AX_COMPILER_FLAGS</code></link>.</p>
+
+    <p><code>AX_COMPILER_FLAGS</code> zapíná jednotnou sadu varování kompilátoru a také, před tím než je zapne, jednotlivě testuje, jestli je kompilátor podporuje. Vyrovnává se tím s rozdíly mezi překladači GCC a Clang v sadě podporovaných přepínačů. Pro použití stačí přidat <code>AX_COMPILER_FLAGS</code> do <file>configure.ac</file>. Pokud používáte kopii maker autoconf-archive ve stromu se zdrojovými kódy, zkopírujte <link href="http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_compiler_flags.m4"><file>ax_compiler_flags.m4</file></link> do složky <file>m4</file> ve svém projektu. Mějte na paměti, že závisí na následujících makrech z autoconf-archive, která jsou pod licenci GPL, takže existuje možnost, že z licenčních důvodů je nebudete moci nakopírovat. Pak je budete muset ponechat v autoconf-archive, který pak bude závislostí pro sestavovací proces projektu:</p>
+    <list>
+      <item><p><code>ax_append_compile_flags.m4</code></p></item>
+      <item><p><code>ax_append_flag.m4</code></p></item>
+      <item><p><code>ax_check_compile_flag.m4</code></p></item>
+      <item><p><code>ax_require_defined.m4</code></p></item>
+    </list>
+
+    <p><code>AX_COMPILER_FLAGS</code> podporuje vypnutí <code>-Werror</code> u sestavení pro vydání, takže tato vydání mohou být vždy sestavena oproti novějšímu kompilátoru, který může mít zavedeno více varování. Pro zapnutí této funkce nastavte u sestavení pro vydání (a jen u nich) jeho třetí parametr na „yes“. Vývojová sestavení a sestavení průběžné integrace by měla mít přepínač <code>-Werror</code> vždy zapnutý.</p>
+
+    <p>Sestavení pro vydání lze detekovat pomocí makra <link href="http://www.gnu.org/software/autoconf-archive/ax_is_release.html"><code>AX_IS_RELEASE</code></link>, jehož výsledek můžete předat přímo do <code>AX_COMPILER_FLAGS</code>:</p>
+    <code style="valid">AX_IS_RELEASE([git])
+AX_COMPILER_FLAGS([WARN_CFLAGS],[WARN_LDFLAGS],[$ax_is_release])</code>
+
+    <p>Volba zásad pro stabilitu vydání (první argument pro <code>AX_IS_RELEASE</code>) by měla být prováděna pro každý projekt zvlášť, přičemž je třeba brát do úvahy <link xref="versioning">číslování verzí podle stability</link>.</p>
+  </section>
+
+  <section id="gdb">
+    <title>GDB</title>
+
+    <p>GDB je standardní ladicí program pro C v Linuxu. Je nejběžněji používán k ladění pádů a ke krokování spuštěného kódu. Ucelený průvodce použitím GDB je poskytnut <link href="https://sourceware.org/gdb/current/onlinedocs/gdb/">zde</link>.</p>
+
+    <p>Ke spuštění GDB vůči programu uvnitř stromu jeho zdrojových kódů použijte: <cmd>libtool exec gdb --args <var>./nazev-programu</var> <var>--nejake --jeho --argumenty</var></cmd></p>
+
+    <p>Takto je to nutné z důvodu, aby libtool obalila ve stromu zdrojových kódů každý zkompilovaný binární soubor do shellového skriptu, který nastaví některé proměnné pro libtool. Není to zapotřebí pro ladění nainstalovaných spustitelných souborů.</p>
+
+    <p>GDB má spoustu pokročilých funkcí, které lze kombinovat, abyste v podstatě vytvořili malé ladicí skripty, které se spouští v různých bodech přerušení v kódu. Někdy se to opravdu hodí (například pro <link href="https://tecnocode.co.uk/2010/07/12/reference-count-debugging-with-gdb/">ladění počítání odkazů</link>), ale jindy je jednodušší použít prostě samotné <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-debug"> <code>g_debug()</code></link> pro výpis ladicích zpráv.</p>
+  </section>
+
+  <section id="valgrind">
+    <title>Valgrind</title>
+
+    <p>Valgrind je sada nástrojů pro měření a profilování programů. Jeho nejznámějším nástrojem je <link xref="#memcheck">memcheck</link>, ale má i několik dalších mocných a užitečných nástrojů. Jednotlivě se jim věnují následující oddíly.</p>
+
+    <p>Vhodným způsobem, jak spustit Valgrind, je spustit pod ním sadu jednotkových testů programu a nastavit jej, aby vrátil stavový kód sdělující množství napočítaných chyb. Když běží jako součást <cmd>make check</cmd>, způsobí to, že je kontrola úspěšná, když Valgrind nenajde žádný problém a selže v opačném případě. Avšak spuštění <cmd>make check</cmd> pod Valgrind není jednoduché provést v příkazové řádce. Můžete použít makro <link href="http://www.gnu.org/software/autoconf-archive/ax_valgrind_check.html"><code>AX_VALGRIND_CHECK</code></link>, které přidá nový cíl <cmd>make check-valgrind</cmd> pro zautomatizování. Použijte jej následovně:</p>
+    <steps>
+      <item><p>Zkopírujte <link href="http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_valgrind_check.m4"> <file>ax_valgrind_check.m4</file></link> do složky <file>m4/</file> ve svém projektu.</p></item>
+      <item><p>Přidejte <code>AX_VALGRIND_CHECK</code> do <file>configure.ac</file>.</p></item>
+      <item><p>Přidejte <code>@VALGRIND_CHECK_RULES@</code> do <file>Makefile.am</file> v každé složce, která obsahuje jednotkové testy.</p></item>
+    </steps>
+
+    <p>Když je spuštěno <cmd>make check-valgrind</cmd>, uloží se jeho výsledky do <file>test-suite-*.log</file>, jeden soubor se záznamem pro každý z nástrojů. Nezapomeňte, že jej musíte spustit ve složce, která obsahuje jednotkové testy.</p>
+    <p>Valgrind má způsob, jak potlačit falešná hlášení pomocí <link href="http://valgrind.org/docs/manual/manual-core.html#manual-core.suppress">potlačovacích souborů</link>. V nich jsou uvedeny vzory, které mohou odpovídat výpisům chyb zásobníku. Pokud výpis zásobníku pro nějakou chybu odpovídá části potlačovacího záznamu, není nahlášen. Z jistých důvodů GLib v současnosti způsobuje řadu falešných hlášení v nástrojích <link xref="#memcheck">memcheck</link> a <link xref="#helgrind-and-drd">helgrind a drd</link>, která je potřeba standardně potlačovat, aby byl Valgrind vůbec použitelný. Proto by měl každý projekt mimo svého vlastního potlačovacího souboru používat i standardní potlačovací soubor pro GLib.</p>
+
+    <p>Potlačovací soubory jsou podporovány pomocí makra <code>AX_VALGRIND_CHECK</code>:</p>
+    <code>@VALGRIND_CHECK_RULES@
+VALGRIND_SUPPRESSIONS_FILES = my-project.supp glib.supp
+EXTRA_DIST = $(VALGRIND_SUPPRESSIONS_FILES)</code>
+
+    <section id="memcheck">
+      <title>memcheck</title>
+
+      <p>memcheck je analyzátor využití a přidělování paměti. Zjišťuje problémy s přístupem k paměti a změnami v haldě (přidělování a uvolňování). Jedná se o robustní a zaběhnutý nástroj a jeho výstupům se dá vcelku důvěřovat. Když oznámí, že se „určitě“ jedná o únik paměti, tak se určitě jedná o únik paměti, který byste měli opravit. Když řekne, že se jedná o „potenciální“ únik paměti, možná jde o únik, který byste měli opravit, nebo může jít o přidělení paměti při počáteční inicializaci, které je pak používána po celou dobu běhu programu a není potřeba ji uvolňovat.</p>
+
+      <p>K ručnímu spuštění memcheck vůči nainstalovanému programu použijte:</p>
+      <p><cmd>valgrind --tool=memcheck --leak-check=full <var>název-vašeho-programu</var></cmd></p>
+
+      <p>Nebo, když spouštíte svůj program ze složky se zdrojovými kódy, použijte následující, abyste se vyhnuli kontrole úniků v pomocných skriptech libtool:</p>
+      <p><cmd>libtool exec valgrind --tool=memcheck --leak-check=full <var>./název-vašeho-programu</var></cmd></p>
+
+      <p>Valgrind vypíše všechny zjištěné problémy s pamětí, včetně krátkého výpisu zásobníku volání u každého z nich (za předpokladu, že jste program zkompilovali s ladicími symboly), díky čemuž lze paměťovou chybu dohledat a opravit.</p>
+
+      <p>Ucelený průvodce použitím nástroje memcheck je <link href="http://valgrind.org/docs/manual/mc-manual.html">zde</link>.</p>
+    </section>
+
+    <section id="cachegrind-and-kcachegrind">
+      <title>cachegrind a KCacheGrind</title>
+
+      <p>cachegrind je profilovací nástroj výkonu mezipaměti, který může měřit také provádění instrukcí a je tak velmi užitečný i pro profilování obecného výkonu programu. <link href="http://kcachegrind.sourceforge.net/html/Home.html"> KCacheGrind</link> je pak pro něj šikovné uživatelské rozhraní, které provádí grafické znázornění a můžete v něm zkoumat profilovací data. Tyto dva nástroje se tak obvykle používají dohromady.</p>
+
+      <p>cachegrind funguje pomocí simulace hierarchie paměti procesoru, takže existují situace, kdy není <link href="http://valgrind.org/docs/manual/cg-manual.html#cg-manual.annopts.accuracy">zcela přesný</link>. Jeho výsledky jsou však vždy dostatečně reprezentativní, aby byly užitečné pro ladění výkonu v dotčených místech.</p>
+
+      <p>Ucelený průvodce používáním nástroje cachegrind je <link href="http://valgrind.org/docs/manual/cg-manual.html">zde</link>.</p>
+    </section>
+
+    <section id="helgrind-and-drd">
+      <title>helgrind a drd</title>
+
+      <p>helgrind a drd slouží ke zjišťování chyb týkajících se vláken, ke kontrole souběhových chyb v přístupu k paměti a chybného používání <link href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/pthread.h.html">API vláken podle standardu POSIX</link>. Jedná se o dva podobné nástroje, ale používající ke své práci rozdílné techniky, takže by se měly používat oba.</p>
+
+      <p>Druhy chyb detekované nástroji helgrind a drd jsou: přístup k datům z více vláken bez jednotného zamykání, změny v pořadí získávání zámků, uvolňování zamknutého mutexu, zamykání zamknutého mutexu, odemykání odemčeného mutexu a několik dalších chyb. Každá chyba, která je objevena, je vypsána do konzole v podobě drobné výstupní sestavy s oddělenu částí poskytující podrobnosti o alokaci nebo vzniku mutexů nebo vláken, se kterými to souvisí, takže pak můžete snadno najít jejich definici.</p>
+
+      <p>helgrind a drd produkují více falešných hlášení, než memcheck a cachegrind, takže jejich výstupy je třeba prostudovat trochu obezřetněji. Problémy s vlákny jsou ale notoricky těžko polapitelné i pro zkušené programátory, takže tyto nástroje by neměly být jen tak zavrhnuty.</p>
+
+      <p>Ucelení průvodci používáním helgrind a drd jsou <link href="http://valgrind.org/docs/manual/hg-manual.html">zde</link> a <link href="http://valgrind.org/docs/manual/drd-manual.html">zde</link>.</p>
+    </section>
+
+    <section id="sgcheck">
+      <title>sgcheck</title>
+
+      <p>sgcheck provádí kontrolu rozsahu polí. Umí odhalit přístup do pole, při kterém dojde k překročení délky pole. Jedná se ale o velmi raný nástroj, zatím označený jako experimentální, a proto může produkovat více falešných hlášení než jiné nástroje.</p>
+
+      <p>Protože je experimentální, musí být spuštěn s předáním <cmd>--tool=exp-sgcheck</cmd> do Valgrindu, namísto <cmd>--tool=sgcheck</cmd>.</p>
+
+      <p>Ucelený průvodce použitím sgcheck je <link href="http://valgrind.org/docs/manual/sg-manual.html">zde</link>.</p>
+    </section>
+  </section>
+
+  <section id="gcov-and-lcov">
+    <title>gcov a lcov</title>
+
+    <p><link href="https://gcc.gnu.org/onlinedocs/gcc/Gcov.html">gcov</link> je profilovací nástroj vestavěný v GCC, který během kompilace obohatí programový kód přidáním doplňujících instrukcí. Když je pak program spuštěn, generuje výstupní profilovací soubory <file>.gcda</file> a <file>.gcno</file>. Tyto soubory lze analyzovat pomocí nástroje <cmd>lcov</cmd>, který generuje přehlednou výstupní sestavu pokrytí kódu za běhu, v níž zvýrazní řádky kódu, které běží déle než ostatní.</p>
+
+    <p>Kritické využití pro nasbíraná data o pokrytí kódu je při běhu jednotkových testů: když je množství kódu pokrytého jednotkovými testy (např. které konkrétní řádky proběhly) známé, může být použito jako vodítko pro další rozšiřování jednotkových testů. Pravidelnou kontrolou pokrytí kódu získaného jednotkovými testy a jeho dalším rozšířením na 100 % můžete zajistit, že bude testován celý projekt. Častým případem je, že jednotkové testy zkouší většinu kódu, ale ne konkrétně cestu řízeného průchodu, ve které se pak ukrývá zbytek chyb.</p>
+
+    <p>lconv podporuje <link href="http://en.wikipedia.org/wiki/Code_coverage#Basic_coverage_criteria">měření pokrytí větve</link>, takže není vhodný jako ukázkové pokrytí kritického kódu z hlediska bezpečnosti. Je naopak perfektně vhodný pro kód, který není z hlediska bezpečnosti kritický.</p>
+
+    <p>Protože pokrytí kódu musí být povoleno jak při kompilaci, tak za běhu, je pro zjednodušení poskytováno makro. Makro <link href="http://www.gnu.org/software/autoconf-archive/ax_code_coverage.html"> <code>AX_CODE_COVERAGE</code></link> přidává do sestavovacího systému cíl <cmd>make check-code-coverage</cmd>, který spustí jednotkové testy s povoleným pokrytím kódu a vygeneruje výstupní sestavu pomocí <cmd>lcov</cmd>.</p>
+
+    <p>Když chcete do svého projektu přidat podporu pro <code>AX_CODE_COVERAGE</code>:</p>
+    <steps>
+      <item><p>Zkopírujte <link href="http://git.savannah.gnu.org/gitweb/?p=autoconf-archive.git;a=blob_plain;f=m4/ax_code_coverage.m4"><file>ax_code_coverage.m4</file></link> do složky <file>m4/</file> svého projektu.</p></item>
+      <item><p>Přidejte <code>AX_CODE_COVERAGE</code> do <file>configure.ac</file>.</p></item>
+      <item><p>Přidejte <code>@CODE_COVERAGE_RULES</code> do <file>Makefile.am</file> v nejvyšší úrovni.</p></item>
+      <item><p>AdPřidejte <code>$(CODE_COVERAGE_CFLAGS)</code> do proměnné <code><var>*</var>_CFLAGS</code> systému automake pro každý cíl, který chcete pokrýt, například pro všechny knihovny, ale už ne tak pro jednotkové testy. To stejné proveďte pro <code>$(CODE_COVERAGE_LDFLAGS)</code> a <code><var>*</var>_LDFLAGS</code>.</p></item>
+    </steps>
+
+    <p>Dokumentace k používání gcov a lcov je <link href="http://ltp.sourceforge.net/coverage/lcov.php">zde</link>.</p>
+  </section>
+
+  <section id="sanitizers">
+    <title>Sanitizéry adres, vláken a nedefinovaného chování</title>
+
+    <p>Jak GCC, tak Clang, mají podporu několika sanitizérů: sadu dodatečného kódu a kontrol, které mohou být volitelně zakompilovány do vaší aplikace a použity k označené různorodého nesprávného chování za běhu. Jedná se o mocné nástroje, ale musí být zapnuty či vypnuty tak, že překompilujete svoji aplikaci. Nemohou být zapnuty zárovneň s jinými a nemohou být použity naráz s nástroji <link xref="#valgrind">Valgrind</link>. Jedná se stále o poměrně novou funkcionalitu, takže je jen málo integrována s jinými nástroji.</p>
+
+    <p>Všechny sanitizéry jsou dostupné pro překladač GCC i Clang a přijímají stejnou sadu přepínačů kompilátoru.</p>
+
+    <section id="address-sanitizer">
+      <title>Sanitizér adres</title>
+
+      <p><link href="https://code.google.com/p/address-sanitizer/">Sanitizér adres</link> („asan“) detekuje chyby „použití po uvolnění“ a přetečení vyrovnávací paměti v programech C a C++. Vyčerpávající výklad k používání asan je <link href="http://clang.llvm.org/docs/AddressSanitizer.html#usage">k dispozici pro Clang</link>, ale stejné postupy platí i pro GCC.</p>
+    </section>
+
+    <section id="thread-sanitizer">
+      <title>Sanitizér vláken</title>
+
+      <p><link href="https://code.google.com/p/thread-sanitizer/">Sanitizér vláken</link> („tsan“ – thread sanitizer) zjišťuje souběhy v přístupu k datům v paměťových místech a k tomu také různá nesprávná použití API pro práci s vlákny podle standardu POSIX. Celistvý průvodce používáním nástroje tsan je <link href="http://clang.llvm.org/docs/ThreadSanitizer.html#usage">k dispozici pro Clang</link>, ale stejné postupy by měly platit i pro GCC.</p>
+    </section>
+
+    <section id="undefined-behavior-sanitizer">
+      <title>Sanitizér nedefinovaného chování</title>
+
+      <p>Sanitizér nedefinovaného chování („ubsan“ – undefined behavior sanitizer) je sbírka drobných nástrojů, které zjišťují různá potencionálně nedefinovaná chování v programech napsaných v jazyce C. Sada pokynů pro zapnutí ubsanu je <link href="http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation">k dispozici pro Clang</link>, ale stejně by to mělo fungovat i pro GCC.</p>
+    </section>
+  </section>
+
+  <section id="coverity">
+    <title>Coverity</title>
+
+    <p><link href="http://scan.coverity.com/">Coverity</link> je jeden z nejpopulárenějších a největší komerční dostupný nástroj pro statickou analýzu. Přestože je komerční, je volně k dispozici pro projekty Open Source, akorát je projekt vyzván k <link href="https://scan.coverity.com/users/sign_up">přihlášení</link>. <link href="https://scan.coverity.com/faq#how-get-project-included-in-scan">Analýza je prováděna</link> spuštěním některých analytických nástrojů lokálně a následně jsou zdrojový kód i výsledky v zabalené podobě nahrány na servery Coverity. Výsledky jsou pak členům projektu viditelné on-line v podobě poznámek u zdrojového kódu (obdobně, jako své výsledky podává lcov).</p>
+
+    <p>Protože Coverity nelze jako celek spustit lokálně, nelze jej ani pořádně zaintegrovat do systému sestavení. Existují ale skripty, které projekt automaticky pravidelně proskenují a zabalená data nahrají na servery Coverity. Doporučovaný přístup je spouštět tyto skripty pravidelně na serveru (typicky jako cronjob) a předtím stáhnout čisté zdrojové kódy z repozitáře git projektu. Coverity zašle členům projektu e-mail s nově nalezenými problémy ve statické analýze, takže může být zvolen stejný přístup, jako k <link xref="#gcc-and-clang">varováním kompilátoru</link>: řešte všechna varování statické analýzy a řešte je hned, jak jsou nalezena.</p>
+
+    <p>Coverity je dobrý, ale ne dokonalý nástroj a produkuje řadu falešných hlášení. Ta lze ale v rozhraní příkazového řádku označit, aby byla ignorována.</p>
+  </section>
+
+  <section id="clang-static-analyzer">
+    <title>Statický analyzátor Clang</title>
+
+    <p>Jedním z nástrojů, které můžete používat k provádění místní statické analýzy, je <link href="http://clang-analyzer.llvm.org/">statický analyzátor Clang</link>, což je nástroj vyvíjený spolu s <link xref="#gcc-and-clang">kompilátorem Clang</link>. Detekuje různé problémy v kódu v jazyce C, které kompilátor rozpoznat nedokáže a které by tak byly zjištěny až za běhu (pomocí jednotkových testů).</p>
+
+    <p>Clang produkuje i pár falešných hlášení a není žádný jednoduchý způsob, jak je nechat ignorovat. Proto je při jejich výskytu doporučeno <link href="http://clang-analyzer.llvm.org/faq.html#suppress_issue">vyplnit pro statický analyzátor chybové hlášení</link>, aby mohla být do budoucna opravena.</p>
+
+    <p>Ucelený průvodce používáním kompilátoru Clang je <link href="http://clang-analyzer.llvm.org/scan-build.html">zde</link>.</p>
+
+    <section id="tartan">
+      <title>Tartan</title>
+
+      <p>Přes veškeré vymoženosti, které statický analyzátor Clang poskytuje, nedokáže detekovat problémy se specifickými knihovnami, jako je GLib. Což je problém, když projekt používá výhradně GLib a jen zřídka API standardu POSIX (kterému Clang rozumí). Proto je k dispozici zásuvný modul pro statický analyzátor Clang, který se nazývá <link href="http://people.collabora.com/~pwith/tartan/">Tartan</link> a rozšiřuje Clang o podporu kontroly vůči některým běžným API knihovny GLib.</p>
+
+      <p>Tartan je zatím velmi mladý software a může produkovat falešná hlášení a při spuštění vůči některému kód se může i zhroutit. Pomůže vám ale velmi rychle najít skutečné chyby a je vhodné jej vůči základnímu programovému kódu spouštět často, abyste odhalili nové chyby v použití GLib v svém kódu. Pokud s Tartanem narazíte na nějaké problémy, <link href="http://people.collabora.com/~pwith/tartan/#troubleshooting">nahlaste</link> je prosím.</p>
+
+      <p>Ucelený návod na zprovoznění Tartanu pro použití se statickým analyzátorem Clang najdete <link href="http://people.collabora.com/~pwith/tartan/#usage-standalone">zde</link>. Pokud je nastavení správné, je výstup z Tartanu dán dohromady s výstupem z normálního statického analyzátoru.</p>
+    </section>
+  </section>
+</page>

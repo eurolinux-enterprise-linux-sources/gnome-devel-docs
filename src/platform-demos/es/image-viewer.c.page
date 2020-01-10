@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.c" xml:lang="es">
+
+  <info>
+    <title type="text">Visor de imágenes (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>Algo más que una sencilla aplicación «Hola mundo» en GTK.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-18" status="review"/>
+    <credit type="author">
+      <name>Proyecto de documentación de GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Visor de imágenes</title>
+
+<synopsis>
+  <p>En este tutorial aprenderá:</p>
+  <list>
+    <item><p>Algunos conceptos básicos de programación en C/GObject</p></item>
+    <item><p>Cómo escribir una aplicación GTK en C</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Crear un proyecto en Anjuta</title>
+  <p>Antes de empezar a programar, deberá configurar un proyecto nuevo en Anjuta. Esto creará todos los archivos que necesite para construir y ejecutar el código más adelante. También es útil para mantener todo ordenado.</p>
+  <steps>
+    <item>
+    <p>Inicie Anjuta y pulse <guiseq><gui>Archivo</gui><gui>Nuevo</gui><gui>Proyecto</gui></guiseq> para abrir el asistente de proyectos.</p>
+    </item>
+    <item>
+    <p>Seleccione <gui>GTK+ (simple)</gui> en la pestaña <gui>C</gui>, pulse <gui>Continuar</gui>, y rellene los detalles en las siguientes páginas. Use <file>visor-imagenes</file> como nombre del proyecto y de la carpeta.</p>
+   	</item>
+    <item>
+    <p>Asegúrese de que <gui>Usar GtkBuilder para la interfaz del usuario</gui> está desactivado, ya que, en este tutorial, la IU se creará manualmente. Revise el tutorial del <link xref="guitar-tuner.c">afinador de guitarra</link> si quiere aprender a usar el constructor de interfaces.</p>
+    </item>
+    <item>
+    <p>Pulse <gui>Aplicar</gui> y se creará el proyecto. Abra <file>src/main.c</file> desde las pestañas <gui>Proyecto</gui> o <gui>Archivo</gui>. Debería ver algo de código que comience con las líneas:</p>
+    <code mime="text/x-csrc">
+#include &lt;config.h&gt;
+#include &lt;gtk/gtk.h&gt;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Construir el código por primera vez</title>
+  <p>C es un lenguaje más detallado, por lo que no se sorprenda de que el archivo contiene un gran cantidad de código. La mayor parte es código de plantilla. Carga una ventana (vacía) y se muestra. A continuación se ofrecen más detalles; omita esta lista si entiende los conceptos básicos:</p>
+
+  <list>
+  <item>
+    <p>Las tres líneas <code>#include</code> en la parte superior incluyen las bibliotecas <code>config</code> (útil para definiciones de construcción de autoconf), <code>gtk</code> (interfaz de usuario) y <code>gi18n</code> (internacionalización). Las funciones de estas bibliotecas se usan en el resto del código.</p>
+   </item>
+   <item>
+    <p>La función <code>create_window</code> crea una ventana (vacía) nueva y conecta una señal para salir de la aplicación cuando se cierra esa ventana.</p>
+    <p>Conectar señales es como se define lo que pasa cuando pulsa un botón, o cuando ocurre algún otro evento. Aquí, se llama a la función <code>destroy</code> (y se sale de la aplicación) cuando cierra la ventana.</p>
+   </item>
+   <item>
+    <p>La función <code>main</code> se ejecuta de manera predeterminada cuando inicia una aplicación en C. Llama a unas pocas funciones que configuran y ejecutan la aplicación. La función <code>gtk_main</code> inicia el bucle principal de GTK+, que ejecuta la interfaz de usuario y comienza a escuchar eventos (como pulsaciones del ratón y del teclado).</p>
+   </item>
+   <item>
+    <p>La definición condicional <code>ENABLE_NLS</code> configura <code>gettext</code>, que es un entorno de trabajo para traducir aplicaciones. Estas funciones especifican cómo deben manejar su aplicación las herramientas de traducción cuando las ejecuta.</p>
+   </item>
+  </list>
+
+  <p>Este código está listo para usarse, por lo que puede compilarlo pulsando <guiseq><gui>Construir</gui><gui>Construir proyecto</gui></guiseq> (o pulsando <keyseq><key>Mayús</key><key>F7</key></keyseq>).</p>
+  <p>Pulse <gui>Ejecutar</gui> en la siguiente ventana que aparece para configurar una construcción de depuración. Esto sólo necesita hacer una vez para la primera construcción.</p>
+</section>
+
+<section id="ui">
+<title>Crear la interfaz de usuario</title>
+<p>Ahora se dará vida a la ventana vacía. GTK+ organiza la interfaz de usuario con varios <code>GtkContainer</code> que pueden contener otros widgets e incluso otros contenedores. Aquí se usará el contenedor más sencillo disponible, una <code>GtkBox</code>:</p>
+<code mime="text/x-csrc">
+static GtkWidget*
+create_window (void)
+{
+	GtkWidget *window;
+	GtkWidget *button;
+	GtkWidget *image;
+	GtkWidget *box;
+
+	/* Set up the UI */
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (window), "image-viewer-c");
+
+	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
+	button = gtk_button_new_with_label (_("Open image"));
+	image = gtk_image_new ();
+
+	gtk_box_pack_start (GTK_BOX (box), image, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+
+	gtk_container_add (GTK_CONTAINER (window), box);
+
+	/* Connect signals */
+
+	/* Show open dialog when opening a file */
+	g_signal_connect (button, "clicked", G_CALLBACK (on_open_image), image);
+
+	/* Exit when the window is closed */
+	g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+
+	return window;
+}
+</code>
+  <steps>
+    <item>
+    <p>La primera línea crea los widgets que se quieren usar: un botón para abrir una imagen, el widget para ver la imagen y la caja que se usará como contenedor. Las macros como <code>GTK_BOX</code> se usan para comprobaciones de tipos dinámicos y conversiones de tipos necesarias, ya que C no soporta orientación a objetos.</p>
+    </item>
+    <item>
+    <p>Las llamadas a <code>gtk_box_pack_start</code> añaden los dos widgets a la caja y definen su comportamiento. La imagen se expandirá en cualquier espacio disponible, mientras que el botón será tan grande como se necesite. Se dará cuenta de que no se establecen tamaños explícitos de los widgets. Generalmente, en GTK+ no se necesita ya que hace que sea mucho más sencillo tener una distribución que se ve bien con diferentes tamaños de la ventana. A continuación, se añade la caja a la ventana.</p>
+    </item>
+    <item>
+    <p>Se debe definir qué sucede cuando el usuario pulsa el botón. GTK+ usa el concepto de <em>señales</em>. Cuando se pulsa el botón, emite la señal <em>clicked</em>, que se puede conectar a alguna acción. Esto se ha hecho usando el método <code>g_signal_connect</code>, que indica a GTK+ que llame a la función <code>on_image_open</code> cuando se pulsa el botón y que pase la imagen como un argumento adicional a la función. El <em>retorno de la llamada</em> se definirá en la siguiente sección.</p>
+    </item>
+    <item>
+    <p>La última <code>g_signal_connect()</code> se asegura de que la aplicación finaliza al cerrar la ventana.</p>
+    </item>
+    <item>
+    <p>Como último paso, asegúrese de reemplazar la llamada <code>gtk_widget_show</code>, en la función <code>main()</code>, por <code>gtk_widget_show_all()</code>, para mostrar todos los widgets que contiene la ventana.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="image">
+<title>Mostrar la imagen</title>
+<p>Ahora se definirá el manejador de la señal para la señal <em>clicked</em> en el botón mencionado anteriormente. Añada este código antes del método <code>create_window()</code>.</p>
+<code mime="text/x-csrc">
+static void
+on_open_image (GtkButton* button, gpointer user_data)
+{
+	GtkWidget *image = GTK_WIDGET (user_data);
+	GtkWidget *toplevel = gtk_widget_get_toplevel (image);
+	GtkFileFilter *filter = gtk_file_filter_new ();
+	GtkWidget *dialog = gtk_file_chooser_dialog_new (_("Open image"),
+	                                                 GTK_WINDOW (toplevel),
+	                                                 GTK_FILE_CHOOSER_ACTION_OPEN,
+	                                                 GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+	                                                 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+	                                                 NULL);
+
+	gtk_file_filter_add_pixbuf_formats (filter);
+	gtk_file_chooser_add_filter (GTK_FILE_CHOOSER (dialog),
+	                             filter);
+
+	switch (gtk_dialog_run (GTK_DIALOG (dialog)))
+	{
+		case GTK_RESPONSE_ACCEPT:
+		{
+			gchar *filename =
+				gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+			gtk_image_set_from_file (GTK_IMAGE (image), filename);
+			break;
+		}
+		default:
+			break;
+	}
+	gtk_widget_destroy (dialog);
+}
+</code>
+  <p>Esto es un poco más complicado que todo lo que se ha intentado hasta ahora, así que se puede desglosar:</p>
+  <list>
+    <item><p>El primer argumento de la señal es siempre el widget que envía la señal. Algunas veces se añaden otros argumentos relativos a la señal, pero <em>clicked</em> no tiene ninguno. Lo siguiente es el argumento <code>user_data</code>, que es un puntero a los datos que se han pasado al conectar la señal. En este caso, es el objeto <code>GtkImage</code>.</p>
+    </item>
+    <item>
+      <p>La siguiente línea interesante es en la que se crea el diálogo para elegir el archivo usando <code>gtk_file_chooser_dialog_new</code>. La función toma el título del diálogo, la ventana padre del diálogo y varias opciones como el número de botones y sus valores correspondientes.</p>
+    <p>Note que se está usando nombres de botones del <em>almacén</em> de GTK, en lugar de escribir manualmente «Cancelar» o «Abrir». La ventaja de usar nombres del almacén es que las etiquetas de los botones ya estarán traducidas en el idioma del usuario.</p>
+    </item>
+    <item>
+    <p>Las dos líneas siguientes restringen el diálogo <gui>Abrir</gui> para que sólo muestre archivos que se puedan abrir con «GtkImage». Primero se crea un objeto de filtro; luego se añaden los tipos de archivos soportados por el <code>GdkPixbuf</code> (que incluye la mayoría de los formatos de imagen como PNG y JPEG) al filtro. Por último, se establece que este filtro sea el filtro del diálogo <gui>Abrir</gui>.</p>
+    </item>
+    <item>
+    <p><code>gtk_dialog_run</code> muestra el diálogo <gui>Abrir</gui>. El diálogo esperará a que el usuario elija una imagen; cuando lo haga, <code>gtk_dialog_run</code> devolverá el valor <code>GTK_RESPONSE_ACCEPT</code> (devolvería <code>GTK_RESPONSE_CANCEL</code> si el usuario pulsara <gui>Cancelar</gui>). La sentencia <code>switch</code> comprueba esto.</p>
+    </item>
+    <item><p>Asumiendo que el usuario pulsó <gui>Abrir</gui>, la siguiente línea establece la propiedad <code>file</code> de la «GtkImage» con el nombre del archivo de imagen seleccionado por el usuario. La «GtkImage» cargará y mostrará la imagen elegida.</p>
+    </item>
+    <item>
+    <p>Al final de la línea de este método, se destruye el diálogo <gui>Abrir</gui> porque ya no se necesita más. El diálogo se oculta automáticamente al destruirlo.</p>
+    </item>
+  </list>
+</section>
+
+<section id="run">
+  <title>Construir y ejecutar la aplicación</title>
+  <p>Todo el código debería estar listo para ejecutarse. Pulse <guiseq><gui>Construir</gui><gui>Construir proyecto</gui></guiseq> para construir todo otra vez y pulse <guiseq><gui>Ejecutar</gui><gui>Ejecutar</gui></guiseq> para iniciar la aplicación.</p>
+  <p>Si todavía no lo ha hecho, elija la aplicación <file>Debug/src/visor-imagenes</file> en el diálogo que aparece. Finalmente, pulse <gui>Ejecutar</gui> y disfrute.</p>
+</section>
+
+<section id="impl">
+ <title>Implementación de referencia</title>
+ <p>Si tiene problemas con este tutorial, compare su código con este <link href="image-viewer/image-viewer.c">código de referencia</link>.</p>
+</section>
+
+<section id="next">
+  <title>Siguientes pasos</title>
+  <p>Aquí hay algunas ideas sobre cómo puede extender esta sencilla demostración:</p>
+  <list>
+   <item>
+   <p>Haga que el usuario selecciona una carpeta en vez de un archivo, y proporcione controles para moverse por todas las imágenes de una carpeta.</p>
+   </item>
+   <item>
+   <p>Aplicar filtros aleatorios y efectos a la imagen cuando se carga y permitir al usuario guardar la imagen modificada.</p>
+   <p><link href="http://www.gegl.org/api.html">GEGL</link> proporciona la capacidad de manipular imágenes de manera potente.</p>
+   </item>
+   <item>
+   <p>Permitir al usuario cargar imágenes desde recursos de red compartidos, escáneres y otras fuentes más complicadas.</p>
+   <p>Puede usar <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> para gestionar transferencias de archivos de red y similares, y <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> para gestionar el escaneado.</p>
+   </item>
+  </list>
+</section>
+
+
+</page>

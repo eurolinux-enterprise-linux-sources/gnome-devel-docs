@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="introduction" xml:lang="pt-BR">
+   <info>
+     <link type="guide" xref="index#intro"/>
+   
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Enrico Nicoletto</mal:name>
+      <mal:email>liverig@gmail.com</mal:email>
+      <mal:years>2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+         <title>O que estamos otimizando?</title>
+        <p>Quando otimizamos um software GNOME a primeira coisa que devemos lembrar é isto: não estamos tentando fazer o programa melhor, nós estamos tentando fazer a pessoa que está usando o computador mais feliz.</p>
+        <p>Melhores programas deixam as pessoas mais felizes, entretanto há alguns aperfeiçoamentos que irão deixá-los muito mais felizes que outros: capacidade de resposta, tempo de inicialização, comandos de fácil acesso e não ter o computador entrando na memória de troca (swap) a cada momento que mais de dois programas são abertos.</p>
+        <p>A otimização tradicional aborda conceitos como utilização de CPU, tamanho do código, o número de cliques do mouse e a utilização de memória de um programa. Esta segunda lista foi escolhida para corresponder-se com a primeira, entretanto há uma importante diferença: A pessoa que estiver utilizando o GNOME não liga para a segunda lista, mas eles se importam muito com a primeira. Quando estivermos otimizando programas GNOME nós iremos reduzir a utilização da CPU, o uso de memória e todas estas coisas, mas este é o meio para o fim, não o objetivo final. Nós estamos otimizando para pessoas.</p>
+
+	<section id="doing-the-optimization">        
+          <title>Realizando a otimização</title>
+        <p>A seção anterior omitiu um importante qualificador: Para otimizar alguma coisa, esta precisa ser mensurável. Você não pode mensurar a felicidade. Contudo, você pode medir o tempo de inicialização de um programa, deste modo você pode dizer se você o melhorou. Assim espero que a felicidade, então, o siga.</p>
+        <p>Otimização é o processo de medição, refinamento e de nova medição. Então a primeira coisa que você deve fazer é encontrar um meio de medir o que você está otimizando. O ideal é que esta medição seja um número único, por exemplo: o tempo gasto para executar uma tarefa. Esta é a sua avaliação de desempenho (benchmark), é a única forma de dizer se você está ganhando ou perdendo. Há uma grande diferença entre um programa que <em>deveria</em> ser rápido e um programa que <em>é</em> rápido.</p>
+        <p>Uma vez que você possua uma avaliação de desempenho básica, você precisará descobrir por que seu código não está funcionando tão bem quanto deveria. É tentador fazer isto por inspeção: apenas olhando o código-fonte e tentando encontrar algum ponto que parece necessitar melhoria. Desta maneira você invariavelmente estará errado. Utilizar um perfilador (profiler) para obter uma lista detalhada do que o seu aplicativo realmente faz é o único modo de se ter certeza.</p>
+        <p>Geralmente o problema é isolado a pequenas seções do código. Primeiro escolha o pior local e se concentre nisso. Uma vez terminado, execute novamente o perfilador (profiler) e repita. À medida que você prossegue os ganhos realizados a cada etapa vão se tornando cada vez menores, até que em certo ponto você terá que decidir se os resultados são bons o bastante. Se os seus esforços estão apenas extraindo 10% de melhorias, então você está bem além do ponto do qual deveria ter parado.</p>
+        <p>Não se esqueça do todo, da perspectiva global. Por exemplo, ao invés de simplesmente tentar acelerar um trecho do código, pergunte a você mesmo se ele precisa ser executado completamente. Ele pode ser combinado com outro trecho de código? Os resultados de cálculos anteriores podem ser salvos e re-utilizados? Ele sequer precisa ser otimizado se estiver em um local onde o usuário nunca irá percebê-lo. Pior ainda, o código já pode estar otimizado e agora estar realizando cálculos pesados para evitar fazê-los novamente mais tarde. O código não é executado isoladamente, quanto menos o processo de otimização.</p>
+	</section>
+
+	<section id="hints">
+        <title>Dicas</title>
+
+        <terms>
+          <item>
+            <title>Os fundamentos</title>
+            <list type="ordered">
+            <item>
+                <p>Execute novamente a sua avaliação de desempenho depois de cada mudança que você tenha realizado no código-fonte e mantenha um registro de tudo que você tenha alterado e como isto afeta a avaliação de desempenho. Isto permite que você desfaça erros e também o ajuda a não repetir erros.</p>
+            </item>
+            <item>
+                <p>Certifique-se de que seu código-fonte está correto e livre de erros antes de otimizá-lo. Verifique ainda se ele permanece correto e livre de erros após a otimização.</p>
+            </item>
+            <item>
+                <p>Otimize o nível mais alto antes de otimizar os detalhes.</p>
+            </item>
+            <item>
+                <p>Utilize o algoritmo correto. O exemplo clássico dos livros de texto é utilizar quick-sort ao invés de bubble-sort. Há muitos outros, alguns economizam memória, alguns poupam a CPU. Ademais, visualize quais atalhos você pode tomar: você pode fazer mais rápido que ordenação-rápida (quick-sort) se estiver preparado para fazer algumas concessões.</p>
+            </item>
+            <item>
+                <p>Otimização é um dilema. Armazenar em cache os resultados aceleram os cálculos, mas aumentam a utilização de memória. Salvar os dados em disco economiza a memória, mas custa tempo para carregar de volta a partir do disco.</p>
+            </item>
+            <item>
+                <p>Certifique-se de que você escolheu uma ampla variedade de entradas em relação a otimização. Se você não escolheu, é fácil terminar com uma parte do código cuidadosamente otimizada para um arquivo e não para outros.</p>
+            </item>
+            <item>
+                <p>Evite operações que custam muito: muitas leituras pequenas em disco. Utilizar muitas porções de memória acarretando que o swap de disco torne-se necessário; Evite qualquer coisa que escreva ou leia a partir do disco rígido desnecessariamente; A rede também é lenta; Evite também operações gráficas que precisem de uma resposta do servidor X.</p>
+	    </item>
+	    </list>
+        </item>
+        <item>
+            <title>Armadilhas para os descuidados</title>
+            <list type="ordered">
+            <item>
+                <p>Cuidado com os efeitos colaterais. Muitas vezes podem ocorrer interações estranhas entre diferentes trechos do código, uma aceleração em uma parte pode desacelerar outra parte.</p>
+            </item>
+            <item>
+                <p>Ao cronometrar o código, mesmo em um sistema silencioso, eventos fora do programa acrescentam ruído aos resultados de tempo. Faça a média a partir de múltiplas execuções. Se o código é bem pequeno, a resolução do temporizador também é um problema. Neste caso, meça o tempo que o computador leva para executar o código 100 ou 1000 vezes. Se o tempo que você está registrando é maior que alguns segundos, você deve estar correto.</p>
+            </item>
+            <item>
+                <p>É muito fácil ser iludido pelo perfilador (profiler). Existem histórias de pessoas otimizando o loop ocioso do sistema operacional porque é o local onde se é gasto todo o tempo! Não otimize código que não é relevante para o usuário.</p>
+            </item>
+            <item>
+                <p>Lembre-se dos recursos no servidor X. A utilização de memória do seu programa não inclui os pixmaps que estão armazenados no processo do servidor X, mas eles ainda estão utilizando memória. Utilize xrestop para verificar quais recursos seu programa está utilizando.</p>
+            </item>
+	    </list>
+        </item>
+	<item>
+          <title>Dicas de baixo nível</title>
+            <list type="ordered">
+            <item>
+                <p>Ao otimizar utilização de memória, seja cauteloso em relação a diferença entre o pico de utilização e o uso médio de memória. Se uma porção de memória está sempre alocada, isto geralmente é ruim. Caso seja apenas brevemente alocada, então isto pode ser bem aceitável. Ferramentas como massif utilizam o conceito de espaço-tempo, o produto da memória utilizada e a duração a qual ela foi alocada para isso.</p>
+            </item>
+            <item>
+                <p>Cronometre pedaços simples de código que apenas fazem coisas que você sabe que são necessárias, isto oferece um menor limite absoluto sobre o tempo que seu código irá ter. Por exemplo: ao otimizar um loop, cronometre o loop vazio. Caso isto ainda leve muito tempo, nenhum montante de pequenas otimizações irá ajudar e você precisará alterar sua análise de projeto. Certifique-se de que o compilador não piora seu loop vazio.</p>
+            </item>
+            <item>
+                <p>Mova o código para fora de loops internos. Um pedaço de código levemente mais complicado que é executado uma vez é mais rápido que um trecho de código simples executado mil vezes. Evite chamar códigos lentos com frequência.</p>
+            </item>
+            <item>
+                <p>Forneça ao compilador a maior quantidade de dicas possível. Utilize a palavra-chave "const". Para pequenas funções, que são frequentemente chamadas, utilize <code>G_INLINE_FUNC</code>. Consulte <code>G_GNUC_PURE</code>, <code>G_LIKELY</code> e as outras diversas macros do glib. Para garantir portabilidade, utilize as macros ao invés das palavras-chave específicas do gcc.</p>
+            </item>
+            <item>
+                <p>Não utilize linguagem Assembly. Ela não é portável e, enquanto pode ser rápido em um processador, nem sempre é garantido que será rápido em cada processador que suporte aquela arquitetura (ex: Athlon versus Pentium 4).</p>
+            </item>
+            <item>
+                <p>Não sobrescreva uma rotina já existente de uma biblioteca a menos que você tenha certeza que ela é desnecessariamente lenta. Muitas rotinas de biblioteca que fazem uso intensivo de CPU já foram otimizadas. Em contrapartida algumas rotinas de bibliotecas são lentas, especialmente as que realizam chamadas de sistema ao sistema operacional.</p>
+            </item>
+            <item>
+                <p>Reduza o número de bibliotecas as quais você se referencia. Quanto menos bibliotecas forem referenciadas, mais rápido o programa se iniciará. Isto é uma coisa difícil de se fazer no GNOME.</p>
+            </item>
+	    </list>
+        </item>
+	<item>
+          <title>Truques de alto nível</title>
+          <list type="ordered">
+            <item>
+                <p>Tire vantagem da concorrência. Isto não significa apenas utilizar múltiplos processadores, isto também significa aproveitar do tempo que o usuário gasta pensando sobre o que ele irá fazer depois, para executar alguns cálculos antecipadamente. Faça cálculos enquanto espera por dados a serem carregados para fora do disco. Tire proveito dos muitos recursos, use todos eles ao mesmo tempo.</p>
+            </item>
+            <item>
+                <p>Iluda. O usuário apenas precisa pensar que o computador é rápido, não importa se ele realmente é ou não. O importante é o tempo entre o comando e a resposta, não interessa se a resposta foi calculada antecipadamente, utilizado cache, ou será de fato trabalhada mais tarde em um tempo mais conveniente, contanto que o usuário obtenha o que espera.</p>
+            </item>
+            <item>
+                <p>Faça coisas no loop ocioso. Isto é mais fácil de programar do que utilizar múltiplas threads completas mas ainda assim resolvem as coisas fora da vista dos usuários. Entretanto seja cuidadoso, se você perder muito tempo no loop ocioso seu programa se tornará lento. Então regularmente ofereça o controle de volta ao loop principal.</p>
+            </item>
+            <item>
+                <p>Se tudo isso falhar, diga ao usuário que o código vai tornar-se lento e coloque uma barra de progresso. Eles não vão ficar tão felizes quanto se você tivesse apenas apresentado os resultados, porém pelo menos eles saberão que o programa não travou, eles podem ir buscar um copo de café.</p>
+            </item>
+	  </list>
+        </item>
+      </terms>
+    </section>
+  </page>

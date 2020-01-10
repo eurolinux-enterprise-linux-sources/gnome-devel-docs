@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="overview" id="overview-communication" xml:lang="ko">
+  <info>
+    <revision version="0.1" date="2012-02-19" status="stub"/>
+    <link type="guide" xref="index" group="communication"/>
+
+    <credit type="author copyright">
+      <name>Phil Bull</name>
+      <email its:translate="no">philbull@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <title type="link" role="trail">통신</title>
+    <desc>인스턴트 메시징, 네트워크, 소셜 미디어, 전자메일, 달력 기능 지원.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016.</mal:years>
+    </mal:credit>
+  </info>
+
+<title>통신 및 소셜 네트워킹</title>
+
+<list>
+ <item>
+  <p><em style="strong">인스턴트 메시징 서비스 및 소셜 네트워크 서비스에 연결</em></p>
+ </item>
+ <item>
+  <p><em style="strong">웹 서비스 또는 기타 클라이언트의 다중 프로토콜 연결 설정</em></p>
+ </item>
+ <item>
+  <p><em style="strong">전자메일, 온라인 연락처, 달력 서비스 처리</em></p>
+ </item>
+</list>
+
+<p>인스턴트 메신저, 소셜 미디어, 전자메일로 사용자가 친구 및 연락처에 연결하고 연락할 수 있게 하시죠. 그놈의 확장 통신 스택에는 복잡한 인스턴트 메시징 및 전자메일 프로토콜에 대한 고수준 추상 접근 방식을 제공합니다. 더 특별한 통신 방식이 필요하다면 저수준 API로 안성맞춤 접근 방식이 있습니다.</p>
+
+<media type="image" mime="image/png" src="test_comm1.png" width="65%">
+ <p>엠퍼시 인스턴트 메신저 클라이언트</p>
+</media>
+
+<section id="what">
+ <title>뭘 할 수 있을까요?</title>
+ 
+ <p><em style="strong">인스턴트 메시징 서비스에 연결하려면</em>, <em style="strong">텔레파시</em>를 활용하십시오. 사용자 인스턴트 메시징 연락처를 잘 다루는 강력한 프레임워크가 있으며, 다양한 메시징 프로토콜을 지원합니다. 텔레파시에서는 모든 계정 및 연결을 그놈과 잘 어우러진 D-Bus 세션 서비스로 처리합니다. 프로그램은 연락처로 통신하는 이 서비스에 연동할 수 있습니다.</p>
+  
+ <p>멀티 플레이어 게임이나, 데스크톱 영역 인스턴트 메시징 서비스에 붙이는 협업 편집기를 만들어보십시오. <em style="strong" xref="tech-telepathy">텔레파시 튜브</em> API에서는 통신 프로그램을 만들 때 활용하는 재버 같은 최신 인스턴트 메시징 프로토콜로 <em style="strong">임의 프로토콜을 터널링</em>할 수 있습니다.</p>
+
+ <p>사용자가 네트워크에 연결하는 대로 채팅, 프린터 찾기, 파일 공유, 음악 모음 공유를 할 수 있게 하십시오. <em style="strong" xref="tech-avahi">아바히</em>는 mDNS/DNS-SD 프로토콜 모음으로 로컬 네트워크에서 <em style="strong">서비스 검색</em> 수단을 제공합니다. Mac OS X 및 윈도우에 있는 유사한 기술과 호환됩니다.</p>
+
+ <p>사용자 로컬 및 온라인 주소록 및 달력을 <em style="strong" xref="tech-eds">에볼루션 데이터 서버</em>(EDS)로 처리하십시오. 계정 정보를 저장하고 처리하는 수단을 제공합니다...</p>
+
+ <p><em style="strong" xref="tech-folks">Folks</em>를 활용하면, 소셜 네트워크, 대화, 전자메일, 음성/영상 통신을 단일 API로 접근합니다.</p>
+ 
+</section>
+
+<!--<section id="samples">
+ <title>Code samples</title>
+ <list>
+  <item><p>Change the IM status</p></item>
+  <item><p>Fetch a contact from a Gmail address book</p></item>
+  <item><p>Scan the network for zeroconf printers</p></item>
+  <item><p>Something with Telepathy Tubes</p></item>
+ </list>
+</section>-->
+
+<section id="realworld">
+ <title>실제 예제</title>
+ 
+ <p>아래 보여드리는 예제에서 오픈 소스 프로젝트에 그놈 통신 기술을 활용한 여러가지 실제 프로그램을 볼 수 있습니다.</p>
+ <list>
+  <item>
+   <p><em style="strong">엠퍼시</em>는 다양한 메시지 전송 서비스를 지원하는 인스턴트 메신저입니다. 지원하는 모든 프로토콜로 연결, 존재 여부, 연락처 정보를 처리할 때 텔레파시를 활용합니다.</p>
+   <p>(<link href="https://wiki.gnome.org/Apps/Empathy">웹사이트</link> | <link href="https://wiki.gnome.org/Apps/Empathy?action=AttachFile&amp;do=get&amp;target=empathy.png">스크린샷</link> | <link href="https://git.gnome.org/browse/empathy/">엠퍼시 소스 코드</link> )</p>
+  </item>
+  
+  <item>
+   <p>텔레파시 튜브 지원을 활용하여, <em style="strong">그놈 게임</em> 모음에서 재버 프로토콜로 멀티 플레이어 게임 기능을 지원할 수 있었습니다.</p>
+   <p>(<link href="https://wiki.gnome.org/Projects/Games">웹사이트</link> | <link href="https://wiki.gnome.org/Apps/Chess?action=AttachFile&amp;do=get&amp;target=gnome-chess.png">스크린샷</link> | <link href="https://git.gnome.org/browse/gnome-chess/">GLChess 온라인 멀티 플레이어 코드</link> )</p>
+  </item>
+  
+  <item>
+   <p>아바히는 <em style="strong">리듬 박스</em> 음악 재생기에서 DAAP로 로컬 네트워크 사용자가 서로 공유한 음악 모음을 볼 수 있게 합니다.</p>
+   <p>(<link href="https://wiki.gnome.org/Apps/Rhythmbox">웹사이트</link> | <link href="https://wiki.gnome.org/Apps/Rhythmbox/Screenshots">스크린샷</link> | <link href="https://git.gnome.org/browse/rhythmbox/tree/plugins/daap">DAAP 코드</link> )</p>
+  </item>
+ </list>
+
+</section>
+
+</page>

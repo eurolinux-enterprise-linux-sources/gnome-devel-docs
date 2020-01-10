@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.vala" xml:lang="el">
+
+  <info>
+  <title type="text">Προβολέας εικόνων (Vala)</title>
+    <link type="guide" xref="vala#examples"/>
+
+    <desc>Μια λίγο περισσότερο από απλή εφαρμογή GTK+ "Hello world".</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-18" status="review"/>
+    <credit type="author">
+      <name>Έργο τεκμηρίωσης GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Philip Chimento</name>
+      <email its:translate="no">philip.chimento@gmail.com</email>
+    </credit>
+    <credit type="editor">
+     <name>Tiffany Antopolski</name>
+     <email its:translate="no">tiffany.antopolski@gmail.com</email>
+    </credit>
+  <credit type="editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2013</years>
+  </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Προβολή εικόνων</title>
+<synopsis>
+  <p>Σε αυτόν το μάθημα θα φτιάξετε μια εφαρμογή που ανοίγει και εμφανίζει ένα αρχείο εικόνας. Θα μάθετε:</p>
+  <list type="numbered">
+    <item><p>Πώς θα εγκαταστήσετε ένα βασικό έργο χρησιμοποιώντας το <link xref="getting-ready">Anjuta IDE</link>.</p></item>
+    <item><p>Πώς θα γράψετε μια <link href="http://developer.gnome.org/platform-overview/stable/gtk">εφαρμογή Gtk</link> στο Vala</p></item>
+    <item><p>Μερικές βασικές έννοιες του προγραμματισμού <link href="http://developer.gnome.org/gobject/stable/">GObject</link></p></item>
+
+  </list>
+  <p>Θα χρειαστείτε τα παρακάτω για να μπορέσετε να ακολουθήσετε αυτό το μάθημα:</p>
+  <list>
+    <item><p>Βασική γνώση της γλώσσας προγραμματισμού <link href="https://live.gnome.org/Vala/Tutorial">Vala</link>.</p></item>
+    <item><p>Ένα εγκατεστημένο αντίγραφο του <app>Anjuta</app>.</p></item>
+    <item><p>Ίσως βρείτε την αναφορά API <link href="http://valadoc.org/gtk+-3.0/">gtk+-3.0</link> χρήσιμη, αν και δεν είναι απαραίτητη η παρακολούθηση του μαθήματος.</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Δημιουργία έργου με το Anjuta</title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+      <p>Ξεκινήστε το <app>Anjuta</app> και πατήστε <gui>δημιουργία νέου έργου</gui> ή <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+      <p>Από την καρτέλα <gui>Vala</gui> επιλέξτε <gui>GTK+ (απλό)</gui>, πατήστε <gui>συνέχεια</gui> και συμπληρώστε τις λεπτομέρειές σας στην επόμενη σελίδα. Χρησιμοποιήστε το <file>image-viewer</file> ως όνομα του έργου και του καταλόγου.</p>
+   	</item>
+    <item>
+      <p>Βεβαιωθείτε ότι το <gui>χρήση του GtkBuilder για διεπαφή χρήστη</gui> είναι ασημείωτο επειδή θα δημιουργήσουμε την UI χειροκίνητα σε αυτό το μάθημα.</p>
+     <note><p>Θα μάθετε πώς να χρησιμοποιήσετε τον κατασκευαστή διεπαφής στο μάθημα <link xref="guitar-tuner.vala">ρυθμιστής κιθάρας</link>.</p></note>
+    </item>
+    <item>
+      <p>Πατήστε <gui>συνέχεια</gui>, έπειτα <gui>εφαρμογή</gui> και το έργο θα δημιουργηθεί για εσάς. Ανοίξτε το <file>src/image_viewer.vala</file> από τις καρτέλες <gui>έργο</gui> ή <gui>αρχείο</gui>. Θα δείτε αυτόν τον κώδικα:</p>
+      <code mime="text/x-csharp">
+using GLib;
+using Gtk;
+
+public class Main : Object
+{
+
+	public Main ()
+	{
+		Window window = new Window();
+		window.set_title ("Hello World");
+		window.show_all();
+		window.destroy.connect(on_destroy);
+	}
+
+	public void on_destroy (Widget window)
+	{
+		Gtk.main_quit();
+	}
+
+	static int main (string[] args)
+	{
+		Gtk.init (ref args);
+		var app = new Main ();
+
+		Gtk.main ();
+
+		return 0;
+	}
+}</code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Κατασκευάστε τον κώδικα για πρώτη φορά</title>
+  <p>Ο κώδικας φορτώνει ένα (κενό) παράθυρο από το αρχείο περιγραφής διεπαφής χρήστη και το εμφανίζει. Περισσότερες πληροφορίες υπάρχουν πιο κάτω· προσπεράστε αυτή τη λίστα αν καταλαβαίνετε τα βασικά:</p>
+
+  <list>
+    <item>
+      <p>Οι δύο γραμμές <code>using</code> στην κορυφή εισάγουν τους χώρους ονομάτων, έτσι ώστε να μην έχουμε να ονομαστούν ρητά.</p>
+    </item>
+    <item>
+      <p>Ο κατασκευαστής της κλάσης <code>Main</code> δημιουργεί ένα νέο (κενό) παράθυρο και συνδέει ένα <link href="https://live.gnome.org/Vala/SignalsAndCallbacks">σήμα</link> για έξοδο από την εφαρμογή, όταν το παράθυρο κλείσει.</p>
+      <p>Σύνδεση σημάτων είναι πώς καθορίζετε τι συμβαίνει όταν πατάτε ένα κουμπί, ή όταν συμβεί κάποιο άλλο συμβάν. Εδώ, καλείται η συνάρτηση <code>destroy</code> (και τερματίζει την εφαρμογή) όταν κλείνετε το παράθυρο.</p>
+    </item>
+    <item>
+      <p>Η συνάρτηση <code>static main</code> τρέχει από προεπιλογή όταν ξεκινάτε μια εφαρμογή Vala. Καλεί λίγες συναρτήσεις που δημιουργούν την κλάση <code>Main</code>, ρυθμίζουν και μετά τρέχουν την εφαρμογή. Η συνάρτηση <link href="http://valadoc.org/gtk+-3.0/Gtk.main.html"><code>Gtk.main</code></link> ξεκινά την GTK <link href="http://en.wikipedia.org/wiki/Event_loop">κύριος βρόχος</link>, που τρέχει τη διεπαφή χρήστη και ξεκινά ακρόαση των συμβάντων (όπως κλικ και πατήματα πλήκτρου).</p>
+    </item>
+  </list>
+
+  <p>Αυτός ο κώδικας είναι έτοιμος να χρησιμοποιηθεί, οπότε μπορείτε να τον μεταγλωττίσετε με κλικ <guiseq><gui>κατασκευή</gui><gui>κατασκευή έργου</gui></guiseq> (ή πιέζοντας <keyseq><key>Shift</key><key>F7</key></keyseq>).</p>
+  <p>Αλλαγή της <gui>ρύθμισης</gui> σε <gui>προεπιλογή</gui> και τότε πάτημα <gui>εκτέλεση</gui> για ρύθμιση του καταλόγου κατασκευής. Χρειάζεται να το κάνετε μόνο μια φορά, για την πρώτη κατασκευή.</p>
+</section>
+
+<section id="ui">
+  <title>Δημιουργία της διεπαφής χρήστη</title>
+  <p>Τώρα θα δώσουμε ζωή σε ένα άδειο παράθυρο. Το GTK οργανώνει τη διεπαφή χρήστη με το <link href="http://www.valadoc.org/gtk+-2.0/Gtk.Container.html"><code>Gtk.Container</code></link> που μπορούν να περιέχουν άλλα γραφικά στοιχεία και ακόμα άλλους περιέκτες. Εδώ θα χρησιμοποιήσουμε τον απλούστερο διαθέσιμο περιέκτη, ένα <link href="http://unstable.valadoc.org/gtk+-2.0/Gtk.Box.html"><code>Gtk.Box</code></link>.</p>
+
+<p>Προσθέστε τις επόμενες γραμμές στην κορυφή της κλάσης <code>Main</code>:</p>
+  <code mime="text/x-csharp">
+private Window window;
+private Image image;
+</code>
+
+<p>Τώρα αντικαταστήστε τον τρέχοντα κατασκευαστή με τον παρακάτω:</p>
+<code mime="text/x-csharp">
+
+public Main () {
+
+	window = new Window ();
+	window.set_title ("Image Viewer in Vala");
+
+	//Ρύθμιση της διεπαφής χρήστη
+	var box = new Box (Orientation.VERTICAL, 5);
+	var button = new Button.with_label ("Open image");
+	image = new Image ();
+
+	box.pack_start (image, true, true, 0);
+	box.pack_start (button, false, false, 0);
+	window.add (box);
+
+	// Εμφάνιση ανοικτού διαλόγου κατά το άνοιγμα αρχείου
+	button.clicked.connect (on_open_image);
+
+	window.show_all ();
+	window.destroy.connect (main_quit);
+}
+</code>
+  <steps>
+    <item>
+      <p>Οι πρώτες δύο γραμμές είναι μέρη του GUI που θα χρειαστούν πρόσβαση από περισσότερες από μία μεθόδους. Τις δηλώνουμε εδώ έτσι ώστε να είναι προσβάσιμες μέσα από την κλάση αντί μόνο από τη μέθοδο όπου δημιουργούνται.</p>
+    </item>
+    <item>
+      <p>Οι πρώτες γραμμές του κατασκευαστή δημιουργούν το άδειο παράθυρο. Οι επόμενες γραμμές δημιουργούν τα γραφικά στοιχεία που θέλουμε να χρησιμοποιήσουμε: ένα κουμπί για άνοιγμα μιας εικόνας, το ίδιο το γραφικό στοιχείο προβολής της εικόνας και το πλαίσιο που θα χρησιμοποιήσουμε ως περιέκτη.</p>
+    </item>
+    <item>
+      <p>Οι κλήσεις στο <link href="http://unstable.valadoc.org/gtk+-2.0/Gtk.Box.pack_start.html"><code>pack_start</code></link> προσθέτουν τα δύο γραφικά στοιχεία στο πλαίσιο και ορίζουν τη συμπεριφορά τους. Η εικόνα θα επεκταθεί σε κάθε διαθέσιμο χώρο ενώ το κουμπί θα είναι απλά τόσο μεγάλο όσο χρειάζεται. Θα παρατηρήσετε ότι δεν ορίζουμε ρητά μεγέθη στα γραφικά στοιχεία. Στο GTK αυτό συνήθως δεν χρειάζεται επειδή είναι πιο απλό να έχετε μια διάταξη που φαίνεται καλή με διαφορετικά μεγέθη παραθύρων. Στη συνέχεια, το πλαίσιο προστίθεται στο παράθυρο.</p>
+    </item>
+    <item>
+      <p>Χρειάζεται να ορίσουμε τι συμβαίνει όταν ο χρήστης πατά το κουμπί. Το GTK χρησιμοποιεί την έννοια των <em>σημάτων</em>.</p>
+      <p>Όταν το <link href="http://valadoc.org/gtk+-3.0/Gtk.Button.html">κουμπί</link> πατιέται προκαλεί το σήμα <link href="http://valadoc.org/gtk+-3.0/Gtk.Button.clicked.html"><code>clicked</code></link>, που μπορούμε να συνδέσουμε με κάποια ενέργεια (ορισμένη σε μια μέθοδο <link href="https://live.gnome.org/Vala/SignalsAndCallbacks">επανάκλησης</link>).</p>
+      <p>Αυτό γίνεται χρησιμοποιώντας τη μέθοδο <code>connect</code> του σήματος του κουμπιού <code>clicked</code>, που σε αυτήν την περίπτωση λέει στο GTK να καλέσει την μέθοδο επανάκλησης (αόριστη ακόμα) <code>on_image_open</code> όταν το κουμπί πατιέται. Θα ορίσουμε την <em>επανάκληση</em> στην επόμενη ενότητα.</p>
+      <p>Στην επανάκληση, χρειαζόμαστε να προσπελάσουμε τα γραφικά στοιχεία <code>window</code> και <code>image</code>, γι' αυτό τα ορίζουμε ως ιδιωτικά μέλη στην κορυφή των κλάσεων μας.</p>
+    </item>
+    <item>
+      <p>Η τελευταία κλήση <code>connect</code> βεβαιώνεται ότι η εφαρμογή εξέρχεται όταν το παράθυρο κλείνει. Ο δημιουργούμενος κώδικας από το Anjuta κάλεσε μια μέθοδο επανάκλησης <code>on_destroy</code> που κάλεσε <link href="http://www.valadoc.org/gtk+-2.0/Gtk.main_quit.html"><code>Gtk.main_quit</code></link>, αλλά η σύνδεση του σήματος μας στο <code>main_quit</code> άμεσα είναι ευκολότερη. Μπορείτε να διαγράψετε τη μέθοδο <code>on_destroy</code>.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="image">
+  <title>Εμφάνιση της εικόνας</title>
+  <p>Θα ορίσουμε τώρα τον χειριστή σήματος για το σήμα <code>clicked</code> για το κουμπί που αναφέραμε πριν. Προσθέστε αυτόν τον κώδικα μετά τον κατασκευαστή:</p>
+  <code mime="text/x-csharp">
+public void on_open_image (Button self) {
+	var filter = new FileFilter ();
+	var dialog = new FileChooserDialog ("Open image",
+	                                    window,
+	                                    FileChooserAction.OPEN,
+	                                    Stock.OK,     ResponseType.ACCEPT,
+	                                    Stock.CANCEL, ResponseType.CANCEL);
+	filter.add_pixbuf_formats ();
+	dialog.add_filter (filter);
+
+	switch (dialog.run ())
+	{
+		case ResponseType.ACCEPT:
+			var filename = dialog.get_filename ();
+			image.set_from_file (filename);
+			break;
+		default:
+			break;
+	}
+	dialog.destroy ();
+}
+</code>
+  <p>Αυτό είναι λίγο πιο περίπλοκο, γιαυτό ας το χωρίσουμε:</p>
+  <note><p>Ένας χειριστής σήματος είναι ένας τύπος της μεθόδου επανάκλησης που καλείται όταν ένα σήμα εκπέμπεται. Εδώ οι όροι χρησιμοποιούνται εναλλακτικά.</p></note>
+  <list>
+    <item>
+      <p>Το πρώτο όρισμα της μεθόδου επανάκλησης είναι πάντοτε το γραφικό στοιχείο που έστειλε το σήμα. Μερικές φορές άλλα ορίσματα που συνδέονται με το σήμα έρχονται μετά από αυτό, αλλά <em>πατημένο</em> δεν έχει κανένα.</p>
+      <p>Σε αυτήν την περίπτωση το <code>button</code> έστειλε το σήμα <code>clicked</code>, που συνδέεται με τη μέθοδο επανάκλησης <code>on_open_image</code>:</p>
+<code mime="text/x-csharp">
+        button.clicked.connect (on_open_image);
+</code>
+
+  <p>Η μέθοδος <code>on_open_image</code> παίρνει το κουμπί που εξέπεμψε το σήμα ως όρισμα:</p>
+ <code mime="text/x-csharp">
+        public void on_open_image (Button self)
+</code>
+    </item>
+    <item>
+      <p>Η επόμενη ενδιαφέρουσα γραμμή είναι όταν ο διάλογος επιλογής του αρχείου δημιουργείται. Το <link href="http://www.valadoc.org/gtk+-3.0/Gtk.FileChooserDialog.html"><code>FileChooserDialog</code></link> του κατασκευαστή παίρνει τον τίτλο του διαλόγου, το ανιόν παράθυρο του διαλόγου και πολλές επιλογές όπως ο αριθμός των κουμπιών και οι αντίστοιχες τιμές τους.</p>
+      <p>Σημειώστε όταν χρησιμοποιούμε τα ονόματα κουμπιών <link href="http://unstable.valadoc.org/gtk+-3.0/Gtk.Stock.html"><em>αποθέματος</em></link> από το Gtk, αντί να γράψουμε χειροκίνητα "ακύρωση" ή "άνοιγμα". Το πλεονέκτημα της χρήσης των ονομάτων αποθέματος είναι ότι οι ετικέτες των κουμπιών θα έχουν ήδη μεταφραστεί στη γλώσσα του χρήστη.</p>
+    </item>
+    <item>
+      <p>Οι επόμενες δύο γραμμές περιορίζουν το διάλογο <gui>άνοιγμα</gui> να εμφανίζει μόνο αρχεία που μπορούν να ανοιχθούν από το <em>GtkImage</em>. Το GtkImage είναι ένα γραφικό στοιχείο που εμφανίζει μια εικόνα. Ένα αντικείμενο φίλτρου δημιουργείται πρώτα· έπειτα προσθέτουμε όλα τα είδη των αρχείων που υποστηρίζονται από <link href="http://www.valadoc.org/gdk-pixbuf-2.0/Gdk.Pixbuf.html"><code>Gdk.Pixbuf</code></link>(το οποίο περιλαμβάνει τις περισσότερες μορφές εικόνων όπως PNG και JPEG) στο φίλτρο. Τέλος, ορίζουμε αυτό το φίλτρο να είναι το φίλτρο του διαλόγου <gui>άνοιγμα</gui>.</p>
+    </item>
+    <item>
+      <p>Το <link href="http://www.valadoc.org/gtk+-3.0/Gtk.Dialog.run.html"><code>dialog.run</code></link> εμφανίζει το διάλογο <gui>άνοιγμα</gui>. Ο διάλογος θα περιμένει να επιλέξει ο χρήστης μια εικόνα· όταν γίνει το <code>dialog.run</code> θα επιστρέψει την τιμή <link href="http://www.valadoc.org/gtk+-3.0/Gtk.ResponseType.html">ResponseType</link> <code>ResponseType.ACCEPT</code> (θα μπορούσε να επιστρέψει το <code>ResponseType.CANCEL</code> εάν ο χρήστης πατούσε <gui>ακύρωση</gui>). Η πρόταση <code>switch</code> το ελέγχει.</p>
+    </item>
+    <item>
+      <p>Αν υποθέσουμε ότι ο χρήστης πάτησε το <gui>άνοιγμα</gui>, οι επόμενες γραμμές παίρνουν το όνομα του αρχείου της επιλεγμένης εικόνας από τον χρήστη και λέει στο γραφικό στοιχείο <code>GtkImage</code> να φορτώσει και να εμφανίσει την επιλεγμένη εικόνα.</p>
+    </item>
+    <item>
+      <p>Στην τελευταία γραμμή αυτής της μεθόδου, καταστρέφουμε τον διάλογο <gui>άνοιγμα</gui> γιατί δεν τον χρειαζόμαστε πια.</p>
+      <p>Η αυτόματη καταστροφή κρύβει το διάλογο.</p>
+    </item>
+  </list>
+</section>
+
+<section id="run">
+  <title>Κατασκευή και εκτέλεση της εφαρμογής</title>
+  <p>Όλος ο κώδικας πρέπει να είναι έτοιμος τώρα. Κλικ <guiseq><gui>κατασκευή</gui><gui>κατασκευή έργου</gui></guiseq> για ανακατασκευή των πάντων και έπειτα <guiseq><gui>τρέξιμο</gui><gui>εκτέλεση</gui></guiseq> για έναρξη της εφαρμογής.</p>
+  <p>Εάν δεν το έχετε ήδη κάνει, επιλέξτε την εφαρμογή <file>src/image-viewer</file> στον διάλογο που εμφανίζεται. Τελικά, πατήστε <gui>τρέξιμο</gui> και απολαύστε το!</p>
+</section>
+
+<section id="impl">
+  <title>Υλοποίηση αναφοράς</title>
+  <p>Αν αντιμετωπίσετε πρόβλημα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="image-viewer/image-viewer.vala">κώδικα αναφοράς</link>.</p>
+</section>
+
+<section id="next">
+  <title>Επόμενα βήματα</title>
+  <p>Εδώ είναι κάποιες ιδέες για το πώς μπορείτε να επεκτείνετε αυτή την απλή παρουσίαση:</p>
+  <list>
+  <item><p>Εγκαταστήστε την έτσι ώστε όταν το παράθυρο ανοίγει να είναι συγκεκριμένου μεγέθους για εκκίνηση. Για παράδειγμα, 200 Χ 200 εικονοστοιχεία.</p></item>
+   <item>
+     <p>Βάλτε τον χρήστη να επιλέξει ένα κατάλογο αντί για αρχείο και δώστε ελέγχους να γυρίζουν όλες τις εικόνες σε έναν κατάλογο.</p>
+   </item>
+   <item>
+     <p>Εφαρμόστε τυχαία φίλτρα και εφέ στην εικόνα όταν αυτή φορτωθεί και επιτρέψτε στον χρήστη να αποθηκεύσει την επεξεργασμένη εικόνα.</p>
+     <p>Το <link href="http://www.gegl.org/api.html">GEGL</link> παρέχει ισχυρές δυνατότητες επεξεργασίας εικόνας.</p>
+   </item>
+   <item>
+     <p>Επιτρέψτε στον χρήστη να φορτώνει εικόνες από μερισμό δικτύου, από σαρωτές και από άλλες περίπλοκες πηγές.</p>
+     <p>Μπορείτε να χρησιμοποιήσετε το <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> για χειρισμό μεταφορών αρχείων δικτύου και τα παρόμοια, και τη <link href="http://library.gnome.org/devel/gnome-scan/unstable/">Σάρωση του GNOME</link> για χειρισμό σάρωσης.</p>
+   </item>
+  </list>
+</section>
+
+</page>

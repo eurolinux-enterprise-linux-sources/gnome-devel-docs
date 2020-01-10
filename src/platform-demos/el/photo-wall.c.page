@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="photo-wall.c" xml:lang="el">
+  <info>
+    <title type="text">Φωτογραφικός τοίχος (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>Ένας προβολέας εικόνων σε Clutter</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-22" status="review"/>
+    <credit type="author">
+      <name>Chris Kühl</name>
+      <email its:translate="no">chrisk@openismus.com</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Φωτογραφικός τοίχος</title>
+
+<synopsis>
+  <p>Για αυτό το παράδειγμα θα κατασκευάσουμε έναν απλό προβολέα εικόνων χρησιμοποιώντας το Clutter. Θα μάθετε:</p>
+  <list>
+    <item><p>Αυξομείωση και τοποθέτηση του <code>ClutterActor</code>s</p></item>
+    <item><p>Πώς να τοποθετήσετε μια εικόνα σε ένα <code>ClutterActor</code></p></item>
+    <item><p>Πώς να κάνετε απλές μεταβάσεις χρησιμοποιώντας το σκελετό κίνησης του Clutter</p></item>
+    <item><p>Πώς να κάνετε το <code>ClutterActor</code>s να απαντήσει στα συμβάντα του ποντικιού</p></item>
+    <item><p>Πώς να πάρετε ονόματα αρχείου από έναν κατάλογο</p></item>
+  </list>
+</synopsis>
+
+<section id="intro">
+  <title>Εισαγωγή</title>
+  <p>Το Clutter είναι μια βιβλιοθήκη για δημιουργία δυναμικών διεπαφών χρήστη χρησιμοποιώντας το OpenGL για επιτάχυνση υλικού. Αυτό το παράδειγμα δείχνει ένα μικρό, αλλά κεντρικό, τμήμα της Clutter για δημιουργία ενός απλού αλλά ελκυστικού προγράμματος προβολής εικόνας.</p>
+  <p>Για να μας βοηθήσετε να φτάσουμε τον στόχο μας θα χρησιμοποιήσουμε λίγα άλλα κοινά κομμάτια του GLib επίσης. Το πιο σημαντικό, θα χρησιμοποιήσουμε ένα <code>GPtrArray</code>, έναν δυναμικό πίνακα δεικτών, για να κρατήσουμε τα ονόματα διαδρομής αρχείου. Θα χρησιμοποιήσουμε επίσης <code>GDir</code>, ένα βοήθημα για εργασία με καταλόγους, για προσπέλαση του καταλόγου της εικόνας μας και να συγκεντρώσουμε τις διαδρομές του αρχείου.</p>
+</section>
+
+<section id="anjuta">
+  <title>Δημιουργία έργου με το Anjuta</title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+    <p>Ξεκινήστε το Anjuta και πατήστε <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+    <p>Επιλέξτε <gui>GTK+ (απλό)</gui> από την καρτέλα <gui>C</gui>, πατήστε <gui>συνέχεια</gui> και συμπληρώστε τις λεπτομέρειές σας στις επόμενες λίγες σελίδες. Χρησιμοποιήστε το <file>photo-wall</file> ως όνομα του έργου και του καταλόγου.</p>
+   	</item>
+    <item>
+    <p>Σιγουρευτείτε ότι η <gui>χρήση του GtkBuilder για διεπαφή χρήστη</gui> είναι ανενεργή επειδή θα φτιάξουμε το UI χειροκίνητα σε αυτό το μάθημα. Σημειώστε το μάθημα <link xref="guitar-tuner.c">ρυθμιστής κιθάρας</link> χρησιμοποιώντας τον κατασκευαστή διεπαφής.</p>
+    </item>
+    <item>
+    <p>Ενεργοποιήστε <gui>ρύθμιση εξωτερικών πακέτων</gui>. Στην επόμενη σελίδα, επιλέξτε <em>clutter-1.0</em> από τη λίστα για να συμπεριλάβετε τη βιβλιοθήκη Clutter στο έργο σας.</p>
+    </item>
+    <item>
+    <p>Πατήστε <gui>εφαρμογή</gui> και το έργο θα δημιουργηθεί για σας. Ανοίξτε το <file>src/main.c</file> από τις καρτέλες <gui>έργο</gui> ή <gui>αρχείο</gui>. Θα πρέπει να δείτε κάποιο κώδικα που ξεκινάει με τις γραμμές:</p>
+    <code mime="text/x-csrc">
+#include &lt;config.h&gt;
+#include &lt;gtk/gtk.h&gt;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="look">
+  <title>Μια ματιά στο φωτογραφικό πίνακα</title>
+  <p>Ο προβολέας εικόνας μας παρουσιάζει τον χρήστη με έναν τοίχο εικόνων.</p>
+  <media type="image" mime="image/png" src="media/photo-wall.png"/>
+  <p>Όταν κάνουμε κλικ σε μια εικόνα, κινείται για να γεμίσει την περιοχή προβολής. Όταν κάνουμε κλικ σε μια εστιασμένη εικόνα επιστρέφεται στην αρχική της θέση χρησιμοποιώντας μια κίνηση με την ίδια διάρκεια των 500 ms.</p>
+  <media type="image" mime="image/png" src="media/photo-wall-focused.png"/>
+</section>
+
+<section id="setup">
+  <title>Αρχική ρύθμιση</title>
+  <p>Το παρακάτω τμήμα κώδικα περιέχει πολλούς ορισμούς και μεταβλητές που θα χρησιμοποιήσουμε στις παρακάτω ενότητες. Χρησιμοποιήστε αυτό ως αναφορά για άλλες ενότητες. Αντιγράψτε αυτόν τον κώδικα στην αρχή του <file>src/main.c</file>:</p>
+<code mime="text/x-csrc" style="numbered">
+#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
+#include &lt;clutter/clutter.h&gt;
+
+#define STAGE_WIDTH  800
+#define STAGE_HEIGHT 600
+
+#define THUMBNAIL_SIZE 200
+#define ROW_COUNT (STAGE_HEIGHT / THUMBNAIL_SIZE)
+#define COL_COUNT (STAGE_WIDTH  / THUMBNAIL_SIZE)
+#define THUMBNAIL_COUNT (ROW_COUNT * COL_COUNT)
+
+#define ANIMATION_DURATION_MS 500
+
+#define IMAGE_DIR_PATH "./berlin_images/"
+
+static GPtrArray *img_paths·
+
+static ClutterPoint unfocused_pos·
+
+</code>
+</section>
+
+<section id="code">
+  <title>Μετάβαση στον κώδικα</title>
+  <p>Θα ξεκινήσουμε ρίχνοντας μια ματιά στη συνάρτηση <code>main()</code> ως σύνολο. Έπειτα θα συζητήσουμε τις άλλες ενότητες κώδικα λεπτομερώς. Αλλάξτε το <file>src/main.c</file> για να περιέχει αυτήν την συνάρτηση <code>main()</code>. Μπορείτε να διαγράψετε τη συνάρτηση <code>create_window()</code> καθώς δεν τη χρειαζόμαστε σε αυτό το παράδειγμα.</p>
+  <code mime="text/x-csrc" style="numbered">
+int
+main(int argc, char *argv[])
+{
+    ClutterColor stage_color = { 16, 16, 16, 255 }·
+    ClutterActor *stage = NULL·
+
+    if (clutter_init (&amp;argc, &amp;argv) != CLUTTER_INIT_SUCCESS)
+        return 1·
+
+    stage = clutter_stage_new()·
+    clutter_actor_set_size(stage, STAGE_WIDTH, STAGE_HEIGHT)·
+    clutter_actor_set_background_color(stage, &amp;stage_color)·
+    clutter_stage_set_title(CLUTTER_STAGE (stage), "Photo Wall")·
+    g_signal_connect(stage, "destroy", G_CALLBACK(clutter_main_quit), NULL)·
+
+    load_image_path_names()·
+
+    guint row = 0·
+    guint col = 0·
+    for(row=0· row &lt; ROW_COUNT· ++row)
+    {
+        for(col=0· col &lt; COL_COUNT· ++col)
+        {
+            const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col)·
+            GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL)·
+            ClutterContent *image = clutter_image_new ()·
+            ClutterActor *actor = clutter_actor_new ()·
+
+            if (pixbuf != NULL)
+            {
+                clutter_image_set_data(CLUTTER_IMAGE(image),
+                                       gdk_pixbuf_get_pixels(pixbuf),
+                                       gdk_pixbuf_get_has_alpha(pixbuf)
+                                           ; COGL_PIXEL_FORMAT_RGBA_8888
+                                           : COGL_PIXEL_FORMAT_RGB_888,
+                                       gdk_pixbuf_get_width(pixbuf),
+                                       gdk_pixbuf_get_height(pixbuf),
+                                       gdk_pixbuf_get_rowstride(pixbuf),
+                                       NULL)·
+            }
+
+            clutter_actor_set_content(actor, image)·
+            g_object_unref(image)·
+            g_object_unref(pixbuf)·
+
+            initialize_actor(actor, row, col)·
+            clutter_actor_add_child(stage, actor)·
+        }
+    }
+
+    /* Show the stage. */
+    clutter_actor_show(stage)·
+
+    /* Start the clutter main loop. */
+    clutter_main()·
+
+    g_ptr_array_unref(img_paths)·
+
+    return 0·
+}</code>
+  <list>
+    <item><p>Γραμμή 4: <code>ClutterColor</code> ορίστηκε ορίζοντας τις τιμές κόκκινου, πράσινου, γαλάζιου και διαφάνειας (άλφα). Το εύρος τιμών από 0-255. Για διαφάνεια τιμή 255 είναι αδιαφανής.</p></item>
+    <item><p>Γραμμή 7: Πρέπει να αρχικοποιήσετε το Clutter. Εάν το ξεχάσετε, θα πάρετε πολύ περίεργα σφάλματα. Προειδοποιηθήκατε.</p></item>
+    <item><p>Γραμμές 10-14: Εδώ δημιουργούμε ένα νέο <code>ClutterStage</code>. Έπειτα ορίζουμε το μέγεθος χρησιμοποιώντας τους ορισμούς από την προηγούμενη ενότητα και τη διεύθυνση του <code>ClutterColor</code> που μόλις ορίσαμε.</p>
+      <note><p>Ένα <code>ClutterStage</code> είναι ανώτατου επιπέδου <code>ClutterActor</code> στο οποίο τοποθετούνται άλλοι <code>ClutterActor</code>.</p></note>
+</item>
+    <item><p>Γραμμή 16: Εδώ καλούμε τη συνάρτηση μας για λήψη των διαδρομών αρχείου εικόνας. Θα το δούμε σε λίγο.</p></item>
+    <item><p>Γραμμές 18-49: Εδώ ρυθμίζουμε το <code>ClutterActor</code>s, φόρτωση των εικόνων και τοποθέτησή τους στο σημείο τους στον τοίχο εικόνας. Θα το δούμε λεπτομερώς στην επόμενη ενότητα.</p></item>
+    <item><p>Γραμμή 52: εμφάνιση του σταδίου και <em>όλων των θυγατρικών του</em>, που σημαίνει των εικόνων μας.</p></item>
+    <item><p>Γραμμή 55: Έναρξη του κύριου βρόχου του Clutter.</p></item>
+  </list>
+</section>
+
+<section id="actors">
+  <title>Εγκατάσταση των δραστών εικόνας</title>
+ <note><p>Στο Clutter, ένας δράστης είναι το πιο βασικό οπτικό στοιχείο. Βασικά, οτιδήποτε βλέπετε είναι ένας δράστης.</p></note>
+<p>Σε αυτήν την ενότητα, πρόκειται να κοιτάξουμε στενότερα το χρησιμοποιούμενο βρόχο για εγκατάσταση του <code>ClutterActor</code>s που θα εμφανίσει τις εικόνες μας.</p>
+  <code mime="text/x-csrc" style="numbered">
+guint row = 0·
+guint col = 0·
+for(row=0· row &lt; ROW_COUNT· ++row)
+{
+    for(col=0· col &lt; COL_COUNT· ++col)
+    {
+        const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col)·
+        GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL)·
+        ClutterContent *image = clutter_image_new ()·
+        ClutterActor *actor = clutter_actor_new ()·
+
+        if (pixbuf != NULL)
+        {
+            clutter_image_set_data(CLUTTER_IMAGE(image),
+                                   gdk_pixbuf_get_pixels(pixbuf),
+                                   gdk_pixbuf_get_has_alpha(pixbuf)
+                                       ; COGL_PIXEL_FORMAT_RGBA_8888
+                                       : COGL_PIXEL_FORMAT_RGB_888,
+                                   gdk_pixbuf_get_width(pixbuf),
+                                   gdk_pixbuf_get_height(pixbuf),
+                                   gdk_pixbuf_get_rowstride(pixbuf),
+                                   NULL)·
+        }
+
+        clutter_actor_set_content(actor, image)·
+        g_object_unref(image)·
+        g_object_unref(pixbuf)·
+
+        initialize_actor(actor, row, col)·
+        clutter_actor_add_child(stage, actor)·
+    }
+}
+
+</code>
+<list>
+  <item><p>Γραμμή 7: Εδώ θέλουμε να πάρουμε τη διαδρομή στη θέση <var>n</var> στο <code>GSList</code> που κρατά τα ονόματα διαδρομής εικόνας. Η <var>n</var>στη θέση υπολογίζεται βασισμένη στη <code>row</code> και <code>col</code>.</p>
+  </item>
+  <item><p>Γραμμές 8-23: Εδώ δημιουργείται στην πραγματικότητα ο <code>ClutterActor</code> και τοποθετείται η εικόνα στον δράστη. Το πρώτο όρισμα είναι η διαδρομή προσπέλασης μέσα από τον κόμβο <code>GSList</code>. Το δεύτερο όρισμα είναι για αναφορά σφάλματος, αλλά το αγνοούμε για λόγους συντομίας.</p>
+  </item>
+  <item><p>Γραμμή 47: Αυτή προσθέτει τον <code>ClutterActor</code> στη σκηνή, που είναι ένας περιέκτης. Επίσης υποθέτει ιδιοκτησία του <code>ClutterActor</code> που είναι κάτι που θα θελήσετε να κοιτάξετε καθώς πηγαίνετε βαθύτερα στην ανάπτυξη του GNOME. Δείτε την <link href="http://library.gnome.org/devel/gobject/stable/gobject-memory.html"><code>GObject</code>τεκμηρίωση</link> για τις φρικτές λεπτομέρειες.</p>
+  </item>
+</list>
+</section>
+
+<section id="load">
+  <title>Φόρτωση των εικόνων</title>
+  <p>Ας κάνουμε μια σύντομη διακοπή από το Clutter για να δούμε πώς μπορούμε να πάρουμε τα ονόματα αρχείου από τον κατάλογό μας των εικόνων.</p>
+  <code mime="text/x-csrc" style="numbered">
+static void
+load_image_path_names()
+{
+    /* Επιβεβαιώνουμε ότι μπορούμε να προσπελάσουμε τον κατάλογο. */
+    GError *error = NULL·
+    GDir *dir = g_dir_open(IMAGE_DIR_PATH, 0, &amp;error)·
+    if(error)
+    {
+        g_warning("g_dir_open() failed with error: %s\n", error-&gt;message)·
+        g_clear_error(&amp;error)·
+        return·
+    }
+
+    img_paths = g_ptr_array_new_with_free_func (g_free)·
+
+    const gchar *filename = g_dir_read_name(dir)·
+    while(filename)
+    {
+        if(g_str_has_suffix(filename, ".jpg") || g_str_has_suffix(filename, ".png"))
+        {
+            gchar *path = g_build_filename(IMAGE_DIR_PATH, filename, NULL)·
+            g_ptr_array_add (img_paths, path)·
+        }
+        filename = g_dir_read_name(dir)·
+    }
+}</code>
+  <list>
+    <item><p>Γραμμές 5 και 12: Αυτό ανοίγει τον κατάλογό μας ή, εάν συμβεί σφάλμα, επιστρέφει μετά την εκτύπωση ένα μήνυμα σφάλματος.</p></item>
+    <item><p>Γραμμές 16-25: Η πρώτη γραμμή παίρνει ένα άλλο όνομα αρχείου από το <code>GDir</code> που ανοίξαμε πιο νωρίς. Εάν υπήρχε ένα αρχείο εικόνας (που ελέγχουμε κοιτώντας την επέκτασή του, ".png" ή ".jpg") στον κατάλογο συνεχίζουμε να προτάσσουμε τη διαδρομή καταλόγου εικόνας στο όνομα αρχείου και το προτάσσουμε στη λίστα που εγκαταστήσαμε νωρίτερα. Τελευταία προσπαθούμε να πάρουμε το επόμενο όνομα διαδρομής και ξαναεισάγουμε τον βρόχο εάν βρεθεί κάποιο άλλο αρχείο.</p></item>
+  </list>
+</section>
+
+<section id="actors2">
+  <title>Εγκατάσταση των δραστών</title>
+  <p>Ας ρίξουμε μια ματιά τώρα στο μέγεθος και την τοποθέτηση του <code>ClutterActor</code> και επίσης να ετοιμάσουμε το <code>ClutterActor</code> για αλληλεπίδραση χρήστη.</p>
+  <code mime="text/x-csrc" style="numbered">
+/* Αυτή η συνάρτηση χειρίζεται την ρύθμιση και τοποθέτηση των ορθογωνίων. */
+static void
+initialize_actor(ClutterActor *actor, guint row, guint col)
+{
+    clutter_actor_set_size(actor, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+    clutter_actor_set_position(actor, col * THUMBNAIL_SIZE, row * THUMBNAIL_SIZE);
+    clutter_actor_set_reactive(actor, TRUE);
+
+    g_signal_connect(actor,
+                     "button-press-event",
+                     G_CALLBACK(actor_clicked_cb),
+                     NULL);
+}</code>
+  <list>
+    <item>
+      <p>Γραμμή 7: ρύθμιση αντίδρασης δράστη σημαίνει ότι αντιδρά σε συμβάντα, τέτοια όπως <code>button-press-event</code> στην περίπτωσή μας. Για φωτογραφικό τοίχο, όλοι οι <code>ClutterActor</code> στον τοίχο θα πρέπει αρχικά να είναι αντιδραστικοί.</p>
+    </item>
+    <item>
+      <p>Γραμμή 9-12: Τώρα συνδέουμε το <code>button-press-event</code> στην επανάκληση <code>actor_clicked_cb</code> που θα δούμε στη συνέχεια.</p>
+    </item>
+  </list>
+  <p>Σε αυτό το σημείο πήραμε έναν τοίχο εικόνων που είναι έτοιμες να προβληθούν.</p>
+</section>
+
+<section id="click">
+  <title>Αντίδραση στα πατήματα</title>
+  <p>
+
+  </p>
+  <code mime="text/x-csrc" style="numbered">
+static gboolean
+actor_clicked_cb(ClutterActor *actor,
+                 ClutterEvent *event,
+                 gpointer      user_data)
+{
+    /* Σημαία για να κρατήσουμε ίχνος της κατάστασής μας. */
+    static gboolean is_focused = FALSE·
+    ClutterActorIter iter·
+    ClutterActor *child·
+
+    /* Επαναφορά της κατάστασης εστίασης σε όλες τις εικόνες */
+    clutter_actor_iter_init (&amp;iter, clutter_actor_get_parent(actor))·
+    while (clutter_actor_iter_next(&amp;iter, &amp;child))
+      clutter_actor_set_reactive(child, is_focused)·
+
+    clutter_actor_save_easing_state(actor)·
+    clutter_actor_set_easing_duration(actor, ANIMATION_DURATION_MS)·
+
+    if(is_focused)
+    {
+        /* Επαναφορά της παλιάς τοποθεσίας και μεγέθους. */
+        clutter_actor_set_position(actor, unfocused_pos.x, unfocused_pos.y)·
+        clutter_actor_set_size(actor, THUMBNAIL_SIZE, THUMBNAIL_SIZE)·
+    }
+    else
+    {
+        /* Αποθήκευση της τρέχουσας τοποθεσίας πριν την κίνηση. */
+        clutter_actor_get_position(actor, &amp;unfocused_pos.x, &amp;unfocused_pos.y)·
+        /* Μόνο η τρέχουσα εστιασμένη εικόνα πρέπει να δεχτεί συμβάντα. */
+        clutter_actor_set_reactive(actor, TRUE)·
+
+        /* Βάλτε την εστιασμένη εικόνα στην κορυφή. */
+        clutter_actor_set_child_above_sibling(clutter_actor_get_parent(actor), actor, NULL)·
+
+        clutter_actor_set_position(actor, (STAGE_WIDTH - STAGE_HEIGHT) / 2.0, 0)·
+        clutter_actor_set_size(actor, STAGE_HEIGHT, STAGE_HEIGHT)·
+    }
+
+    clutter_actor_restore_easing_state(actor)·
+
+    /* Εναλλαγή της σημαίας μας. */
+    is_focused = !is_focused·
+
+    return TRUE·
+}</code>
+  <list>
+    <item><p>Γραμμές 1-4: Πρέπει να βεβαιωθούμε ότι η συνάρτηση επανάκλησής μας ταιριάζει με την απαιτούμενη υπογραφή για το σήμα <code>button_clicked_event</code>. Για το παράδειγμά μας, θα χρησιμοποιήσουμε μόνο το πρώτο όρισμα, το <code>ClutterActor</code> που στην πραγματικότητα πατήθηκε.</p>
+<note>
+  <p>Λίγες λέξεις για τα ορίσματα που δεν χρησιμοποιούμε σε αυτό το παράδειγμα. Ο <code>ClutterEvent</code> είναι διαφορετικός ανάλογα με τι συμβάν επεξεργάζεται. Για παράδειγμα, ένα συμβάν πλήκτρου παράγει ένα <code>ClutterKeyEvent</code> από το οποίο μπορείτε να πάρετε το πλήκτρο που πατήθηκε μεταξύ άλλων πληροφοριών. Για τα συμβάντα κλικ του ποντικιού παίρνετε <code>ClutterButtonEvent</code> από το οποίο μπορείτε να πάρετε τις τιμές <code>x</code> και <code>y</code>. Δείτε την τεκμηρίωση του Clutter για άλλους τύπους <code>ClutterEvent</code>.</p>
+  <p>Ο <code>user_data</code> είναι τι χρησιμοποιεί κάποιος για να περάσει δεδομένα στη συνάρτηση. Ένας δείκτης σε οποιοδήποτε τύπο δεδομένων μπορεί να περαστεί. Εάν χρειαζόσαστε πολλαπλά δεδομένα να περαστούν στην επανάκληση, μπορείτε να τοποθετήσετε τα δεδομένα σε μια δομή και να περάσετε τη διεύθυνσή του.</p>
+</note></item>
+    <item><p>Γραμμή 7: Προδιατάσσουμε μια στατική σημαία για εντοπισμό της κατάστασης στην οποία είμαστε: κατάσταση τοίχου ή κατάσταση εστίασης. Ξεκινάμε σε κατάσταση τοίχου, έτσι καμιά εικόνα δεν έχει εστίαση. Έτσι, ορίζουμε τη σημαία σε <code>FALSE</code> αρχικά.</p></item>
+    <item><p>Γραμμές 12-14: Αυτές βάζουν τους δράστες εικόνας να δέχονται συμβάντα εάν εστιαστούν.</p></item>
+    <item><p>Γραμμές 16-17: Εδώ ορίζουμε τη διάρκεια κίνησης και αποθηκεύουμε την τρέχουσα κατάσταση.</p></item>
+    <item><p>Γραμμές 21-23: Φτάνοντας αυτόν τον κώδικα σημαίνει ότι μια εικόνα έχει την τρέχουσα εστίαση και θέλουμε να επιστρέψει σε κατάσταση τοίχου. Ορίζοντας μια θέση σε έναν <code>ClutterActor</code> ξεκινά μια κίνηση με τη διάρκεια που ορίζουμε στη γραμμή 17.</p>
+    </item>
+    <item><p>Γραμμή 24: φτάνοντας αυτή τη γραμμή του κώδικα σημαίνει ότι είμαστε προς το παρόν στην κατάσταση τοίχου και πρόκειται να δώσουμε μια <code>ClutterActor</code> εστίαση. Εδώ αποθηκεύουμε την αρχική θέση, έτσι ώστε να μπορούμε να επιστρέψουμε αργότερα.</p></item>
+    <item><p>Γραμμή 25: ορίζοντας την ιδιότητα <code>reactive</code> του <code>ClutterActor</code> σε <code>TRUE</code> κάνει το <code>ClutterActor</code> να αντιδράσει σε συμβάντα. Σε αυτή την εστιασμένη κατάσταση ο μόνος <code>ClutterActor</code> που θέλουμε να δεχθεί συμβάντα θα είναι ο προβαλλόμενος <code>ClutterActor</code>. Κλικ στο <code>ClutterActor</code> θα επιστρέψει στην αρχική του θέση.</p></item>
+    <item><p>Γραμμές 27-36: Εδώ αποθηκεύουμε την τρέχουσα θέση της εικόνας, την ορίζουμε να δέχεται συμβάντα και έπειτα την κάνουμε να εμφανιστεί πάνω από τις άλλες εικόνες και ξεκινάμε την κίνησή της για να γεμίσει τη σκηνή.</p></item>
+    <item><p>Γραμμή 39: Εδώ επαναφέρουμε την κατάσταση απάλυνσης σε ό,τι ορίστηκε πριν την αλλάξουμε στη γραμμή 16.</p></item>
+    <item><p>Γραμμή 42: Εδώ εναλλάσσουμε τη σημαία <code>is_focused</code> στην τρέχουσα κατάσταση.</p></item>
+<item><p>Όπως αναφέρθηκε προηγουμένως, ο <code>ClutterActor</code> με υψηλότερες τιμές <code>depth</code> δέχεται συμβάντα αλλά μπορούν να επιτρέψουν <code>ClutterActor</code> από κάτω τους να δεχθούν επίσης συμβάντα. Επιστροφή σε <code>TRUE</code> θα σταματήσει τα συμβάντα από το να συνεχίσουν, ενώ <code>FALSE</code> θα συνεχίσει τα συμβάντα.</p>
+ <note>
+   <p>Να θυμόσαστε, όμως, ότι για αποδοχή συμβάντων το <code>ClutterActor</code> πρέπει να οριστεί σε <code>reactive</code>.</p>
+ </note>
+</item>
+ </list>
+</section>
+
+<section id="run">
+  <title>Κατασκευή και εκτέλεση της εφαρμογής</title>
+  <p>Όλος ο κώδικας πρέπει τώρα να είναι έτοιμος. Τώρα χρειαζόσαστε μερικές εικόνες για φόρτωση. Από προεπιλογή, οι εικόνες φορτώνονται από έναν κατάλογο <file>berlin_images</file>. Εάν θέλετε, μπορείτε να αλλάξετε τη γραμμή <code>#define IMAGE_DIR_PATH</code> κοντά στην κορυφή για να αναφερθείτε στον κατάλογο φωτογραφιών, ή να δημιουργήσετε ένα κατάλογο <file>berlin_images</file> με κλικ στο <guiseq><gui>έργο</gui><gui>νέος κατάλογος...</gui></guiseq> και δημιουργία ενός καταλόγου <file>berlin_images</file> ως υποκαταλόγου του καταλόγου <file>photo-wall</file>. Βεβαιωθείτε ότι βάλατε τουλάχιστον δώδεκα εικόνες στον κατάλογο!</p>
+  <p>Όταν τελειώσετε, κλικ <guiseq><gui>κατασκευή</gui><gui>κατασκευή έργου</gui></guiseq> για να κατασκευάσετε οτιδήποτε ξανά, έπειτα <guiseq><gui>τρέξιμο</gui><gui>εκτέλεση</gui></guiseq> για έναρξη της εφαρμογής.</p>
+  <p>Εάν δεν το έχετε ήδη κάνει, επιλέξτε την εφαρμογή <file>Debug/src/photo-wall</file> στον διάλογο που εμφανίζεται. Τελικά πατήστε <gui>εκτέλεση</gui> και απολαύστε το!</p>
+</section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Αν αντιμετωπίσετε πρόβλημα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="photo-wall/photo-wall.c">κώδικας αναφοράς</link>.</p>
+</section>
+
+</page>

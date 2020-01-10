@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar.c" xml:lang="el">
+  <info>
+    <title type="text">Εργαλειοθήκη (C)</title>
+    <link type="guide" xref="c#menu-combo-toolbar"/>
+    <link type="seealso" xref="menubar.c"/>
+    <link type="seealso" xref="grid.c"/>
+    <revision version="0.1" date="2012-08-19" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Γραμμή κουμπιών</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Εργαλειοθήκη</title>
+
+  <media type="image" mime="image/png" src="media/toolbar.png"/>
+  <p>Η εργαλειοθήκη μπορεί να περιέχει είτε κείμενο ή εικονίδια παρακαταθήκης. Σε αυτό το παράδειγμα χρησιμοποιούμε εικονίδια παρακαταθήκης. Αυτό το παράδειγμα έχει λειτουργικότητα πλήρους οθόνης.</p>
+  <p>Αυτό το παράδειγμα χρησιμοποιεί SimpleActions (παράθυρο και εφαρμογή). Οι ενέργειες της εφαρμογής μπορούν εύκολα να προστεθούν στο μενού της εφαρμογής.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+/* Δήλωση αυτών των δύο κουμπιών εργαλείων, καθώς θα χρησιμοποιηθούν και στην
+ * ενέργεια επανάκλησης πλήρους οθόνης καθώς και στη συνάρτηση ενεργοποίησης.
+ */
+GtkToolItem *fullscreen_button;
+GtkToolItem *leavefullscreen_button;
+
+
+
+/* Η συνάρτηση ανάκλησης για την ενέργεια της αναίρεσης */
+static void
+undo_callback (GSimpleAction *simple,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+  g_print ("You clicked \"Undo\".\n");
+}
+
+
+
+/* Η συνάρτηση επανάκλησης για την ενέργεια πλήρους οθόνης */
+static void
+fullscreen_callback (GSimpleAction *simple,
+                     GVariant      *parameter,
+                     gpointer       user_data)
+{
+  GdkWindow *window = gtk_widget_get_window (GTK_WIDGET (user_data));
+
+  GdkWindowState current_state = gdk_window_get_state (window);
+
+  /* Αν το παράθυρο είναι προς το παρόν σε κατάσταση πλήρους οθόνης */
+  if ( (current_state &amp; GDK_WINDOW_STATE_FULLSCREEN) != 0)
+    {
+      /* Ελαχιστοποίηση του παραθύρου και αλλαγή στο κουμπί πλήρους οθόνης */
+      gdk_window_unfullscreen (window);
+      gtk_widget_hide (GTK_WIDGET(leavefullscreen_button));
+      gtk_widget_show (GTK_WIDGET(fullscreen_button));
+    }
+  else
+    {
+      /* Μεγιστοποίηση του παραθύρου, και αλλαγή σε κουμπί μη πλήρους οθόνης */
+      gdk_window_fullscreen (window);
+      gtk_widget_hide (GTK_WIDGET (fullscreen_button));
+      gtk_widget_show (GTK_WIDGET (leavefullscreen_button));
+    }
+}
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  /* Αρχικοποίηση μεταβλητών */
+  GtkWidget *window;
+  GtkWidget *grid;
+  GtkWidget *toolbar;
+
+  GtkToolItem *new_button;
+  GtkToolItem *open_button;
+  GtkToolItem *undo_button;
+
+  GtkStyleContext *style_context;
+
+  GSimpleAction *undo_action;
+  GSimpleAction *fullscreen_action;
+  GSimpleAction *leavefullscreen_action;
+
+  /* Δημιουργία παραθύρου με τίτλο και προεπιλεγμένο μέγεθος */
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "Toolbar Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 400, 200);
+
+  /* Εδώ αρχίζει η δημιουργία της εργαλειοθήκης */
+  toolbar = gtk_toolbar_new ();
+  /* Ορισμός της εργαλειοθήκης να είναι η πρωτογενής εργαλειοθήκη της εφαρμογής */
+  style_context = gtk_widget_get_style_context (toolbar);
+  gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+
+  /* Δημιουργία κουμπιού για την ενέργεια "new", με μια έτοιμη εικόνα */
+  new_button = gtk_tool_button_new_from_stock (GTK_STOCK_NEW);
+  /* Εμφάνιση της ετικέτας του κουμπιού "new" */
+  gtk_tool_item_set_is_important (new_button, TRUE);
+  /* Εισαγωγή του κουμπιού στην επιθυμητή θέση μες την εργαλειοθήκη */
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), new_button, 0);
+  /* Εμφάνιση του κουμπιού */
+  gtk_widget_show (GTK_WIDGET (new_button));
+  /* Ορισμός του ονόματος ενέργειας για την ενέργεια "new". Χρήση του "app.new"
+   * για να δείξει ότι η ενέργεια ελέγχει την εφαρμογή.
+   */
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (new_button), "app.new");
+
+  /* Επανάληψη των ίδιων βημάτων για την ενέργεια "open" */
+  open_button = gtk_tool_button_new_from_stock (GTK_STOCK_OPEN);
+  gtk_tool_item_set_is_important (open_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), open_button, 1);
+  gtk_widget_show (GTK_WIDGET (open_button));
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (open_button), "app.open");
+
+  /* Επανάληψη των ίδιων βημάτων για την ενέργεια "undo" */
+  undo_button = gtk_tool_button_new_from_stock (GTK_STOCK_UNDO);
+  gtk_tool_item_set_is_important (undo_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), undo_button, 2);
+  gtk_widget_show (GTK_WIDGET (undo_button));
+  /* Σε αυτήν την περίπτωση, χρησιμοποιείται "win.undo" για να δείξει ότι
+   * η ενέργεια ελέγχει μόνο το παράθυρο
+   */
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (undo_button), "win.undo");
+
+  /* Επανάληψη των ίδιων βημάτων για την ενέργεια "fullscreen" */
+  fullscreen_button = gtk_tool_button_new_from_stock (GTK_STOCK_FULLSCREEN);
+  gtk_tool_item_set_is_important (fullscreen_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), fullscreen_button, 3);
+  gtk_widget_show (GTK_WIDGET (fullscreen_button));
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (fullscreen_button),
+                                  "win.fullscreen");
+
+  /*Επανάληψη των ίδιων βημάτων για την ενέργεια "leavefullscreen" */
+  leavefullscreen_button = gtk_tool_button_new_from_stock (GTK_STOCK_LEAVE_FULLSCREEN);
+  gtk_tool_item_set_is_important (leavefullscreen_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), leavefullscreen_button, 3);
+  /* Η μόνη διαφορά εδώ είναι ότι δεν εμφανίζουμε το κουμπί εξόδου από την πλήρη οθόνη,
+   * επειδή θα αντικαταστήσει αργότερα το κουμπί πλήρους οθόνης.
+   */
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (leavefullscreen_button),
+                                  "win.leavefullscreen");
+
+  /* Μόλις δημιουργήσουμε τον σκελετό της εργαλειοθήκης, εξασφαλίζουμε ότι
+   * έχει αρκετό οριζόντιο χώρο.
+   */
+  gtk_widget_set_hexpand (toolbar, TRUE);
+  gtk_widget_show (toolbar);
+
+  /* Προσάρτηση της εργαλειοθήκης στο πλέγμα και προσθήκη της στο συνολικό παράθυρο */
+  grid = gtk_grid_new ();
+  gtk_grid_attach (GTK_GRID (grid), toolbar, 0, 0, 1, 1);
+  gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (grid));
+  gtk_widget_show (GTK_WIDGET (grid));
+
+  /* Χρησιμοποιήστε τα ονόματα ενεργειών για τη δημιουργία των ενεργειών που ελέγουν
+   * το παράθυρο και σύνδεσή τους με τις κατάλληλες συναρτήσεις επανάκλησης.
+   */
+  undo_action = g_simple_action_new ("undo", NULL);
+  g_signal_connect (undo_action, "activate", G_CALLBACK (undo_callback),
+                    GTK_WINDOW (window));
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (undo_action));
+
+  fullscreen_action = g_simple_action_new ("fullscreen", NULL);
+  g_signal_connect (fullscreen_action, "activate", G_CALLBACK (fullscreen_callback),
+                    GTK_WINDOW (window));
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (fullscreen_action));
+
+  leavefullscreen_action = g_simple_action_new ("leavefullscreen", NULL);
+  g_signal_connect (leavefullscreen_action, "activate", G_CALLBACK (fullscreen_callback),
+                    GTK_WINDOW (window));
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (leavefullscreen_action));
+
+  gtk_widget_show (window);
+}
+
+
+
+/* Η συνάρτηση επανάκλησης για την νέα ενέργεια */
+static void
+new_callback (GSimpleAction *simple,
+              GVariant      *parameter,
+              gpointer       user_data)
+{
+  g_print ("You clicked \"New\".\n");
+}
+
+
+
+/* Η συνάρτηση επανάκλησης για την ενέργεια άνοιγμα */
+static void
+open_callback (GSimpleAction *simple,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+  g_print ("You clicked \"Open\".\n");
+}
+
+
+
+/* Σε αυτήν την συνάρτηση, δημιουργούμε τις ενέργειες που ελέγχουν το παράθυρο
+ * και συνδέουν τα σήματά τους με την κατάλληλη συνάρτηση επανάκλησης.
+ */
+static void
+startup (GApplication *app,
+         gpointer      user_data)
+{
+  GSimpleAction *new_action;
+  GSimpleAction *open_action;
+
+  new_action = g_simple_action_new ("new", NULL);
+  g_signal_connect (new_action, "activate", G_CALLBACK (new_callback), app);
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (new_action));
+
+  open_action = g_simple_action_new ("open", NULL);
+  g_signal_connect (open_action, "activate", G_CALLBACK (open_callback), app);
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (open_action));
+}
+
+
+
+/* Η συνάρτηση έναρξης για την εφαρμογή */
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect (app, "startup", G_CALLBACK (startup), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkToolbar.html">GtkToolbar</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkToolButton.html">GtkToolbutton</link></p></item>
+</list>
+</page>

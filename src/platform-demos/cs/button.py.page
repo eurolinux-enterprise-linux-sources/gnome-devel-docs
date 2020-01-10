@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="button.py" xml:lang="cs">
+  <info>
+    <title type="text">Button (Python)</title>
+    <link type="guide" xref="beginner.py#buttons"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="linkbutton.py"/>
+    <revision version="0.2" date="2012-05-05" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Widget tlačítka, který vyšle signál při kliknutí</desc>
+  </info>
+
+  <title>Button</title>
+
+  <media type="image" mime="image/png" src="media/button.png"/>
+  <p>Widget tlačítka napojený na jednoduchou funkci zpětného volání.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Kód použitý k vygenerování tohoto příkladu</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # Okno
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GNOME Button", application=app)
+        self.set_default_size(250, 50)
+
+        # Tlačítko
+        button = Gtk.Button()
+        # s popiskem
+        button.set_label("Click me")
+        # Napojí signál "clicked" vyslaný tlačítkem
+        # na funkci zpětného volání do_clicked
+        button.connect("clicked", self.do_clicked)
+        # Přidá tlačítko do okna
+        self.add(button)
+
+    # Funkce zpětného volání napojená na signál "clicked" od tlačítka
+    def do_clicked(self, button):
+        print("You clicked me!")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+  
+  <section id="methods">
+    <title>Užitečné metody pro widget Button</title>
+    <p>Na řádku 16 je signál <code>"clicked"</code> od tlačítka napojen na funkci zpětného volání <code>do_clicked()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce zpětného volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+    <list>
+      <item><p><code>set_relief(Gtk.ReliefStyle.NONE)</code> nastaví styl reliéfu hran u Gtk.Button na žádný – oproti <code>Gtk.ReliefStyle.NORMAL</code>.</p></item>
+      <item><p>V případě, že je popiskem tlačítka <link href="http://developer.gnome.org/gtk3/unstable/gtk3-Stock-Items.html">standardní ikona</link>, <code>set_use_stock(True)</code> nastaví <code>label</code> jako odpovídající název standardní ikony.</p></item>
+      <item><p>Pro nastavení obrázku (např. standardního obrázku) u tlačítka <code>button</code>:</p>
+        <code>
+image = Gtk.Image()
+image.set_from_stock(Gtk.STOCK_ABOUT, Gtk.IconSize.BUTTON)
+button.set_image(image)</code>
+      <p>Po provedení této části kódu už byste neměli nastavovat popisek pro tlačítko, jinak bude zobrazovat popisek a ne obrázek.</p></item>
+      <item><p>Když použijeme <code>set_focus_on_click(False)</code>, nebude tlačítko přebírat zaměření při kliknutí myší. To se může hodit na místech, jako je nástrojová lišta, aby nebylo přebráno zaměření klávesnice do hlavní části aplikace.</p></item>
+    </list>
+  </section>
+  
+  <section id="references">
+    <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkButton.html">GtkButton</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+    </list>
+  </section>
+</page>

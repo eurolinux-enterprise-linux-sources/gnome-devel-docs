@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="tour-summary" xml:lang="ru">
+
+  <info>
+    <revision version="0.1" date="2013-06-17" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Gordon Hill</name>
+      <email its:translate="no">caseyweederman@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>An overview of the code and relevant links.</desc>
+
+  </info>
+
+  <title>Summary</title>
+  <links type="prevnext" style="top"/>
+  <links type="series" style="floatend">
+    <title>Get started with GNOME</title>
+  </links>
+
+  <p>Here is how the examples fit together:</p>
+  <code>
+#!/usr/bin/gjs
+
+const Lang = imports.lang;
+const Gtk = imports.gi.Gtk;
+
+const HelloWorld = new Lang.Class({
+    Name: 'HelloWorld',
+
+    _init: function() {
+        this.application = new Gtk.Application();
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    _onActivate: function(){
+        this._window.show_all();
+    },
+
+    _onStartup: function() {
+        let builder = new Gtk.Builder();
+        builder.add_from_file('helloworld.glade');
+        this._window = builder.get_object('window1');
+        this.application.add_window(this._window);
+    }
+});
+
+let app = new HelloWorld();
+app.application.run(ARGV);
+</code>
+
+</page>

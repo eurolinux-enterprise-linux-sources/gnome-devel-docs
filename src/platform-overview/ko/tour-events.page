@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="tour-events" xml:lang="ko">
+
+  <info>
+    <link type="next" xref="tour-get_object"/>
+    <revision version="0.1" date="2013-06-17" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Gordon Hill</name>
+      <email its:translate="no">caseyweederman@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Lang으로 이벤트에 함수를 연결합니다.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>동작 및 시그널</title>
+
+  <links type="prevnext" style="top"/>
+  <links type="series" style="floatend">
+    <title>그놈 시작하기</title>
+  </links>
+
+  <p>gtk에는 프로그램에서 활용할 수 있는 선 정의 이벤트 모음이 있습니다.</p>
+  <example>
+    <p><code>HelloWorld</code>를 새 <code>Lang</code> 클래스로 선언하십시오. gjs에서는 클래스에 Name 속성 값을 정의해야합니다.</p>
+
+    <code>
+const HelloWorld = new Lang.Class({
+    Name: 'HelloWorld',
+</code>
+
+    <p>새 인스턴스를 만들 때 <code>_init</code>를 호출합니다. <code>GtkApplication</code>를 만들고 <code>activate</code>를 기존의 gtk 이벤트 <code>_onActivate</code>에, <code>startup</code>을 <code>_onStartup</code>에 연결하십시오:</p>
+
+    <code>
+    _init: function() {
+        this.application = new Gtk.Application();
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+</code>
+
+    <p>프로그램을 활성화하는 동안 창을 표시하십시오:</p>
+    <code>
+    _onActivate: function(){
+        this._window.show_all();
+    },
+</code>
+  </example>
+  <links type="prevnext"/>
+</page>

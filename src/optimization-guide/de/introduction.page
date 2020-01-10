@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="introduction" xml:lang="de">
+   <info>
+     <link type="guide" xref="index#intro"/>
+   
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2009, 2012, 2013, 2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Christian Kirbach</mal:name>
+      <mal:email>christian.kirbach@googlemail.com</mal:email>
+      <mal:years>2010</mal:years>
+    </mal:credit>
+  </info>
+         <title>Was optimieren wir?</title>
+        <p>Sie sollten bei der Optimierung für GNOME zunächst eines bedenken: Wir versuchen nicht, das Programm zu verbessern, sondern wir versuchen, die Benutzer glücklicher zu machen.</p>
+        <p>Bessere Programme machen die Benutzer glücklicher, aber es gibt Verbesserungsmöglichkeiten, die sie viel glücklicher machen werden als Andere: Ansprechzeit, Startzeit, leichter Zugriff auf Befehle. Der Rechner sollte auch nicht sofort den Auslagerungsspeicher benutzen müssen, wenn mehr als eine Anwendung geöffnet ist.</p>
+        <p>Die traditionelle Optimierung umfasst Konzepte wie Prozessorlast, Umfang des Codes, die Anzahl der Mausklicks sowie die Speichernutzung des Programms. Die folgende Auflistung sollte die erste Liste ergänzen, wobei ein grundlegender Unterschied besteht: Ein GNOME-Benutzer schenkt der zweiten Liste keine Beachtung, während der ersten Liste sehr wohl Aufmerksamkeit gewidmet wird. Beim Optimieren von GNOME-Programmen sollen die Prozessorlast, der Speicherverbrauch und all diese Dinge optimiert werden, aber das sind die Bedeutungen, nicht das Endziel. Wir optimieren für Benutzer.</p>
+
+	<section id="doing-the-optimization">        
+          <title>Ausführung der Optimierung</title>
+        <p>Aus dem vorigen Abschnitt wurde deutlich: Um etwas optimieren zu können, muss es messbar sein. Sie können Zufriedenheit nicht messen, aber Sie können sehr wohl Startzeiten messen, um sagen zu können, dass Sie sie verbessert haben. Die Zufriedenheit wird dann - hoffentlich - folgen.</p>
+        <p>Optimierung ist ein Prozess des Messens, der Verfeinerung und erneuten Messens. Daher müssen Sie zunächst einen Weg finden, das zu messen, was Sie optimieren wollen. Idealerweise ist dieser Messwert eine einzige Zahl, beispielsweise die Zeit, die für die Ausführung einer Aufgabe benötigt wird. Dies ist Ihr Maßstab, es ist der einzige Weg festzustellen, ob Sie auf der Gewinner- oder der Verliererseite sind. Es ist ein sehr wesentlicher Unterschied, ob ein Programm schnell sein <em>sollte</em> oder ob es tatsächlich schnell <em>ist</em>.</p>
+        <p>Sobald Sie einen Ausgangsmaßstab gefunden haben, müssen Sie nun herausfinden, warum Ihr Code seine Aufgabe nicht so gut erledigt, wie er es eigentlich sollte. Es ist verlockend, dies durch eine einfache Sichtung zu tun: Sich den Code anzuschauen und etwas zu finden, dass verbesserungswürdig scheint. Doch Sie werden immer falsch liegen. Der einzig sichere Weg ist es, einen Profiler für eine detaillierte Aufschlüsselung der Programmaktivitäten zu verwenden.</p>
+        <p>Gewöhnlich ist das Problem auf kleine Code-Abschnitte beschränkt. Wählen Sie den schlimmsten Teil und konzentrieren Sie sich zuerst darauf. Führen Sie den Profiler erneut aus und wiederholen Sie den Arbeitsschritt, sobald dies erledigt ist. Wenn Sie so arbeiten, werden die Gewinne mit jedem Schritt geringer. Ab einem bestimmten Punkt müssen Sie entscheiden, dass die Ergebnisse gut genug sind. Wenn Ihre Bemühungen nur 10% Verbesserung ergeben, dann sind Sie bereits weit über den Punkt hinaus, wo Sie hätten stoppen sollen.</p>
+        <p>Vergessen Sie nicht das Gesamtbild. Zum Beispiel sollten Sie sich fragen, ob der Code überhaupt unbedingt ausgeführt werden muss, statt seine Geschwindigkeit zu verbessern. Kann er mit anderem Code kombiniert werden? Können bereits ausgeführte Berechnungen gespeichert und später wieder verwertet werden? Eine Optimierung kann man sich auch sparen, wenn der Code dort ausgeführt wird, wo ihn der Benutzer niemals bemerken wird. Noch schlimmer, der Code ist eventuell bereits optimiert und führt kostspielige Berechnungen jetzt aus, um dies später zu vermeiden. Code läuft nicht isoliert und ebenso wenig der Optimierungsprozess.</p>
+	</section>
+
+	<section id="hints">
+        <title>Hinweise</title>
+
+        <terms>
+          <item>
+            <title>Die Grundlagen</title>
+            <list type="ordered">
+            <item>
+                <p>Bilden Sie einen Maßstab nach jeder Code-Änderung aus und führen Sie Buch über alle Änderungen, und wie sie den Maßstab beeinflussen. So können Sie Fehler rückgängig machen und in Zukunft erst gar nicht wiederholen.</p>
+            </item>
+            <item>
+                <p>Stellen Sie sicher, dass Ihr Code korrekt und fehlerfrei ist, bevor Sie mit der Optimierung beginnen. Überprüfen Sie nach der Optimierung, ob dies dann auch noch zutrifft.</p>
+            </item>
+            <item>
+                <p>Optimieren Sie zunächst auf hoher Ebene, bevor es an die Details geht.</p>
+            </item>
+            <item>
+                <p>Verwenden Sie den passenden Algorithmus. Das klassische Beispiel ist, Quick-Sort statt Bubble-Sort zu verwenden. Es gibt viele andere. Einige belegen wenig Arbeitsspeicher, andere brauchen wenig Rechenleistung. Schauen Sie auch, ob Sie Kompromisse eingehen können: Es geht auch schneller als Quick-Sort.</p>
+            </item>
+            <item>
+                <p>Optimierungen sind ein Abwägen. Ergebnisse zwischenzuspeichern beschleunigt Berechnungen, aber erhöht den Speicherverbrauch. Daten auf einen Datenträger zu speichern spart Arbeitsspeicher, aber kostet Zeit beim Laden vom Datenträger.</p>
+            </item>
+            <item>
+                <p>Wählen Sie unbedingt eine große Vielfalt an Eingangsgrößen, die Sie optimieren. Wenn Sie dies nicht tun, können Sie schnell mit einem sorgfältig für nur eine einzige Datei optimierten Code enden.</p>
+            </item>
+            <item>
+                <p>Vermeiden Sie aufwändige Vorgänge: Mehrere kleine Plattenlesevorgänge, Belegung von sehr viel Arbeitsspeicher, bis das Auslagern beginnt. Vermeiden Sie unnötige Schreib- und Lesevorgänge auf Datenträger. Das Netzwerk ist auch langsam. Vermeiden Sie auch grafische Operationen, die eine Antwort vom X-Server erfordern.</p>
+	    </item>
+	    </list>
+        </item>
+        <item>
+            <title>Fallen für die Unvorsichtigen</title>
+            <list type="ordered">
+            <item>
+                <p>Nehmen Sie sich vor Nebeneffekten in Acht. Es kann oft seltsame Interaktionen zwischen verschiedenen Code-Bereichen geben. Eine Geschwindigkeitsverbesserung in einem Teil kann einen anderen Teil ausbremsen. </p>
+            </item>
+            <item>
+                <p>Beim zeitlichen Abstimmen von Code - auch auf unbelasteten Systemen - sorgen externe Ereignisse für Unregelmäßigkeiten bei der Zeitplanung. Bilden Sie Durchschnittswerte von mehreren Durchläufen. Wenn der Code sehr kurz ist, so kann die Zählergenauigkeit zu einem Problem werden. In diesem Fall messen Sie die Zeit 100 oder 1000 Mal, die der Rechner zur Abarbeitung braucht. Wenn Sie Zeitspannen von einigen Sekunden messen, dann sind Sie im grünen Bereich.</p>
+            </item>
+            <item>
+                <p>Es ist sehr leicht, vom Profiler in die Irre geführt zu werden. Es gibt Geschichten über Leute, die die Untätigkeitsphase perfekt optimiert haben, weil das Programm ja die meiste Zeit in Untätigkeit verbringt! Optimieren Sie keinen Code, von dessen Wirkung der Benutzer ohnehin keine Notiz nimmt.</p>
+            </item>
+            <item>
+                <p>Vergessen Sie nicht den Ressourcenverbrauch des X-Servers. Der Speicherverbrauch Ihres Programms enthält nicht die Pixmaps, die vom X-Server verarbeitet werden, aber sie verbrauchen dennoch Speicher. Verwenden Sie <command>xrestop</command>, um zu sehen, welche Ressourcen Ihr Programm beansprucht.</p>
+            </item>
+	    </list>
+        </item>
+	<item>
+          <title>Tipps mit niedrigem Niveau</title>
+            <list type="ordered">
+            <item>
+                <p>Seien Sie bei der Optimierung des Speicherverbrauchs umsichtig bezüglich des Unterschieds zwischen Spitzen- und durchschnittlicher Speicherbelegung. Einiger Speicher wird quasi immer belegt, das ist nicht gut. Einiger wird nur kurzzeitig belegt, dies ist in Ordnung. Werkzeuge wie »massif« verwenden das Raum-Zeit-Konzept, d.h. das Produkt von belegtem Arbeitsspeicher und der Belegungsdauer.</p>
+            </item>
+            <item>
+                <p>Stoppen Sie die Zeit vereinfachter Code-Teile, die nur Entscheidendes erledigen. Dies legt eine absolute untere Grenze für die Laufzeit Ihres Codes fest. Zum Beispiel sollten Sie beim Optimieren einer Schleife die leere Schleife stoppen. Wenn dies immer noch zu lang ist, dann wird keine Mikro-Optimierung Abhilfe schaffen und Sie müssen das grundlegende Design ändern. Stellen Sie sicher, dass der Compiler dabei nicht ihre leeren Schleifen rationalisiert.</p>
+            </item>
+            <item>
+                <p>Gliedern Sie Code aus Schleifen aus. Ein etwas umfangreicheres Stück Code, das nur einmal ausgeführt wird, ist um Einiges schneller als ein simples Stück Code, was dafür tausend Schleifen durchläuft. Vermeiden Sie es, langsamen Code allzu oft aufzurufen.</p>
+            </item>
+            <item>
+                <p>Geben Sie dem Compiler so viele Hinweise wie möglich. Verwenden Sie das const-Schlüsselwort. Verwenden Sie <code>G_INLINE_FUNC</code> für kurze, häufig aufgerufene Funktionen. Schauen Sie nach <code>G_GNUC_PURE</code>, <code>G_LIKELY</code> und weiteren diversen glib-Makros. Verwenden Sie diese Makros anstelle der gcc-spezifischen Schlüsselwörter, um die Portierbarkeit zu erhalten.</p>
+            </item>
+            <item>
+                <p>Verwenden Sie keine Assemblersprachen. Sie sind nicht portierbar. Während sie auf dem einen Prozessor unglaublich schnell sind, ist nicht unbedingt garantiert, dass dies auf jedem von der Architektur unterstützten Prozessor genauso ist (beispielsweise Athlon vs Pentium 4).</p>
+            </item>
+            <item>
+                <p>Schreiben Sie eine vorhandene Bibliotheksroutine nicht neu, es sei denn, Sie sind sich sicher, dass sie unakzeptabel langsam ist. Viele prozessorintensive Bibliotheksroutinen wurden bereits optimiert. Andererseits sind einige Routinen tatsächlich langsam, insbesondere diejenigen, die Systemaufrufe an das Betriebssystem absetzen.</p>
+            </item>
+            <item>
+                <p>Halten Sie die Zahl der verlinkten Bibliotheken gering. Je weniger Bibliotheken gelinkt werden müssen, umso schneller startet das Programm. Dies ist in GNOME allerdings schwierig.</p>
+            </item>
+	    </list>
+        </item>
+	<item>
+          <title>Tricks auf hohem Niveau</title>
+          <list type="ordered">
+            <item>
+                <p>Nutzen Sie Nebenläufigkeit aus. Das bedeutet nicht nur mehrere Prozessoren zu verwenden, es bedeutet auch die Zeit auszunutzen, in welcher der Anwender über seine weiteren Aktivitäten nachdenkt, und in Vorausschau einige Berechnungen auszuführen. Führen Sie Berechnungen aus, während Daten vom Datenträger geladen werden. Nutzen Sie verschiedene Ressourcen, wenn vorhanden, gleichzeitig.</p>
+            </item>
+            <item>
+                <p>Bluffen Sie. Der Benutzer sollte denken, dass sein Rechner schnell ist, aber es ist gleich, ob er es wirklich ist oder nicht. Die Zeit zwischen dem Befehl und der darauf folgenden Antwort ist maßgebend. Es ist gleichgültig, ob die Antwort vorausberechnet wird, zwischengespeichert oder in irgendeiner anderen Weise später zu einem günstigeren Zeitpunkt ausgewertet wird, solange der Benutzer genau das bekommt, was er erwartet.</p>
+            </item>
+            <item>
+                <p>Erledigen Sie Dinge in der Idle-Schleife. Dies ist einfacher zu programmieren als Multi-Threading, aber die Dinge geschehen vom Benutzer unbemerkt. Seien Sie jedoch vorsichtig. Wenn Ihr Programm sehr viel Zeit in der Idle-Schleife verbringt, dann wird es träge. Stellen Sie sicher, dass die Kontrolle regelmäßig an die Hauptschleife übergeben wird.</p>
+            </item>
+            <item>
+                <p>Falls alles Andere scheitern sollte, informieren Sie den Benutzer mit einem Fortschrittsbalken drüber, dass es derzeit nur langsam voran geht. Das dürfte ihm lieber sein, als wenn Sie nur die Ergebnisse präsentieren würden. Er möchte zumindest wissen, dass das Programm nicht abgestürzt ist und er dann erst einmal eine Tasse Kaffee trinken gehen kann.</p>
+            </item>
+	  </list>
+        </item>
+      </terms>
+    </section>
+  </page>

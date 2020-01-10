@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scrolledwindow.js" xml:lang="de">
+  <info>
+    <title type="text">ScrolledWindow (JavaScript)</title>
+    <link type="guide" xref="beginner.js#scrolling"/>
+    <revision version="0.1" date="2012-05-26" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Meg Ford</name>
+      <email its:translate="no">megford@gnome.org</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Adds scrollbars to its child widget</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2011, 2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ScrolledWindow</title>
+  <media type="image" mime="image/png" src="media/scrolledwindow.png"/>
+  <p>An image in a scrolled window.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code used to generate this example</title>
+    <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const ScrolledWindowExample = new Lang.Class ({
+    Name: 'ScrolledWindow Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application({ application_id: 'org.example.jscrolledwindow' });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function() {
+        this.window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+    // Build the application's UI
+    _buildUI: function() {
+        // Create the application window
+        this.window = new Gtk.ApplicationWindow  ({ application: this.application,
+                                                    window_position: Gtk.WindowPosition.CENTER,
+                                                    title: "ScrolledWindow Example",
+                                                    default_width: 200,
+                                                    default_height: 200,
+                                                    border_width: 10 });
+        // the scrolledwindow
+        this.scrolledWindow = new Gtk.ScrolledWindow();
+        this.scrolledWindow.set_border_width(10);
+        // there is always the scrollbar (otherwise: AUTOMATIC - only if needed - or NEVER)
+        this.scrolledWindow.set_policy(Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS);
+        // an image - slightly larger than the window
+        this.image = new Gtk.Image();
+        this.image.set_from_file("gnome-image.png");
+
+        // add the image to the scrolledwindow
+        this.scrolledWindow.add_with_viewport(this.image);
+
+        // add the scrolledwindow to the window
+        this.window.add(this.scrolledWindow);
+        this.window.show_all();
+    }
+});
+
+// Run the application
+let app = new ScrolledWindowExample();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="references">
+    <title>API-Referenzen</title>
+    <p>In this sample we used the following:</p>
+    <list>
+      <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.ScrolledWindow.html">GtkScrolledWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">Standard-Aufzählungen</link></p></item>
+      <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Image.html">GtkImage</link></p></item>
+    </list>
+  </section>
+</page>

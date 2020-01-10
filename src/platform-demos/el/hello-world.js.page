@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="hello-world.js" xml:lang="el">
+
+  <info>
+  <title type="text">Hello World (JavaScript)</title>
+    <link type="guide" xref="beginner.js#tutorials" group="#first"/>
+
+    <revision version="0.1" date="2013-06-17" status="review"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+    </credit>
+
+    <desc>Μια βασική εφαρμογή "hello, world"</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Πώς να κατασκευάσετε, να εγκαταστήσετε και να δημιουργήσετε ένα <file>tar.xz</file> ενός προγράμματος Hello World</title>
+    <media type="image" mime="image/png" style="floatend" src="media/hello-world.png"/>
+    <synopsis>
+      <p>Αυτό το μάθημα θα δείξει πώς να:</p>
+      <list style="numbered">
+        <item><p>δημιουργήσετε μια μικρή εφαρμογή "Hello, World" χρησιμοποιώντας JavaScript και GTK+</p></item>
+        <item><p>κάνετε το αρχείο <file>.desktop</file></p></item>
+        <item><p>ρυθμίσετε το σύστημα δόμησης</p></item>
+      </list>
+    </synopsis>
+
+
+
+  <links type="section"/>
+
+  <section id="HelloWorld"><title>Δημιουργήστε το πρόγραμμα</title>
+
+    <links type="section"/>
+
+    <section id="script"><title>Σενάριο για εκτέλεση της εφαρμογής</title>
+      <p>Αυτό χρειάζεται να είναι η πρώτη γραμμή του σεναρίου σας:</p>
+      <code mime="application/javascript">#!/usr/bin/gjs</code>
+      <p>Λέει στο σενάριο να χρησιμοποιήσετε <link href="https://live.gnome.org/Gjs/">Gjs</link>. Gjs είναι ένας σύνδεσμος JavaScript για GNOME.</p>
+    </section>
+
+
+    <section id="imports"><title>Βιβλιοθήκες για εισαγωγή</title>
+      <code mime="application/javascript">const Lang = imports.lang;
+const Gtk = imports.gi.Gtk;</code>
+      <p>Για να δουλέψει το σενάριό μας με GNOME, χρειαζόμαστε να εισάγουμε τις βιβλιοθήκες GNOME μέσα από τον αυτοέλεγχο GObject. Εδώ εισάγουμε τους συνδέσμους γλώσσας και GTK+, την βιβλιοθήκη που περιέχει τα χρησιμοποιούμενα γραφικά στοιχεία για την δόμηση εφαρμογών GNOME.</p>
+    </section>
+
+    <section id="mainwindow"><title>Δημιουργία του κύριου παραθύρου για την εφαρμογή</title>
+      <code mime="application/javascript">const Application = new Lang.Class({
+    //Μια κλάση απαιτεί μια ρητή παράμετρο ονόματος. Αυτή είναι η κλάση ονόματος.
+    Name: 'Application',
+
+    //Δημιουργία της εφαρμογής
+    _init: function() {
+        this.application = new Gtk.Application();
+
+       //Σ,υνδεση των σημάτων 'activate' και 'startup' με τους χειριστές.
+       this.application.connect('activate', Lang.bind(this, this._onActivate));
+       this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    //Δημιουργία της διεπαφής χρήστη
+    _buildUI: function() {
+        this._window = new Gtk.ApplicationWindow({ application: this.application,
+                                                   title: "Hello World!" });
+    },
+
+    //Ο χεριριστής για το σήμα 'activate'
+    _onActivate: function() {
+        //Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+    //Ο χειριστής του σήματος 'startup'
+    _onStartup: function() {
+        this._buildUI();
+    }
+});
+</code>
+
+    <p>Η GtkApplication αρχικοποιεί το GTK+. Επίσης συνδέει το κουμπί <gui>x</gui> που δημιουργείται αυτόματα μαζί με το παράθυρο στο σήμα "destroy".</p>
+    <p>Μπορούμε να αρχίσουμε να κατασκευάζουμε το πρώτο μας παράθυρο. Αυτό το κάνουμε δημιουργώντας μια μεταβλητή που λέγεται <var>_window</var> και της αποδίδουμε ένα νέο Gtk.ApplicationWindow.</p>
+    <p>Δίνουμε στο παράθυρο μια ιδιότητα που λέγεται <var>title</var>. Ο τίτλος μπορεί να είναι οποιαδήποτε επιθυμητή συμβολοσειρά. Για να είσαστε ασφαλείς, είναι καλύτερο να επιλέξετε την κωδικοποίηση UTF-8.</p>
+    <p>Τώρα έχουμε ένα παράθυρο που έχει τίτλο και ένα λειτουργικό κουμπί "close". Ας προσθέσουμε το ενεργό κείμενο "Hello world".</p>
+    </section>
+
+    <section id="label"><title>Ετικέτα για το παράθυρο</title>
+      <code mime="application/javascript">// Προσθήκη γραφικού στοιχείου ετικέτας στο παράθυρό σας
+this.label = new Gtk.Label({ label: "Hello World" });
+this._window.add(this.label);
+this._window.set_default_size(200, 200);</code>
+
+      <p>Μια ετικέτα κειμένου είναι ένα από τα γραφικά στοιχεία του GTK+ που μπορούμε να χρησιμοποιήσουμε, λόγω της εισαγωγής της βιβλιοθήκης GTK+. Για τη χρήση του, δημιουργούμε μια νέα μεταβλητή που ονομάζουμε ετικέτα και της αποδίδουμε μια νέα Gtk.Label. Έπειτα της δίνουμε ιδιότητες μέσα σε αγκύλες {}. Σε αυτήν την περίπτωση, ορίζουμε το κείμενο που θα κρατήσει η ετικέτα. Τελικά, δημιουργούμε και τρέχουμε την εφαρμογή:</p>
+
+      <code mime="application/javascript">//Εκτέλεση της εφαρμογής
+let app = new Application();
+app.application.run(ARGV);</code>
+
+      <p>Το Gtk.Window μπορεί να κρατήσει μόνο ένα γραφικό στοιχείο τη φορά. Για κατασκευή πιο περίπλοκων προγραμμάτων χρειαζόσαστε τη δημιουργία ενός χειριστή γραφικού στοιχείου όπως Gtk.Grid μέσα στο παράθυρο και έπειτα να προσθέσετε όλα τα άλλα γραφικά στοιχεία σε αυτό.</p>
+   </section>
+
+
+    <section id="js"><title>hello-world.js</title>
+      <p>Το πλήρες αρχείο:</p>
+      <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Lang = imports.lang;
+const Gtk = imports.gi.Gtk;
+
+const Application = new Lang.Class({
+    //Μια κλάση απαιτεί μια ρητή παράμετρο ονόματος.  Αυτή είναι το όνομα κλάσης.
+    Name: 'Application',
+
+    //Δημιουργία της εφαρμογής
+    _init: function() {
+        this.application = new Gtk.Application();
+
+       //Σύνδεση των σημάτων  'activate' και 'startup' στους χειριστές.
+       this.application.connect('activate', Lang.bind(this, this._onActivate));
+       this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    //Δημιουργία της διεπαφής χρήστη
+    _buildUI: function() {
+        this._window = new Gtk.ApplicationWindow({ application: this.application,
+                                                   title: "Hello World!" });
+        this._window.set_default_size(200, 200);
+        this.label = new Gtk.Label({ label: "Hello World" });
+        this._window.add(this.label);
+    },
+
+    //Χειριστής για το σήμα  'activate'
+    _onActivate: function() {
+        //Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+    //Χειριστής για το σήμα 'startup'
+    _onStartup: function() {
+        this._buildUI();
+    }
+});
+
+//Εκτέλεση της εφαρμογής
+let app = new Application();
+app.application.run(ARGV);
+</code>
+    </section>
+
+    <section id="terminal"><title>Εκτελέστε την εφαρμογή από τερματικό</title>
+      <p>Για να τρέξετε αυτήν την εφαρμογή, πρώτα αποθηκεύστε την ως hello-world.js. Έπειτα ανοίξτε το τερματικό, πηγαίνετε στον φάκελο όπου η εφαρμογή σας αποθηκεύεται και τρέξτε:</p>
+      <screen><output style="prompt">$ </output><input>gjs hello-world.js</input></screen>
+    </section>
+  </section>
+
+
+
+  <section id="desktop.in"><title>Το αρχείο <file>.desktop.in</file></title>
+      <p>Τρέχοντας εφαρμογές από το τερματικό είναι χρήσιμο στην αρχή της διεργασίας κατασκευής της εφαρμογής. Για να έχετε μια πλήρως λειτουργική <link href="https://developer.gnome.org/integration-guide/stable/mime.html.en">ολοκληρωμένη εφαρμογή</link> στο GNOME 3 απαιτείται ένας εκκινητής επιφάνεια εργασίας. Για αυτό χρειάζεται να δημιουργήσετε ένα αρχείο <file>.desktop</file>. Το αρχείο <file>.desktop</file> περιγράφει το όνομα της εφαρμογής, το χρησιμοποιούμενο εικονίδιο και ποικίλα δυαδικά ολοκλήρωσης. Μια βαθύτερη ματιά στο αρχείο <file>.desktop</file> μπορεί να βρεθεί <link href="http://developer.gnome.org/desktop-entry-spec/">εδώ</link>. Το αρχείο <file>.desktop.in</file> θα δημιουργήσει το <file>.desktop</file>.</p>
+
+  <note>
+       <p>Πριν συνεχίσετε, ξανααποθηκεύστε το <file>hello-world.js</file> ως <file>hello-world</file>. Έπειτα εκτελέστε το στη γραμμή εντολών:</p>
+      <screen><output style="prompt">$ </output><input>chmod +x hello-world</input></screen>
+  </note>
+
+    <p>Το παράδειγμα εμφανίζει τις ελάχιστες απαιτήσεις για ένα αρχείο<code>.desktop.in</code>.</p>
+    <code mime="text/desktop" style="numbered">[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Hello World
+Comment=Say Hello
+Exec=@prefix@/bin/hello-world
+Icon=application-default-icon
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME·GTK·Utility·
+</code>
+
+    <p>Τώρα, ας εξετάσουμε μερικά μέρη του αρχείου <code>.desktop.in</code>.</p>
+    <terms>
+      <item><title>Όνομα</title><p>Το όνομα της εφαρμογής.</p></item>
+      <item><title>Σχόλιο</title><p>Μια σύντομη περιγραφή της εφαρμογής.</p></item>
+      <item><title>Exec</title><p>Ορίζει μια εντολή για εκτέλεση όταν επιλέξετε την εφαρμογή από το μενού. Σε αυτό το παράδειγμα το exec απλά λέει πού να βρείτε το αρχείο <file>hello-world</file> και το αρχείο φροντίζει για τα υπόλοιπα.</p></item>
+      <item><title>Τερματικός</title><p>Ορίζει εάν η εντολή στο κλειδί Exec τρέχει σε ένα παράθυρο τερματικού.</p></item>
+    </terms>
+
+    <p>Για να βάλετε την εφαρμογή σας στη σωστή κατηγορία χρειάζεται να προσθέσετε τις απαραίτητες κατηγορίες στη γραμμή κατηγοριών. Περισσότερες πληροφορίες για τις διαφορετικές κατηγορίες μπορούν να βρεθούν στο <link href="http://standards.freedesktop.org/menu-spec/latest/apa.html">προδιαγραφές μενού</link>.</p>
+    <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε ένα υπάρχον εικονίδιο. Για ένα προσαρμοσμένο εικονίδιο χρειάζεται να έχετε ένα αρχείο .svg του εικονιδίου σας, αποθηκευμένο στο <file>/usr/share/icons/hicolor/scalable/apps</file>. Γράψτε το όνομα του αρχείου του εικονιδίου σας στο αρχείο .desktop.in, στη γραμμή 7. Περισσότερες πληροφορίες για εικονίδια στο: <link href="https://live.gnome.org/GnomeGoals/AppIcon">Εγκατάσταση εικονιδίων για θέματα</link>, και <link href="http://freedesktop.org/wiki/Specifications/icon-theme-spec">on freedesktop.org: Specifications/icon-theme-spec</link>.</p>
+  </section>
+
+  <section id="autotools"><title>Το σύστημα δόμησης</title>
+    <p>Για να κάνετε την εφαρμογή σας πραγματικά τμήμα του συστήματος GNOME 3 χρειαζόσαστε την εγκατάσταση του με τη βοήθεια των autotools. Η κατασκευή των autotools θα εγκαταστήσει όλα τα απαραίτητα αρχεία σε όλες τις σωστές θέσεις.</p>
+    <p>Για αυτό χρειαζόσαστε να έχετε τα παρακάτω αρχεία:</p>
+    <links type="section"/>
+
+      <section id="autogen"><title>autogen.sh</title>
+        <code mime="application/x-shellscript" style="numbered">#!/bin/sh
+
+set -e
+
+test -n "$srcdir" || srcdir=`dirname "$0"`
+test -n "$srcdir" || srcdir=.
+
+olddir=`pwd`
+cd "$srcdir"
+
+# Αυτό θα εκτελέσει autoconf, automake, κλπ. για μας
+autoreconf --force --install
+
+cd "$olddir"
+
+if test -z "$NOCONFIGURE"; then
+  "$srcdir"/configure "$@"
+fi
+</code>
+
+      <p>Αφού το αρχείο <file>autogen.sh</file> είναι έτοιμο και αποθηκευμένο, εκτελέστε:</p>
+      <screen><output style="prompt">$ </output><input>chmod +x autogen.sh</input></screen>
+    </section>
+
+
+    <section id="makefile"><title>Makefile.am</title>
+      <code mime="application/x-shellscript" style="numbered"># Το τρέχον εκτελέσιμο πρόγραμμα ορίζεται στα θεμελιακά SCRIPTS.
+# # Το πρόθεμα bin_ λέει που να το αντιγράψετε
+bin_SCRIPTS = hello-world
+# # Η λίστα των αρχείων που θα διανεμηθούν
+EXTRA_DIST =  \
+	$(bin_SCRIPTS)
+#
+#     # Τα αρχεία της επιφάνειας εργασίας
+desktopdir = $(datadir)/applications
+desktop_DATA = \
+	hello-world.desktop
+</code>
+    </section>
+
+
+    <section id="configure"><title>configure.ac</title>
+      <code mime="application/x-shellscript" style="numbered"># Αυτό το αρχείο επεξεργάζεται από το autoconf για τη δημιουργία ενός σεναρίου διαμόρφωσης
+AC_INIT([Hello World], 1.0)
+AM_INIT_AUTOMAKE([1.10 no-define foreign dist-xz no-dist-gzip])
+AC_CONFIG_FILES([Makefile hello-world.desktop])
+AC_OUTPUT
+</code>
+    </section>
+
+
+    <section id="readme"><title>README</title>
+       <p>Οι πληροφορίες χρηστών πρέπει να διαβαστούν πρώτα. Αυτό το αρχείο μπορεί να είναι κενό.</p>
+
+       <p>Όταν έχετε τα αρχεία <file>hello-world</file>, <file>hello-world.desktop.in</file>, <file>Makefile.am</file>, <file>configure.ac</file> και <file>autogen.sh</file> με σωστές πληροφορίες και δικαιώματα, το αρχείο <file>README</file> μπορεί να συμπεριλάβει τις ακόλουθες οδηγίες:</p>
+      <code mime="text/readme" style="numbered">Για να δομήσετε και να εγκαταστήσετε αυτό το πρόγραμμα:
+
+./autogen.sh --prefix=/home/your_username/.local
+make install
+
+-------------
+Η εκτέλεση της πρώτης παραπάνω γραμμής δημιουργεί τα ακόλουθα αρχεία:
+
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+hello-world.desktop
+install-sh
+missing
+Makefile.in
+Makefile
+
+Η εκτέλεση "make install", εγκαθιστά την εφαρμογή στο /home/your_username/.local/bin
+και εγκαθιστά το αρχείο hello-world.desktop στο /home/your_username/.local/share/applications
+
+Μπορείτε τώρα να εκτελέσετε την εφαρμογή πληκτρολογώντας "Hello World" στην επισκόπηση.
+
+----------------
+Για απεγκατάσταση, πληκτρολογήστε:
+
+make uninstall
+
+----------------
+Για δημιουργία tarball, πληκτρολογήστε:
+
+make distcheck
+
+Αυτό θα δημιουργήσει hello-world-1.0.tar.xz
+</code>
+    </section>
+
+    <!-- TODO: How to make a custom icon with autotools -->
+
+  </section>
+</page>

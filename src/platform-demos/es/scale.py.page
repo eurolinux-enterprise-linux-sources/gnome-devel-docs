@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scale.py" xml:lang="es">
+  <info>
+    <title type="text">Escala (Python)</title>
+    <link type="guide" xref="beginner.py#entry"/>
+    <link type="seealso" xref="grid.py"/>
+    <link type="next" xref="textview.py"/>
+    <revision version="0.2" date="2012-06-23" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un widget deslizador para seleccionar un valor de un rango</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Escala</title>
+  <media type="image" mime="image/png" src="media/scale.png"/>
+  <p>Desplace las escalas.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Código usado para generar este ejemplo</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Scale Example", application=app)
+        self.set_default_size(400, 300)
+        self.set_border_width(5)
+
+        # two adjustments (initial value, min value, max value,
+        # step increment - press cursor keys to see!,
+        # page increment - click around the handle to see!,
+        # page size - not used here)
+        ad1 = Gtk.Adjustment(0, 0, 100, 5, 10, 0)
+        ad2 = Gtk.Adjustment(50, 0, 100, 5, 10, 0)
+
+        # an horizontal scale
+        self.h_scale = Gtk.Scale(
+            orientation=Gtk.Orientation.HORIZONTAL, adjustment=ad1)
+        # of integers (no digits)
+        self.h_scale.set_digits(0)
+        # that can expand horizontally if there is space in the grid (see
+        # below)
+        self.h_scale.set_hexpand(True)
+        # that is aligned at the top of the space allowed in the grid (see
+        # below)
+        self.h_scale.set_valign(Gtk.Align.START)
+
+        # we connect the signal "value-changed" emitted by the scale with the callback
+        # function scale_moved
+        self.h_scale.connect("value-changed", self.scale_moved)
+
+        # a vertical scale
+        self.v_scale = Gtk.Scale(
+            orientation=Gtk.Orientation.VERTICAL, adjustment=ad2)
+        # that can expand vertically if there is space in the grid (see below)
+        self.v_scale.set_vexpand(True)
+
+        # we connect the signal "value-changed" emitted by the scale with the callback
+        # function scale_moved
+        self.v_scale.connect("value-changed", self.scale_moved)
+
+        # a label
+        self.label = Gtk.Label()
+        self.label.set_text("Move the scale handles...")
+
+        # a grid to attach the widgets
+        grid = Gtk.Grid()
+        grid.set_column_spacing(10)
+        grid.set_column_homogeneous(True)
+        grid.attach(self.h_scale, 0, 0, 1, 1)
+        grid.attach_next_to(
+            self.v_scale, self.h_scale, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach(self.label, 0, 1, 2, 1)
+
+        self.add(grid)
+
+    # any signal from the scales is signaled to the label the text of which is
+    # changed
+    def scale_moved(self, event):
+        self.label.set_text("Horizontal scale is " + str(int(self.h_scale.get_value())) +
+                            "; vertical scale is " + str(self.v_scale.get_value()) + ".")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Métodos útiles para un widget «Escala»</title>
+    <p>Se necesita un «Gtk.Adjustment» para construir la «Gtk.Scale». Este es la representación de un valor con un límite superior e inferior, junto con pasos y páginas de incrementos, y un tamaño de página, y se construye como <code>Gtk.Adjustment(valor, mínimo, ,máximo, paso, página, tamaño_de_página)</code> donde los campos son del tipo <code>float</code>; <code>paso</code> es el incremento/decremento que se obtiene usando las teclas de dirección, <code>página</code> es el que se obtiene pulsando en la escala en sí. Tenga en cuenta que <code>tamaño_de_página</code> no se usa en este caso, y debe establecerse a <code>0</code>.</p>
+    <p>En la línea 28, la señal <code>«value-changed»</code> se conecta a la función de retorno de llamada <code>scale_moved()</code> usando <code><var>widget</var>.connect(<var>señal</var>, <var>función de retorno de llamada</var>)</code>. Consulte la <link xref="signals-callbacks.py"/> para una explicación más detallada.</p>
+    <list>
+      <item><p><code>get_value()</code> obtiene el valor actual de la escala; <code>set_value(valor)</code> lo establece (si el <code>valor</code>, del tipo <code>float</code>, está fuera del rango mínimo o máximo, se ajustará para que entre). Estos son métodos de la clase «Gtk.Range».</p></item>
+      <item><p>Use <code>set_draw_value(False)</code> para evitar mostrar el valor actual como una cadena junto al deslizador.</p></item>
+      <item><p>Para resaltar la parte de la escala entre el origen y el valor actual:</p>
+        <code mime="text/x-python">
+self.h_scale.set_restrict_to_fill_level(False)
+self.h_scale.set_fill_level(self.h_scale.get_value())
+self.h_scale.set_show_fill_level(True)</code>
+        <p>en la función de retorno de llamada de la señal «value-changed», para tener el relleno nuevo cada vez que cambie el valor. Estos son métodos de la clase «Gtk.Range».</p>
+      </item>
+      <item><p><code>add_mark(valor, posición, marca)</code> añade una marca en el <code>valor</code> (<code>float</code> o <code>int</code> si esa es la precisión de la escala), en <code>posición</code> (<code>Gtk.PositionType.LEFT, Gtk.PositionType.RIGHT, Gtk.PositionType.TOP, Gtk.PositionType.BOTTOM</code>) con texto <code>Null</code> o <code>marca</code> en el lenguaje de marcado de Pango. Para limpiar las marcas, <code>clear_marks()</code>.</p></item>
+      <item><p><code>set_digits(dígitos)</code> establece la precisión de la escala en <code>dígitos</code> dígitos.</p></item>
+    </list>
+  </section>
+
+  <section id="references">
+    <title>Referencias de la API</title>
+    <p>En este ejemplo se usa lo siguiente:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkScale.html">GtkScale</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkAdjustment.html">GtkAdjustment</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">Enumeraciones estándar</link></p></item>
+    </list>
+  </section>
+</page>

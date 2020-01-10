@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="messagedialog.py" xml:lang="el">
+  <info>
+    <title type="text">MessageDialog (Python)</title>
+    <link type="guide" xref="beginner.py#windows"/>
+    <link type="next" xref="gmenu.py"/>
+    <revision version="0.1" date="2012-06-11" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα παράθυρο μηνύματος</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MessageDialog</title>
+  <media type="image" mime="image/png" src="media/messagedialog.png"/>
+  <p>Ένας διάλογος μηνύματος που τυπώνει μηνύματα στο τερματικό, ανάλογα με τις επιλογές σας.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    # constructor for a window (the parent window) with a label
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GMenu Example", application=app)
+        self.set_default_size(400, 200)
+        label = Gtk.Label()
+        label.set_text("This application goes boom!")
+        self.add(label)
+
+        # create the message_action (a Gio.SimpleAction) - for the window
+        message_action = Gio.SimpleAction.new("message", None)
+        # connect the signal from the action to the function message_cb()
+        message_action.connect("activate", self.message_cb)
+        # add the action to the application
+        app.add_action(message_action)
+
+    # callback function for the signal "activate" from the message_action
+    # in the menu of the parent window
+    def message_cb(self, action, parameter):
+        # a Gtk.MessageDialog
+        messagedialog = Gtk.MessageDialog(parent=self,
+                                          flags=Gtk.DialogFlags.MODAL,
+                                          type=Gtk.MessageType.WARNING,
+                                          buttons=Gtk.ButtonsType.OK_CANCEL,
+                                          message_format="This action will cause the universe to stop existing.")
+        # connect the response (of the button clicked) to the function
+        # dialog_response()
+        messagedialog.connect("response", self.dialog_response)
+        # show the messagedialog
+        messagedialog.show()
+
+    def dialog_response(self, widget, response_id):
+        # if the button clicked gives response OK (-5)
+        if response_id == Gtk.ResponseType.OK:
+            print("*boom*")
+        # if the button clicked gives response CANCEL (-6)
+        elif response_id == Gtk.ResponseType.CANCEL:
+            print("good choice")
+        # if the messagedialog is destroyed (by pressing ESC)
+        elif response_id == Gtk.ResponseType.DELETE_EVENT:
+            print("dialog closed or cancelled")
+        # finally, destroy the messagedialog
+        widget.destroy()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def quit_cb(self, action, parameter):
+        self.quit()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        # create a menu (a Gio.Menu)
+        menu = Gio.Menu()
+        # append a menu item with label "Message" and action "app.message"
+        menu.append("Message", "app.message")
+        # append a menu item with label "Quit" and action "app.quit"
+        menu.append("Quit", "app.quit")
+        # set menu as the menu for the application
+        self.set_app_menu(menu)
+
+        # a new simpleaction - for the application
+        quit_action = Gio.SimpleAction.new("quit", None)
+        quit_action.connect("activate", self.quit_cb)
+        self.add_action(quit_action)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+  <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο MessageDialog</title>
+    <p>Στη γραμμή 18 το σήμα <code>"activate"</code> συνδέεται με τη συνάρτηση επανάκλησης <code>message_cb()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
+  <list>
+    <item><p>Στον κατασκευαστή του MessageDialog μπορούμε να ορίσουμε σημαίες ως <code>Gtk.DialogFlags.DESTROY_WITH_PARENT</code> (για καταστροφή του παραθύρου διαλόγου μηνύματος όταν το ανιόν παράθυρο καταστράφηκε) ή ως <code>Gtk.DialogFlags.MODAL</code> (χωρίς αλληλεπίδραση με άλλα παράθυρα της εφαρμογής).</p></item>
+    <item><p>Στον κατασκευαστή του MessageDialog μπορούμε να ορίσουμε ως τύπο οποιοδήποτε από τα <code>Gtk.MessageType.INFO, Gtk.MessageType.WARNING, Gtk.MessageType.QUESTION, Gtk.MessageType.ERROR, Gtk.MessageType.OTHER</code> ανάλογα με τι τύπο μηνύματος θέλουμε.</p></item>
+    <item><p>Στον κατασκευαστή του MessageDialog μπορούμε να ορίσουμε κουμπιά οποιαδήποτε από τα <code>Gtk.ButtonsType.NONE, Gtk.ButtonsType.OK, Gtk.ButtonsType.CLOSE, Gtk.ButtonsType.CANCEL, Gtk.ButtonsType.YES_NO, Gtk.ButtonsType.OK_CANCEL</code>, ή οποιοδήποτε κουμπί χρησιμοποιώντας το <code>add_button()</code> όπως στον Gtk.Dialog.</p></item>
+    <item><p>Μπορούμε να αντικαταστήσουμε την προεπιλεγμένη εικόνα του MessageDialog με άλλη εικόνα χρησιμοποιώντας</p>
+    <code mime="text/x-python">
+image = Gtk.Image()
+image.set_from_stock(Gtk.STOCK_CAPS_LOCK_WARNING, Gtk.IconSize.DIALOG)
+image.show()
+messagedialog.set_image(image)</code>
+    <p>όπου <code>Gtk.STOCK_CAPS_LOCK_WARNING</code> είναι οποιαδήποτε εικόνα από <link href="http://developer.gnome.org/gtk3/unstable/gtk3-Stock-Items.html">στοιχεία αποθέματος</link>. Μπορούμε επίσης να ορίσουμε οποιαδήποτε εικόνα όπως στο γραφικό στοιχείο της εικόνας, ως <code>image.set_from_file("filename.png")</code>.</p></item>
+    <item><p>Το <code>format_secondary_text("some secondary message")</code> ορίζει ένα δευτερεύον μήνυμα. Το πρωτεύον κείμενο γίνεται έντονο.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Αναφορές API</title>
+  <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkMessageDialog.html">GtkMessageDialog</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkDialog.html">GtkDialog</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gio/unstable/GActionMap.html">GActionMap</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gio/stable/GMenu.html">GMenu</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplication.html">GtkApplication</link></p></item>
+  </list>
+  </section>
+</page>

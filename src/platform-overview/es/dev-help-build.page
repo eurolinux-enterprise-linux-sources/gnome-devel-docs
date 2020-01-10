@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-help-build" xml:lang="es">
+
+  <info>
+    <link type="next" xref="dev-help-appmenu"/>
+    <revision version="0.1" date="2013-06-18" status="review"/>
+
+    <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="editor">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years/>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2007-2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Carrión</mal:name>
+      <mal:email>mario@monouml.org</mal:email>
+      <mal:years>2006</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Configurar el sistema de construcción</title>
+
+  <links type="series" style="floatend">
+    <title>Configurar la ayuda</title>
+  </links>
+
+  <p>Generalmente, la ayuda se instala en la carpeta <file its:translate="no">/usr/share/help/<input>locale</input>/<input>HELP_ID</input></file>.</p>
+
+  <p>Añadir las siguientes líneas al archivo <file>configure.ac</file>:</p>
+  
+  <code>YELP_HELP_INIT</code>
+  
+  <code>AC_CONFIG_FILES([
+help/Makefile
+])</code>
+
+  <p>añadir la siguiente línea al archivo <file>Makefile.am</file>:</p>
+  <code>SUBDIRS = help</code>
+  		
+  <p>Añadir el archivo <file>help/Makefile.am</file>, que debe listar los archivos de ayuda el proyecto que quiere instalar:</p>
+<code>
+@YELP_HELP_RULES@
+
+HELP_ID = <input>applicationname</input>
+
+# Media files
+HELP_MEDIA = \
+	figures/icon.png
+
+# Help pages
+HELP_FILES = \
+	index.page \
+	introduction.page \
+	anotherpage.page
+
+# Translated languages, blank if no translations exist
+HELP_LINGUAS = en_GB 
+</code>
+
+</page>

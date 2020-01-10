@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-launching-desktop" xml:lang="ko">
+
+  <info>
+    <link type="next" xref="dev-launching-icons"/>
+    <revision version="0.1" date="2014-01-28" status="draft"/>
+
+    <credit type="author">
+      <name>David King</name>
+      <email its:translate="no">davidk@gnome.org</email>
+      <years>2014</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>desktop 파일 설치</title>
+
+  <links type="series" style="floatend">
+    <title>프로그램 실행</title>
+  </links>
+
+  <p>desktop 파일을 작성하고 설치하여 사용자가 프로그램을 찾고 실행할 수 있게 하십시오.</p>
+  
+  <p>그놈은 프로그램 실행 아이콘을 언급할 때 <link href="http://standards.freedesktop.org/desktop-entry-spec/latest/index.html">freedesktop.org desktop 항목</link> 과 <link href="http://standards.freedesktop.org/menu-spec/latest/">desktop 메뉴 명세</link>를 따릅니다. desktop 파일을 설치하는 방식은 그놈 및 기타 데스크톱 환경에서 프로그램을 등록하는 표준 방식입니다.</p>
+  
+  <p>desktop 파일에는 프로그램 이진 실행 파일, 이름, 형식을 나타내며, 아이콘, 설명, 몇가지 프로그램 실행에 필요한 정보를 나타냅니다.</p>
+
+  <p><app>My Application</app>이 있다고 가정한 상황에서, desktop 파일의 내용은 다음과 같습니다:</p>
+  <example>
+    <listing>
+      <title><file>myapplication.desktop</file></title>
+<code>[Desktop Entry]
+Name=My Application
+Exec=myapplication
+Type=Application
+Icon=myapplication
+Comment=Do the thing that the application does
+Categories=GTK;GNOME;Utility;</code>
+    </listing>
+  </example>
+
+  <p><code>[Desktop Entry]</code> 줄은 해당 파일이 desktop 파일임을 나타냅니다. 그 다음에는 프로그램 실행 아이콘을 설명하는 키가 따라옵니다. <code>Name</code>  키에는 UI에 나타나 사람이 알아볼 수 있는 프로그램의 이름이 들어갑니다. 프로그램 이진 실행 파일은 <code>Exec</code> 키에 완전한 경로로 넣거나 <code>PATH</code> 환경 변수에 있는 경로의 이진 실행 파일을 넣습니다. 마지막으로 필요한 키는 <code>Type</code>인데, 프로그램에 필요한 값은 항상 <code>Application</code>입니다. 대신 사용할 형식은 desktop 항목 명세 문서에 있습니다.</p>
+
+  <p>desktop 파일의 다른 내용은 여러분의 선택에 따르지만, 추천합니다. 프로그램에서는 아이콘을 설치해야 하며, <code>Icon</code> 키에 아이콘의 이름을 언급해야 합니다(확장자 제외). <code>Comment</code>는 프로그램의 간단한 설명입니다. 사용자가 프로그램을 찾아볼 때 도움을 주려면, desktop 메뉴 명세에 따라 <code>Categories</code> 키에 분류 이름값을 콜론으로 구분해 넣어야합니다.</p>
+
+  <p>Desktop Entry 명세에 언급한 대로 desktop 파일에 추가할 수 있는 몇가지 핵심 항목이 있습니다.</p>
+ 
+</page>

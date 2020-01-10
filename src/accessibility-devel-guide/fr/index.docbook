@@ -1,0 +1,1667 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY gnomeversion "2.24">
+<!ENTITY manrevision "2.24.0">
+<!ENTITY date "September 2008">
+<!ENTITY LEGAL SYSTEM "legal.xml">
+<!ENTITY gad SYSTEM "gad.xml">
+<!ENTITY gtest SYSTEM "gtest.xml">
+]>
+<?db.chunk.max_depth 4?>
+<book id="index" lang="fr">
+<title>Guide d'accessibilité du bureau GNOME pour les développeurs </title>
+<bookinfo>
+<abstract role="description">
+<para>Le guide d'accessibilité du bureau GNOME est pour les développeurs qui souhaitent s'assurer que leurs programmes sont accessibles au plus grand nombre d'utilisateurs. Ce guide couvre aussi bon nombre des critères de la section 508 (États Unis).</para>
+</abstract>
+<copyright><year>2008</year> <holder>Vincent Alexander</holder></copyright>
+<copyright><year>2001, 2002</year> <holder>Calum Benson, Brian Cameron, Bill Haneman, Padraig O'Briain, Sharon Snider</holder></copyright>
+<publisher role="maintainer"> 
+<publishername>Projet de documentation GNOME</publishername> 
+</publisher>
+<legalnotice id="legalnotice">
+<para>Permission vous est donnée de copier, distribuer et/ou modifier ce document selon les termes de la Licence GNU Free Documentation License (GFDL), Version 1.1 ou ultérieure publiée par la Free Software Foundation sans section inaltérable, sans texte de première page de couverture ni texte de dernière page de couverture. Vous trouverez un exemplaire de cette licence en suivant ce <ulink type="help" url="ghelp:fdl">lien</ulink> ou dans le fichier COPYING-DOCS fourni avec le présent manuel.</para>
+<para>Ce manuel fait partie de la collection de manuels GNOME distribués selon les termes de la licence de documentation libre GNU. Si vous souhaitez distribuer ce manuel indépendamment de la collection, vous devez joindre un exemplaire de la licence au document, comme indiqué dans la section 6 de celle-ci.</para>
+<para>La plupart des noms utilisés par les entreprises pour distinguer leurs produits et services sont des marques déposées. Lorsque ces noms apparaissent dans la documentation GNOME et que les membres du projet de Documentation GNOME sont informés de l'existence de ces marques déposées, soit ces noms entiers, soit leur première lettre est en majuscule.</para>
+<para>LE PRÉSENT DOCUMENT ET SES VERSIONS MODIFIÉES SONT FOURNIS SELON LES TERMES DE LA LICENCE DE DOCUMENTATION LIBRE GNU SACHANT QUE : <orderedlist>
+<listitem>
+<para>LE PRÉSENT DOCUMENT EST FOURNI « TEL QUEL », SANS AUCUNE GARANTIE, EXPRESSE OU IMPLICITE, Y COMPRIS, ET SANS LIMITATION, LES GARANTIES DE BONNE QUALITÉ MARCHANDE OU D'APTITUDE À UN EMPLOI PARTICULIER OU AUTORISÉ DU DOCUMENT OU DE SA VERSION MODIFIÉE. L'UTILISATEUR ASSUME TOUT RISQUE RELATIF À LA QUALITÉ, À LA PERTINENCE ET À LA PERFORMANCE DU DOCUMENT OU DE SA VERSION DE MISE À JOUR. SI LE DOCUMENT OU SA VERSION MODIFIÉE S'AVÉRAIT DÉFECTUEUSE, L'UTILISATEUR (ET NON LE RÉDACTEUR INITIAL, L'AUTEUR, NI TOUT AUTRE PARTICIPANT) ENDOSSERA LES COÛTS DE TOUTE INTERVENTION, RÉPARATION OU CORRECTION NÉCESSAIRE. CETTE DÉNÉGATION DE RESPONSABILITÉ CONSTITUE UNE PARTIE ESSENTIELLE DE CETTE LICENCE. AUCUNE UTILISATION DE CE DOCUMENT OU DE SA VERSION MODIFIÉE N'EST AUTORISÉE AUX TERMES DU PRÉSENT ACCORD, EXCEPTÉ SOUS CETTE DÉNÉGATION DE RESPONSABILITÉ ; ET</para>
+</listitem>
+<listitem>
+<para>EN AUCUNE CIRCONSTANCE ET SOUS AUCUNE INTERPRÉTATION DE LA LOI, QU'IL S'AGISSE D'UN DÉLIT CIVIL (Y COMPRIS LA NÉGLIGENCE), CONTRACTUEL OU AUTRE, L'AUTEUR, LE RÉDACTEUR INITIAL, TOUT PARTICIPANT OU TOUT DISTRIBUTEUR DE CE DOCUMENT OU DE SA VERSION MODIFIÉE, OU TOUT FOURNISSEUR DE L'UNE DE CES PARTIES NE POURRA ÊTRE TENU RESPONSABLE À L'ÉGARD DE QUICONQUE POUR TOUT DOMMAGE DIRECT, INDIRECT, PARTICULIER, OU ACCIDENTEL DE TOUT TYPE Y COMPRIS, SANS LIMITATION, LES DOMMAGES LIÉS À LA PERTE DE CLIENTÈLE, À UN ARRÊT DE TRAVAIL, À UNE DÉFAILLANCE OU UN MAUVAIS FONCTIONNEMENT INFORMATIQUE, OU À TOUT AUTRE DOMMAGE OU PERTE LIÉE À L'UTILISATION DU DOCUMENT ET DE SES VERSIONS MODIFIÉES, MÊME SI LADITE PARTIE A ÉTÉ INFORMÉE DE L'ÉVENTUALITÉ DE TELS DOMMAGES.</para>
+</listitem>
+</orderedlist></para>
+</legalnotice>
+ 
+<authorgroup> 
+<author><firstname>Vincent</firstname> <surname>Alexander</surname> <affiliation> <orgname>Projet de documentation GNOME</orgname> </affiliation></author>
+<author><firstname>Calum</firstname> <surname>Benson</surname> <affiliation> <orgname>Projet de documentation GNOME</orgname> </affiliation></author>
+<author><firstname>Brian</firstname> <surname>Cameron</surname> <affiliation> <orgname>Projet de documentation GNOME</orgname> </affiliation></author>
+<author><firstname>Bill</firstname> <surname>Haneman</surname> <affiliation> <orgname>Projet de documentation GNOME</orgname> </affiliation></author>
+<author><firstname>Padraig</firstname> <surname>O'Briain</surname> <affiliation> <orgname>Projet de documentation GNOME</orgname> </affiliation></author> 
+<author><firstname>Sharon</firstname> <surname>Snider</surname> <affiliation> <orgname>Projet de documentation GNOME</orgname> </affiliation></author>
+</authorgroup>
+<revhistory>
+<revision><revnumber> Guide d'accessibilité du bureau GNOME 2.24 pour les développeurs V2.24.0 </revnumber> <date>Septembre 2008</date> <revdescription> 
+<para role="author">Projet de documentation GNOME</para> 
+<para role="publisher">Projet de documentation GNOME</para> 
+</revdescription></revision>
+<revision><revnumber> Guide d'accessibilité du bureau GNOME 2.24 pour les développeurs V2.24.0 </revnumber> <date>Septembre 2008</date> <revdescription> 
+<para role="author">Projet de documentation GNOME</para> 
+<para role="publisher">Projet de documentation GNOME</para> 
+</revdescription></revision>
+</revhistory>
+<releaseinfo>Ce manuel documente la version 2.24 du bureau GNOME.</releaseinfo>
+<legalnotice> 
+<title>Votre avis</title> 
+<para>Pour rapporter une anomalie ou faire une suggestion concernant le bureau GNOME ou ce manuel, suivez les indications de la <ulink url="ghelp:user-guide?feedback" type="help">Page de réactions sur GNOME</ulink>.</para>
+</legalnotice> 
+</bookinfo>
+<chapter id="gad" status="draft">
+<title>Qu'est-ce que I'accessibilité ?</title>
+<para>L'accessibilité signifie l'assistance aux personnes handicapées pour qu'elles puissent participer aux activités substantielles de la vie. Cela inclut le travail, l'accès aux services, produits et informations. GNOME inclut des bibliothèques et une structure de prise en charge qui permettent aux personnes ayant des handicaps d'utiliser toutes les fonctionnalités de l'environnement utilisateur GNOME.</para>
+<para>En conjonction avec les technologies d'assistance, si nécessaire - interfaces vocales, lecteurs d'écran, périphériques de saisie alternatifs, et ainsi de suite - les personnes souffrant temporairement ou définitivement de handicaps peuvent donc utiliser le bureau GNOME et ses applications. Les technologies d'assistance sont aussi utiles pour les personnes utilisant un ordinateur en dehors de leur bureau ou de leur maison. Par exemple, si vous êtes pris dans un bouchon vous pouvez utiliser la commande vocale pour consulter votre courriel.</para>
+<para>Les technologies d'assistance reçoivent des informations de l'application via l'API Accessibility Toolkit (ATK), que vous pouvez trouver dans le module atk des dépôts GNOME. Comme la prise en charge de l'API est incluse dans les éléments graphiques de GNOME, votre programme devrait fonctionner raisonnablement bien avec les technologies d'assistance sans que vous ayez à faire de travail supplémentaire. Par exemple, les technologies d'assistance peuvent lire automatiquement les étiquettes des éléments graphiques que vous utilisez normalement dans votre programme (par ex. avec des appels de fonctions GTK telles que <function>gtk_label_set_text()</function> ou <function>gtk_button_new_with_label()</function>). Elles peuvent aussi trouver si un texte d'infobulle est associé à un élément graphique et l'utiliser pour décrire l'élément graphique à l'utilisateur.</para>
+<para>Avec seulement un petit effort supplémentaire, vous pouvez faire fonctionner votre programme encore mieux grâce aux technologies d'assistance. En plus d'aider les utilisateurs, cela rendra votre programme plus attractif aux marchés gouvernementaux et éducatifs dont la plupart exigent que leurs applications soient légalement accessibles.</para>
+
+<section>
+<title>Types de handicaps</title>
+<para>Il est estimé, rien qu'aux États Unis, qu'il y a 30 000 000 personnes dont la capacité d'accès aux ordinateurs est limitée par une conception non accessible. Globalement approximativement 8% des personnes qui utilisent Internet ont une forme de handicap. Ces handicaps sont classés comme suit :</para>
+<itemizedlist>
+<listitem>
+<para><emphasis>Déficience visuelle</emphasis> - Cela va de la mauvaise vue (vue faible ou floue, presbytie ou myopie extrême, daltonisme et rétrécissement du champ visuel entre autres) à la cécité complète. Un mauvais choix de taille de texte et de couleurs et des tâches requérant une bonne coordination main-œil (tel que le déplacement de la souris) peuvent causer des problèmes pour ces utilisateurs.</para>
+</listitem>
+<listitem>
+<para><emphasis>Handicaps moteur</emphasis> - Ce sont des utilisateurs qui ont des problèmes de contrôle musculaire ou des faiblesses qui rendent l'utilisation d'un clavier standard et d'une souris difficile. Par exemple, ils peuvent être incapables d'enfoncer deux touches simultanément ou il se peut qu'ils enfoncent des touches accidentellement.</para>
+</listitem>
+<listitem>
+<para><emphasis>Altération auditive</emphasis> - Cela va de la capacité d'entendre certains sons mais pas de distinguer les mots parlés, à la surdité profonde. Les applications qui fournissent des informations importantes uniquement par messages sonores causent des problèmes à ces utilisateurs.</para>
+</listitem>
+<listitem>
+<para><emphasis>Difficultés d'expression et de raisonnement</emphasis> - Cela va de la dyslexie aux problèmes de mémoire, de résolution de problèmes, de compréhension et d'utilisation du langage écrit ou parlé. Un affichage complexe ou peu cohérent, un mauvais choix de mots peut rendre l'utilisation d'ordinateurs difficile pour ces utilisateurs.</para>
+</listitem>
+<listitem>
+<para><emphasis>Troubles convulsifs</emphasis> - Certains motifs lumineux ou répétitions sonores peuvent causer des crises épileptiques pour les utilisateurs qui y sont sensibles.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section id="gad-how-it-works">
+<title>Fonctionnement de l'accessibilité dans GNOME</title>
+<para>La boîte à outils d'accessibilité (ATK) décrit un jeu d'interfaces qui doivent être implémentées dans les composants de l'interface graphique pour les rendre accessibles. Les interfaces sont indépendantes de la boîte à outils - les implémentations peuvent être écrites pour n'importe quel jeu de d'éléments graphiques, tel que GTK, Motif ou Qt.</para>
+<para>
+The implementation for the GTK widgets is in a module called GAIL (GNOME Accessibility Implementation Library), which is dynamically loadable at runtime by a GTK application. Once
+loaded, those parts of your application that use standard GTK widgets will have a basic level of accessibility, without you having to modify your application at all. If GAIL is not
+loaded, GTK widgets will have a default accessibility implementation that essentially returns no information, though it nominally conforms to the ATK API. Applications which use
+Bonobo controls, particularly out-of-process ones, also load accessibility support code from module libgail-gnome. Whether or not applications on the GNOME desktop automatically load these accessibility support libraries depends on the value of a <application>gconf</application> key, "/desktop/gnome/interface/accessibility"; a boolean value of "true" enables support for assistive technologies and applications which call gnome_program_init will automatically load the appropriate accessibility libraries at runtime. "Pure GTK+ applications", e.g. those that use gtk+ but do not link to libgnome, rely on the value of the GTK_MODULES environment variable, which must be set to "gail:atk-bridge" in order to enable assistive technology support.
+</para>
+<para>La plupart des technologies d'assistance utilisées par d'autres bureaux ont historiquement nécessité de maintenir des modèles hors écran complexes des applications du bureau, basés sur la capture d'évènements du système d'exploitation (SE), l'utilisation de fonctionnalités et d'API non prises en charge par le SE et les applications, ainsi que d'autres techniques non transférables. Cela rend la prise en charge des technologies d'assistance quelque peu « fragile » et très spécifique au SE et aux applications. Par contraste, pour le bureau GNOME, toutes les informations nécessaires aux technologies d'assistance sont fournies par les applications en fonctionnement, via la boîte à outils d'accessibilité de GNOME, vers l'interface de fournisseur de services (Service Provider Interface : SPI) de la boîte à outils indépendante. L'interface SPI fournit les moyens aux technologies d'assistance basées sur UNIX, telles que les lecteurs d'écran et les loupes, d'obtenir les informations d'accessibilités depuis les applications en fonctionnement via une API stable et homogène, et peut éliminer le besoin d'un modèle hors écran dans de nombreux cas. La prise en charge des applications est « intégrée » dans les boîtes à outils via les API appropriées (par exemple, ATK pour la plupart des applications natives en C et l'API Java Accessibility pour les applications Java) et exportée vers l'interface « AT-SPI » commune via le « pont » correspondant (voir le diagramme ci-dessous).</para>
+<figure id="gad-architecture">
+<title>Architecture de l'accessibilité de GNOME</title>
+<mediaobject><imageobject> <imagedata fileref="figures/GNOME_desktop_Accessibility.png" format="PNG"/> </imageobject> <textobject> <phrase>Diagramme de l'architecture d'accessibilité de GNOME</phrase> </textobject></mediaobject>
+</figure>
+<para>La prise en charge intégrée des technologies d'assistance par GNOME signifie que les applications créées en utilisant les éléments graphiques du magasin GNOME bénéficient de la prise en charge de ces technologies « gratuitement », à condition que l'utilisation des éléments graphiques ne soit pas en conflit avec la prise en charge intégrée.</para>
+<para>Un élément graphique gtk+/GNOME est accessible si son utilisation suit les directives générales d'accessibilité décrites dans ce document, et que les interfaces ATK appropriées à son role sont implémentées dans l'interface utilisateur. Les implémentations ATK sont fournies pour les éléments graphiques de la boîte à outils du « magasin » de GNOME (par ex. les éléments graphiques non abandonnés de gtk+ et GNOME) et dans de nombreux cas, les nouveaux éléments graphiques qui sont de simples dérivés d'éléments graphiques GTK+ ou GNOME, héritent également d'une prise en charge d'accessibilité convenable.</para>
+<para>
+Though GNOME's built-in accessibility support provides significant functionality without any accessibility-specific code changes on the part of the application, applications can often improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application, via straightforward calls to ATK methods in the application. For instance, in most cases applications should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assistive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
+</para>
+<para>Si votre application utilise des éléments graphiques personnalisés, vous allez sûrement devoir faire un peu de travail pour fournir les propriétés de ces éléments graphiques aux technologies d'assistance. Pour plus d'informations, consultez la section <link linkend="gad-custom">rendre les composants personnalisés accessibles</link> et les <link linkend="gad-api-examples">exemples d'utilisation de l'API d'accessibilité</link>.</para>
+<para>Pour des informations supplémentaires plus détaillées sur GTK/GTK+, consultez le <ulink url="http://library.gnome.org/devel/gtk">manuel de référence de GTK+</ulink>, la <ulink url="http://live.gnome.org/GAP/AtkGuide/Gtk">section GTK du guide de ATK</ulink>, le <ulink url="http://library.gnome.org/devel/gtk-tutorial/stable/">tutoriel GTK+ 2.0</ulink> hébergé par GNOME et la <ulink url="http://library.gnome.org/devel/gtk-faq/stable/">FAQ GTK+</ulink> officielle.</para>
+</section>
+
+<section id="dev-start">
+<title>Démarrage rapide pour le développeur</title>
+<para>Voici quelques points de départ courants :</para>
+
+<section id="dev-start-1">
+<title>Comment vérifier que mon application est accessible ?</title>
+<para>
+To start right in, see <link linkend="gad-overview">Making a GNOME Application Accessible - Overview</link>. For a pre-coding perspective, see <link linkend="gad-ui-guidelines">User Interface Guidelines for Supporting Accessibility</link> or <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link>. For a checklist of post-design test items, see <link linkend="gad-checklist">User Interface Checklist</link>.
+</para>
+</section>
+
+<section id="dev-start-2">
+<title>Pièges à éviter</title>
+<para>La <link linkend="gad-checklist">liste de contrôle de l'interface utilisateur</link> couvre toutes les zones qui sont parfois oubliées lors de la phase de conception.</para>
+</section>
+
+<section id="dev-start-3">
+<title>Comment réaliser les fonctions ATK courantes ?</title>
+<para>Une liste abrégée des appels ATK courants se trouve <link linkend="gad-api">ici</link>.</para>
+</section>
+
+<section id="dev-start-4">
+<title>Comment réaliser les fonctions ATK plus complexes ?</title>
+<para>Pour plus d'informations, consultez la section <link linkend="gad-custom">rendre les composants personnalisés accessibles</link> et les <link linkend="gad-api-examples">exemples d'utilisation de l'API d'accessibilité</link>.</para>
+</section>
+
+<section id="dev-start-5">
+<title>Introduction à ATK, AT-SPI, GAIL et GTK+</title>
+<screenshot>
+<mediaobject><imageobject> <imagedata fileref="figures/gaa.jpg"/> </imageobject> <textobject> <phrase> Architecture de l'accessibilité de GNOME </phrase> </textobject></mediaobject>
+</screenshot>
+<para>
+ATK is the toolkit that GNOME uses to enable accessibility for users needing extra support to make the most of their computers. ATK is used by tools such as screen readers, magnifiers, and input devices to permit a rich interaction with the desktop through alternative means. See <ulink url="http://java-gnome.sourceforge.net/4.0/doc/api/org/gnome/atk/package-summary.html">the ATK SourceForge Project</ulink> and <ulink url="http://library.gnome.org/devel/atk/stable/">the ATK Library</ulink> for more information.
+</para>
+<para>AT-SPI est l'interface de service principale par laquelle les technologies d'assistance effectuent leurs requêtes et reçoivent les notifications des applications en fonctionnement. L'API complète peut être explorée <ulink url="http://library.gnome.org/devel/at-spi-cspi/stable/">ici</ulink>. Plus d'informations sont disponibles via <ulink url="http://accessibility.kde.org/developer/atk.php#coreclasses">la communauté de développement de l'accessibilité KDE</ulink>.</para>
+<para>GAIL (GNOME Accessibility Implementation Library) est une implémentation des interfaces d'accessibilité définies par ATK. GTK est une boîte à outils qui est déjà liée à ATK par le module GAIL. La licence, la procédure de téléchargement et d'autres informations sont disponibles <ulink url="http://www.t2-project.org/packages/gail.html">ici</ulink>. Le <ulink url="ftp://ftp.gnome.org/pub/GNOME/sources/gail/">code source de GAIL</ulink> est aussi un excellent tutoriel pour une utilisation avancée d'ATK. De plus, vous pouvez être intéressé par le <ulink url="http://library.gnome.org/devel/gail-libgail-util/stable/">manuel de référence de GAIL</ulink>.</para>
+<para>GTK+ est une bibliothèque utilisée pour créer des interfaces graphiques. Elle fonctionne avec de nombreuses plateformes de type UNIX, Windows et avec des consoles graphiques. GTK+ est distribuée sous la licence de bibliothèque publique générale GNU (GNU LGPL), qui est une licence d'utilisation flexible pour les applications clientes. L'architecture de GTK+ se base sur le langage C orienté objet, qui permet une flexibilité maximum. Des liaisons vers d'autres langages existent pour le C++, Objective-C, Guile/Scheme, Perl, Python, TOM, Ada95, Free Pascal et Eiffel.</para>
+<para>
+For additional, in-depth information regarding GTK/GTK+, see the <ulink url="http://library.gnome.org/devel/gtk">GTK+ Reference Manual</ulink>, <ulink url="http://wiki.gnome.org/Accessibility/Documentation/GNOME2/AtkGuide/Gtk">the GTK section of the ATK Guide</ulink>, the GNOME-hosted <ulink url="http://library.gnome.org/devel/gtk-tutorial/stable/">GTK+ 2.0 Tutorial</ulink> and the official <ulink url="http://library.gnome.org/devel/gtk-faq/stable/">GTK+ FAQ</ulink>.
+</para>
+</section>
+</section>
+
+<section id="gad-overview">
+<title>Rendre une application GNOME accessible - aperçu</title>
+<para>Si votre application n'utilise que des éléments graphiques GTK standards, vous aurez peu ou pas de travail pour que votre application soit (raisonnablement) accessible. Mais faites attention aux objets dans votre GUI qui n'ont pas de texte de description associé, tel que des boutons graphiques ou des indicateurs d'état qui n'ont pas d'étiquette ou d'infobulle.</para>
+<para>
+You can probably also improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application. You should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assistive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
+</para>
+<para>Si votre application utilise des éléments graphiques personnalisés, vous allez sûrement devoir travailler un peu pour rendre leurs propriétés visibles par les technologies d'assistance. Pour plus d'informations, consultez la section pour <link linkend="gad-custom">rendre les composants personnalisés accessibles</link> et les <link linkend="gad-api-examples">exemples d'utilisation de l'API d'accessibilité</link>. Des informations plus détaillées peuvent être trouvées dans la présentation de Marc Mulcahy au GUADEC 2002 : « <ulink url="https://projects.gnome.org/accessibility/talks/GUAD3C/making-apps-accessible/start.html">Rendre les applications GNOME accessibles</ulink> ».</para>
+</section>
+
+<section id="gad-coding-guidelines">
+<title>Directives de codage pour la prise en charge de l'accessibilité</title>
+<para>Voici plusieurs choses que vous pouvez faire pour que votre programme fonctionne au mieux avec les technologies d'assistance (vous trouverez une liste des choses à considérer lorsque vous concevez votre GUI dans la section sur les <link linkend="gad-ui-guidelines">directives pour la prise en charge de l'accessibilité dans l'interface utilisateur</link> plus loin dans ce document) :</para>
+<itemizedlist>
+<listitem>
+<para>Pour les composants qui n'affichent pas de chaîne de texte courte (tel qu'un bouton graphique), donnez lui un nom avec la fonction <function>atk_object_set_name()</function>. Vous pourriez utiliser cette fonction pour les boutons qui n'affichent qu'une image, les panneaux qui regroupent des fonctions de manière logique, les zones de texte...</para>
+</listitem>
+<listitem>
+<para>Si vous ne pouvez pas fournir d'infobulle pour un composant, utilisez la fonction <function>atk_object_set_description()</function> à la place pour fournir une description que les technologies d'assistance peuvent renvoyer à l'utilisateur. Par exemple, pour fournir une description accessible pour un bouton <guibutton>Fermer</guibutton> :</para>
+<example>
+<title>Description accessible pour un bouton GtkButton</title>
+<programlisting>
+{
+  AtkObject *obj;
+  obj = gtk_widget_get_accessible(button);
+  atk_object_set_description(obj,_("Ferme la fenêtre"));
+}
+</programlisting>
+</example>
+</listitem>
+<listitem>
+<para>Utilisez la fonction <function>atk_image_set_description()</function> pour fournir le texte de description pour toutes les images et icônes de votre programme.</para>
+</listitem>
+<listitem>
+<para>Si plusieurs composants forment un groupe logique, essayez de les mettre dans un même conteneur.</para>
+</listitem>
+<listitem>
+<para>Quand vous avez une étiquette qui décrit un autre composant, utilisez la fonction <function>atk_relation_set_add_relation()</function> pour que les technologies d'assistance puissent trouver le composant associé à cette étiquette (si vous associez l'étiquette au composant avec la fonction <function>gtk_label_set_mnemonic_widget()</function>, la relation <constant>ATK_RELATION_LABEL_FOR</constant> est générée automatiquement, donc le code suivant n'est plus nécessaire) :</para>
+<example>
+<title>Lien entre un GtkLabel et un GtkWidget</title>
+<programlisting>
+{
+  GtkWidget *widget;
+  GtkLabel *label;
+
+  AtkObject *atk_widget, *atk_label;
+  AtkRelationSet *relation_set;
+  AtkRelation *relation;
+  AtkObject *targets[1];
+
+  atk_widget = gtk_widget_get_accessible(widget);
+  atk_label = gtk_widget_get_accessible (GTK_WIDGET(label));
+
+  relation_set = atk_object_ref_relation_set (atk_label);
+  targets[0] = atk_widget;
+
+  relation = atk_relation_new(targets,1, ATK_RELATION_LABEL_FOR);
+  atk_relation_set_add(relation_set,relation);
+  g_object_unref(G_OBJECT(relation));
+}
+</programlisting>
+</example>
+</listitem>
+<listitem>
+<para>Si vous créez un élément graphique personnalisé, assurez-vous qu'il prend en charge l'accessibilité. Les composants personnalisés qui sont des descendants d'éléments graphiques GTK doivent remplacer les informations d'accessibilité héritées quand c'est nécessaire. Pour plus d'informations, consultez la section pour <link linkend="gad-custom">rendre les composants personnalisés accessibles</link>.</para>
+</listitem>
+<listitem>
+<para>Ne cassez pas ce que vous pouvez obtenir sans effort ! Si votre GUI contient un conteneur inaccessible, tous les composants qu'il contient, risquent de l'être aussi.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section id="gad-api">
+<title>API d'accessibilité</title>
+<para>Voici quelques-uns des appels de base à l'API dont vous pouvez avoir besoin dans votre application pour vous assurer qu'elle fonctionne correctement avec les technologies d'assistance. L'API d'accessibilité complète est vaste pour vous permettre d'écrire vos propres éléments graphiques accessibles personnalisés.</para>
+<table frame="all">
+<title>Appels à l'API ATK couramment utilisés</title>
+<tgroup cols="2" align="left">
+<thead>
+<row>
+<entry>API</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>
+<para><function>AtkObject* gtk_widget_get_accessible (GtkWidget*)</function></para>
+</entry>
+<entry>
+<para>Renvoie l'objet accessible qui décrit l'élément graphique GTK spécifié, vers une technologie d'assistance.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para><function>void atk_object_set_name (AtkObject*, const gchar*)</function></para>
+</entry>
+<entry>
+<para>Définit le nom de l'objet accessible. Par exemple, si l'objet est un bouton graphique qui permet de quitter l'application quand on clique dessus, le nom peut être « Quitter ».</para>
+</entry>
+</row>
+<row>
+<entry>
+<para><function>void atk_object_set_description (AtkObject*, const gchar*)</function></para>
+</entry>
+<entry>
+<para>Définit le texte de description de l'objet accessible. Par exemple, si l'objet est un bouton graphique « Fermer », la description peut être « Ferme la fenêtre ».</para>
+</entry>
+</row>
+<row>
+<entry>
+<para><function>AtkRelation* atk_relation_new (AtkObject**, gint, AtkRelationType)</function></para>
+</entry>
+<entry>
+<para>Crée une nouvelle relation entre la clé spécifiée et la liste d'objets cibles spécifiée. Une relation indique normalement à la technologie d'assistance qu'un élément graphique est connecté à un autre. Par exemple, un élément graphique GtkLabel particulier est la légende d'un élément graphique GtkTreeView dans la même fenêtre.</para>
+</entry>
+</row>
+<row>
+<entry>
+<para><function>void atk_image_set_description (AtkImage*, const gchar*)</function></para>
+</entry>
+<entry>
+<para>Définit le texte de description d'un objet image accessible. Par exemple, si l'objet est une miniature d'un bureau virtuel dans une applet de tableau de bord, la description peut être « Image montrant l'arrangement des fenêtres sur le bureau 1 ».</para>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+
+<section id="gad-api-examples">
+<title>Exemples d'utilisation de l'API d'accessibilité</title>
+<para>Comme remarqué plus tôt, vous avez peu ou pas de travail à faire pour rendre votre application accessible si vous utilisez les éléments graphiques de GTK, ou n'importe quel élément graphique provenant de bibliothèques qui implémentent les interfaces ATK. Les deux choses les plus courantes que vous allez faire dans ce cas sont :</para>
+<itemizedlist>
+<listitem>
+<para>fournir des descriptions pour certains contrôles et images avec les fonctions <function>atk_object_set_description()</function> ou <function>atk_image_set_description()</function> :</para>
+<example>
+<title>Définition de la description d'accessibilité pour un bouton</title>
+<programlisting>
+{
+   AtkObject *obj;
+   obj = gtk_widget_get_accessible(button);
+   atk_object_set_description(obj,_("Ouvre la boîte de dialogue Préférences"));
+}
+</programlisting>
+</example>
+<para>
+</para>
+</listitem>
+<listitem>
+<para>spécifier des relations entre tout regroupement inhabituel d'éléments graphiques en utilisant les fonctions <function>atk_relation_new()</function> et <function>atk_relation_set_add()</function> :</para>
+<example>
+<title>Spécification des relations d'accessibilité entre deux contrôles</title>
+<programlisting>
+{
+  GtkWidget *widget;
+  GtkLabel *label;
+
+  AtkObject *atk_widget, *atk_label;
+  AtkRelationSet *relation_set;
+  AtkRelation *relation;
+  AtkObject *targets[1];
+
+  atk_widget = gtk_widget_get_accessible (widget);
+  atk_label = gtk_widget_get_accessible (GTK_WIDGET(label));
+
+  relation_set = atk_object_ref_relation_set (atk_label);
+  targets[0] = atk_widget;
+
+  relation = atk_relation_new(targets,1, ATK_RELATION_LABEL_FOR);
+  atk_relation_set_add(relation_set,relation);
+  g_object_unref(G_OBJECT(relation));
+}
+</programlisting>
+</example>
+</listitem>
+</itemizedlist>
+<para>Les exemples dans la suite de cette section, vont vous donner un aperçu de l'étendue d'ATK. Ils couvrent des techniques dont vous pouvez ne jamais avoir besoin en tant que développeur d'application, bien qu'elles puissent vous intéresser si vous écrivez vos propres éléments graphiques personnalisés (consultez la section pour <link linkend="gad-custom">rendre vos composants personnalisés accessibles</link>) ou si vous voulez écrire une application de technologie d'assistance. Quel que soit votre but, le <ulink url="ftp://ftp.gnome.org/pub/GNOME/sources/gail/">code source de GAIL</ulink> est un excellent tutoriel pour une utilisation avancée d'ATK. Notez que depuis GTK+ 3.1.10, le module Gail a été fusionné dans GTK+ et n'existe plus seul.</para>
+
+<section>
+<title>Modules Gtk</title>
+<para>Les programmes qui utilisent GAIL (la bibliothèque d'implémentation d'accessibilité pour les éléments graphiques GTK) sont écrits sous la forme de modules GTK. Les modules GTK sont chargés dans l'espace du programme si la variable d'environnement <varname>GTK_MODULES</varname> spécifie le(s) nom(s) de la bibliothèque de module. S'il y a plusieurs bibliothèques de modules, séparez-les par des deux-points. Par exemple :</para>
+<para><userinput>setenv GTK_MODULES "libgail:libtestprops"</userinput></para>
+<para>Tous les modules GTK possèdent une fonction <function>gtk_module_init()</function>.</para>
+</section>
+
+<section>
+<title>Collecte des informations d'accessibilité depuis une application</title>
+<para>Un programme qui souhaite utiliser des appels ATK doit faire une (ou plusieurs) des actions suivantes :</para>
+<orderedlist>
+<listitem>
+<para>Créer un moniteur d'évènement, par exemple avec la fonction <function>atk_add_focus_tracker()</function> :</para>
+<programlisting>atk_add_focus_tracker (_mon_moniteur_evenement);</programlisting>
+<para>où <function>_mon_moniteur_evenement()</function> est une fonction qui utilise ce prototype :</para>
+<programlisting>void _mon_moniteur_evenement (AtkObject *aobject);</programlisting>
+</listitem>
+<listitem>
+<para>Définir un auditeur d'évènements global avec la fonction atk_add_global_event_listener() :</para>
+<programlisting>
+mouse_watcher_focus_id =   atk_add_global_event_listener(_mon_auditeur_global,"Gtk:GtkWidget:enter_notify_event");
+</programlisting>
+<para>où <function>_mon_auditeur_global</function> contient le prototype Glib <type>GSignalEmissionHook</type>. Cet exemple fait en sorte que la fonction <function>_mon_auditeur_global()</function> soit appelée quand un signal enter_notify_even se produit sur un objet <type>GtkWidget</type>.</para>
+</listitem>
+<listitem>
+<para>Accéder aux objets de niveau supérieur d'ATK avec l'appel de fonction suivant :</para>
+<programlisting>AtkObject *root_obj = atk_get_root();</programlisting>
+<para>
+This returns an <type>AtkObject</type> which contains all toplevel windows in the currently running program. The user could then navigate through the object hierarchy by accessing the root object's children, which corresponds to the toplevel windows.
+</para>
+</listitem>
+</orderedlist>
+</section>
+
+<section>
+<title>Requête d'interfaces d'un <type>AtkObject</type></title>
+<para>Après avoir localisé l'objet <type>AtkObject</type> associé avec un objet dans l'application (par ex. avec la fonction <function>gtk_widget_get_accessible()</function>), vous pouvez trouver quelles interfaces il implémente de plusieurs façons :</para>
+<orderedlist>
+<listitem>
+<para>Utilisez les macros <function>ATK_IS_...</function> fournies, par exemple :</para>
+<itemizedlist>
+<listitem>
+<para><function>ATK_IS_ACTION(atkobj)</function></para>
+</listitem>
+<listitem>
+<para><function>ATK_IS_COMPONENT(atkobj)</function></para>
+</listitem>
+<listitem>
+<para>etc. (il y en a une pour chaque interface)</para>
+</listitem>
+</itemizedlist>
+<para>Si la macro renvoie <function>TRUE</function> (VRAI), les appels de l'interface peuvent être effectués sans problème sur cet objet ATK.</para>
+</listitem>
+<listitem>
+<para>Testez le rôle de l'objet <type>AtkObject</type> en appelant la fonction <function>atk_object_get_role()</function>. Chacun des rôles obtenus implémente un numéro spécifique d'API ATK.</para>
+</listitem>
+</orderedlist>
+</section>
+
+<section>
+<title>Configuration d'un gestionnaire de signal ATK</title>
+<para>Utilisez le signal <constant>column_inserted</constant> comme exemple :</para>
+<programlisting>
+table_column_inserted_id = g_signal_connect_closure_by_id (mon_obj_atk, 
+g_signal_lookup("column_inserted", G_OBJECT_TYPE(mon_obj_atk)), 0, 
+g_cclosure_new(G_CALLBACK (_ma_fonct_tableau_colonne_inseree), NULL, NULL), FALSE);
+</programlisting>
+<para>La fonction <function>_ma_fonct_tableau_colonne_inseree()</function> est alors appelée à chaque fois qu'un signal column_inserted est émis sur l'objet <type>AtkObject</type> <varname>mon_obj_atk</varname>.</para>
+<para>La connexion à un signal est un peu différente si le signal prend en charge les détails. Le signal <constant>children_changed</constant> prend en charge le détail <parameter>add</parameter>. Pour se connecter à un signal quand le détail <parameter>add</parameter> est aussi spécifié, cette technique est utilisée :</para>
+<programlisting>
+child_added_id = g_signal_connect_closure (my_atk_obj,"children_changed::add",
+g_cclosure_new (G_CALLBACK(_my_children_changed_func), NULL, NULL), FALSE);
+</programlisting>
+<para>
+This will cause <function>_my_children_changed_func()</function> to be called whenever a <constant>children_changed</constant> signal with the <parameter>add</parameter> detail is emitted on the <type>AtkObject</type> <varname>my_atk_obj</varname>.
+</para>
+</section>
+
+<section>
+<title>Implémentation d'un objet ATK</title>
+<para>Vous devrez implémenter vos propres objets ATK pour tous les éléments graphiques qui n'ont pas déjà une implémentation accessible dans GAIL (ou la bibliothèque équivalente pour d'autres jeux d'éléments graphiques). Vous devez implémenter ceci sous la forme d'un module GTK, qui, comme précédemment, doit être inclus dans la variable d'environnement <envar>GTK_MODULES</envar> afin qu'il soit chargé au lancement. </para>
+
+<section>
+<title>Registre</title>
+<para>Dans cet exemple nous allons supposer qu'il existe un objet appelé GTK_TYPE_MONTYPE. L'implémentation ATK est appelée <type>MON_IMP_ATK_TYPE_MONTYPE</type>. Une fabrique est nécessaire et est appelée <type>MON_IMP_ATK_TYPE_MONTYPE_FABRIQUE</type>.</para>
+<para>Pour enregistrer l'implémentation ATK d'un objet GTK, les étapes suivantes doivent être suivies dans la fonction <function>gtk_module_init()</function> du module :</para>
+<orderedlist>
+<listitem>
+<para>Accès au registre par défaut :</para>
+<programlisting>
+default_registry = atk_get_default_registry();
+</programlisting>
+</listitem>
+<listitem><para>Enregistrement de l'objet ATK dans la fonction <function>gtk_module_init()</function> de ce module à l'aide de l'appel de fonction suivant :</para>
+<programlisting>
+atk_registry_set_factory_type (default_registry, GTK_TYPE_MYTYPE, 
+MYATKIMP_TYPE_MYTYPE_FACTORY); 
+</programlisting>
+</listitem>
+</orderedlist>
+<para>Cela enregistre l'implémentation de l'AtkObject de <type>GTK_TYPE_MONTYPE</type> dans <type>MON_IMP_ATK_TYPE_MONTYPE_FABRIQUE</type>. Cette fabrique sera implémentée afin qu'elle sache construire les objets de type <type>MON_IMP_ATK_TYPE_MONTYPE</type>.</para>
+</section>
+
+<section>
+<title>Fabrique</title>
+<para>La fabrique doit être implémentée comme un enfant du type de classe <type>ATK_TYPE_OBJECT_FACTORY</type> et doit implémenter la fonction <function>create_accessible()</function>. Cette fonction doit créer un objet <type>AtkObject</type> approprié. Une fabrique peut être utilisée pour créer plus d'un type d'objet, dans ce cas sa fonction <function>create_accessible()</function> doit être suffisamment intelligente pour construire et renvoyer l'objet <type>AtkObject</type> correct.</para>
+</section>
+
+<section>
+<title>Implémentation ATK pour un objet spécifique</title>
+<para>Tous les objets <type>GObject</type> implémentent une fonction <function>get_type()</function>. En utilisant l'exemple précédent, la convention d'attribution de nom pour cette fonction est <function>mon_imp_atk_montype_get_type()</function>.</para>
+<para>Dans cette fonction, vous spécifiez quelles interfaces sont implémentées par votre objet. Si la logique suivante est incluse dans cette fonction <function>get_type()</function>, cet objet implémente alors l'interface <type>ATK_TEXT</type> :</para>
+<example>
+<title>Exemple de fonction <function>get_type()</function></title>
+<programlisting>
+static const GInterfaceInfo atk_text_info = 
+{ 
+   (GInterfaceInitFunc) atk_text_interface_init, 
+   (GInterfaceFinalizeFunc) NULL, 
+   NULL 
+}; 
+
+g_type_add_interface_static (type, ATK_TYPE_TEXT, 
+                             &amp;atk_text_info); 
+</programlisting>
+</example>
+<para>La fonction <function>atk_text_interface_init()</function>, qui possède le prototype suivant, doit être implémentée :</para>
+<programlisting>
+void atk_text_interface_init (AtkTextIface *iface); 
+</programlisting>
+<para>Cette fonction connecte les appels de la fonction d'interface à l'implémentation spécifique comme suit :</para>
+<example>
+<title>Connexion des appels d'interface personnalisés à une implémentation d'AtkObject</title>
+<programlisting>
+void 
+atk_text_interface_init (AtkTextIface *iface) 
+{ 
+   g_return_if_fail (iface != NULL); 
+   iface-&gt;get_text = mon_imp_atk_montype_get_text; 
+   iface-&gt;get_character_at_offset = mon_imp_atk_montype_get_character_at_offset; 
+   ... 
+}
+</programlisting>
+</example>
+<para>Ensuite les fonctions <function>mon_imp_atk_montype_get_text()</function>, <function>mon_imp_atk_montype_get_character_at_offset()</function> et le reste des fonctions de l'interface <type>ATK_TEXT</type> doivent être implémentés.</para>
+</section>
+
+<section>
+<title>Implémentation d'<type>AtkObject</type></title>
+<para>Les <type>AtkObject</type> sont des objets <type>GObjects</type> et tous les <type>GObject</type> doivent spécifier la fonction <function>get_type()</function>. Voici un exemple qui définit une classe et un initialisateur d'instance. Cette fonction <function>get_type()</function> spécifie aussi que l'objet implémente <type>ATK_TEXT</type> et spécifie l'objet parent comme un <type>MON_IMP_ATK_MONTYPEPARENT</type>.</para>
+<example>
+<title>Exemple d'implémentation de <function>get_type()</function></title>
+<programlisting>
+GType 
+mon_imp_atk_montype_get_type (void) 
+{ 
+   static GType type = 0; 
+
+   if (!type) 
+   { 
+      static const GTypeInfo tinfo = 
+      { 
+         sizeof (GailLabelClass), 
+         (GBaseInitFunc) NULL,                                  /* initialisation base */ 
+         (GBaseFinalizeFunc) NULL,                              /* finalisation base */
+         (GClassInitFunc) mon_imp_atk_montype_class_init,       /* class init */ 
+         (GClassFinalizeFunc) NULL,                             /* class finalize */ 
+         NULL,                                                  /* données de la classe */ 
+         sizeof (GailLabel),                                    /* taille de l'instance */ 
+         0,                                                     /* nbre préallocations */ 
+         (GInstanceInitFunc) mon_imp_atk_montype_instance_init, /* instance init */ 
+         NULL                                                   /* tableau de valeur */ 
+      }; 
+
+      /* Organisation de la structure atk_text_info utilisée ci-dessous */ 
+      static const GInterfaceInfo atk_text_info = 
+      { 
+         (GInterfaceInitFunc) atk_text_interface_init, 
+         (GInterfaceFinalizeFunc) NULL, 
+         NULL 
+      }; 
+
+      /* Organisation du typename et spécification du type du parent */ 
+      type = g_type_register_static (MON_IMP_ATK_MONTYPEPARENT, 
+            "monimpatkmontype", &amp;tinfo, 0); 
+
+      /* Cette classe implémente l'interface ATK_TYPE_TEXT */ 
+      g_type_add_interface_static (type, ATK_TYPE_TEXT, 
+                                   &amp;atk_text_info); 
+   } 
+   return type; 
+} 
+</programlisting>
+</example>
+</section>
+
+<section>
+<title>Initialisateurs de classe/instance</title>
+<para>Vous allez devoir configurer un initialisateur de classe pour l'objet <type>GObject</type> dans l'un des deux cas suivants : si votre implémentation d'<type>AtkObject</type></para>
+<orderedlist>
+<listitem>
+<para>redéfinit un des appels de fonction défini par l'objet parent. C'est en général nécessaire quand un objet doit implémenter une fonction comme <function>atk_object_get_n_accessible_children()</function>. C'est nécessaire si l'objet possède des fils qui ne sont pas représentés par des éléments graphiques.</para>
+<para>Par exemple, si votre implémentation ATK doit remplacer la fonction <function>get_name()</function> d'<type>AtkObject</type> alors l'initialisateur de classe ressemblera à :</para>
+<example>
+<title>Initialisateur de classe qui remplace la fonction <function>get_name()</function> du parent.</title>
+<programlisting>
+mon_imp_atk_montype_class_init (GailLabelClass *klass) 
+{ 
+  AtkObjectClass *class = ATK_OBJECT_CLASS (klass); 
+  class-&gt;get_name = mon_imp_atk_montype_get_name; 
+} 
+</programlisting>
+</example>
+</listitem>
+<listitem><para>ou si elle requiert une fonction <function>parent-&gt;init</function>, <function>parent-&gt;notify_gtk</function> ou <function>parent-&gt;finalize</function>. Cet exemple définit les trois :</para>
+<example>
+<title>Initialisateur de classe qui définit ses propres fonctions <function>init()</function>, <function>notify_gtk()</function> et <function>finalize()</function></title>
+<programlisting>
+static ParentObjectType *parent_class = NULL; 
+
+mon_imp_atk_montype_class_init (GailLabelClass *klass) 
+{ 
+   ParentObjectType *parent_class = (ParentObjectType*)klass; 
+
+   /* 
+    * La mise en cache de parent_class est nécessaire si les fonctions 
+    * init, notify_gtk ou finalize sont configurées. 
+    */ 
+    parent_class = g_type_class_ref (MONATKIMP_TYPE_PARENT); 
+
+    parent_class-&gt;init = mon_imp_atk_montype_widget_init; 
+    parent_class-&gt;notify_gtk = mon_imp_atk_montype_real_notify_gtk; 
+    parent_class-&gt;finalize = mon_imp_atk_montype_finalize; 
+}
+</programlisting>
+</example>
+<orderedlist>
+<listitem>
+<para>parent-&gt;init</para>
+<para>Une fonction <function>parent-&gt;init()</function> peut être nécessaire si l'implémentation ATK a besoin d'effectuer l'une des actions suivantes :</para> 
+<orderedlist>
+<listitem>
+<para>mettre en cache toutes les données obtenues à partir de l'élément graphique GTK auxiliaire,</para>
+</listitem>
+<listitem>
+<para>écouter tous les signaux émis par l'élément graphique GTK auxiliaire.</para>
+</listitem>
+</orderedlist>
+<para>Voici un exemple des deux :</para>
+<example>
+<title>Une fonction personnalisée <function>init()</function></title>
+<programlisting>
+void 
+gail_tree_view_widget_init (Monimpatkmontype  *montype, 
+                            GtkWidget       *gtk_widget) 
+{ 
+   /* Être sûr d'appeler la fonction init du parent */ 
+   parent_class-&gt;init (widget, gtk_widget); 
+   
+   /* Mettre en cache une valeur dans l'implementation ATK */ 
+   montype-&gt;cached_value = gtk_widget_function_call(); 
+
+   /* Écouter un signal */ 
+   gtk_signal_connect (GTK_OBJECT (gtk_widget), 
+                       "type-signal", 
+                       GTK_SIGNAL_FUNC (_mon_imp_atk_montype_signal_type), 
+                       NULL); 
+} 
+</programlisting>
+</example>
+<para>Dans cet exemple, si le signal <type>type-signal</type> spécifié est généré par le <varname>gtk_widget</varname> auxiliaire alors la fonction <function>_mon_imp_atk_montype_signal_type()</function> est appelée.</para>
+</listitem>
+<listitem>
+<para>parent-&gt;notify_gtk</para>
+<para>Si l'implémentation d'ATK doit écouter toutes les notifications de propriété de l'objet GTK auxiliaire, une fonction  <function>parent-&gt;notify_gtk()</function> peut être nécessaire. Par exemple :</para>
+<example>
+<title>Une fonction personnalisée <function>notify_gtk()</function></title>
+<programlisting>
+void 
+mon_imp_atk_montype_real_notify_gtk (GObject    *obj, 
+                                 GParamSpec *pspec) 
+{ 
+   GtkWidget *widget = GTK_WIDGET (obj); 
+   AtkObject* atk_obj = gtk_widget_get_accessible (widget); 
+
+   if (strcmp (pspec-&gt;name, "propriété-concernée") == 0) 
+   { 
+      /* Gestion de la modification de propriété. */ 
+   } 
+   else 
+   { 
+      parent_class-&gt;notify_gtk (obj, pspec); 
+   } 
+} 
+</programlisting>
+</example>
+</listitem>
+<listitem>
+<para>parent-&gt;finalize</para>
+<para>S'il est nécessaire de libérer toutes les données quand une instance <type>GObject</type> est détruite alors il y a besoin d'une fonction <function>finalize()</function> pour libérer la mémoire. Par exemple :</para>
+<example>
+<title>Une fonction personnalisée <function>finalize()</function></title>
+<programlisting>
+void 
+mon_imp_atk_montype_finalize (GObject *object) 
+{ 
+   MonImpAtkMonType *mon_type = MONIMPATK_MONTYPE (object); 
+
+   g_object_unref (mon_type-&gt;cached_value); 
+   G_OBJECT_CLASS (parent_class)-&gt;finalize (object); 
+} 
+</programlisting>
+</example>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+</section>
+</section>
+
+<section id="gad-custom">
+<title>Rendre les composants personnalisés accessibles</title>
+<para>L'ajout de la prise en charge ATK à votre élément graphique personnalisé assure de sa coopération avec les infrastructures d'accessibilité. Voici les étapes générales requises :</para>
+<itemizedlist>
+<listitem>
+<para>accéder à un élément graphique personnalisé en suivant les <link linkend="gad-ui-guidelines">directives d'interface utilisateur</link> concernées ;</para>
+</listitem>
+<listitem>
+<para>déterminer quelles <ulink url="http://library.gnome.org/devel/atk/stable/atk.html">interfaces ATK</ulink> un élément graphique personnalisé doit implémenter selon l'ensemble de ses fonctionnalités et la fonction de l'élément graphique ;</para>
+</listitem>
+<listitem>
+<para>évaluer quelles <ulink url="http://library.gnome.org/devel/atk/stable/atk.html">interfaces ATK</ulink> peuvent être héritées de la classe de l'élément graphique parent ;</para>
+</listitem>
+<listitem>
+<para>implémenter les interfaces ATK appropriées pour la classe d'élément graphique d'une des deux façons suivantes :</para>
+<itemizedlist>
+<listitem>
+<para>directement par un élément graphique personnalisé ou</para>
+</listitem>
+<listitem>
+<para>dans un sous-type <ulink url="http://library.gnome.org/devel/atk/stable/AtkObject.html"><type>AtkObject</type></ulink> créé par une nouvelle sous-classe <ulink url="http://library.gnome.org/devel/atk/stable/AtkObjectFactory.html"><type>AtkObjectFactory</type></ulink>.</para>
+</listitem>
+</itemizedlist>
+<para>Si la seconde méthode est utilisée, le type de fabrique approprié doit être enregistré avec l'objet <type>AtkObjectFactoryRegistry</type> à l'exécution.</para>
+</listitem>
+</itemizedlist>
+<para>Le <ulink url="ftp://ftp.gnome.org/pub/GNOME/sources/gail/">code source GAIL</ulink> est un excellent tutoriel pour une utilisation avancée d'ATK.</para>
+</section>
+
+<section id="gad-ui-guidelines">
+<title>Directives pour la prise en charge de l'accessibilité dans l'interface utilisateur</title>
+<para>Lors de la conception de l'interface graphique de votre application, il y a un certain nombre de directives simples que vous devez suivre pour être certain qu'elle puisse être utilisée par le plus grand nombre, que ce soit en conjonction avec des technologies d'assistance ou non. Ne faites pas l'erreur de penser qu'il s'agit seulement de « rendre l'interface graphique utilisable pour les personnes handicapées » et que vous n'avez pas à vous inquiéter de savoir si une personne possédant un handicap utilisera un jour votre application. Suivre ces directives améliorera l'ergonomie globale de votre application pour tous les utilisateurs, vous y compris.</para>
+
+<section>
+<title>Généralités</title>
+<para>Nous sommes tous un jour ou l'autre frustrés de ne pas trouver une fonctionnalité dans une application ou de faire une erreur qui prend plusieurs minutes pour être corriger ; si c'est possible de la corriger. Si vous avez un handicap quelconque, il y a de bonnes chances que les efforts et la perte de temps soient bien plus importants. Suivez ces quelques directives de base pour prévenir ce type de situations pour tous les utilisateurs.</para>
+<itemizedlist>
+<listitem>
+<para>Fournissez la possibilité d'annuler chacune des actions qui modifient les données de l'utilisateur ou les paramètres de l'application. Si possible, fournissez plusieurs niveaux d'annulation et de rétablissement, ainsi qu'un historique pour permettre de prévisualiser quelles actions seront annulées.</para>
+</listitem>
+<listitem>
+<para>Fournissez des commandes pour restaurer les paramètres par défaut. Si un paramètre particulier peut rendre l'application complètement inutilisable pour un individu, par exemple en réduisant la taille des polices, il est alors utile de fournir une option de restauration des paramètres par défaut en dehors de l'application elle-même. Par exemple, à l'aide d'une option en ligne de commande.</para>
+</listitem>
+<listitem>
+<para>Aidez les utilisateur à ne pas commettre d'erreurs. Ceci est particulièrement important pour des actions qui peuvent être lancées accidentellement (comme les actions avec la souris) ou qui ne sont pas faciles à annuler (comme l'écrasement d'un fichier). Considérez la possibilité d'utiliser des boîtes de dialogue de confirmation ou de forcer l'utilisation d'un mode particulier pour effectuer des actions potentiellement dangereuses.</para>
+</listitem>
+<listitem>
+<para>Minimisez le travail mémoire des utilisateurs. Par exemple, permettez à l'utilisateur de regarder plusieurs documents en même temps et assurez-vous que l'aide en ligne ou d'autres instructions peuvent rester visibles pendant que la tâche décrite est effectuée. Permettez le copier-coller de toutes les informations affichées partout où des données peuvent être saisies.</para>
+</listitem>
+<listitem>
+<para>Ne faites pas insérer de disques aux utilisateurs. En fonction du handicap de l'utilisateur, il se peut qu'il lui soit difficile d'insérer physiquement un disque ou de le changer, il se peut aussi qu'il ne soit pas capable d'identifier le bon disque dans un premier temps. Si votre application est installée à partir d'un CD-ROM, fournissez l'option de copier tous les fichiers nécessaires sur le disque dur de l'utilisateur.</para>
+</listitem>
+<listitem>
+<para>Ne placez pas les fonctions utilisées fréquemment profondément dans la structure des menus. Que vous utilisiez une souris, le clavier ou tout autre périphérique de saisie, il vaut mieux éviter les éléments de menus placés profondément. En plus de l'effort de mémoire pour les trouver, ils sont toujours plus difficiles et longs à accéder.</para>
+</listitem>
+<listitem>
+<para>N'imposez pas aux utilisateurs des étapes inutiles. Par exemple, les assistants sont utiles pour des utilisateurs qui ont des problèmes pour manipuler un grand nombre d'options à la fois, mais d'autres utilisateurs ont besoin de minimiser le temps et le nombre de saisies au clavier. Ces utilisateurs sont aidés s'il est possible de sauter des étapes inutiles et d'aller directement à l'étape voulue. Pensez à fournir dans les assistants un bouton <guibutton>Terminer</guibutton> qui va directement à la fin et utilise les réponses par défaut pour les étapes intermédiaires. Si le processus contient de nombreuses étapes, pensez à demander à l'utilisateur s'il souhaite effectuer toutes les étapes ou seulement celles utilisées le plus fréquemment.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Navigation au clavier</title>
+<para>Une interface utilisateur clavier bien conçue joue un rôle important quand vous concevez un logiciel accessible. Les utilisateurs non-voyants peuvent naviguer plus efficacement dans le logiciel à l'aide du clavier, alors que l'utilisation de la souris dépend des retours d'informations visuels fonction de la position du pointeur. Il est aussi possible qu'un handicap moteur empêche un utilisateur d'utiliser la souris, à cause du degré de contrôle nécessaire à sa manipulation.</para>
+<para>Il est donc important de rendre toutes les actions de la souris disponibles depuis le clavier et d'inclure une touche d'accès à toutes les barres d'outils, les menus, liens et boutons. Chaque fonction de votre application se doit d'être disponible en utilisant uniquement le clavier. Cachez votre souris lors de vos tests s'il le faut !</para>
+<para>La plupart des fonctionnalités doivent être accessibles facilement à l'aide de mnémoniques et raccourcis clavier et de fonctions de navigation intégrées de la boîte à outils. Par contre, des opérations qui requièrent un glisser-déposer, par exemple, peuvent nécessiter plus de réflexion.</para>
+<itemizedlist>
+<listitem>
+<para>Fournissez un accès clavier efficace pour toutes les fonctionnalités de l'application. Certains utilisateurs ne peuvent pas se servir d'une souris, et de nombreux « utilisateurs avancés » préfèrent utiliser le clavier. De nombreux périphériques de technologie d'assistance simulent des évènements claviers plutôt que des évènements souris. Comme la frappe est difficile voire même douloureuse pour certains utilisateurs, il est important de fournir une interface clavier qui minimise le nombre de frappes de touches nécessaire pour une tâche donnée.</para>
+</listitem>
+<listitem>
+<para>Utilisez un ordre de navigation clavier logique. Lors d'une navigation dans une fenêtre avec la touche <keycap>Tab</keycap>, le focus clavier doit se déplacer entre les contrôles dans un ordre prévisible. Dans les environnements linguistiques occidentaux, c'est habituellement de la gauche vers la droite et de haut en bas.</para>
+</listitem>
+<listitem>
+<para>Assurez-vous que l'ordre de parcours des contrôles avec la touche Tab reste correct pour ceux dont l'état activé dépend de l'état d'une case à cocher, d'un bouton radio et d'un bouton poussoir. Lorsqu'un bouton de ce type est sélectionné, tous les contrôles en dépendant doivent être activés et tous ceux qui dépendent d'un autre bouton du groupe doivent être désactivés. Lorsque l'utilisateur sélectionne une case à cocher, un bouton radio ou un bouton poussoir qui possèdent des contrôles en dépendance, ne donnez pas automatiquement le focus au premier contrôle dépendant mais laissez plutôt le focus sur le bouton qui commande cette dépendance.</para>
+</listitem>
+<listitem>
+<para>Ne sur-définissez pas les caractéristiques existantes d'accessibilité au niveau système. Par exemple, <ulink url="http://www.rehab.uiuc.edu/accessx/overview.html">AccessX</ulink> est une extension de Xserver qui est prise en charge depuis X11R6. La caractéristique MouseKeys de cette extension permet de simuler à l'aide du pavé numérique les déplacements de la souris et les clics de boutons. Par conséquent, vous ne pouvez pas ajouter des caractéristiques à l'application qui ne seraient atteintes qu'en utilisant le pavé numérique ; les utilisateurs comptant sur les fonctionnalités de MouseKeys ne pourraient plus les utiliser.</para>
+</listitem>
+<listitem>
+<para>Fournissez plus d'une méthode pour réaliser les tâches au clavier lorsque c'est possible. Certains utilisateurs peuvent trouver certaines touches ou combinaisons plus faciles que d'autres.</para>
+</listitem>
+<listitem>
+<para>Fournissez si possible la possibilité d'utiliser à la fois le clavier et la souris pour accéder à une fonction. Certains utilisateurs ne peuvent utiliser que le clavier ou la souris, mais pas les deux.</para>
+</listitem>
+<listitem>
+<para>N'attribuez pas de moyens d'accès complexes aux opérations clavier fréquemment utilisées. Certaines personnes ne peuvent utiliser qu'une seule main sur le clavier, donc les raccourcis utilisables facilement d'une seule main sont préférables pour les opérations courantes. Dans tous les cas, avoir à réaliser des extensions ou des positionnements difficiles sur le clavier augmente pour tous les utilisateurs le risque de se froisser un muscle, donc de douleurs ou de blessures.</para>
+</listitem>
+<listitem>
+<para>N'exigez pas des utilisations répétées d'appuis simultanés de touches. Certains utilisateurs ne sont capables que d'appuyer et tenir une seule touche enfoncée à la fois. Les technologies d'assistance telles que celles d'AccessX permettent aux utilisateurs d'appuyer sur les touches de manière séquentielle plutôt que simultanément, mais bien sûr cela signifie que l'opération prendra plus de temps pour eux.</para>
+</listitem>
+<listitem>
+<para>Assurez-vous que tout texte pouvant être sélectionné avec la souris puisse également l'être avec le clavier. C'est une facilité pour tous les utilisateurs, mais elle s'adresse plus spécialement à ceux qui ont des difficultés à contrôler finement le mouvement de la souris.</para>
+</listitem>
+<listitem>
+<para>Assurez-vous que les objets qui peuvent être redimensionnés ou déplacés par un glisser-déposer peuvent également l'être avec le clavier, par exemple les icônes ou les fenêtres sur le bureau. Lorsqu'un positionnement et un redimensionnement précis peut se révéler important (par ex. les formes dans un diagramme), pensez également à fournir, soit une boîte de dialogue dans laquelle l'utilisateur peut saisir des coordonnées, soit un moyen de placer les objets sur une grille définie par ce dernier.</para>
+</listitem>
+<listitem>
+<para>N'utilisez pas de fonctions générales de navigation pour déclencher des actions. Par exemple, n'utilisez pas l'usuelle navigation clavier avec la touche <keycap>Tab</keycap> dans une boîte de dialogue pour activer une action associée à un contrôle.</para>
+</listitem>
+<listitem>
+<para>Affichez les menus appelés par le clavier, les fenêtres et les infobulles auprès des objets auxquels ils sont associés. Dans GNOME 2.0, les utilisateurs peuvent activer les menus contextuels avec <keycombo><keycap>Maj</keycap><keycap>F10</keycap></keycombo> et les infobulles avec <keycombo><keycap>Maj</keycap><keycap>F1</keycap></keycombo>. Toutefois, ne masquez ou n'obscurcissez pas entièrement l'objet auquel le menu ou l'infobulle se rapporte.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Interaction avec la souris</title>
+<para>Prenez en compte le fait que tous les utilisateurs ne peuvent pas utiliser une souris avec la même dextérité et que certains d'entre eux peuvent aussi avoir des difficultés pour voir ou suivre le pointeur de la souris.</para>
+<itemizedlist>
+<listitem>
+<para>Les entrées ne doivent pas dépendre du bouton central ou de droite. En plus d'être physiquement plus difficils à cliquer, certains dispositifs de pointage et de nombreux dispositifs de technologies d'assistance ne prennent en charge ou n'émulent que le bouton gauche de la souris 1. Certaines technologies d'assistance n'émulent même pas du tout la souris mais génèrent des évènements clavier à la place.</para>
+</listitem>
+<listitem>
+<para>Permettez à toutes les opérations d'être annulées avant leur fin. Un appui sur la touche <keycap>Échap</keycap> doit annuler toutes opérations de la souris en cours telles qu'une action de glisser-déposer d'un fichier ou le dessin d'une forme dans une application de dessin.</para>
+</listitem>
+<listitem>
+<para>Fournissez un retour visuel pendant toute la durée d'une opération de glisser-déposer. Quand la souris passe au-dessus de cibles valides, mettez-les en évidence et modifiez le pointeur de la souris. Utilisez le pointeur de souris « dépôt impossible » lorsque vous passez au-dessus de cibles de dépôt non valides. Consultez également les <link linkend="gad-mouse-examples">exemples d'interaction avec la souris</link>.</para>
+</listitem>
+<listitem>
+<para>Ne déformez pas le pointeur de la souris ou ne restreignez pas le mouvement de la souris à une partie de l'écran. Cela peut interférer avec les technologies d'assistance et est habituellement perturbant pour les utilisateurs qui n'utilisent pas les technologies d'assistance.</para>
+</listitem>
+<listitem>
+<para>Ne créez pas de cibles trop petites pour la souris. En général, les cibles doivent être au minimum de la taille de la « zone sensible » autour de la bordure d'une fenêtre redimensionnable dans le gestionnaire/thème de fenêtres actuel ; en gardant à l'esprit qu'un utilisateur à mobilité ou vision réduite peut utiliser un gestionnaire de fenêtres avec des zones plus grandes que celles par défaut.</para>
+</listitem>
+</itemizedlist>
+
+<section id="gad-mouse-examples">
+<title>Exemples d'interaction avec la souris</title>
+<figure>
+<title>Exemple de pointeur « dépôt impossible » de CDE/Motif</title>
+<mediaobject><imageobject> <imagedata fileref="figures/nodrop.png" format="PNG"/> </imageobject> <textobject> <phrase>Exemple d'une forme de pointeur de « cible de dépôt non valide »</phrase> </textobject></mediaobject>
+</figure>
+</section>
+</section>
+
+<section>
+<title>Éléments graphiques</title>
+<para>Fournissez une option pour personnaliser la présentation de tous les éléments graphiques importants de votre application. Cela la rend plus facile d'utilisation pour des personnes ayant des problèmes visuels ou des difficultés de raisonnement.</para>
+<itemizedlist>
+<listitem>
+<para>Ne codez pas de manière permanente les attributs graphiques tel que ligne, bordure ou largeur des ombres. Ces éléments devraient être idéalement lus depuis le thème GTK ou celui du gestionnaire de fenêtres. Si ce n'est pas possible, fournissez des options dans votre application pour les modifier.</para>
+</listitem>
+<listitem>
+<para>Fournissez des noms descriptifs pour tous les composants de l'interface. La bibliothèque GAIL fournit des descriptions accessibles par défaut pour de nombreux éléments graphiques GTK, mais vous devrez ajouter vos propres descriptions dans certains cas, par exemple les éléments graphiques qui utilisent une image au lieu d'un texte (par ex. un pot dans une palette de couleurs ou une icône sans étiquette). Pensez à remplacer les valeurs par défaut avec d'autres plus utiles ou plus spécifiques à l'application quand c'est possible.</para>
+</listitem>
+<listitem>
+<para>Permettez, si possible, l'affichage monochrome des éléments graphiques en couleurs (par ex. les icônes de barre d'outils). Ces images monochromes doivent s'afficher avec les couleurs de premier et d'arrière-plan que l'utilisateur a lui-même choisi (via son choix de thème GTK) pour une lisibilité maximale. </para>
+</listitem>
+<listitem>
+<para>Rendez les éléments de l'interface graphique facilement reconnaissables. Par exemple, ne forcez pas l'utilisateur à survoler un objet pour déterminer s'il est cliquable ou pas. Laissez suffisamment d'espace entre les objets et délimitez clairement les limites des objets. N'affichez pas d'élément dans l'interface graphique qui soient beaux mais ne servent à rien, sauf si vous fournissez une option pour les désactiver.</para>
+</listitem>
+<listitem>
+<para>Fournissez une option pour cacher les graphiques qui ne sont pas nécessaires à la compréhension. Les images peuvent distraire les utilisateurs ayant des difficultés de raisonnement. Les icônes du menu GNOME, par exemple, peuvent être désactivées tout en laissant les menu fonctionnels.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Police et texte </title>
+<para>
+Even to a user with normal vision, textual output provides the majority of the information and feedback in most applications. It is therefore critical to choose and position text carefully on the screen, and leave the choice of font and size to the user, to ensure that people with vision impairments can also use your application effectively.
+</para>
+<itemizedlist>
+<listitem>
+<para>Ne codez pas de manière permanente les styles et tailles des polices de caractères. L'utilisateur doit être capable d'adapter toutes les tailles et tous les styles. Si pour une raison quelconque vous ne pouvez pas rendre cette fonctionnalité disponible, ne codez jamais des tailles de police inférieures à 10 points.</para>
+</listitem>
+<listitem>
+<para>Fournissez l'option de désactiver toutes les toiles de fond graphiques ou « filigranes » placés derrière le texte. Ces images interfèrent avec le contraste entre le texte et l'arrière-plan, ce qui peut causer des difficultés pour les utilisateurs qui ont des problèmes de vision.</para>
+</listitem>
+<listitem>
+<para>Donnez aux objets un nom porteur de sens, même pris hors contexte. Les utilisateurs qui utilisent des lecteurs d'écran ou d'autres technologies d'assistance ne sont pas nécessairement capables de comprendre immédiatement la relation entre un contrôle et son environnement.</para>
+</listitem>
+<listitem>
+<para>N'utilisez pas la même étiquette plus d'une fois dans la même fenêtre. Si vous utilisez la même étiquette dans des fenêtres différentes, il est préférable qu'elles aient le même sens. Pour la même raison, n'utilisez pas d'étiquettes qui s'épellent différemment, mais qui se prononcent d'une façon proche, par ex. « emprunte » et « empreinte », car cela peut troubler les utilisateurs qui utilisent des lecteurs d'écran.</para>
+</listitem>
+<listitem>
+<para>Positionnez les étiquettes de façon consistante partout dans votre application. En général immédiatement sous les grandes icônes, à droite des petites icônes et au-dessus ou à gauche des autres contrôles. Consultez les <link linkend="gad-font-examples">exemples de polices et de texte</link>.</para>
+</listitem>
+<listitem>
+<para>Quand vous utilisez un texte statique pour nommer un contrôle, terminez l'étiquette par deux-points. Par exemple, <guilabel>Nom d'utilisateur :</guilabel> pour nommer une zone de texte dans lequel l'utilisateur doit saisir son nom d'utilisateur. Cela aide à l'identifier comme étiquette du contrôle plutôt que comme élément indépendant.</para>
+</listitem>
+<listitem>
+<para>Quand vous utilisez un texte statique pour nommer un contrôle, assurez-vous que l'étiquette précède le contrôle dans l'ordre de parcours des contrôles avec la touche Tab. Cela assure que le mnémonique (caractère souligné) que vous attribuez à l'étiquette active ou déplace le focus vers le contrôle correct quand il est utilisé.</para>
+</listitem>
+<listitem>
+<para>Fournissez des alternatives au WYSIWYG (What You See Is What You Get). Certains utilisateurs peuvent par exemple avoir besoin d'imprimer le texte avec des petites polices, mais d'utiliser des grandes polices d'écran pour l'édition. Les alternatives possibles sont soit l'affichage de tout le texte dans la même police et taille (toutes deux choisies par l'utilisateur), soit une option « retour à la ligne automatique » qui permet de lire tout le texte d'une fenêtre sans défilement horizontal, soit un affichage en colonne unique (le contenu de la fenêtre est sur une seule colonne bien qu'il soit imprimé sur plusieurs colonnes), soit un affichage texte-seulement pour lequel les graphiques sont remplacés par des substituants ou des descriptions textuelles. Si l'application possède des panneaux contenant des contrôles fils, pensez à permettre aux panneaux de se redimensionner en même temps que la fenêtre parente.</para>
+</listitem>
+</itemizedlist>
+
+<section id="gad-font-examples">
+<title>Exemples de polices et de texte</title>
+<figure id="label-placement-example">
+<title>Placement correct des étiquettes pour divers éléments de l'interface graphique</title>
+<informaltable frame="all">
+<tgroup cols="3" align="center">
+<tbody>
+<row>
+<entry valign="middle"><mediaobject>
+<imageobject>
+<imagedata fileref="figures/label_above.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>List control with label above</phrase>
+</textobject>
+</mediaobject> Contrôle liste avec une étiquette au-dessus</entry>
+<entry valign="middle"><mediaobject>
+<imageobject>
+<imagedata fileref="figures/label_below.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>Large file manager icon with label underneath</phrase>
+</textobject>
+</mediaobject>Grande icône de gestionnaire de fichiers avec une étiquette au-dessous</entry>
+<entry valign="middle"><mediaobject>
+<imageobject>
+<imagedata fileref="figures/label_right.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>Small toolbar icon with label to its right</phrase>
+</textobject>
+</mediaobject>Petite icône de barre d'outils avec une étiquette à droite</entry>
+<entry valign="middle"><mediaobject>
+<imageobject>
+<imagedata fileref="figures/label_left.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>Spinbox control with label to its left</phrase>
+</textobject>
+</mediaobject> Contrôle de zone de sélection numérique avec une étiquette à sa gauche</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</figure>
+</section>
+</section>
+
+<section>
+<title>Couleur et contraste</title>      
+<para>Un mauvais choix de couleurs à l'écran peut poser des problèmes pour les utilisateurs atteint de daltonisme (pour qui la teinte est importante) ou les mal-voyants (pour lesquels la luminosité/le contraste sont importants). En général, vous devez laisser à l'utilisateur la possibilité de personnaliser les couleurs dans toutes les parties de votre application qui transmettent des informations importantes.</para>
+<para>Les utilisateurs qui ont des problèmes de vision peuvent avoir besoin d'un fort niveau de contraste entre les couleurs de l'arrière-plan et du premier plan. Souvent un arrière-plan noir et du texte blanc empêche l'arrière-plan de « baver ». Ces paramètres sont critiques pour les utilisateurs malvoyants.</para>
+<itemizedlist>
+<listitem>
+<para>Ne codez pas de manière permanente les couleurs de l'application. Certains utilisateurs ont besoin de combinaisons de couleurs et de niveaux de contraste particuliers pour pouvoir lire l'écran confortablement. Les couleurs principales que vous utilisez dans votre application GNOME doivent donc provenir du thème GTK, pour que l'utilisateur puisse définir des couleurs lisibles pour toutes les applications simplement en changeant de thème. Si pour une raison quelconque, vous devez utiliser des couleurs qui ne sont pas disponibles dans le thème, assurez-vous qu'elles soient personnalisables dans l'application elle-même.</para>
+</listitem>
+<listitem>
+<para>N'utilisez pas la couleur comme seul moyen de distinguer les éléments d'informations. Toutes les informations doivent également être transmises par au moins une autre méthode parmi la forme, la position ou la description textuelle. Consultez la section <link linkend="gad-color-examples">exemples de couleurs et de contrastes</link>.</para>
+</listitem>
+<listitem>
+<para>Prenez en charge tous les thèmes à fort contraste de GNOME. Assurez-vous que lorsqu'un de ces thèmes est sélectionné, tous les textes de l'application s'affichent avec les couleurs de premier plan et d'arrière-plan de fort contraste spécifiées par le thème.</para>
+</listitem>
+<listitem>
+<para>Assurez-vous que votre application n'est pas dépendante d'un thème à fort contraste particulier. Testez-la avec des différents thèmes à fort contraste pour vérifier que l'application respecte les réglages.</para>
+</listitem>
+</itemizedlist>
+
+<section id="gad-color-examples">
+<title>Exemples de couleur et contraste</title>
+<example>
+<title>Exemple d'utilisation redondante de couleurs</title>
+<informaltable frame="all">
+<tgroup cols="2">
+<tbody>
+<row>
+<entry valign="middle">
+<mediaobject><imageobject> <imagedata fileref="figures/color_only.png" format="PNG"/> </imageobject> <textobject> <phrase> Exemple montrant des modifications du prix d'action utilisant uniquement la couleur</phrase> </textobject></mediaobject>
+</entry>
+<entry>Cet affichage peut causer des problèmes pour un utilisateur daltonien au rouge et vert (le daltonisme atteint jusqu'à un homme sur sept dans certaines parties du monde). Le manque de contraste entre le texte rouge et le fond noir rend aussi le texte peu lisible pour une personne ayant une vision faible, même en utilisant la loupe.</entry>
+</row>
+<row>
+<entry valign="middle">
+<mediaobject><imageobject> <imagedata fileref="figures/color_and_arrows.png" format="PNG"/> </imageobject> <textobject> <phrase>Exemple montrant des modifications du prix d'action en utilisant la couleur et des flèches</phrase> </textobject></mediaobject>
+</entry>
+<entry>
+This display reinforces the color-coding with arrows to show the stock price movement, and uses darker shades of green and red on a lighter background to provide higher contrast.  This needn't be the default color scheme if testing were to show it to be too distracting for the majority of users, but it should be possible to customize it in this way either by theming or via the application's <guilabel>Preferences</guilabel> dialog.
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</example>
+</section>
+</section>
+
+<section>
+<title>Zoom</title>
+<para>De nombreux utilisateurs, même ceux qui n'ont pas de problème de vue, tirent profit d'un agrandissement du texte et des images. Par contre sans agrandissement, un utilisateur malvoyant ne pourra sûrement pas accéder et utiliser le programme.</para>
+<itemizedlist>
+<listitem>
+<para>Donnez la possibilité à l'utilisateur d'agrandir la zone de travail.</para>
+</listitem>
+<listitem>
+<para>Fournissez des options dans l'application pour changer l'échelle de la zone de travail. Les utilisateurs ont besoin d'une option pour agrandir la zone de travail de 150 à 400% et même parfois plus. Testez l'application pour vérifier que l'objet visualisé reste insensible aux modifications de taille.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Audio</title>
+<para>Les personnes malentendantes, ainsi que celles qui coupent le son de l'ordinateur, seront désavantagées si votre application se base sur du son pour transmettre des informations. En général, assurez-vous que l'utilisateur puisse faire en sorte que les informations audio soient transmises d'une autre façon.</para>
+<itemizedlist>
+<listitem>
+<para>Ne supposez pas qu'un utilisateur entendra les informations audio. Cela s'applique aussi bien aux utilisateurs dont la carte son est cassée qu'à ceux qui sont malentendants !</para>
+</listitem>
+<listitem>
+<para>N'utilisez pas l'audio comme seul moyen de transmettre les informations. Donnez la possibilité à l'utilisateur d'avoir aussi toutes les informations audio de façon visuelle. Ceci inclue la fourniture de légendes minutieuses ou de transcriptions de tous les messages sonores parlés importants.</para>
+</listitem>
+<listitem>
+<para>Permettez aux utilisateurs de configurer la fréquence et le volume de toutes les alarmes sonores et des autres sons. Cela comprend aussi la possibilité d'une coupure complète du son.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Animation</title>
+<para>Utilisées avec parcimonie, les animations peuvent être utiles pour attirer l'attention vers des informations importantes dans votre application - et ça donne aussi un air branché. Cependant, cela peut causer des problèmes à certains utilisateurs donc, assurez-vous qu'ils puissent les désactiver.</para>
+<itemizedlist>
+<listitem>
+<para>N'utilisez pas d'éléments qui flashent ou qui clignotent à une fréquence supérieure à 2 Hz et inférieure à 55 Hz. Cela vaut pour le texte mais aussi pour les images. Toute valeur comprise entre ces fréquences peut causer des problèmes pour les utilisateurs susceptibles d'avoir des crises épileptiques induites par la vision. Notez qu'aucune gamme fréquentielle n'est sûre. Si le clignotement est essentiel, vous devez utiliser la fréquence de clignotement du curseur (qui devrait être personnalisable) ou permettre aux utilisateurs de choisir la fréquence eux-mêmes.</para>
+</listitem>
+<listitem>
+<para>Ne faites pas flasher ou clignoter de grandes zones de l'affichage. Des petites parties sont moins susceptibles de déclencher des crises chez les personnes sensibles.</para>
+</listitem>
+<listitem>
+<para>Rendez toutes les animations optionnelles. Les informations animées doivent être disponibles au moins dans un format statique, à la demande de l'utilisateur.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Focus au clavier</title>
+<para>Un affichage clair et permanent de la position du focus clavier est important pour les utilisateurs malvoyants ainsi que pour les « utilisateurs avancés » qui préfèrent utiliser le clavier plutôt que la souris. Il ne devrait jamais y avoir de confusion possible pour savoir lequel des contrôles sur le bureau possède le focus à un instant donné. Vous devez être capable de laisser votre ordinateur avec le focus sur n'importe quel élément graphique de l'application puis, d'aller téléphoner à votre ami(e), de sortir le chien jusqu'à ce que vous ayez oublié de quel élément graphique il s'agissait. Quand vous revenez, vous devez être capable de dire instantanément quel élément graphique possède le focus.</para>
+<para>
+A visual focus indicator is an audio representation of the cursor position relative to the other objects on the desktop. This allows the user to move among objects interactively as the focus changes. The visual focus must be programmatically exposed to assistive technologies. Note that in most cases, this is handled automatically by the ATK, without requiring you to do any additional work. However, you will need to be aware of this requirement when writing your own custom widgets, for example.
+</para>
+<itemizedlist>
+<listitem>
+<para>Au départ, donnez le focus au contrôle le plus utilisé. Si aucun contrôle ne peut être considéré comme le plus utilisé, donnez le focus au premier contrôle de la fenêtre quand celle-ci s'ouvre. Le focus ne doit pas être placé au départ sur les boutons <guilabel>Valider</guilabel> ou <guilabel>Annuler</guilabel> d'une boîte de dialogue, même si ce sont les plus utilisés, car ils peuvent toujours être activés immédiatement en appuyant sur <keycap>Entrée</keycap> ou <keycap>Échap</keycap>.</para>
+</listitem>
+<listitem>
+<para>Affichez le focus actuel de saisie clairement à tout moment. Rappelez-vous que dans les contrôles qui comprennent un élément de défilement, il n'est pas toujours suffisant de mettre en évidence l'élément sélectionné dans la zone de défilement car il peut ne pas être visible. Consultez les <link linkend="gad-focus-examples">exemples de focus clavier</link>.</para>
+</listitem>
+<listitem>
+<para>Affichez le focus de saisie seulement dans la fenêtre active. Masquez tous les indicateurs de focus visuel primaire de toutes les fenêtres qui ne sont pas actives ou n'ont pas le focus. Si une fenêtre possède plusieurs volets, un seul des volets doit avoir un indicateur de focus et les indicateurs de focus des autres volets doivent tous être cachés. S'il est important de continuer de montrer quel élément dans une liste sans focus est sélectionné, utilisez par exemple un indicateur de focus secondaire. Consultez les <link linkend="gad-focus-examples">exemples de focus clavier</link>.</para>
+</listitem>
+<listitem>
+<para>Fournissez un retour d'information approprié lorsque l'utilisateur tente de naviguer au delà d'un groupe d'objets liés. Lors du parcours d'une liste, par exemple, s'arrêter avec l'émission d'un son est préférable au retour au début de la liste. Sinon les utilisateurs aveugles ou malvoyants peuvent ne pas s'apercevoir qu'ils sont retournés au début. Dans le cas d'une recherche de texte dans un document, une boite de dialogue peut être ouverte pour indiquer que la fin du document a été atteinte et demander si la recherche doit être reprise au début du document.</para>
+</listitem>
+<listitem>
+<para>Utilisez l'alerte audio ou visuelle par défaut du système lorsque l'utilisateur appuie sur une touche incorrecte, ou quand une touche de navigation ne peut déplacer le focus. Par exemple, quand le focus est sur le premier caractère dans un champ de texte et que l'utilisateur appuie sur la flèche gauche, ou quand l'utilisateur essaie de faire une sélection multiple dans un dialogue à sélection unique (notez que les utilisateurs ayant des problèmes auditifs doivent avoir la possibilité de configurer un équivalent visuel système à l'alerte sonore par défaut).</para>
+</listitem>
+</itemizedlist>
+
+<section id="gad-focus-examples">
+<title>Exemples de focus clavier</title>
+<example><title>Exemple illustrant le besoin d'afficher le focus clairement</title>
+<informaltable frame="all">
+<tgroup cols="2">
+<tbody>
+<row>
+<entry valign="middle">
+<mediaobject><imageobject> <imagedata fileref="figures/badfocus1.png" format="PNG"/> </imageobject> <textobject> <phrase>L'élément ayant le focus dans cette fenêtre est invisible car il a été déplacé hors de vue à l'écran</phrase> </textobject></mediaobject>
+</entry>
+<entry>Un des contrôles dans cette fenêtre possède le focus, mais il est impossible de savoir lequel...</entry>
+</row>
+<row>
+<entry valign="middle">
+<mediaobject><imageobject> <imagedata fileref="figures/badfocus2.png" format="PNG"/> </imageobject> <textobject> <phrase>L'élément qui possède le focus dans la liste a été rendu visible en faisant défiler la liste</phrase> </textobject></mediaobject>
+</entry>
+<entry>... jusqu'à ce que vous fassiez défiler la liste, ce qui montre qu'un des éléments de la liste est actuellement sélectionné.</entry>
+</row>
+<row>
+<entry valign="middle">
+<mediaobject><imageobject> <imagedata fileref="figures/goodfocus.png" format="PNG"/> </imageobject> <textobject> <phrase>Le contrôle de liste de cet exemple possède une bordure pleine indiquant le focus, que l'élément sélectionné soit visible ou non</phrase> </textobject></mediaobject>
+</entry>
+<entry>Si le contrôle de liste possède une bordure « de focus », il est facile de deviner qu'il possède le focus même si l'élément sélectionné n'est pas visible.</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</example>
+<example>
+<title>Exemple d'utilisation d'un focus secondaire</title>
+<informaltable frame="all">
+<tgroup cols="2">
+<tbody>
+<row>
+<entry valign="middle">
+<mediaobject><imageobject> <imagedata fileref="figures/badfocus3.png" format="PNG"/> </imageobject> <textobject> <phrase>Fenêtre séparée en deux volets dans laquelle les deux volets semblent avoir le focus</phrase> </textobject></mediaobject>
+</entry>
+<entry>Dans cet exemple, il est impossible de dire, seulement en regardant, lequel des deux volets possède le focus clavier.</entry>
+</row>
+<row>
+<entry valign="middle">
+<mediaobject><imageobject> <imagedata fileref="figures/goodfocus3.png" format="PNG"/> </imageobject> <textobject> <phrase>Fenêtre séparée en deux volets dans laquelle la mise en évidence secondaire est utilisée pour indiquer le volet qui a le focus</phrase> </textobject></mediaobject>
+</entry>
+<entry>Par l'utilisation d'une deuxième couleur de mise en évidence de sélection dans le volet inactif, il est immédiatement clair que le contrôle d'arborescence possède le focus ici...</entry>
+</row>
+<row>
+<entry valign="middle">
+<mediaobject><imageobject> <imagedata fileref="figures/goodfocus2.png" format="PNG"/> </imageobject> <textobject> <phrase>Fenêtre séparée en deux volets dans laquelle la mise en évidence secondaire est utilisée pour indiquer le volet qui a le focus</phrase> </textobject></mediaobject>
+</entry>
+<entry>... et que le contrôle de liste possède le focus ici.</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</example>
+</section>
+</section>
+
+<section>
+<title>Synchronisation</title>
+<para>Les interfaces où des choses apparaissent, disparaissent ou se produisent à des instants figés de façon permanente causent souvent des problèmes d'accessibilité. Certains utilisateurs lisent, saisissent ou réagissent très lentement par rapport à d'autres. Si les informations dont ils ont besoin sont masquées avant d'en avoir terminé avec elles ou que d'autres informations les cachent, sans qu'elles aient été demandées explicitement, alors votre application est très frustrante ou même impossible à utiliser.</para>
+<itemizedlist>
+<listitem>
+<para>Ne codez pas de façon permanente des délais ou des fonctions basées sur le temps. Quelques exemples sont le défilement automatique lorsqu'un objet est déplacé près du bord d'une fenêtre, l'enfoncement du bouton d'une barre de défilement, ou le développement automatiquement d'une arborescence lorsqu'un objet est déplacé et laissé un court moment au-dessus d'elle. Ceux-ci doivent être configurables dans l'application, via le centre de contrôle de GNOME ou, au pire, modifiable manuellement depuis la ligne de commande, via un fichier de configuration ou une entrée Gconf.</para>
+</listitem>
+<listitem>
+<para>N'affichez ou ne cachez pas brièvement des informations en fonction du mouvement du pointeur de souris (sauf pour les fonctions du système telles que les infobulles que l'utilisateur peut configurer au niveau du système). Si vous devez fournir de telles fonctions, assurez-vous qu'elles soient optionnelles afin que les utilisateurs puissent les désactiver quand un lecteur d'écran est installé.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Documentation</title>
+<para>Les personnes avec des handicaps ne peuvent pas utiliser l'application de manière efficace s'ils n'ont pas accès aux manuels et aux fichiers d'aide nécessaires. La navigation au clavier est particulièrement importante, car c'est le seul moyen pour de nombreux utilisateurs de parcourir l'application.</para>
+<itemizedlist>
+<listitem>
+<para>Fournissez toute la documentation dans un format accessible. Le texte au format ASCII et HTML sont tous deux excellents pour les technologies d'assistance.</para>
+</listitem>
+<listitem>
+<para>Fournissez des descriptions alternatives textuelles pour toutes les illustrations de la documentation.</para>
+</listitem>
+<listitem>
+<para>Documentez toutes les fonctionnalités d'accessibilité de votre application. Il est particulièrement important de documenter la navigation au clavier et les raccourcis. Ajoutez une section accessibilité à votre documentation contenant les informations spécifiques à l'accessibilité.</para>
+</listitem>
+</itemizedlist>
+</section>
+</section>
+</chapter>
+
+<chapter id="gtest" status="draft">
+<title>Test</title>
+<para>Il y a de nombreux points de contrôles à vérifier avant de déclarer qu'une application est accessible. Au cours du développement, vous pouvez vouloir utiliser des techniques de tests automatisées. Par exemple, <ulink url="http://ldtp.freedesktop.org/">LDTP</ulink> peut compléter votre plan de test automatisé.</para>
+<para>Cette section décrit un certain nombre de tests que vous pouvez effectuer manuellement sur une application pour tester son accessibilité. Même si tous les tests sont réussis, cela ne veut pas nécessairement dire que l'application est entièrement accessible, par contre si l'application ne passe pas un de ces tests, du travail complémentaire doit être fait pour améliorer cet aspect de son accessibilité.</para>
+
+<section>
+<title>Navigation au clavier</title>
+<para>Les opérations au clavier suivantes doivent être testées. N'utilisez pas la souris dans ce qui suit.</para>
+<itemizedlist>
+<listitem>
+<para>Uniquement à l'aide du clavier, déplacez le focus dans toutes les barres de menu de l'application.</para>
+</listitem>
+<listitem>
+<para>Vérifiez que :</para>
+<itemizedlist>
+<listitem>
+<para>les menus contextuels s'affichent correctement,</para>
+</listitem>
+<listitem>
+<para>toutes les fonctions énumérées dans la barre d'outils peuvent être réalisées grâce au clavier,</para>
+</listitem>
+<listitem>
+<para>vous pouvez actionner chaque contrôle dans la zone client de l'application et dans les boîtes de dialogue,</para>
+</listitem>
+<listitem>
+<para>le texte et les objets dans la zone client peuvent être sélectionnés,</para>
+</listitem>
+<listitem>
+<para>tous les raccourcis clavier ou touches de raccourci fonctionnent comme prévu.</para>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Éléments graphiques</title>
+<para>Testez l'application avec un lecteur d'écran et vérifiez que :</para>
+<itemizedlist>
+<listitem>
+<para>les étiquettes et le texte sont lus correctement, ainsi que les menus et les barres d'outils,</para>
+</listitem>
+<listitem>
+<para>les informations des objets sont lues correctement.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Indicateur de focus visuel</title>
+<itemizedlist>
+<listitem>
+<para>Vérifiez que lors de déplacements parmi les objets, l'indicateur de focus visuel est facile à identifier.</para>
+</listitem>
+<listitem>
+<para>La navigation au clavier dans le logiciel et les menus doit être clairement visible lors du déplacement du focus.</para>
+</listitem>
+<listitem>
+<para>Vérifiez que le lecteur d'écran suit l'indicateur de focus visuel lors de vos déplacements à l'aide du clavier.</para>
+</listitem>
+<listitem>
+<para>Utilisez le programme de loupe d'écran (s'il est disponible) et vérifiez que la loupe suit l'indicateur de focus visuel quand vous naviguez avec le clavier et la souris.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Police et texte </title>
+<itemizedlist>
+<listitem>
+<para>Modifiez la police de l'application et vérifiez que les réglages sont conservés.</para>
+</listitem>
+<listitem>
+<para>Testez l'application en changeant les couleurs et vérifiez que tous les réglages sont conservés.</para>
+</listitem>
+<listitem>
+<para>Si un zoom est possible, testez la police, la couleur et la taille en utilisant les options de zoom.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Couleur et contraste</title>
+<itemizedlist>
+<listitem>
+<para>Imprimez des captures d'écran en noir et blanc et vérifiez que toutes les informations sont visibles.</para>
+</listitem>
+<listitem>
+<para>Testez l'application en utilisant des réglages en noir et blanc uniquement et un fort contraste et vérifiez que toutes les informations sont transmises correctement.</para>
+</listitem>
+<listitem>
+<para>Testez que l'application fournit au moins trois combinaisons de schémas de couleurs et que des thèmes à fort contraste sont disponibles (par ex. blanc sur noir ou jaune sur bleu).</para>
+</listitem>
+<listitem>
+<para>Activez les paramètres à fort contraste dans le centre de contrôle de GNOME et vérifiez que l'application respecte ces paramètres.</para>
+</listitem>
+<listitem>
+<para>Testez plusieurs thèmes pour vous assurer que le logiciel fonctionne pour tous les réglages disponibles.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Audio</title>
+<para>L'application doit posséder une option pour afficher à l'écran les alertes sonores.</para>
+<para>Vérifiez que le son fonctionne correctement en activant le son dans le centre de contrôle GNOME puis effectuez les tâches suivantes :</para>
+<itemizedlist>
+<listitem>
+<para>effectuez une action qui doit générer une alerte sonore et vérifiez que l'application fonctionne comme prévu,</para>
+</listitem>
+<listitem>
+<para>vérifiez que l'application fonctionne correctement quand vous baissez ou augmentez le volume,</para>
+</listitem>
+<listitem>
+<para>vérifiez que les messages d'avertissement et les alertes peuvent être entendus correctement dans un environnement de travail bruyant.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Animation</title>
+<para>Vérifiez qu'une option est disponible pour arrêter les animations et qu'elle fonctionne comme prévu. </para>
+<para>Désactivez les animations. Vérifiez que toutes les informations sont toujours transmises correctement.</para>
+</section>
+
+<section>
+<title>Focus au clavier</title>
+<itemizedlist>
+<listitem>
+<para>Testez tous les messages pour vérifier que l'utilisateur est averti avant qu'il ne disparaisse et que l'option pour augmenter ce délai est disponible.</para>
+</listitem>
+<listitem>
+<para>Assurez-vous qu'il existe une option pour ajuster le temps de réponse et vérifiez qu'elle fonctionne comme prévu.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section>
+<title>Documentation</title>
+<para>Testez la documentation en texte ASCII avec un lecteur d'écran pour vérifier qu'elle est claire et précise et peut être lue par les technologies d'assistance.</para>
+<para>Testez les applications HTML en utilisant un navigateur Web et un lecteur d'écran pour vérifiez que la documentation est accessible aux technologies d'assistance.</para>
+<para>Note : des directives pour l'accessibilité Web sont disponibles à l'adresse : <ulink url="http://www.w3.org/TR/WAI-WEBCONTENT/">http://www.w3.org/TR/WAI-WEBCONTENT/</ulink>.</para>
+<para>Vérifiez que les informations suivantes sont contenues dans la documentation :</para>
+<itemizedlist>
+<listitem>
+<para>Indication si l'application ne prend pas en charge l'accès clavier standard utilisé par le système d'exploitation.</para>
+</listitem>
+<listitem>
+<para>Identification des commandes clavier particulières.</para>
+</listitem>
+<listitem>
+<para>Identification de toutes les fonctions d'accessibilité particulières.</para>
+</listitem>
+<listitem>
+<para>Si une action est documentée pour la souris, assurez-vous qu'il y ait une alternative au clavier.</para>
+</listitem>
+</itemizedlist>
+</section>
+
+<section id="gad-checklist">
+<title>Liste de contrôle de l'interface utilisateur</title>
+<para>Cette section résume les directives données par les <link linkend="gad-ui-guidelines">directives pour la prise en charge de l'accessibilité dans l'interface utilisateur</link>. Vous devez vous référer à cette section du guide pour plus d'informations sur les éléments de la liste de contrôle donnés ici.</para>
+<para>Quand vous testez une application pour l'accessibilité, vous devez valider chaque élément de la liste. Pour chaque test, notez si l'application passe ou échoue ou si cela ne s'applique pas à l'application.</para>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle des principes généraux</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>PG</entry>
+<entry>Principes généraux</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>PG.1</entry>
+<entry>Toutes les actions qui modifient les données de l'utilisateur ou les paramètres de l'application peuvent être annulées.</entry>
+</row>
+<row>
+<entry>PG.2</entry>
+<entry>Tous les paramètres de l'application peuvent être restaurés sans que l'utilisateur n'ait à se rappeler quels étaient les paramètres par défaut.</entry>
+</row>
+<row>
+<entry>PG.3</entry>
+<entry>Après l'installation, l'application peut être utilisée sans que l'utilisateur n'ait à aucun moment à insérer une disquette ou un CD.</entry>
+</row>
+<row><entry>PG.4</entry>
+<entry>Les fonctions les plus fréquemment utilisées se trouvent au premier niveau de la structure des menus.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle de la navigation à l'aide du clavier</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>NC</entry>
+<entry>Navigation au clavier</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>NC.1</entry>
+<entry>Toutes les fonctions de l'application sont disponibles de manière efficace avec le clavier.</entry>
+</row>
+<row>
+<entry>NC.2</entry>
+<entry>L'ordre de navigation au clavier est logique dans toutes les fenêtres.</entry>
+</row>
+<row><entry>NC.3</entry>
+<entry>L'ordre de tabulation correct est utilisé pour les contrôles dont l'activation dépend de cases à cocher, boutons radio ou boutons poussoir.</entry>
+</row>
+<row><entry>NC.4</entry>
+<entry>Les touches d'accès clavier spécifiques de l'application ne supplantent pas les fonctions d'accessibilité du système.</entry>
+</row>
+<row><entry>NC.5</entry>
+<entry>L'application fournit, quand c'est possible, plus d'une méthode pour effectuer les tâches au clavier.</entry>
+</row>
+<row><entry>NC.6</entry>
+<entry>Il existe des combinaisons de touches alternatives partout où c'est possible.</entry>
+</row>
+<row><entry>NC.7</entry>
+<entry>Il n'y a pas de combinaisons de touches difficiles à effectuer pour les opérations clavier fréquentes.</entry>
+</row>
+<row><entry>NC.8</entry>
+<entry>L'application n'utilise pas de combinaisons d'enfoncements de touches simultanés et répétitifs.</entry>
+</row>
+<row><entry>NC.9</entry>
+<entry>L'application fournit un accès au clavier équivalent pour toutes les fonctions de la souris.</entry>
+</row>
+<row><entry>NC.10</entry>
+<entry>Tous les textes ou objets qui peuvent être sélectionnés avec la souris, peuvent l'être aussi uniquement à l'aide du clavier.</entry>
+</row>
+<row><entry>NC.11</entry>
+<entry>Tous les texte ou objets qui peuvent être redimensionnés ou déplacés avec la souris peuvent l'être aussi uniquement avec le clavier.</entry>
+</row>
+<row><entry>NC.12</entry>
+<entry>L'application n'utilise pas de fonctions de navigation générales pour déclencher des opérations.</entry>
+</row>
+<row><entry>NC.13</entry>
+<entry>Tous les menus appelés via le clavier, toutes les fenêtres et les infobulles apparaissent près des objets auxquels ils sont liés.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle de l'interaction avec la souris</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>IS</entry>
+<entry>Interaction avec la souris</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>IS.1</entry>
+<entry>Aucune opération ne dépend d'appui sur les boutons <mousebutton>droit</mousebutton> ou <mousebutton>central</mousebutton> de la souris.</entry>
+</row>
+<row><entry>IS.2</entry>
+<entry>Toutes les opérations de la souris peuvent être annulées avant qu'elles ne se terminent.</entry>
+</row>
+<row><entry>IS.3</entry>
+<entry>Un retour visuel d'informations est fourni pendant les opérations de glisser-déposer.</entry>
+</row>
+<row><entry>IS.4</entry>
+<entry>Le pointeur de souris n'est jamais mis sous contrôle de l'application ou son mouvement n'est pas restreint à une partie de l'écran par l'application.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle des éléments graphiques</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>EG</entry>
+<entry>Éléments graphiques</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>EG.1</entry>
+<entry>Il n'y a pas d'attribut graphique codé de manière permanente comme l'épaisseur des lignes, bordures ou ombres.</entry>
+</row>
+<row><entry>EG.2</entry>
+<entry>Tous les éléments graphiques multicolores peuvent être affichés, si possible, en monochrome.</entry>
+</row>
+<row><entry>EG.3</entry>
+<entry>Tous les éléments interactifs de l'interface graphique sont facilement différentiables des éléments statiques.</entry>
+</row>
+<row><entry>EG.4</entry>
+<entry>Il existe une option pour masquer les images non essentielles.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle de la police et du texte</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>PT</entry>
+<entry>Police et texte </entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>PT.1</entry>
+<entry>Le style et la taille des polices ne sont pas codés de manière permanente.</entry>
+</row>
+<row><entry>PT.2</entry>
+<entry>Il existe une option pour désactiver les toiles de fond graphiques derrière le texte.</entry>
+</row>
+<row><entry>PT.3</entry>
+<entry>Toutes les étiquettes possèdent des noms compréhensibles hors contexte.</entry>
+</row>
+<row><entry>PT.4</entry>
+<entry>Aucun nom d'étiquette n'est utilisé plusieurs fois dans la même fenêtre.</entry>
+</row>
+<row><entry>PT.5</entry>
+<entry>La position des étiquettes est homogène dans toute l'application.</entry>
+</row>
+<row><entry>PT.6</entry>
+<entry>Toutes les étiquettes textuelles statiques qui identifient d'autres contrôles se terminent par deux points (:). </entry>
+</row>
+<row><entry>PT.7</entry>
+<entry>Les étiquettes textuelles statiques qui décrivent d'autres contrôles, précèdent immédiatement ceux-ci dans l'ordre de tabulation.</entry>
+</row>
+<row><entry>PT.8</entry>
+<entry>Il existe une alternative au WYSIWYG. Par exemple, la possibilité de spécifier des polices d'affichage et d'impression différentes pour un éditeur de texte.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle des couleurs et du contraste</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>CC</entry>
+<entry>Couleur et contraste</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>CC.1</entry>
+<entry>Les couleurs de l'application ne sont pas codées de manière permanente, mais sont extraites du thème de bureau actuel ou des paramètres de l'application.</entry>
+</row>
+<row><entry>CC.2</entry>
+<entry>La couleur n'est utilisée que pour mettre en évidence et non pas comme seul moyen de transmettre des informations ou des actions.</entry>
+</row>
+<row>
+<entry>CC.3</entry>
+<entry>L'application prend en charge tous les thèmes et paramètres à fort contraste disponibles.</entry>
+</row>
+<row><entry>CC.4</entry>
+<entry>Le logiciel ne dépend pas d'un thème ou de paramètres à fort contraste particuliers.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle des agrandissements</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>AG</entry>
+<entry>Zoom</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>AG.1</entry>
+<entry>L'application fournit la possibilité à l'utilisateur de faire un zoom de la zone de travail.</entry>
+</row>
+<row><entry>AG.2</entry>
+<entry>L'application fournit l'option de modifier l'échelle de la zone de travail.</entry>
+</row>
+<row><entry>AG.3</entry>
+<entry>Les fonctionnalités de l'application ne sont pas affectées par l'utilisation d'un agrandissement ou des paramètres d'échelles.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle audio</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>AU</entry>
+<entry>Audio</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>AU.1</entry>
+<entry>Le son n'est pas utilisé comme seul moyen de transmettre une partie des informations.</entry>
+</row>
+<row><entry>AU.2</entry>
+<entry>L'utilisateur peut configurer la fréquence et le volume de tous les sons et les messages sonores d'alerte.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle des animations</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>AN</entry>
+<entry>Animation</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>AN.1</entry>
+<entry>Il n'y a pas d'élément qui flashe ou clignote à une fréquence comprise entre 2 et 55 Hz.</entry>
+</row>
+<row><entry>AN.2</entry>
+<entry>Tout flash ou clignotement est restreint à une petite partie de l'écran.</entry>
+</row>
+<row><entry>AN.3</entry>
+<entry>Si une animation est utilisée, il existe une option pour la désactiver avant qu'elle ne soit affichée.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle du focus clavier</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>FC</entry>
+<entry>Focus au clavier</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>FC.1</entry>
+<entry>Quand une fenêtre est ouverte, le focus est donné au contrôle le plus utilisé.</entry>
+</row>
+<row><entry>FC.2</entry>
+<entry>La position actuelle du focus de saisie est clairement affichée à tout moment.</entry>
+</row>
+<row><entry>FC.3</entry>
+<entry>La position du focus de saisie n'est affichée que dans une seule fenêtre à la fois.</entry>
+</row>
+<row><entry>FC.4</entry>
+<entry>Un retour d'information sonore ou visuel est fourni quand l'utilisateur tente de naviguer au delà du début ou de la fin d'un groupe d'objets liés.</entry>
+</row>
+<row><entry>FC.5</entry>
+<entry>Le signal d'avertissement sonore ou visuel par défaut est utilisé lorsque l'utilisateur appuie sur une touche incorrecte.</entry>
+</row>
+<row><entry>FC.6</entry>
+<entry>Il y a suffisamment d'informations audio concernant le focus visuel pour que l'utilisateur sache ce qu'il doit faire ensuite.</entry>
+</row>
+<row><entry>FC.7</entry>
+<entry>Pendant l'utilisation de technologies d'assistance, comme un lecteur d'écran ou un périphérique pour le braille, le programme actuel indique la position et le contenu de l'indicateur de focus visuel.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle pour la synchronisation</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>SC</entry>
+<entry>Synchronisation</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>SC.1</entry>
+<entry>Il n'y a pas de délai ou de fonction basée sur le temps, codés de manière permanente dans l'application.</entry>
+</row>
+<row><entry>SC.2</entry>
+<entry>L'affichage ou le masquage d'informations importantes ne sont pas déclenchés uniquement par des déplacements de la souris.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<table frame="all" pgwide="1">
+<title>Liste de contrôle de la documentation</title>
+<tgroup cols="3" align="left">
+<thead>
+<row>
+<entry>DC</entry>
+<entry>Documentation</entry>
+<entry>Succès/échec/NA</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>DC.1</entry>
+<entry>Toute la documentation est dans un format accessible, avec des descriptions alternatives fournies pour toutes les figures et diagrammes.</entry>
+</row>
+<row><entry>DC.2</entry>
+<entry>La documentation contient une section décrivant toutes les fonctions d'accessibilité.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</section>
+
+<section>
+<title>GOK (GNOME Onscreen Keyboard) : clavier visuel GNOME</title>
+<note>
+<para>Les informations sur cette page sont partiellement dépassées : <application><ulink url="http://wiki.gnome.org/Caribou">Caribou</ulink></application> de GNOME 3 a efficacement remplacé <application>gok</application> de GNOME 2.</para>
+</note>
+
+<para>Votre application doit être utilisable avec <application>gok</application> ; la saisie clavier doit être entièrement réalisée par <application>gok</application> et pas par le clavier. Le but ici est de travailler avec votre application, et le bureau en général, pour vous assurer que la saisie de tous types de caractères est possible avec le clavier visuel.</para>
+<para>L'application <application>gok</application> est fournie avec le bureau GNOME et devrait donc déjà être présente. Pour une documentation complète, consultez le <ulink url="http://www.gok.ca">site officiel de gok</ulink>.</para>
+<para>Suivez les étapes suivantes pour vérifier le fonctionnement correct de <application>gok</application> avec votre application :</para>
+<procedure>
+<step>
+<para>Connectez-vous au bureau GNOME</para>
+</step>
+<step>
+<para>Lancez <application>gok</application></para>
+</step>
+<step>
+<para>Démarrez votre programme</para>
+</step>
+<step>
+<para>Fournissez des entrées à votre application à l'aide d'un périphérique de pointage (par ex. souris ou capteur de mouvements de tête) et <application>gok</application>.</para>
+</step>
+<step>
+<para>Utilisez les fonctions de prédiction de mot et d'auto-complétion de <application>gok</application>.</para>
+</step>
+<step>
+<para>Vérifiez que <application>gok</application> active et désactive les <guibutton>menus</guibutton> et les boutons des <guibutton>barres d'outils</guibutton> en fonction du type d'application appelée ; par exemple, les <guibutton>menus</guibutton> et les boutons des <guibutton>barres d'outils</guibutton> sont désactivés pour la capplet « Propriétés de la police » , mais ces mêmes boutons sont activés pour l'application <application>Gedit</application>.</para>
+</step>
+<step>
+<para>Vérifiez que la touche <guibutton>Composition</guibutton> fournie par le clavier visuel de l'application <application>gok</application> peut être utilisée pour saisir n'importe quel texte dans l'application sélectionnée ; lancez <application>Gedit</application>, cliquez sur la zone de texte puis, cliquez sur la touche de <guibutton>composition</guibutton> dans l'application <application>gok</application>. Sélectionnez les touches requises depuis le clavier visuel. Les caractères doivent s'afficher dans la zone de texte de <application>Gedit</application>.</para>
+</step>
+<step>
+<para>Vérifiez que le bouton <guibutton>Lanceur</guibutton> permet à l'utilisateur de lancer n'importe laquelle des applications parmi <application>Terminal</application>, <application>Navigateur Web</application> ou <application>Éditeur de texte</application>.</para>
+</step>
+<step>
+<para>Vérifiez que le bouton <guibutton>Activer</guibutton> permet à l'utilisateur d'activer n'importe quelle fenêtre d'une application actuellement en cours sur le bureau de l'utilisateur, ainsi que les tableaux de bord et le bureau GNOME.</para>
+</step>
+<step>
+<para>Vérifiez que le bouton <guibutton>Menus</guibutton> affiche tous les menus disponibles dans l'application actuelle. Vérifiez qu'un clic sur un bouton de menu affiche le sous-menu et ses éléments. Enfin, vérifiez qu'un clic sur un élément de menu active cet élément. Par exemple, cliquez sur l'application <application>Aide et soutien</application> et cliquez sur le bouton <guibutton>Menus</guibutton>. La fenêtre <application>GOK</application> affiche maintenant les boutons <guibutton>Fichier</guibutton>, <guibutton>Aller à</guibutton> et <guibutton>Aide</guibutton> (les menus de l'application <application>Aide et soutien</application>). Cliquez sur le bouton <guibutton>Fichier</guibutton> et les boutons <guibutton>Nouvelle fenêtre</guibutton> et <guibutton>Fermer la fenêtre</guibutton> s'affichent (éléments du menu).</para>
+</step>
+<step>
+<para>Vérifiez que la liste des boutons des <guibutton>Barres d'outils</guibutton> est complète. Par exemple, cliquez sur l'application <application>Aide et soutien</application> puis, cliquez sur le bouton <guibutton>Barres d'outils</guibutton>. La fenêtre <application>GOK</application> affiche maintenant les boutons <guibutton>Précédent</guibutton>, <guibutton>Suivant</guibutton> et <guibutton>Sommaire</guibutton>.</para>
+</step>
+<step>
+<para>Vérifiez que le bouton <guibutton>Capturer l'IU</guibutton> affiche tous les objets boutons de la fenêtre d'application sélectionnée. Par exemple, ouvrez la capplet « Propriétés de la police » et cliquez sur le bouton <guibutton>Capturer l'IU</guibutton> dans la fenêtre <application>GOK</application>. La fenêtre <application>GOK</application> doit maintenant afficher les noms des boutons de la capplet : <guibutton>Sans</guibutton>, <guibutton>Sans-serif</guibutton>, <guibutton>Fermer</guibutton> et <guibutton>Aide</guibutton>.</para>
+</step>
+</procedure>
+</section>
+
+<section>
+<title>Accerciser</title>
+<screenshot>
+<mediaobject><imageobject> <imagedata fileref="figures/at-arch.png" format="PNG"/> </imageobject> <textobject> <phrase> Accerciser et l'architecture d'accessibilité de GNOME </phrase> </textobject></mediaobject>
+</screenshot>
+
+<para><application>Accerciser</application> est un explorateur d'accessibilité interactif Python pour le bureau GNOME. Il utilise AT-SPI pour inspecter et contrôler les éléments graphiques, il vous permet de vérifier si une application fournit les informations correctes aux technologies d'assistance et aux structures de tests automatiques. <application>Accerciser</application> utilise une structure de greffons que vous pouvez utiliser pour créer des visualisations personnalisées des informations d'accessibilité. La documentation complète se trouve <ulink url="http://library.gnome.org/devel/accerciser/stable">dans le manuel officiel d'Accerciser</ulink>. Pour une démonstration d'<application>Accerciser</application> et de <application>PyATSPI</application> (Python-wrappered access and usage of AT-SPI : accès Python-wrappered et utilisation de AT-SPI), consultez <ulink url="http://live.gnome.org/Accessibility/PythonPoweredAccessibility">cet article</ulink>. Pour une excellente visite guidée par son auteur, consultez l'article <ulink url="http://www.linuxjournal.com/article/9991">Make Your Application Accessible with Accerciser (Rendre son application accessible avec Accerciser)</ulink>.</para>
+<note>
+<para><application>Accerciser</application> a en réalité remplacé l'outil <application>at-poke</application> plus ancien.</para>
+</note>
+</section>
+
+</chapter>
+
+</book>

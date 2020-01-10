@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.py" xml:lang="el">
+
+  <info>
+    <title type="text">Προβολέας εικόνων (Python)</title>
+    <link type="guide" xref="py#examples"/>
+
+    <desc>Μια λίγο περισσότερο από απλή εφαρμογή σαν το "Γεια σου κόσμε" - γράψτε έναν προβολέα εικόνων σε GTK.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
+    <credit type="author">
+      <name>Jonh Wendell</name>
+      <email its:translate="no">jwendell@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Προβολή εικόνων</title>
+
+<synopsis>
+  <p>Σε αυτόν το μάθημα θα γράψουμε μια πολύ απλή εφαρμογή σε GTK που φορτώνει και εμφανίζει ένα αρχείο εικόνας. Θα μάθετε πώς να:</p>
+  <list>
+    <item><p>Γράψετε μια βασική διεπαφή χρήστη GTK σε Python</p></item>
+    <item><p>Να αντιμετωπίζετε συμβάντα συνδέοντας σήματα με τους χειριστές σημάτων</p></item>
+    <item><p>Σχεδιάζετε διεπαφές χρήστη GTK χρησιμοποιώντας περιέκτες</p></item>
+    <item><p>Φορτώνετε και να εμφανίζετε αρχεία εικόνων</p></item>
+  </list>
+  <p>Θα χρειαστείτε τα παρακάτω για να μπορέσετε να ακολουθήσετε αυτό το μάθημα:</p>
+  <list>
+    <item><p>Ένα εγκατεστημένο αντίγραφο του <link xref="getting-ready">Anjuta IDE</link></p></item>
+    <item><p>Βασική γνώση της γλώσσας προγραμματισμού Python</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Δημιουργία έργου με το Anjuta</title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+    <p>Ξεκινήστε το Anjuta και πατήστε <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+    <p>Επιλέξτε <gui>PyGTK (automake)</gui> από την καρτέλα <gui>Python</gui>, πατήστε <gui>συνέχεια</gui>, και συμπληρώστε τις λεπτομέρειες σας στις επόμενες λίγες σελίδες. Χρησιμοποιήστε το <file>image-viewer</file> ως όνομα του έργου και του καταλόγου.</p>
+   	</item>
+   	<item>
+   	<p>Βεβαιωθείτε ότι απενεργοποιήσατε το <gui>χρήση του GtkBuilder για διεπαφή χρήση</gui> επειδή θα φτιάξουμε τη διεπαφή χρήστη χειροκίνητα σε αυτό το παράδειγμα. Για ένα παράδειγμα χρήσης του σχεδιαστή διεπαφής, δείτε το <link xref="guitar-tuner.py">επίδειξη ρυθμιστή κιθάρας</link>.</p>
+    </item>
+    <item>
+    <p>Πατήστε <gui>εφαρμογή</gui> και το έργο θα δημιουργηθεί για εσάς. Ανοίξτε το <file>src/image_viewer.py</file> από τις καρτέλες <gui>έργο</gui> ή <gui>αρχείο</gui>. Περιλαμβάνει πολύ βασικό παράδειγμα κώδικα.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="first">
+  <title>Μια πρώτη εφαρμογή σε Gtk</title>
+  <p>Για να δούμε πως φαίνεται μια πολύ βασική εφαρμογή Gtk σε Python:</p>
+  <code mime="text/python" style="numbered">
+from gi.repository import Gtk, GdkPixbuf, Gdk
+import os, sys
+
+class GUI:
+	def __init__(self):
+		window = Gtk.Window()
+		window.set_title ("Hello World")
+		window.connect_after('destroy', self.destroy)
+
+		window.show_all()
+
+	def destroy(window, self):
+		Gtk.main_quit()
+
+def main():
+	app = GUI()
+	Gtk.main()
+
+if __name__ == "__main__":
+    sys.exit(main())
+
+  </code>
+  <p>Ας ρίξουμε μια ματιά στο τι γίνεται:</p>
+  <list>
+    <item>
+    <p>Η πρώτη γραμμή εισάγει το όνομα χώρου Gtk (αυτό είναι που περιέχει την βιβλιοθήκη του Gtk). Οι βιβλιοθήκες παρέχονται από το GObject Introspection (gi), που παρέχει γλωσσικές συσχετίσεις για πολλές βιβλιοθήκες του GNOME.</p>
+    </item>
+    <item>
+    <p>Η μέθοδος <code>__init__</code> της κλάσης <code>GUI</code> δημιουργεί ένα (άδειο) <code>Gtk.Window</code>, ορίζει τον τίτλο του και μετά συνδέει ένα σήμα να τερματίζει την εφαρμογή όταν το παράθυρο κλείσει. Είναι πολύ απλό, περισσότερα για τα σήματα αργότερα.</p>
+    </item>
+    <item>
+    <p>Μετά, ορίζουμε το <code>destroy</code> το οποίο απλά θα τερματίσει την εφαρμογή. Καλείται από το σήμα <code>destroy</code> που συνδέσατε παραπάνω.</p>
+    </item>
+    <item>
+    <p>Το υπόλοιπο του αρχείου κάνει αρχικοποίηση για το Gtk και εμφανίζει το GUI.</p>
+    </item>
+  </list>
+
+  <p>Ο κώδικας είναι έτοιμος να εκτελεστεί, οπότε δοκιμάστε το πατώντας <guiseq><gui>τρέξιμο</gui><gui>Εκτέλεση</gui></guiseq>. Θα πρέπει να εμφανίσει ένα άδειο παράθυρο.</p>
+</section>
+
+<section id="signals">
+  <title>Σήματα</title>
+  <p>Τα σήματα είναι μια από τις έννοιες κλειδιά για τον προγραμματισμό Gtk. Όποτε κάτι συμβαίνει σε ένα αντικείμενο, εκπέμπει ένα σήμα· για παράδειγμα, όταν πατιέται ένα κουμπί εκπέμπει το σήμα <code>clicked</code>. Άμα θέλετε το πρόγραμμά σας να κάνει κάτι όταν αυτό συμβαίνει, πρέπει να συνδέσετε μια συνάρτηση (έναν "χειριστή σημάτων") σε αυτό το σήμα. Ορίστε ένα παράδειγμα:</p>
+  <code mime="text/python" style="numbered">
+def button_clicked () :
+  print "you clicked me!"
+
+b = new Gtk.Button ("Click me")
+b.connect_after ('clicked', button_clicked)</code>
+  <p>Οι τελευταίες δύο γραμμές δημιουργούν ένα <code>Gtk.Button</code> που ονομάζεται <code>b</code> και συνδέει το σήμα το <code>clicked</code> στην συνάρτηση <code>button_clicked</code>, η οποία ορίζεται πιο πάνω. Κάθε φορά που πατιέται ένα κουμπί, ο κώδικας στη συνάρτηση <code>button_clicked</code> θα εκτελείται. Εδώ απλά τυπώνει ένα μήνυμα.</p>
+</section>
+
+<section id="containers">
+  <title>Περιέκτες: Σχεδίαση διεπαφής χρήστη</title>
+  <p>Γραφικά στοιχεία (έλεγχοι, όπως τα κουμπιά και οι ετικέτες) μπορούν να τοποθετηθούν στο παράθυρο κάνοντας χρήση των <em>περιεκτών</em>. Μπορείτε να οργανώσετε την διάταξη συνδυάζοντας διαφορετικών ειδών περιέκτες, όπως πλαίσια και πλέγματα.</p>
+  <p>Ένα <code>Gtk.Window</code> είναι από μόνο του ένα είδος περιέκτη, αλλά μπορείτε να τοποθετήσετε μόνο ένα γραφικό στοιχείο άμεσα πάνω του. Θα θέλαμε να είχαμε δύο γραφικά στοιχεία, μια εικόνα και ένα κουμπί, άρα θα πρέπει να τοποθετήσουμε έναν υποδοχέα "υψηλότερης χωρητικότητας" μέσα στο παράθυρο για να κρατάει τα άλλα γραφικά στοιχεία. Ένας αριθμός από <link href="http://library.gnome.org/devel/gtk/stable/GtkContainer.html">τύπους περιεκτών</link> είναι διαθέσιμοι, αλλά θα χρησιμοποιήσουμε εδώ ένα <code>Gtk.Box</code>. Ένα <code>Gtk.Box</code> μπορεί να κρατήσει πολλά γραφικά στοιχεία, οργανωμένα οριζόντια ή κάθετα. Μπορείτε να κάνετε και πιο περίπλοκες διατάξεις βάζοντας πολλά πλαίσια το ένα μέσα στο άλλο κ.ο.κ.</p>
+  <note>
+  <p>Υπάρχει ένας γραφικός σχεδιαστής διεπαφής χρήστη με όνομα <app>Glade</app> ενσωματωμένος στο <app>Anjuta</app> που κάνει τη σχεδίαση γραφικού περιβάλλοντος πολύ εύκολη. Για αυτό το απλό παράδειγμα, όμως, θα κωδικοποιήσουμε τα πάντα χειροκίνητα.</p>
+  </note>
+  <p>Ας προσθέσουμε ένα πλαίσιο και γραφικά στοιχεία στο παράθυρο. Προσθέστε τον παρακάτω κώδικα στη μέθοδο <code>__init__</code>, αμέσως μετά τη γραμμή <code>window.connect_after</code>:</p>
+<code mime="text/python" style="numbered">
+box = Gtk.Box()
+box.set_spacing (5)
+box.set_orientation (Gtk.Orientation.VERTICAL)
+window.add (box)
+
+</code>
+  <p>Η πρώτη γραμμή δημιουργεί ένα <code>Gtk.Box</code> που ονομάζεται <code>box</code> και οι επόμενες γραμμές ρυθμίζουν δύο από τις ιδιότητες του: το <code>orientation</code> ρυθμίζεται σε κάθετο (οπότε τα γραφικά στοιχεία τοποθετούνται σε στήλη) και το <code>spacing</code> ανάμεσα στα γραφικά στοιχεία έχει ρυθμιστεί στα 5 εικονοστοιχεία. Η επόμενη γραμμή έπειτα προσθέτει στο παράθυρο το νεοδημιουργημένο <code>Gtk.Box</code>.</p>
+  <p>Μέχρι στιγμής το παράθυρο περιέχει μόνο ένα άδειο <code>Gtk.Box</code> και άμα εκτελέσετε τώρα το πρόγραμμα δε θα δείτε καμία απολύτως αλλαγή (το <code>Gtk.Box</code> είναι ένας διαφανής περιέκτης, οπότε δεν μπορείτε να δείτε ότι είναι εκεί).</p>
+</section>
+
+<section id="packing">
+  <title>Συσκευασία: Πρόσθεση γραφικών στοιχείων στον περιέκτη</title>
+  <p>Για να προσθέσετε κάποια γραφικά στοιχεία στο <code>Gtk.Box</code>, εισάγετε τον ακόλουθο κώδικα ακριβώς κάτω από την γραμμή <code>window.add (box)</code>:</p>
+  <code mime="text/python" style="numbered">
+self.image = Gtk.Image()
+box.pack_start (self.image, False, False, 0)</code>
+  <p>Η πρώτη γραμμή δημιουργεί ένα καινούργιο <code>Gtk.Image</code> που ονομάζεται <code>image</code>, που θα εμφανίζει ένα αρχείο εικόνας. Καθώς το χρειαζόμαστε αργότερα στο χειριστή σημάτων, θα το ορίσουμε ως μεταβλητή ευρείας κλάσης. Πρέπει να προσθέσετε το <code>image = 0</code> στην αρχή της κλάσης <code>GUI</code>. Έπειτα, το γραφικό στοιχείο της εικόνας προστίθεται (<em>πακετάρεται</em>) στον περιέκτη <code>box</code> χρησιμοποιώντας τη μέθοδο <link href="http://library.gnome.org/devel/gtk/stable/GtkBox.html#gtk-box-pack-start"><code>pack_start</code></link> του GtkBox.</p>
+  <p>Το <code>pack_start</code> παίρνει 4 παραμέτρους: το γραφικό στοιχείο που θα προστεθεί στο GtkBox (<code>child</code>)· αν το <code>Gtk.Box</code> πρέπει να μεγαλώσει όταν προστεθεί νέο γραφικό στοιχείο (<code>expand</code>)· αν το νέο γραφικό στοιχείο θα έπρεπε να καλύψει όλο τον δημιουργημένο επιπλέον χώρο αν μεγαλώσει το <code>Gtk.Box</code> (<code>fill</code>)· και πόσος χώρος πρέπει να υπάρχει, σε εικονοστοιχεία, ανάμεσα στο γραφικό στοιχείο και στους γείτονές του μέσα στο <code>Gtk.Box</code>, (<code>padding</code>).</p>
+  <p>Οι περιέκτες (και τα γραφικά στοιχεία) του Gtk επεκτείνονται δυναμικά για να καλύψουν τον διαθέσιμο χώρο, αν τα αφήσετε. Δεν τοποθετείτε τα γραφικά στοιχεία δίνοντας τους ακριβείς θέσεις x, y-συντεταγμένων στο παράθυρο· αλλά, τοποθετούνται σχετικά μεταξύ τους. Αυτό κάνει το χειρισμό της αλλαγής του μεγέθους του παραθύρου πιο εύκολη και τα γραφικά στοιχεία πρέπει να πάρουν αυτόματα ένα λογικό μέγεθος στις περισσότερες περιπτώσεις.</p>
+  <p>Επίσης σημειώστε πώς τα γραφικά στοιχεία οργανώνονται σε μια ιεραρχία. Μόλις πακεταριστούν μέσα στο <code>Gtk.Box</code>, το <code>Gtk.Image</code> θεωρείται <em>θυγατρικό</em> του <code>Gtk.Box</code>. Αυτό επιτρέπει να συμπεριφερθούμε σε όλα τα θυγατρικά ενός γραφικού στοιχείου ως μια ομάδα· για παράδειγμα, μπορείτε να κρύψετε το <code>Gtk.Box</code>, που θα κρύψει επίσης όλα τα θυγατρικά του ταυτόχρονα.</p>
+  <p>Τώρα προσθέστε αυτές τις δύο γραμμές, κάτω από αυτές που μόλις προσθέσατε:</p>
+  <code mime="text/python" style="numbered">
+button = Gtk.Button ("Open a picture...")
+box.pack_start (button, False, False, 0)
+</code>
+  <p>Αυτές οι γραμμές είναι παρόμοιες με τις δυο πρώτες, αλλά αυτή τη φορά δημιουργούν ένα <code>Gtk.Button</code> και το προσθέτουν στο <code>box</code>. Σημειώστε ότι ορίζουμε την (δεύτερη) παράμετρο, την <code>expand</code> σε <code>False</code>, ενώ είχε οριστεί <code>True</code> για το <code>Gtk.Image</code>. Έτσι η εικόνα θα πάρει όλο το διαθέσιμο χώρο και τα κουμπιά μόνο όσο χρειάζονται. Όταν μεγιστοποιήσεις το παράθυρο, το μέγεθος των κουμπιών θα παραμείνει το ίδιο, ενώ της εικόνας θα αυξηθεί, χρησιμοποιώντας όλο το υπόλοιπο παράθυρο.</p>
+</section>
+
+<section id="loading">
+  <title>Φόρτωση της εικόνας: Σύνδεση στο σήμα του κουμπιού <code>clicked</code></title>
+  <p>Όταν ο χρήστης πατήσει πάνω στο κουμπί <gui>Άνοιγμα εικόνας…</gui>, ένας διάλογος θα εμφανιστεί ώστε ο χρήστης να διαλέξει μια εικόνα. Μόλις διαλέξει, η εικόνα θα φορτωθεί και θα εμφανιστεί στο αντίστοιχο γραφικό στοιχείο.</p>
+  <p>Το πρώτο βήμα είναι να συνδέσουμε το σήμα <code>clicked</code> του κουμπιού με μια συνάρτηση χειριστή σημάτων, την οποία ονομάζουμε <code>on_open_clicked</code>. Βάλτε αυτόν τον κώδικα αμέσως μετά την γραμμή που το κουμπί δημιουργείται <code>button = Gtk.Button()</code>:</p>
+  <code mime="text/python">
+button.connect_after('clicked', self.on_open_clicked)
+</code>
+  <p>Αυτό θα συνδέσει το σήμα <code>clicked</code> στη μέθοδο <code>on_open_clicked</code> η οποία θα οριστεί παρακάτω.</p>
+</section>
+
+<section id="loading2">
+  <title>Φόρτωση της εικόνας: Γράφοντας την επανάκληση του σήματος</title>
+  <p>Τώρα μπορούμε να δημιουργήσουμε τη μέθοδο <code>on_open_clicked</code>. Εισάγετε τα ακόλουθα στη κλάση <code>GUI</code>, μετά τη μέθοδο <code>__init__</code>:</p>
+    <code mime="text/javascript" style="numbered">
+def on_open_clicked (self, button):
+	dialog = Gtk.FileChooserDialog ("Open Image", button.get_toplevel(), Gtk.FileChooserAction.OPEN);
+	dialog.add_button (Gtk.STOCK_CANCEL, 0)
+	dialog.add_button (Gtk.STOCK_OK, 1)
+	dialog.set_default_response(1)
+
+	filefilter = Gtk.FileFilter ()
+	filefilter.add_pixbuf_formats ()
+	dialog.set_filter(filefilter)
+
+	if dialog.run() == 1:
+		self.image.set_from_file(dialog.get_filename())
+
+	dialog.destroy()</code>
+  <p>Αυτό είναι λίγο πιο περίπλοκο από όσα έχουμε κάνει μέχρι τώρα, για αυτό θα το χωρίσουμε σε κομμάτια:</p>
+  <list>
+    <item>
+      <p>Η γραμμή που ξεκινάει με <code>dialog</code> δημιουργεί έναν διάλογο <gui>Open</gui>, τον οποίο ο χρήστης χρησιμοποιεί για να διαλέξει αρχεία. Ορίζουμε τρεις ιδιότητες: τον τίτλο του διαλόγου, την ενέργεια (type) του διαλόγου (είναι διάλογος "open", αλλά θα μπορούσαμε να χρησιμοποιήσουμε <code>SAVE</code> αν θέλαμε να αποθηκεύσουμε ένα αρχείο)· και <code>transient_for</code>, όπου ορίζει το γονικό παράθυρο του διαλόγου.</p>
+    </item>
+    <item>
+    <p>Οι επόμενες δύο γραμμές προσθέτουν τα κουμπιά <gui>Cancel</gui> και <gui>Open</gui> στο διάλογο. Το δεύτερο όρισμα της μεθόδου του <code>add_button</code> είναι η (ακέραιη) τιμή που επιστρέφει όταν πατιέται το κουμπί: 0 για το <gui>Ακύρωση</gui> και 1 για το <gui>Άνοιγμα</gui>.</p>
+    <p>Σημειώστε όταν χρησιμοποιούμε τα <em>προκαθορισμένα</em> ονόματα κουμπιών που υπάρχουν στο Gtk, αντί να γράψουμε οι ίδιοι "Ακύρωση" ή "Άνοιγμα". Το πλεονέκτημα στη χρήση των προκαθορισμένων ονομάτων είναι ότι οι ετικέτες των κουμπιών θα έχουν ήδη μεταφραστεί στη γλώσσα του χρήστη.</p>
+    </item>
+    <item>
+    <p>To <code>set_default_response</code> καθορίζει ποιο κουμπί θα ενεργοποιηθεί όταν ο χρήστης επιλέξει ένα αρχείο με διπλό κλικ ή πατήσει <key>Enter</key>. Στην περίπτωση μας, χρησιμοποιούμε το κουμπί <gui>Άνοιγμα</gui> σαν προεπιλεγμένο (το οποίο έχει τιμή 1).</p>
+    </item>
+    <item>
+    <p>Οι επόμενες τρεις γραμμές περιορίζουν το διάλογο <gui>Άνοιγμα</gui> να εμφανίζει μόνο αρχεία που μπορούν να ανοιχθούν από το <code>Gtk.Image</code>. Δημιουργούμε πρώτα ένα αντικείμενο φίλτρου· προσθέτουμε στο φίλτρο όλων των ειδών αρχεία που υποστηρίζονται από το <code>Gdk.Pixbuf</code> (το οποίο περιέχει τα περισσότερα είδη εικόνων όπως PNG και JPEG). Τέλος, καθορίζουμε το φίλτρο να είναι το φίλτρο του διαλόγου <gui>Άνοιγμα</gui>.</p>
+    </item>
+    <item>
+    <p>Το <code>dialog.run</code> εμφανίζει το διάλογο <gui>Άνοιγμα</gui>. Ο διάλογος θα περιμένει τον χρήστη να διαλέξει μια εικόνα· όταν διαλέξει, το <code>dialog.run</code> θα επιστρέψει την τιμή <output>1</output> (θα επιστρέψει <output>0</output> αν ο χρήστης πατήσει <gui>Ακύρωση</gui>). Ο έλεγχος ροής <code>if</code> ελέγχει για αυτό.</p>
+    </item>
+    <item><p>Αν υποθέσουμε ότι ο χρήστης πάτησε το <gui>Άνοιγμα</gui>, η επόμενη γραμμή ορίζει την ιδιότητα <code>file</code> του <code>Gtk.Image</code> στο όνομα του αρχείου εικόνας που επέλεξε ο χρήστης. Το <code>Gtk.Image</code> θα φορτώσει και θα εμφανίσει την επιλεγμένη εικόνα.</p>
+    </item>
+    <item>
+    <p>Στην τελευταία γραμμή αυτής της μεθόδου, καταστρέφουμε τον διάλογο <gui>άνοιγμα</gui> γιατί δεν τον χρειαζόμαστε πια.</p>
+    </item>
+  </list>
+
+  </section>
+
+<section id="run">
+  <title>Τρέξτε την εφαρμογή</title>
+  <p>Θα πρέπει να έχετε όλον τον κώδικα που χρειάζεστε, οπότε δοκιμάστε να τον εκτελέσετε. Εδώ είναι το τέλος· ένα πλήρες και λειτουργικό πρόγραμμα προβολής εικόνων (και ένας μικρός οδηγός σε Python και Gtk) σε ελάχιστο χρόνο!</p>
+</section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Αν αντιμετωπίσετε πρόβλημα με τον οδηγό, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="image-viewer/image-viewer.py">κώδικα αναφοράς</link>.</p>
+</section>
+
+<section id="next">
+  <title>Επόμενα βήματα</title>
+  <p>Εδώ είναι κάποιες ιδέες για το πώς μπορείτε να επεκτείνετε αυτή την απλή παρουσίαση:</p>
+  <list>
+   <item>
+   <p>Βάλτε τον χρήστη να επιλέξει ένα κατάλογο αντί για αρχείο και δώστε ελέγχους να γυρίζουν όλες τις εικόνες σε έναν κατάλογο.</p>
+   </item>
+   <item>
+   <p>Εφαρμόστε τυχαία φίλτρα και εφέ στην εικόνα όταν αυτή φορτωθεί και επιτρέψτε στον χρήστη να αποθηκεύσει την επεξεργασμένη εικόνα.</p>
+   <p>Το <link href="http://www.gegl.org/api.html">GEGL</link> παρέχει ισχυρές δυνατότητες επεξεργασίας εικόνας.</p>
+   </item>
+   <item>
+   <p>Επιτρέψτε στον χρήστη να φορτώνει εικόνες από μερισμό δικτύου, από σαρωτές και από άλλες περίπλοκες πηγές.</p>
+   <p>Μπορείτε να χρησιμοποιήσετε το <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> για χειρισμό μεταφορών αρχείων δικτύου και τα παρόμοια, και τη <link href="http://library.gnome.org/devel/gnome-scan/unstable/">Σάρωση του GNOME</link> για χειρισμό σάρωσης.</p>
+   </item>
+  </list>
+</section>
+
+</page>

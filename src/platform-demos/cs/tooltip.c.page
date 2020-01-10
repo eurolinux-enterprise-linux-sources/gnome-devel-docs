@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="tooltip.c" xml:lang="cs">
+  <info>
+  <title type="text">Tooltip (C)</title>
+    <link type="guide" xref="c#misc"/>
+    <link type="seealso" xref="toolbar.c"/>
+    <revision version="0.1" date="2013-07-02" status="review"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Přidání vysvětlivek do vašich widgetů</desc>
+  </info>
+
+  <title>Tooltip</title>
+  <media type="image" mime="image/png" src="media/tooltip.png"/>
+  <p>Nástrojová lišta s vysvětlivkami (s obrázky) u tlačítek.</p>
+  
+  <note><p>Tento příklad vychází z příkladu <link xref="toolbar.c">Toolbar</link>.</p></note>
+  <links type="section"/>
+    
+  <section id="code">
+  <title>Kód použitý k vygenerování tohoto příkladu</title>
+    <code mime="text/x-crsc" style="numbered">#include &lt;gtk/gtk.h&gt;
+
+static gboolean 
+undo_tooltip_callback (GtkStatusIcon *status_icon,
+                       gint           x,
+                       gint           y,
+                       gboolean       keyboard_mode,
+                       GtkTooltip    *tooltip,
+                       gpointer       user_data)
+{
+  /* Nastaví text pro vysvětlivku */
+  gtk_tooltip_set_text (tooltip, "Undo your last action");
+   
+  /* Nastaví ikonu pro vysvětlivku */
+  gtk_tooltip_set_icon_from_stock(tooltip, "gtk-undo", GTK_ICON_SIZE_MENU);
+
+  /* Zobrazí vysvětlivku */
+  return TRUE;
+}
+
+
+static void
+undo_callback (GSimpleAction *simple,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+  g_print ("You clicked \"Undo\".\n");
+}
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *grid;
+  GtkWidget *window;
+  GtkWidget *toolbar;
+
+  GtkToolItem *new_button;
+  GtkToolItem *open_button;
+  GtkToolItem *undo_button;
+
+  GtkStyleContext *style_context;
+
+  GSimpleAction *undo_action;
+
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "Toolbar with Tooltips Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 400, 200);
+
+  /* Zde začínáme vytvářet nástrojovou lištu */
+  toolbar = gtk_toolbar_new ();
+
+  /* Nataví nástrojovou lištu jako hlavní pro aplikaci */
+  style_context = gtk_widget_get_style_context (toolbar);
+  gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+
+  /* Vytvoří tlačítko pro akci "new", se standardní ikonou */
+  new_button = gtk_tool_button_new_from_stock (GTK_STOCK_NEW);
+  gtk_tool_item_set_is_important (new_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), new_button, 0);
+  gtk_widget_show (GTK_WIDGET (new_button));
+
+  /* Nastaví název akce na "new". Použije se "app.new", aby bylo
+   * poznat, že akce ovládá aplikaci
+   */
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (new_button), "app.new");
+
+  /*********************************
+   * Vysvětlivka pro položku "New":
+   * vysvětlivka s textem
+   *********************************/
+   gtk_tool_item_set_tooltip_text (new_button, "Create a new file");  
+
+  /* Položka "Open" */
+  open_button = gtk_tool_button_new_from_stock (GTK_STOCK_OPEN);
+  gtk_tool_item_set_is_important (open_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), open_button, 1);
+  gtk_widget_show (GTK_WIDGET (open_button));
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (open_button), "app.open");
+
+  /**********************************
+   * Vysvětlivka pro položku "Open":
+   * vysvětlivka používající
+   * značkovací jazyk Pango
+   **********************************/
+  gtk_tool_item_set_tooltip_text (open_button, "Open an &lt;i&gt;existing&lt;/i&gt; file");
+
+  /* Položka "Undo" */
+  undo_button = gtk_tool_button_new_from_stock (GTK_STOCK_UNDO);
+  gtk_tool_item_set_is_important (undo_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), undo_button, 2);
+  gtk_widget_show (GTK_WIDGET (undo_button));
+
+  /* V tomto případě se použije "win.undo", aby bylo poznat,
+   * že akce ovládá okno
+   */
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (undo_button), "win.undo");
+
+  /**********************************
+   * Vysvětlivka pro položku "Undo":
+   * vysvětlivka s obrázkem
+   **********************************/
+  gtk_widget_set_has_tooltip (GTK_WIDGET (undo_button), TRUE);
+
+  // Následně se připojí signál query_tooltip
+  g_signal_connect (undo_button, "query-tooltip", G_CALLBACK (undo_tooltip_callback), NULL);
+
+  gtk_widget_set_hexpand (toolbar, TRUE);
+  gtk_widget_show (toolbar);
+
+  grid = gtk_grid_new ();
+  gtk_grid_attach (GTK_GRID (grid), toolbar, 0, 0, 1, 1);
+  gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (grid));
+  gtk_widget_show (GTK_WIDGET (grid));
+
+  /* Použije název akce k vytvoření akcí, které ovládají okno a
+   * napojí je na příslušné funkce zpětného volání
+   */
+  undo_action = g_simple_action_new ("undo", NULL);
+  g_signal_connect (undo_action, "activate", G_CALLBACK (undo_callback),
+                    GTK_WINDOW (window));
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (undo_action));
+
+  gtk_widget_show (window);
+}
+
+
+/* Funkce zpětného volání pro akci "new" */
+static void
+new_callback (GSimpleAction *simple,
+              GVariant      *parameter,
+              gpointer       user_data)
+{
+  g_print ("You clicked \"New\".\n");
+}
+
+
+/* Funkce zpětného volání pro akci "open" */
+static void
+open_callback (GSimpleAction *simple,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+  g_print ("You clicked \"Open\".\n");
+}
+
+
+/* V této funkci se vytvoří akce, které ovládají okno a napojí
+ * se jejich signály na příslušné funkce zpětného volání
+ */
+static void
+startup (GApplication *app,
+         gpointer      user_data)
+{
+  GSimpleAction *new_action;
+  GSimpleAction *open_action;
+
+  new_action = g_simple_action_new ("new", NULL);
+  g_signal_connect (new_action, "activate", G_CALLBACK (new_callback), app);
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (new_action));
+
+  open_action = g_simple_action_new ("open", NULL);
+  g_signal_connect (open_action, "activate", G_CALLBACK (open_callback), app);
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (open_action));
+}
+
+
+
+/* Spouštěcí funkce pro aplikaci */
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect (app, "startup", G_CALLBACK (startup), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+  </section>
+  
+  <section id="references">
+  <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkTooltip.html">GtkTooltip</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkToolbar.html">GtkToolbar</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkWidget.html">GtkWidget</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/gtk3-Stock-Items.html">Standardní položky</link></p></item>
+    </list>
+  </section>
+</page>

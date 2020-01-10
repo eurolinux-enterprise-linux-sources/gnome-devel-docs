@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinner.c" xml:lang="cs">
+  <info>
+    <title type="text">Spinner (C)</title>
+    <link type="guide" xref="c#display-widgets"/>
+    <link type="seealso" xref="togglebutton.c"/>
+    <revision version="0.1" date="2012-06-14" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Animovaná káča</desc>
+  </info>
+
+  <title>Spinner</title>
+
+  <media type="image" mime="image/png" src="media/spinner.png"/>
+  <p>Tento widget Spinner se zastavuje a spouští zmáčknutím mezerníku.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+ 
+
+
+ /* Globální proměnná použitá k indikaci stavu aktivity káči.
+    TRUE = activní, FALSE = neaktivní. To je proto, že v současnosti 
+    neexistuje žádná funkce v C, která by to pro nás dělala. */
+gboolean active;  
+ 
+
+
+/*Toto je funkce zpětného volání. Jedná se o zpracující funkci, 
+  která reaguje na signál. V tomto případě způsobí, že káča 
+  se začne otáčet a zastaví se, podle toho, kolikrát uživatel
+  zmáčkl mezerník. */ 
+static gboolean
+key_pressed_event (GtkWidget *widget,
+                   GdkEvent  *event,
+                   gpointer   user_data)
+{
+  GtkWidget *spinner = user_data;
+  guint keyval;
+  
+  /* Vytáhne z události hodnodu klávesy. A uloží ji do proměnné
+     „keyval“ (funkci předáme adresu). V tomto případě je událostí
+     GdkEventKey a událost zmáčknutí klávesy */
+  gdk_event_get_keyval (event, &amp;keyval);  
+
+  /* Získání pravdivostní hodnoty od káči. */
+  g_object_get (GTK_SPINNER (spinner), "active", &amp;active, NULL);
+  
+  if (keyval == GDK_KEY_space) {
+     if (active) {
+         gtk_spinner_stop (GTK_SPINNER (spinner));
+     }
+     else {
+         gtk_spinner_start (GTK_SPINNER (spinner));
+     } 
+  }
+  
+return TRUE;
+}
+ 
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *spinner;
+ 
+  /* Vytvoří okno s názvem, šířkou okraje a výchozí velikostí */
+  window = gtk_application_window_new (app);
+ 
+  gtk_window_set_title (GTK_WINDOW (window), "Spinner Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
+  gtk_container_set_border_width (GTK_CONTAINER(window), 30);
+ 
+  /* Vytvoří Spinner s dodatečným místem vodorovně i svisle */
+  spinner = gtk_spinner_new ();
+  gtk_spinner_start (GTK_SPINNER (spinner));
+  
+  gtk_container_add (GTK_CONTAINER (window), spinner);
+ 
+  /* Napojí signál "key-press-event" na zpětné volání */
+  g_signal_connect (GTK_WINDOW (window), "key-press-event", 
+                    G_CALLBACK (key_pressed_event), spinner);
+ 
+  gtk_widget_show_all (window);
+}
+ 
+
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+ 
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+ 
+  return status;
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#g-object-get">GObject</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkSpinner.html">GtkSpinner</link></p></item>
+</list>
+</page>

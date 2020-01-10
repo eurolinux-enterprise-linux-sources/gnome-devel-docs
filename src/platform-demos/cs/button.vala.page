@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="button.vala" xml:lang="cs">
+  <info>
+  <title type="text">Button (Vala)</title>
+    <link type="guide" xref="beginner.vala#buttons"/>
+    <link type="seealso" xref="GtkApplicationWindow.vala"/>
+    <revision version="0.1" date="2012-02-21" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Widget tlačítka, který vyšle signál při kliknutí</desc>
+  </info>
+
+  <title>Widget Button</title>
+
+  <media type="image" mime="image/png" src="media/button.png"/>
+  <p>Widget tlačítka napojený na jednoduchou funkci zpětného volání.</p>
+
+<code mime="text/x-csharp" style="numbered">
+/* Okno v aplikaci */
+public class MyWindow : Gtk.ApplicationWindow {
+
+	/* Konstruktor okna */
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "GNOME Button");
+
+		var button = new Gtk.Button.with_label ("Click Me");
+		button.clicked.connect (this.reverse_label);
+		button.show ();
+
+		this.window_position = Gtk.WindowPosition.CENTER;
+		this.set_default_size (250,50);
+		this.add (button);
+	}
+
+	/* Funkce zpětného volání napojen na
+	 * signál "clicked" tlačítka
+	 */
+	void reverse_label (Gtk.Button button) {
+		button.label = button.label.reverse ();
+	}
+}
+
+/* Toto je aplikace */
+public class MyApplication : Gtk.Application {
+
+	/* Toto je konstruktor */
+	internal MyApplication () {
+		Object (application_id: "org.example.MyApplication");
+	}
+
+	/* Přepíše signál "activate" z GLib.Application */
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+}
+
+/* main vytvoří a spustí aplikaci */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>V této ukázce se používá následující: <link href="http://www.valadoc.org/gtk+-3.0/Gtk.Button.html">Gtk.Button</link></p>
+</page>

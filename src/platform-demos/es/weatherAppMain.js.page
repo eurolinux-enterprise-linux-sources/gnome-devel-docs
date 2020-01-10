@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherAppMain.js" xml:lang="es">
+  <info>
+    <link type="guide" xref="weatherApp.js#main" group="#first"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>El archivo del programa principal</title>
+  <synopsis>
+    <p>En esta parte de la guía se construirá el archivo del programa principal de la aplicación del clima. Para escribir y ejecutar todos los ejemplos de código necesita un editor de texto en el que escribir el código, una terminal y GNOME 3 o superior instalado en su equipo. En esta guía se verán las siguientes partes:</p>
+    <list>
+      <item><p><link xref="#script">Script para ejecutar la aplicación</link></p></item>
+      <item><p><link xref="#imports">Bibliotecas que importar</link></p></item>
+      <item><p><link xref="#mainwindow">Crear la ventana principal de la aplicación</link></p></item>
+      <item><p><link xref="#widgets">Añadir una rejilla y todos los widgets necesarios en ella</link></p></item>
+      <item><p><link xref="#asynccall">Solicitar la información meteorológica de manera asíncrona</link></p></item>
+      <item><p><link xref="#connectingbuttons">Conectar las señales a un botón y a una entrada</link></p></item>
+      <item><p><link xref="#weatherapp.js">weatherapp.js</link></p></item>
+    </list>
+  </synopsis>
+  <section id="script">
+    <title>Script para ejecutar la aplicación</title>
+    <code mime="application/javascript" style="numbered">
+  #!/usr/bin/gjs</code>
+    <p>Esta línea indica cómo ejecutar el script. Debe ser la primera línea del código y debe ser ejecutable. Para obtener permisos de ejecución vaya a la terminal y ejecute lo siguiente en la carpeta adecuada: chmod +x nombrescript. También puede usar el gestor de archivo. Simplemente vaya a la carpeta donde está el código, pulse con el botón derecho sobre el archivo de código y elija «Propiedades», pulse en la pestaña «Permisos» y marque la casilla para permitir ejecutar el archivo como un programa.</p>
+  </section>
+
+  <section id="imports">
+    <title>Bibliotecas que importar</title>
+    <code mime="application/javascript" style="numbered">
+var Gtk = imports.gi.Gtk;
+const WeatherService = imports.geonames;</code>
+    <p>Para que el programa funcione se debe importar una biblioteca de introspección de GObject. Para que funcione la IU se necesita GTK+, que se importa al inicio, por lo que está en uso en todos los sitios. También se importa la biblioteca local en JavaScript geonames para usarla aquí.</p>
+    </section>
+
+   <section id="mainwindow">
+    <title>Crear la ventana principal de la aplicación</title>
+    <code mime="application/javascript" style="numbered">
+// Initialize the gtk
+Gtk.init(null, 0);
+//create your window, name it and connect the x to quit function. Remember that window is a taken word
+var weatherwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+weatherwindow.title = "Todays weather";
+//Window only accepts one widget and a title. Further structure with Gtk.boxes of similar
+weatherwindow.connect("destroy", function(){Gtk.main_quit()});
+
+weatherwindow.show_all();
+//and run it
+Gtk.main();</code>
+  </section>
+  <section id="widgets">
+  <title>Añadir una rejilla y todos los widgets necesarios en ella</title>
+  <code mime="application/javascript" style="numbered">
+var grid = new Gtk.Grid();
+weatherwindow.add(grid);
+
+//We initialize the icon here, but deside the file later in geonames.js.
+var weatherIcon = new Gtk.Image();
+
+//Set some labels to your window
+var label1 = new Gtk.Label({label: ""});
+var label2 = new Gtk.Label({label: "Looking in the sky..."});
+var label3 = new Gtk.Label({label: ""});
+
+var entry = new Gtk.Entry();
+entry.set_width_chars(4);
+entry.set_max_length(4);
+var label4 = new Gtk.Label({label: "Enter ICAO station for weather: "});
+var button1 = new Gtk.Button({label: "search!"});
+
+grid.attach(label4, 2, 1, 1, 1);
+grid.attach_next_to(label1,label4,3,1,1);
+grid.attach_next_to(label2,label1,3,1,1);
+grid.attach_next_to(label3,label2,3,1,1);
+grid.attach_next_to(entry,label4,1,1,1);
+grid.attach_next_to(button1,entry,1,1,1);
+grid.attach_next_to(weatherIcon,label2,1,1,1)
+</code>
+    <p>En esta sección se crea la rejilla que se usará para posicionar los widgets. Todos los botones, etiquetas y entradas se inicializan y colocan en la rejilla. Como se puede ver en la colocación de los diferentes widgets, no es necesario relacionarlo con un único widget. En este punto, algunas de las etiquetas no tienen contenido. El contenido para esos widgets se aplica más tarde. Si ejecuta la aplicación en este punto, tendrá lista la IU, pero los widgets no estarán conectados con nada. Para esto, se necesita construir primero la biblioteca de búsqueda de tiempo local, y obtener la información que se necesita de manera asíncrona. Cuando la biblioteca local esté lista, se podrá conectar a los widgets necesarios.</p>
+  </section>
+
+     <section id="asynccall">
+  <title>Solicitar la información meteorológica de manera asíncrona</title>
+  <code mime="application/javascript" style="numbered">
+function getWeatherForStation() {
+  var station = entry.get_text();
+
+  var GeoNames = new WeatherService.GeoNames(station); //"EFHF";
+
+  GeoNames.getWeather(function(error, weather) {
+    //this here works bit like signals. This code will be run when we have weather.
+    if (error) {
+      label2.set_text("Suggested ICAO station does not exist Try EFHF");
+    return; }
+    weatherIcon.file = GeoNames.getIcon(weather);
+
+    label1.set_text("Temperature is " + weather.weatherObservation.temperature + " degrees.");
+    if (weather.weatherObservation.weatherCondition !== "n/a"){
+      label2.set_text("Looks like there is " + weather.weatherObservation.weatherCondition + " in the sky.");
+      }
+    else {
+      label2.set_text("Looks like there is " + weather.weatherObservation.clouds + " in the sky.");
+    }
+    label3.set_text("Windspeed is " + weather.weatherObservation.windSpeed + " m/s")
+    // ...
+  });
+}
+</code>
+  <p>Esta función se dedica a llamar a la información meteorológica y a actualizar las etiquetas y los iconos correctamente. Al principio de la función, se obtiene la entrada del usuario para la búsqueda. Por lo tanto, la primera vez se usa la biblioteca propia y se asigna a la variable GeoNames. Al asignar WeatherService se da la estación. Lo primero que se hace con GeoNames es solicitar el tiempo. Todo lo que sucede después de GeoNames.getWeather(function(error, weather) ocurre sólo si se obtiene un mensaje de error o información del tiempo incorrecta. Si no pasa nada de esto, el resto del programa funciona de manera normal, por lo que «main_Quit» funciona.</p>
+  </section>
+
+  <section id="connectingbuttons">
+  <title>Conectar señales a un botón y a una entrada</title>
+  <code mime="application/javascript" style="numbered">
+entry.connect("key_press_event", function(widget, event) {
+  if (entry.get_text().length === 4) {
+    // Enough is enough
+    getWeatherForStation();
+  }
+  return false;
+});
+
+button1.connect("clicked", function(){
+  getWeatherForStation();
+});</code>
+  <p>Finalmente se tienen las conexiones que hacen que la aplicación completa funcione como debería. Se han conectado la entrada y el botón para que hagan la misma cosa, obtener el tiempo. Por lo tanto, no importa si pulsa el botón o si pulsa «Intro».</p>
+  </section>
+
+  <section id="weatherapp.js">
+  <title>Weatherapp.js</title>
+  <p>El archivo Weatherapp.js se parece a esto:</p>
+  <code mime="application/javascript" style="numbered">
+#!/usr/bin/gjs
+//The previous line is a hash bang tells how to run the script.
+// Note that the script has to be executable (run in terminal in the right folder: chmod +x scriptname)
+
+var Gtk = imports.gi.Gtk;
+
+const WeatherService = imports.geonames;
+//Bring your own library from same folder (as set in GJS_PATH). If using autotools .desktop will take care of this
+
+// Initialize the gtk
+Gtk.init(null, 0);
+//create your window, name it and connect the x to quit function. Remember that window is a taken word
+var weatherwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+weatherwindow.title = "Todays weather";
+//Window only accepts one widget and a title. Further structure with Gtk.boxes of similar
+weatherwindow.connect("destroy", function(){Gtk.main_quit()});
+//We initialize the icon here, but deside the file later in geonames.js.
+
+var weatherIcon = new Gtk.Image();
+
+//Set some labels to your window
+var label1 = new Gtk.Label({label: ""});
+var label2 = new Gtk.Label({label: "Looking in the sky..."});
+var label3 = new Gtk.Label({label: ""});
+
+var grid = new Gtk.Grid();
+weatherwindow.add(grid);
+
+var entry = new Gtk.Entry();
+entry.set_width_chars(4);
+entry.set_max_length(4);
+var label4 = new Gtk.Label({label: "Enter ICAO station for weather: "});
+var button1 = new Gtk.Button({label: "search!"});
+
+//some weather
+
+entry.connect("key_press_event", function(widget, event) {
+  // FIXME: Get weather on enter (key 13)
+  if (entry.get_text().length === 4) {
+    // Enough is enough
+    getWeatherForStation();
+  }
+  return false;
+});
+
+button1.connect("clicked", function(){
+  getWeatherForStation();
+});
+
+function getWeatherForStation() {
+  var station = entry.get_text();
+
+  var GeoNames = new WeatherService.GeoNames(station); //"EFHF";
+
+  GeoNames.getWeather(function(error, weather) {
+    //this here works bit like signals. This code will be run when we have weather.
+    if (error) {
+      label2.set_text("Suggested ICAO station does not exist Try EFHF");
+    return; }
+    weatherIcon.file = GeoNames.getIcon(weather);
+
+    label1.set_text("Temperature is " + weather.weatherObservation.temperature + " degrees.");
+    if (weather.weatherObservation.weatherCondition !== "n/a"){
+      label2.set_text("Looks like there is " + weather.weatherObservation.weatherCondition + " in the sky.");
+      }
+    else {
+      label2.set_text("Looks like there is " + weather.weatherObservation.clouds + " in the sky.");
+    }
+    label3.set_text("Windspeed is " + weather.weatherObservation.windSpeed + " m/s")
+    // ...
+  });
+}
+
+grid.attach(label4, 2, 1, 1, 1);
+grid.attach_next_to(label1,label4,3,1,1);
+grid.attach_next_to(label2,label1,3,1,1);
+grid.attach_next_to(label3,label2,3,1,1);
+grid.attach_next_to(entry,label4,1,1,1);
+grid.attach_next_to(button1,entry,1,1,1);
+grid.attach_next_to(weatherIcon,label2,1,1,1)
+weatherwindow.show_all();
+//and run it
+Gtk.main();
+</code>
+  <p>Ejecútela hasta que tenga listos todos los archivos de autotools:</p>
+
+  <screen> <output style="prompt">$ </output><input> GJS_PATH=`pwd` gjs weatherapp.js</input></screen>
+  <p>Use este comando en la terminal cuando desarrolle sus módulos. Al llamar a su programa de este modo, sabe dónde encontrar las bibliotecas de JavaScript personalizadas, (geonames.js en este caso).</p>
+
+  </section>
+</page>

@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="switch.js" xml:lang="el">
+  <info>
+  <title type="text">Διακόπτης (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-06-18" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένας κινητός διακόπτης που μπορεί να αντιστρέφεται σε ναι και όχι</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Διακόπτης</title>
+  <media type="image" mime="image/png" src="media/switchanimals.png"/>
+  <p>Ένας διακόπτης έχει δύο θέσεις ενεργή/ανενεργή. Αυτό το παράδειγμα εμφανίζει πώς μπορείτε να χρησιμοποιήσετε πολλαπλούς διακόπτες μαζί για να ελέγξετε ποια <link xref="image.js">εικόνα</link> προβάλλεται στο παράθυρο. Οι εικόνες που χρησιμοποιούνται σε αυτό το παράδειγμα  <link href="https://live.gnome.org/TarynFox?action=AttachFile&amp;do=get&amp;target=Animal+Photos.zip">μπορούν να φορτωθούν εδώ</link>.</p>
+  <note><p>Το παράθυρο θα περιέχει ένα εικονίδιο "σπασμένης εικόνας" αντί για μια εικόνα εάν τα αρχεία εικόνας με όνομα <file>redfox.png</file>, <file>muteswan.png</file>, <file>fruitbat.png</file> και <file>gentoopenguin.png</file> δεν είναι στον ίδιο κατάλογο. Μπορείτε να αλλάξετε τον κώδικα και τις εικόνες ολόγυρα όπως θέλετε, αλλά οι φωτογραφίες με άδεια Creative Commons που χρησιμοποιούνται σε αυτό το παράδειγμα πάρθηκαν από τις ακόλουθες πηγές και περικόπηκαν σε 640x425:</p>
+    <list>
+        <item><p><link href="http://en.wikipedia.org/wiki/File:Fuzzy_Freddy.jpg">φωτογραφία κόκκινης αλεπούς</link> από τον Rob Lee, με άδεια <link href="http://creativecommons.org/licenses/by/2.0/deed.en">CC-By</link></p></item>
+        <item><p><link href="http://en.wikipedia.org/wiki/File:Pygoscelis_papua_-Nagasaki_Penguin_Aquarium_-swimming_underwater-8a.jpg">φωτογραφία πιγκουίνου Gentoo</link> από τον Ken Funakoshi, με άδεια <link href="http://creativecommons.org/licenses/by-sa/2.0/deed.en">CC-By-SA</link></p></item>
+        <item><p><link href="http://www.flickr.com/photos/shekgraham/127431519/in/photostream/">φωτογραφία νυχτερίδας φρούτων</link> από τον Shek Graham, licensed <link href="http://creativecommons.org/licenses/by/2.0/deed.en">CC-By</link></p></item>
+        <item><p><link href="http://commons.wikimedia.org/wiki/File:Mute_Swan-Mindaugas_Urbonas.jpg">φωτογραφία σιωπηλού κύκνου</link> από Mindaugas Urbonas, με άδεια <link href="http://creativecommons.org/licenses/by-sa/2.5/deed.en">CC-By-SA</link></p></item>
+    </list>
+    <p>Μνείες φωτογραφίας και πληροφορίες αδειοδότησης εμφανίζονται στο <link xref="aboutdialog.js">AboutDialog</link>. Να θυμάστε πάντα να μνημονεύετε τον αρχικό καλλιτέχνη όταν χρησιμοποιείτε<link href="http://creativecommons.org">εργασίες με άδεια Creative Commons!</link> της εφαρμογής</p></note>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Δημιουργία του παραθύρου εφαρμογής</title>
+    <code mime="application/javascript">
+const SwitchExample = new Lang.Class({
+    Name: 'Switch Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsswitch',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup'δημιουργεί το μενού και δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._initMenus();
+        this._buildUI ();
+    },
+</code>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση SwitchExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <note><p>Πριν καλέσουμε _buildUI για δημιουργία του παραθύρου και των γραφικών στοιχείων μέσα του, χρειαζόμαστε να καλέσουμε _initMenus, που λέει στο GNOME να δημιουργήσει το μενού. Μπορούμε να βάλουμε τον ενεργό κώδικα για _initMenus μετά τον κώδικα για _buildUI, αφού δεν πειράζει η σειρά που τα βάλαμε όσο το _initMenus καλείται πρώτο στο _onStartup.</p></note>
+    <code mime="application/javascript">
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Animal Creator"});
+</code>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+  </section>
+
+  <section id="button">
+    <title>Δημιουργία των διακοπτών</title>
+    <code mime="application/javascript">
+        // Δημιουργία του γραφικού της εικόνας και ορισμός της προεπιλεγμένης της εικόνας
+        this._image = new Gtk.Image ({file: "redfox.png"});
+</code>
+
+    <p>Δημιουργούμε πρώτα την <link xref="image.js">εικόνα</link> που οι διακόπτες θα ελέγχουν. Να θυμάστε ότι ένα αρχείο με όνομα <file>redfox.png</file> χρειάζεται να είναι στον ίδιο κατάλογο όπως αυτή η εφαρμογή.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία μιας ετικέτας για τον πρώτο διακόπτη
+        this._flyLabel = new Gtk.Label ({
+            label: "Make it fly",
+            margin_right: 30});
+
+        // Δημιουργία του πρώτου διακόπτη και ορισμός της προεπιλεγμένης του θέσης
+        this._flySwitch = new Gtk.Switch ({active: false});
+        this._flySwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
+
+        // Δημιουργία μιας ετικέτας για τον δεύτερο διακόπτη
+        this._birdLabel = new Gtk.Label ({
+            label: "Make it a bird",
+            margin_right: 30});
+
+        // Δημιουργία του δεύτερου διακόπτη
+        this._birdSwitch = new Gtk.Switch ({active: false});
+        this._birdSwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
+</code>
+
+    <p>Χρησιμοποιούμε μια <link xref="label.js">ετικέτα</link> για να σημειώσουμε κάθε διακόπτη και να τους δώσουμε λίγο περιθώριο στα δεξιά έτσι ώστε να μην στριμώχνονται ακριβώς δίπλα στους διακόπτες. Μετά δημιουργούμε τους διακόπτες και τους ορίζουμε ανενεργούς από προεπιλογή.</p>
+    <p>Το σήμα που ένας διακόπτης στέλνει όταν αντιστρέφεται ενεργά/ανενεργά λέγεται notify::active. Μετά τη δημιουργία κάθε διακόπτη, συνδέουμε το σήμα του notify::active σε μια συνάρτηση που λέγεται _switchFlip. Εάν έχετε πολλούς διακόπτες που ο καθένας τους κάνει κάτι διαφορετικό, ίσως θελήσετε να τους συνδέσετε σε διαφορετικές συναρτήσεις, αλλά εδώ και οι δυο χρησιμοποιούνται για το ίδιο πράγμα: τον έλεγχο της εμφανιζόμενης εικόνας από το _image.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία πλέγματος για τις ετικέτες και τους διακόπτες κάτω από την εικόνα
+        this._UIGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_top: 20});
+
+        // Προσάρτηση των ετικετών και διακοπτών σε αυτό το πλέγμα
+        this._UIGrid.attach (this._flyLabel, 0, 0, 1, 1);
+        this._UIGrid.attach (this._flySwitch, 1, 0, 1, 1);
+        this._UIGrid.attach (this._birdLabel, 0, 1, 1, 1);
+        this._UIGrid.attach (this._birdSwitch, 1, 1, 1, 1);
+
+        // Δημιουργία ενός κύριου πλέγματος για να τοποθετηθούν μέσα η γραφική διεπαφή και η εικόνα
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Προσάρτηση του πλέγματος εικόνας και διεπαφής χρήστη στο κύριο πλέγμα
+        this._mainGrid.attach (this._image, 0, 0, 1, 1);
+        this._mainGrid.attach (this._UIGrid, 0, 1, 1, 1);
+</code>
+    <p>Δημιουργούμε ένα <link xref="grid.js">πλέγμα</link> για τις ετικέτες και τους διακόπτες πρώτα, έτσι ώστε να μπορούμε να τις οργανώσουμε σε μια διάταξη 2x2 με ένα περιθώριο μεταξύ του και της εικόνας. Έπειτα βάζουμε αυτό το πλέγμα σε ένα μεγαλύτερο πλέγμα 2x1 που έχει την εικόνα στην κορυφή και το πλέγμα με τις ετικέτες και τους διακόπτες στο τέλος.</p>
+    <code mime="application/javascript">
+        // Προσθήκη του κύριου πλέγματος στο παράθυρο
+        this._window.add (this._mainGrid);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+</code>
+    <p>Τελικά, προσθέτουμε το μεγαλύτερο πλέγμα στο παράθυρο, έπειτα λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και όλα τα γραφικά στοιχεία μέσα του.</p>
+    </section>
+
+    <section id="switch-handler">
+    <title>Η συνάρτηση που χειρίζεται τους διακόπτες που αντιστράφηκαν</title>
+
+    <code mime="application/javascript">
+    _switchFlip: function() {
+
+        // Αλλαγή της εικόνας ανάλογα με το ποιοι διακόπτες αντιστρέφονται
+        if (this._flySwitch.get_active()) {
+
+            if (this._birdSwitch.get_active()) this._image.set_from_file ("muteswan.png");
+
+            else this._image.set_from_file ("fruitbat.png");
+        }
+
+        else {
+
+            if (this._birdSwitch.get_active()) this._image.set_from_file ("gentoopenguin.png");
+
+            else this._image.set_from_file ("redfox.png");
+
+        }
+
+    },
+</code>
+    <p>Κάθε φορά που ένας διακόπτης αναστρέφεται, αυτή η συνάρτηση ελέγχει να δει ποιος από τους δύο διακόπτες είναι ενεργός κατόπιν, χρησιμοποιώντας την ενσωματωμένη συνάρτηση get_active(). Έπειτα αλλάζει την εικόνα ανάλογα. Μπορείτε να αλλάξετε τα ονόματα αρχείων ολόγυρα όπως θέλετε, εφόσον έχετε εικόνες που να πηγαίνουν μαζί τους.</p>
+</section>
+
+<section id="about">
+    <title>Δημιουργία του AboutDialog</title>
+    <code mime="application/javascript">
+    _initMenus: function() {
+
+        // Δόμηση του μενού της εφαρμογής, έτσι ώστε να μπορούμε να έχουμε ένα πλήκτρο "About"
+        let menu = new Gio.Menu();
+        menu.append("About", 'app.about');
+        menu.append("Quit",'app.quit');
+        this.application.set_app_menu(menu);
+
+        // ΣΑύνδεση του πλήκτρου "About" με τη συνάρτηση _showAbout() 
+        let aboutAction = new Gio.SimpleAction ({ name: 'about' });
+        aboutAction.connect('activate', Lang.bind(this,
+            function() {
+                this._showAbout();
+            }));
+        this.application.add_action(aboutAction);
+
+        // Σύνδεση του πλήκτρου "Quit"με τη συνάρτηση που κλείνει το παράθυρο
+        let quitAction = new Gio.SimpleAction ({ name: 'quit' });
+        quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._window.destroy();
+            }));
+        this.application.add_action(quitAction);
+    },
+</code>
+    <p>Το πρώτο βήμα είναι η δόμηση του <link xref="gmenu.js">GMenu</link> στο οποίο το κουμπί "About" μπαίνει. Αυτό είναι το μενού που εμφανίζεται όταν πατάς το όνομα της εφαρμογής στην πάνω αριστερή γωνία της οθόνης, δίπλα στο μενού ενέργειες. Το μενού μας έχει μόνο δύο επιλογές: περί και κλείσιμο.</p>
+
+    <code mime="application/javascript">
+    _showAbout: function () {
+
+        // Πίνακες συμβολοσειρών των ονομάτων των ατόμων που εμπλέκονται στο έργο
+        var artists = ['Rob Lee http://en.wikipedia.org/wiki/File:Fuzzy_Freddy.jpg', 'Ken Funakoshi http://en.wikipedia.org/wiki/File:Pygoscelis_papua_-Nagasaki_Penguin_Aquarium_-swimming_underwater-8a.jpg', 'Shek Graham http://www.flickr.com/photos/shekgraham/127431519/in/photostream/', 'Mindaugas Urbonas http://commons.wikimedia.org/wiki/File:Mute_Swan-Mindaugas_Urbonas.jpg'];
+        var authors = ["GNOME Documentation Team"];
+        var documenters = ["GNOME Documentation Team"];
+
+        // Δημιουργία του διαλόγου Περί
+        let aboutDialog = new Gtk.AboutDialog({
+            title: "AboutDialog Example",
+            program_name: "Animal Creator",
+            copyright: "Copyright \xa9 2012 GNOME Documentation Team\n\nRed fox photo licensed CC-By by Rob Lee\nGentoo penguin photo licensed CC-By-SA by Ken Funakoshi\nFruit bat photo licensed CC-By by Shek Graham\nMute swan photo licensed CC-By-SA by Mindaugas Urbonas\nLinks to the originals are available under Credits.\n\nHave you hugged a penguin today?",
+            artists: artists,
+            authors: authors,
+            documenters: documenters,
+            website: "http://developer.gnome.org",
+            website_label: "GNOME Developer Website" });
+
+        // Προσάρτηση του διαλόγου Περί στο παράθυρο
+        aboutDialog.modal = true;
+        aboutDialog.transient_for = this._window;
+
+        // Εμφάνιση του διαλόγου Περί
+        aboutDialog.show();
+
+        // Σύνδεση του πλήκτρου Κλείσιμο με το σήμα καταστροφής του διαλόγου
+        aboutDialog.connect('response', function() {
+            aboutDialog.destroy();
+        });
+    }
+
+});
+</code>
+    <p>Ένας <link xref="aboutdialog.js">AboutDialog</link> έχει πολλά διαφορετικά πράγματα που μπορείτε να ορίσετε, για να μνημονεύσετε οποιονδήποτε δούλεψε στην εφαρμογή και να αφήσετε μια σημείωση σε οποιονδήποτε το διαβάζει. Σε αυτήν την περίπτωση, η ενότητα πνευματικών δικαιωμάτων περιέχει τη σημείωση μας και μνείες των αρχικών φωτογράφων, ενώ η ενότητα των καλλιτεχνών σας εμφανίζει μια λίστα των φωτογράφων με συνδέσμους στις αρχικές φωτογραφίες όταν πατάτε το κουμπί με τις μνείες. Τα URLs του ιστού μετά τα ονόματα τους στον πίνακα κάνουν τα ονόματα τους επιλέξιμους συνδέσμους στην ενότητα με τις μνείες.</p>
+
+    <code mime="application/javascript">
+// Εκτέλεση της εφαρμογής
+let app = new SwitchExample ();
+app.application.run (ARGV);
+</code>
+    <p>Τελικά, δημιουργούμε ένα νέο παράδειγμα της ολοκληρωμένης κλάσης SwitchExample και εκτελούμε την εφαρμογή.</p>
+  </section>
+
+  <section id="complete">
+    <title>Δείγμα πλήρους κώδικα</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const SwitchExample = new Lang.Class({
+    Name: 'Switch Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής 
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsswitch'
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα  'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δημιουργεί το μενού και δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._initMenus();
+        this._buildUI ();
+    },
+
+
+
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Animal Creator"});
+
+        // Δημιουργία του γραφικού στοιχείου της εικόνας και ορισμός της προεπιλεγμένης της εικόνας
+        this._image = new Gtk.Image ({file: "redfox.png"});
+
+        // Δημιουργία μιας ετικέτας για τον πρώτο διακόπτη
+        this._flyLabel = new Gtk.Label ({
+            label: "Make it fly",
+            margin_right: 30});
+
+        // Δημιουργία του πρώτου διακόπτη και ορισμός της προεπιλεγμένης του θέσης
+        this._flySwitch = new Gtk.Switch ({active: false});
+        this._flySwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
+
+        // Δημιουργία μιας ετικέτας για τον δεύτερο διακόπτη
+        this._birdLabel = new Gtk.Label ({
+            label: "Make it a bird",
+            margin_right: 30});
+
+        // Δημιουργία του δεύτερου διακόπτη
+        this._birdSwitch = new Gtk.Switch ({active: false});
+        this._birdSwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
+
+        // Δημιουργία ενός πλέγματος για τις ετικέτες και τους διακόπτες κάτω από την εικόνα
+        this._UIGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_top: 20});
+
+        // Προσάρτηση των ετικετών και διακοπτών σε αυτό το πλέγμα
+        this._UIGrid.attach (this._flyLabel, 0, 0, 1, 1);
+        this._UIGrid.attach (this._flySwitch, 1, 0, 1, 1);
+        this._UIGrid.attach (this._birdLabel, 0, 1, 1, 1);
+        this._UIGrid.attach (this._birdSwitch, 1, 1, 1, 1);
+
+        // Δημιουργία ενός κύριου πλέγματος για τοποθέτηση μέσα του της διεπαφής χρήστη και της εικόνας
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Προσάρτηση της εικόνας και του πλέγματος διεπαφής χρήστη στο κύριο πλέγμα
+        this._mainGrid.attach (this._image, 0, 0, 1, 1);
+        this._mainGrid.attach (this._UIGrid, 0, 1, 1, 1);
+
+        // Προσθήκη του κύριου πλέγματος στο παράθυρο
+        this._window.add (this._mainGrid);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+
+
+    _switchFlip: function() {
+
+        // Αλλαγή της εικόνας ανάλογα με το ποιοι διακόπτες αντιστρέφονται
+        if (this._flySwitch.get_active()) {
+
+            if (this._birdSwitch.get_active()) this._image.set_from_file ("muteswan.png");
+
+            else this._image.set_from_file ("fruitbat.png");
+        }
+
+        else {
+
+            if (this._birdSwitch.get_active()) this._image.set_from_file ("gentoopenguin.png");
+
+            else this._image.set_from_file ("redfox.png");
+
+        }
+
+    },
+
+
+
+    _initMenus: function() {
+
+        // Δόμηση του μενού της εφαρμογής, έτσι ώστε να μπορούμε να έχουμε ένα πλήκτρο"About" 
+        let menu = new Gio.Menu();
+        menu.append("About", 'app.about');
+        menu.append("Quit",'app.quit');
+        this.application.set_app_menu(menu);
+
+        // Σύνδεση του πλήκτρου "About" με τη συνάρτηση _showAbout() 
+        let aboutAction = new Gio.SimpleAction ({ name: 'about' });
+        aboutAction.connect('activate', Lang.bind(this,
+            function() {
+                this._showAbout();
+            }));
+        this.application.add_action(aboutAction);
+
+        // Σύνδεση του πλήκτρου "Quit" με τη συνάρτηση που κλείνει το παράθυρο
+        let quitAction = new Gio.SimpleAction ({ name: 'quit' });
+        quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._window.destroy();
+            }));
+        this.application.add_action(quitAction);
+    },
+
+
+
+    _showAbout: function () {
+
+        // Οι πίνακες συμβολοσειρών των ονομάτων των ατόμων που συμμετείχαν στο έργο
+        var artists = ['Rob Lee http://en.wikipedia.org/wiki/File:Fuzzy_Freddy.png', 'Ken Funakoshi http://en.wikipedia.org/wiki/File:Pygoscelis_papua_-Nagasaki_Penguin_Aquarium_-swimming_underwater-8a.png', 'Shek Graham http://www.flickr.com/photos/shekgraham/127431519/in/photostream/', 'Mindaugas Urbonas http://commons.wikimedia.org/wiki/File:Mute_Swan-Mindaugas_Urbonas.png'];
+        var authors = ["GNOME Documentation Team"];
+        var documenters = ["GNOME Documentation Team"];
+
+        // Δημιουργία του διαλόγου Περί
+        let aboutDialog = new Gtk.AboutDialog({
+            title: "AboutDialog Example",
+            program_name: "Animal Creator",
+            copyright: "Copyright \xa9 2012 GNOME Documentation Team\n\nRed fox photo licensed CC-By by Rob Lee\nGentoo penguin photo licensed CC-By-SA by Ken Funakoshi\nFruit bat photo licensed CC-By by Shek Graham\nMute swan photo licensed CC-By-SA by Mindaugas Urbonas\nLinks to the originals are available under Credits.\n\nHave you hugged a penguin today?",
+            artists: artists,
+            authors: authors,
+            documenters: documenters,
+            website: "http://developer.gnome.org",
+            website_label: "GNOME Developer Website" });
+
+        // Προσάρτηση του διαλόγου Περίστομ παράθυρο
+        aboutDialog.modal = true;
+        aboutDialog.transient_for = this._window;
+
+        // Εμφάνιση του διαλόγου Περί
+        aboutDialog.show();
+
+        // Σύνδεση του πλήκτρου Κλείσιμο με το σήμα καταστροφής του διαλόγου
+        aboutDialog.connect('response', function() {
+            aboutDialog.destroy();
+        });
+    }
+
+});
+
+// Εκτέλεση της εφαρμογής
+let app = new SwitchExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Τεκμηρίωση σε βάθος</title>
+<list>
+  <item><p><link href="http://developer.gnome.org/gio/unstable/GMenu.html">GMenu</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Image.html">Gtk.Image</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Switch.html">Gtk.Switch</link></p></item>
+</list>
+  </section>
+</page>

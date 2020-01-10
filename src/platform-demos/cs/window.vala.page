@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="window.vala" xml:lang="cs">
+  <info>
+  <title type="text">Window (Vala)</title>
+    <link type="guide" xref="beginner.vala#windows"/>
+    <revision version="0.1" date="2012-04-07" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Okno nejvyšší úrovně, které může obsahovat další widgety</desc>
+  </info>
+
+  <title>Window</title>
+<table>
+  <tr>
+    <td>
+      <media type="image" mime="image/png" src="media/window.png"/>
+      <p>Nejjednodušší Gtk.Application</p>
+    </td>
+    <td>
+      <p>Pokud potřebujete podporu GMenu, použijte <link xref="GtkApplicationWindow.vala">Aplikační okno</link>.</p>
+    </td>
+  </tr>
+</table>
+<code mime="text/x-csharp" style="numbered">/* Toto je aplikace. */
+public class Application : Gtk.Application {
+
+	/* Konstruktor */
+	public Application () {
+		Object (application_id: "org.example.window");
+	}
+
+	/* Přepíše signál "activate" z GLib.Application, 
+	 * která je zděděná z Gtk.Application. */
+	public override void activate () {
+
+		var window = new Gtk.Window ();
+		window.title = "Welcome to GNOME";
+
+		/* Následující 3 řádky jsou zde uvedeny, aby vám ukázaly
+		 * způsoby, jak si můžete přizpůsobit okno nejvyšší úrovně
+		 * svým potřebám. Zrušte zakomentování a uvidíte, co dělají.
+		 */
+
+		//window.border_width = 10;
+		//window.set_default_size (350, 70);
+		//window.window_position = Gtk.WindowPosition.CENTER;
+
+		/* Přidá okno do aplikace. */
+		this.add_window (window);
+
+		/* Zobrazí okno. */
+		window.show ();
+	}
+}
+
+/* Funkce main vytvoří aplikaci a spustí ji. */
+int main (string[] args) {
+	var app = new Application ();
+	return app.run (args);
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p>The widget <link href="http://www.valadoc.org/gtk+-3.0/Gtk.Window.html">Gtk.Window</link></p></item>
+
+  <item><p>The enum <link href="http://www.valadoc.org/gtk+-3.0/Gtk.WindowPosition.html">Gtk.WindowPosition</link></p></item>
+
+  <item><p>The method <link href="http://www.valadoc.org/gtk+-3.0/Gtk.Window.set_default_size.html">set_default_size</link></p></item>
+
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Container.border_width.html">border_width</link></p></item>
+
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Window.window_position.html">window_position</link></p></item>
+</list>
+</page>

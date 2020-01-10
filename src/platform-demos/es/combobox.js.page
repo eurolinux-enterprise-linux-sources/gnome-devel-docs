@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox.js" xml:lang="es">
+  <info>
+  <title type="text">ComboBox (JavaScript)</title>
+    <link type="guide" xref="beginner.js#menu-combo-toolbar"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="comboboxtext.js"/>
+    <link type="seealso" xref="messagedialog.js"/>
+    <link type="seealso" xref="treeview_simple_liststore.js"/>
+    <revision version="0.1" date="2012-07-09" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un menú desplegable personalizable.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ComboBox</title>
+  <media type="image" mime="image/png" src="media/combobox_multicolumn.png"/>
+  <p>Un «ComboBox» es un menú desplegable extremadamente personalizable. Contiene el equivalente a un widget <link xref="treeview_simple_liststore.js">TreeView</link> que aparece cuando lo pulsa, completo con un «ListStore» (básicamente una hoja de cálculo) que dice qué está en las filas y columnas. En este ejemplo, el «ListStore» tiene el nombre de cada opción en una columna, y el nombre de un elemento del almacén en la otra, que el «ComboBox» convierte en un icono para cada opción.</p>
+  <p>Puede seleccionar una fila horizontal a la vez, por lo que los iconos no se tratan como opciones separadas. Ellos y su texto forman una opción que puede pulsar.</p>
+  <note style="tip"><p>Trabajar con un «ListStore» puede llevar tiempo. Si sólo quiere un menú desplegable de solo texto simple, échele un vistazo al <link xref="comboboxtext.js">ComboBoxText</link>. No toma tanto tiempo configurarlo, y es más fácil trabajar con él.</p></note>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Bibliotecas que importar</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Estas son las bibliotecas que necesita importar para que esta aplicación se ejecute. Recuerde que la línea que le dice a GNOME que está usando Gjs siempre tiene que ir al principio.</p>
+  </section>
+
+  <section id="applicationwindow">
+    <title>Crear la ventana de la aplicación</title>
+    <code mime="application/javascript">
+const ComboBoxExample = new Lang.Class ({
+    Name: 'ComboBox Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jscombobox'});
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+</code>
+    <p>Todo el código de este ejemplo va en la clase «ComboBoxExample». El código anterior crea una <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> para que vayan los widgets y la ventana.</p>
+    <code mime="application/javascript">
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Welcome to GNOME",
+            default_width: 200,
+            border_width: 10 });
+</code>
+    <p>La función _buildUI es donde se pone todo el código que crea la interfaz de usuario de la aplicación. El primer paso es crear una <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> nueva para poner dentro todos los widgets.</p>
+  </section>
+
+  <section id="liststore">
+    <title>Crear el ListStore</title>
+    <code mime="application/javascript">
+        // Create the liststore to put our options in
+        this._listStore = new Gtk.ListStore();
+        this._listStore.set_column_types ([
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING]);
+</code>
+    <p>Este «ListStore» funciona como el que se usó en el ejemplo del <link xref="treeview_simple_liststore.js">TreeView</link>. Se le dan dos columnas, ambas cadenas, porque una contendrá los nombres de los <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">iconos del almacén de GTK+</link>.</p>
+    <p>Si quisiera usar sus propios iconos que no están incluidos en GNOME, tendría que usar el tipo <file>gtk.gdk.Pixbuf</file> en su lugar. Aquí hay algunos tipos más que puede usar:</p>
+    <list>
+      <item><p><file>GObject.TYPE_BOOLEAN</file>: verdadero o falso</p></item>
+      <item><p><file>GObject.TYPE_FLOAT</file>: un número de coma flotante (uno con coma decimal)</p></item>
+      <item><p><file>GObject.TYPE_STRING</file>: una cadena de letras y números</p></item>
+    </list>
+    <note style="tip"><p>Necesita poner la línea <file>const GObject = imports.gi.GObject;</file> al principio del código de su aplicación, como se hizo en este ejemplo, si quiere poder usar tipos de GObject.</p></note>
+
+    <code mime="application/javascript">
+        // This array holds our list of options and their icons
+        let options = [{ name: "Select" },
+            { name: "New", icon: Gtk.STOCK_NEW },
+            { name: "Open", icon: Gtk.STOCK_OPEN },
+            { name: "Save", icon: Gtk.STOCK_SAVE }];
+
+        // Put the options in the liststore
+        for (let i = 0; i &lt; options.length; i++ ) {
+            let option = options[i];
+            let iter = this._listStore.append();
+            this._listStore.set (iter, [0], [option.name]);
+            if ('icon' in option)
+                this._listStore.set (iter, [1], [option.icon]);
+        }
+</code>
+    <p>Aquí se crea una matriz de las opciones de texto y sus iconos correspondientes, después se ponen en el «ListStore» de forma parecida a cOmo se haría para un «ListStore» de un <link xref="treeview_simple_liststore.js">TreeView</link>. Sólo se quiere poner un icono si hay uno en la matriz de opciones, por lo que primero hay que asegurarse de verificar esto.</p>
+    <note style="tip"><p>«Select» no es realmente una opción, sino una invitación a pulsar en el «ComboBox», por lo que no necesita un icono.</p></note>
+  </section>
+
+  <section id="combobox">
+    <title>Crear el ComboBox</title>
+    <code mime="application/javascript">
+        // Create the combobox
+        this._comboBox = new Gtk.ComboBox({
+            model: this._listStore});
+</code>
+    <p>Cada «ComboBox» tiene un «modelo» subyacente del que toma todas sus opciones. Puede usar un «TreeStore» si quiere tener un «ComboBox» con opciones de bifurcación. En este caso, solo se está usando el «ListStore» que ya se creó.</p>
+    <code mime="application/javascript">
+        // Create some cellrenderers for the items in each column
+        let rendererPixbuf = new Gtk.CellRendererPixbuf();
+        let rendererText = new Gtk.CellRendererText();
+
+        // Pack the renderers into the combobox in the order we want to see
+        this._comboBox.pack_start (rendererPixbuf, false);
+        this._comboBox.pack_start (rendererText, false);
+
+        // Set the renderers to use the information from our liststore
+        this._comboBox.add_attribute (rendererText, "text", 0);
+        this._comboBox.add_attribute (rendererPixbuf, "stock_id", 1);
+</code>
+    <p>Esta parte, nuevamente, funciona de forma similar a crear «CellRenderer» y empaquetarlos en columnas de un <link xref="treeview_simple_liststore.js">TreeView</link>. La principal diferencia es que no necesita crear las columnas del «ComboBox» como objetos separados. Sólo se empaquetan los «CellRenderer» en el orden en el que quiere que se muestren, y se les dice que obtengan información del «ListStore» (y qué tipo de información tienen que esperar).</p>
+    <p>Se usa un «CellRendererText» para mostrar el texto, y un «CellRendererPixbuf» para mostrar los iconos. Se pueden almacenar los nombres de los tipos del almacén de iconos como cadenas, pero cuando se muestran se necesita un «CellRenderer» diseñado para imágenes.</p>
+    <note style="tip"><p>Al igual que con un «TreeView», el «modelo» (en este caso un «ListStore») y la «vista» (en este caso el «ComboBox») están separados. Es por esto que se pueden hacer cosas como tener las columnas en un orden en el «ListStore», y después empaquetar los «CellRenderer» que les corresponden en el «ComboBox» en un orden diferente. Incluso se puede crear un «TreeView» u otro widget que muestre la información en el «ListStore» de una manera diferente, sin afectar el «ComboBox».</p></note>
+
+    <code mime="application/javascript">
+        // Set the first row in the combobox to be active on startup
+        this._comboBox.set_active (0);
+
+        // Connect the combobox's 'changed' signal to our callback function
+        this._comboBox.connect ('changed', Lang.bind (this, this._onComboChanged));
+</code>
+    <p>Se quiere que el texto «Select» sea la parte que la gente ve al principio, que les haga pulsar el «ComboBox»; por lo que se establece como entrada activa. También se conecta la señal <file>changed</file> del «ComboBox» a una función de retorno de llamada, para que siempre que alguien pulse una opción nueva suceda algo. En este caso, sólo se va a mostrar una ventana emergente con un pequeño «haiku».</p>
+
+    <code mime="application/javascript">
+        // Add the combobox to the window
+        this._window.add (this._comboBox);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+</code>
+    <p>Finalmente, se añade el «ComboBox» a la ventana, y se le dice que se muestre con todo lo que contiene.</p>
+  </section>
+
+  <section id="function">
+    <title>Función que maneja su selección</title>
+    <code mime="application/javascript">
+    _selected: function () {
+
+        // The silly pseudohaiku that we'll use for our messagedialog
+        let haiku = ["",
+            "You ask for the new\nwith no thought for the aged\nlike fallen leaves trod.",
+            "Like a simple clam\nrevealing a lustrous pearl\nit opens for you.",
+            "A moment in time\na memory on the breeze\nthese things can't be saved."];
+</code>
+    <p>Se va a crear un <link xref="messagedialog.js">MessageDialog</link> emergente, que muestra un «haiku» tonto de acuerdo a qué distribución seleccione. Primero, se crea la matriz de «haiku». Dado que la primera cadena en el «ComboBox» es sólo el mensaje «Select», la primera cadena en la matriz se hace vacía.</p>
+
+    <code mime="application/javascript">
+        // Which combobox item is active?
+        let activeItem = this._comboBox.get_active();
+
+        // No messagedialog if you choose "Select"
+        if (activeItem != 0) {
+            this._popUp = new Gtk.MessageDialog ({
+                transient_for: this._window,
+                modal: true,
+                buttons: Gtk.ButtonsType.OK,
+                message_type: Gtk.MessageType.INFO,
+                text: haiku[activeItem]});
+
+            // Connect the OK button to a handler function
+            this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
+
+            // Show the messagedialog
+            this._popUp.show();
+        }
+
+    },
+</code>
+    <p>Antes de mostrar un «MessageDialog», primero se verifica que no se eligió el mensaje «Select». Después de eso, se establece su texto al «haiku» en la matriz que le corresponde a la entrada activa en el «ComboBoxText». Esto se hace usando el método <file>get_active</file>, que devuelve la identificación numérica de su selección.</p>
+    <note style="tip"><p>Otros métodos que puede usar incluyen <file>get_active_id</file>, que devuelve la identificación de texto que asignó <file>append</file>, y <file>get_active_text</file>, que devuelve el texto completo de la cadena que seleccionó.</p></note>
+    <p>Después de crear el «MessageDialog», se conecta su señal «response» a la función «onDialogResponse», y se le dice que se muestre.</p>
+
+    <code mime="application/javascript">
+    _onDialogResponse: function () {
+
+        this._popUp.destroy ();
+
+    }
+
+});
+</code>
+    <p>Dado que el único botón que tiene el «MessageDialog» es un botón aceptar, no se necesita verificar su «response_id» para ver qué botón se pulsó. Todo lo que se hace aquí es destruir la ventana emergente.</p>
+
+    <code mime="application/javascript">
+// Run the application
+let app = new ComboBoxExample ();
+app.application.run (ARGV);
+</code>
+    <p>Finalmente, se crea una instancia nueva de la clase «ComboBoxExample» terminada, y se ejecuta la aplicación.</p>
+  </section>
+
+  <section id="complete">
+    <title>Código de ejemplo completo</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const ComboBoxExample = new Lang.Class ({
+    Name: 'ComboBox Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jscombobox'});
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+
+
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Welcome to GNOME",
+            default_width: 200,
+            border_width: 10 });
+
+        // Create the liststore to put our options in
+        this._listStore = new Gtk.ListStore();
+        this._listStore.set_column_types ([
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING]);
+
+        // This array holds our list of options and their icons
+        let options = [{ name: "Select" },
+            { name: "New", icon: Gtk.STOCK_NEW },
+            { name: "Open", icon: Gtk.STOCK_OPEN },
+            { name: "Save", icon: Gtk.STOCK_SAVE }];
+
+        // Put the options in the liststore
+        for (let i = 0; i &lt; options.length; i++ ) {
+            let option = options[i];
+            let iter = this._listStore.append();
+            this._listStore.set (iter, [0], [option.name]);
+            if ('icon' in option)
+                this._listStore.set (iter, [1], [option.icon]);
+        }
+
+        // Create the combobox
+        this._comboBox = new Gtk.ComboBox({
+            model: this._listStore});
+
+        // Create some cellrenderers for the items in each column
+        let rendererPixbuf = new Gtk.CellRendererPixbuf();
+        let rendererText = new Gtk.CellRendererText();
+
+        // Pack the renderers into the combobox in the order we want to see
+        this._comboBox.pack_start (rendererPixbuf, false);
+        this._comboBox.pack_start (rendererText, false);
+
+        // Set the renderers to use the information from our liststore
+        this._comboBox.add_attribute (rendererText, "text", 0);
+        this._comboBox.add_attribute (rendererPixbuf, "stock_id", 1);
+
+        // Set the first row in the combobox to be active on startup
+        this._comboBox.set_active (0);
+
+        // Connect the combobox's 'changed' signal to our callback function
+        this._comboBox.connect ('changed', Lang.bind (this, this._onComboChanged));
+
+        // Add the combobox to the window
+        this._window.add (this._comboBox);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+
+
+    _onComboChanged: function () {
+
+        // The silly pseudohaiku that we'll use for our messagedialog
+        let haiku = ["",
+            "You ask for the new\nwith no thought for the aged\nlike fallen leaves trod.",
+            "Like a simple clam\nrevealing a lustrous pearl\nit opens for you.",
+            "A moment in time\na memory on the breeze\nthese things can't be saved."];
+
+        // Which combobox item is active?
+        let activeItem = this._comboBox.get_active();
+
+        // No messagedialog if you choose "Select"
+        if (activeItem != 0) {
+            this._popUp = new Gtk.MessageDialog ({
+                transient_for: this._window,
+                modal: true,
+                buttons: Gtk.ButtonsType.OK,
+                message_type: Gtk.MessageType.INFO,
+                text: haiku[activeItem]});
+
+            // Connect the OK button to a handler function
+            this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
+
+            // Show the messagedialog
+            this._popUp.show();
+        }
+
+    },
+
+
+
+    _onDialogResponse: function () {
+
+        this._popUp.destroy ();
+
+    }
+
+});
+
+// Run the application
+let app = new ComboBoxExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Documentación en profundidad</title>
+<p>En este ejemplo se usa lo siguiente:</p>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererPixbuf.html">Gtk.CellRendererPixbuf</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererText.html">Gtk.CellRendererText</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ComboBox.html">Gtk.ComboBox</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ListStore.html">Gtk.ListStore</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.MessageDialog.html">Gtk.MessageDialog</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.TreeIter.html">Gtk.TreeIter</link></p></item>
+</list>
+  </section>
+</page>

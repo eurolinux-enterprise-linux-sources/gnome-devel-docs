@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="button.js" xml:lang="cs">
+  <info>
+  <title type="text">Button (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-04-19" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Tlačítko, které může být napojené na další widgety</desc>
+  </info>
+
+  <title>Button</title>
+  <media type="image" mime="image/png" src="media/button.png"/>
+  <p>Widget tlačítko, který po kliknutí změní svůj popisek.</p>
+
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const ButtonExample = new Lang.Class ({
+    Name: 'Button Example',
+
+    /* Vytvoří vlastní aplikaci
+       Tento základní kód je zapotřebí k sestavení kterékoliv aplikace GTK+. */
+        _init: function () {
+            this.application = new Gtk.Application ({
+                application_id: 'org.example.jsbutton',
+                flags: Gio.ApplicationFlags.FLAGS_NONE
+            });
+
+    // Napojí signály "activate" a "startup" k funkcím zpětného volání
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI: function () {
+
+        // Vytvoří okno aplikace
+            this._window = new Gtk.ApplicationWindow  ({ application: this.application,
+                                                              window_position: Gtk.WindowPosition.CENTER,
+                                                              title: "GNOME Button",
+                                                              default_height: 50,
+                                                              default_width: 250 });
+
+        // Vytvoří tlačítko
+        this.Button = new Gtk.Button ({label: "Click Me"});
+        this._window.add (this.Button);
+
+        // Napojí jej na funkci, která říká, co udělat, když je na tlačítko kliknuto
+        this.Button.connect ("clicked", Lang.bind(this, this._clickHandler));
+
+                // Zobrazí okno a všechny jeho synovské widgety
+                this._window.show_all();
+    },
+
+    // Zde je funkce, která říká, co se stalo, když bylo na tlačítko kliknuto
+    _clickHandler: function () {
+        this.Button.set_label ("Clicked!");
+    }
+});
+
+// Spustí aplikaci
+let app = new ButtonExample ();
+app.application.run (ARGV);
+</code>
+
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Button.html">Gtk.Button</link></p></item>
+</list>
+</page>

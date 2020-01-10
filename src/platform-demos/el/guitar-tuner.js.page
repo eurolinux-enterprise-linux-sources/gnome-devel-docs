@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="guitar-tuner.js" xml:lang="el">
+  <info>
+  <title type="text">Συντονιστής κιθάρας (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Χρησιμοποιήστε GTK+ και GStreamer για να κατασκευάσετε μια απλή εφαρμογή ρυθμιστή κιθάρας για το GNOME.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Συντονιστής κιθάρας</title>
+
+    <synopsis>
+      <p>Σε αυτό το μάθημα θα κατασκευάσουμε μια μικρή εφαρμογή, Guitar Tuner, χρησιμοποιώντας JavaScript, GTK+ και GStreamer. Για να κάνετε και να τρέξετε όλα τα παραδείγματα κώδικα οι ίδιοι, χρειαζόσαστε έναν επεξεργαστή για το γράψιμο του κώδικα, τερματικό και GNOME 3 ή μεταγενέστερο εγκατεστημένο στον υπολογιστή σας.</p>
+   <list>
+      <item><p><link xref="#gstreamer">Διοχετεύσεις GStreamer</link></p></item>
+      <item><p><link xref="#script">Σενάριο για εκτέλεση της εφαρμογής</link></p></item>
+      <item><p><link xref="#imports">Βιβλιοθήκες για εισαγωγή</link></p></item>
+      <item><p><link xref="#mainwindow">Δημιουργία του κύριου παραθύρου για την εφαρμογή</link></p></item>
+      <item><p><link xref="#buttons">Κουμπιά για τις μελωδίες</link></p></item>
+      <item><p><link xref="#playSound">Κάνοντας τους ήχους με GStreamer</link></p></item>
+      <item><p><link xref="#connecting">Συνδέοντας κουμπιά στο playSound</link></p></item>
+      <item><p><link xref="#guitarjs">Ολόκληρο το προόγραμμα</link></p></item>
+      <item><p><link xref="#terminal">Εκτέλεση της εφαρμογής από τερματικό</link></p></item>
+    </list>
+  </synopsis>
+  <p>Μετά την ανάγνωση αυτού του μαθήματος, θα πρέπει να δείτε αυτό στην οθόνη σας:</p>
+  <media type="image" mime="image/png" src="media/guitar-tuner.png"/>
+  <section id="gstreamer">
+    <title>Διοχετεύσεις GStreamer</title>
+    <p>Το Gtreamer είναι ο σκελετός πολυμέσων του GNOME — μπορείτε να το χρησιμοποιήσετε για να αναπαράγετε, ηχογραφήσετε, και να επεξεργαστείτε βίντεο, ήχο, ροές βίντεο και τα λοιπά. Εδώ, θα το χρησιμοποιήσουμε για να παράγουμε μονές-συχνότητες τόνων.</p>
+    <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείς μια <em>διοχέτευση</em> που περιέχει διάφορα επεξεργαζόμενα στοιχεία που πηγαίνουν από την <em>πηγή</em> στην <em>έξοδο</em>. Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή και μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι ένα γραφικό στοιχείο ή η κάρτα ήχου.</p>
+    <p>Ανάμεσα στην πηγή και στην έξοδο, μπορείτε να εφαρμόσετε διάφορα φίλτρα και οι μετατροπείς να χειριστούν εφέ, μετατροπές μορφών και λοιπά. Κάθε στοιχείο της διοχέτευσης έχει ιδιότητες που μπορούν να χρησιμοποιηθούν για να αλλάξουν τη συμπεριφορά τους.</p>
+    <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
+      <p>Ένα παράδειγμα διοχέτευσης GStreamer.</p>
+    </media>
+  </section>
+  <section id="script">
+    <title>Σενάριο για εκτέλεση της εφαρμογής</title>
+    <code mime="application/javascript" style="numbered">
+  #!/usr/bin/gjs</code>
+    <p>Αυτή η γραμμή λέει πώς θα εκτελεστεί το σενάριο. Πρέπει να είναι η πρώτη γραμμή του κώδικα και να είναι εκτελέσιμη. Για λήψη των δικαιωμάτων εκτέλεσης πηγαίνετε στον τερματικό και εκτελέστε στον σωστό φάκελο: chmod +x όνομα σεναρίου. Ή μπορείτε να χρησιμοποιήσετε τον διαχειριστή αρχείου γραφικών. Απλά πηγαίνετε στον σωστό φάκελο όπου είναι ο κώδικας σας δεξί κλικ στο αρχείο του κώδικα σας, επιλέξτε ιδιότητες, κλικ στην καρτέλα δικαιωμάτων και σημειώστε το πλαίσιο για να επιτραπεί η εκτέλεση του αρχείου ως πρόγραμμα</p>
+  </section>
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript" style="numbered">
+var Gtk = imports.gi.Gtk;
+var Gst = imports.gi.Gst;
+
+const Mainloop = imports.mainloop;</code>
+    <p>Για να υπάρχει ένα λειτουργικό πρόγραμμα χρειάζεται να εισαχθούν λίγα GObject αυτοελέγχου - βιβλιοθήκες για τη χρήση μας. Για λειτουργικό UI, χρειάζεται Gtk και για Gstreamer χρειάζεται Gst. Αυτά εισάγονται στην αρχή για να τα έχουμε για χρήση παντού. Επίσης στην αρχή εισάγουμε έναν κύριο βρόχο κατασκευής για χειρισμό του χρόνου λήξης στη χρήση του με ήχους μελωδίας.</p>
+    </section>
+  <section id="mainwindow">
+    <title>Δημιουργία του κύριου παραθύρου για την εφαρμογή</title>
+    <code mime="application/javascript" style="numbered">
+Gtk.init(null, 0);
+Gst.init(null, 0);
+
+var guitarwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL, border_width: 100});
+guitarwindow.title = "Guitar Tuner";
+guitarwindow.connect("destroy", function(){Gtk.main_quit()});
+
+guitarwindow.show();
+Gtk.main();</code>
+    <p>Η εισαγωγή των Gtk και Gst δεν είναι αρκετή, χρειάζεται η αρχικοποίησή τους για να δουλέψουν. Όταν τα Gtk και Gst εκτελούνται χρειάζεται να δημιουργήσουμε το παράθυρο για την εφαρμογή. Αργότερα πρόκειται να βάλουμε όλα τα κουμπιά να παράγουν ήχους μέσα σε αυτό το παράθυρο. Για την εμφάνιση του παραθύρου, χρειαζόμαστε να του πούμε να εμφανιστεί και χρειαζόμαστε επίσης να τρέξει ο κώδικας με το Gtk.main()</p>
+  </section>
+  <section id="buttons">
+   <title>Κουμπιά για τις μελωδίες</title>
+   <code mime="application/javascript" style="numbered">
+var guitar_box = new Gtk.ButtonBox ({orientation: Gtk.Orientation.VERTICAL, spacing: 10});
+
+var E = new Gtk.Button({label: "E"});
+var A = new Gtk.Button({label: "A"});
+var D = new Gtk.Button({label: "D"});
+var G = new Gtk.Button({label: "G"});
+var B = new Gtk.Button({label: "B"});
+var e = new Gtk.Button({label: "e"});
+
+guitar_box.add(E);
+guitar_box.add(A);
+guitar_box.add(D);
+guitar_box.add(G);
+guitar_box.add(B);
+guitar_box.add(e);
+
+guitarwindow.add(guitar_box);
+
+guitar_box.show_all();</code>
+   <p>Επειδή το Gtk.Window μπορεί να περιέχει μόνο ένα γραφικό στοιχείο, χρειάζεται να δημιουργηθεί κάτι από κάτω του για να μπορεί να προσθέσει όλα τα απαραίτητα κουμπιά μέσα του. Σε αυτό το παράδειγμα χρησιμοποιούμε πλαίσιο κουμπιού. Μετά τη δημιουργία του πλαισίου κουμπιού δημιουργούμε κουμπιά με αναγκαίες ετικέτες. Αφού έχουμε τα κουμπιά πρέπει να τα προσθέσουμε στο πλαίσιο κουμπιού και το πλαίσιο κουμπιού πρέπει να προστεθεί στο Gtk.Window και όλα στο πλαίσιο κουμπιού πρέπει να εμφανίζονται.</p>
+   <p>Μετά από αυτό το στάδιο πρέπει να έχετε ένα εμφανιζόμενο παράθυρο στην οθόνη σας που να δείχνει 6 κουμπιά. Τώρα τα κουμπιά δεν κάνουν τίποτα και θα αντιμετωπίσουμε αυτό το θέμα αργότερα. Πριν να μπορέσουμε να συνδέσουμε τα σήματα του κουμπιού με κάτι χρειάζεται να κωδικοποιήσουμε αυτό το κάτι πρώτα.</p>
+  </section>
+  <section id="playSound">
+   <title>Κάνοντας τους ήχους με GStreamer</title>
+   <code mime="application/javascript" style="numbered">
+var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5}
+
+function playSound(frequency){
+  var pipeline = new Gst.Pipeline({name: "note"});
+  var source = Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+
+  source.set_property('freq', frequency);
+  pipeline.add(source);
+  pipeline.add(sink);
+  source.link(sink);
+  pipeline.set_state(Gst.State.PLAYING);
+
+  Mainloop.timeout_add(500, function () {
+    pipeline.set_state(Gst.State.NULL);
+	  return false;
+  });
+}</code>
+   <p>Το πρώτο πράγμα που χρειαζόμαστε είναι να αποφασίσουμε τι μελωδίες θέλουμε να κάνουμε όταν πατάμε ένα κουμπί. Η λίστα συχνοτήτων το φροντίζει. Μετά από αυτό φροντίζουμε να κάνει στην πραγματικότητα τους ήχους με τη συνάρτηση playSound. Για τη συνάρτηση playSound δίνουμε ως είσοδο μια συχνότητα (που μόλις ορίσαμε στη μεταβλητή συχνοτήτων). Το πρώτο πράγμα που χρειαζόμαστε να κατασκευάσουμε είναι μια διοχέτευση, μια πηγή και μια έξοδο. Για την πηγή ορίζουμε τη συχνότητα. Στη διοχέτευση προσθέτουμε και την πηγή και την έξοδο και έπειτα της λέμε να συνεχίσει να παίζει. Ως τελευταίο πράγμα χρησιμοποιούμε τη σταθερά κύριου βρόχου για να κάνει τη διοχέτευση να σταματήσει μετά από 500ms.</p>
+   <p>Τώρα έχουμε τη μέθοδο αναπαραγωγής μιας μελωδίας πατώντας ένα κουμπί. Μετά γίνονται οι συνδέσεις μεταξύ πατήματος ενός κουμπιού και αναπαραγωγής του σωστού ήχου από αυτό το κουμπί.</p>
+  </section>
+  <section id="connecting">
+   <title>Συνδέοντας κουμπιά στο playSound</title>
+   <code mime="application/javascript" style="numbered">
+E.connect("clicked", function() {
+  playSound(frequencies.E);
+});
+A.connect("clicked", function(){
+  playSound(frequencies.A);
+});
+D.connect("clicked", function(){
+  playSound(frequencies.D);
+});
+G.connect("clicked", function(){
+  playSound(frequencies.G);
+});
+B.connect("clicked", function(){
+  playSound(frequencies.B);
+});
+e.connect("clicked", function(){
+  playSound(frequencies.e);
+});</code>
+   <p>Η μέθοδος σύνδεσης κουμπιού πατά το playSound με τη σωστή μελωδία γίνεται χρησιμοποιώντας τη μέθοδο σύνδεσης του γραφικού στοιχείου κουμπιού. Έτσι επιλέγουμε ένα κουμπί να συνδεθεί και πληκτρολογούμε <code>E.connect("clicked", function(){playSound(frequencies.E);});</code> Το <code>connect</code> λέει ότι όταν πατάμε Ε, κάτι θα συμβεί. Το <code>clicked</code> λέει τον τύπο του σήματος που κάτι συμβαίνει στο Ε και έπειτα στη <code>function(){};</code> καλούμε το playSound με τη σωστή μελωδία που μπορεί να συσχετιστεί με το κουμπί.</p>
+  </section>
+  <section id="guitarjs">
+    <title>Όλο το πρόγραμμα</title>
+    <p>Έτσι αυτό είναι πώς δείχνουν όλα τα ενωμένα τμήματα. Όταν τρέχει αυτός ο κώδικας, θα μπορούσατε να συντονίσετε την κιθάρα σας (εάν έχετε σωστά βαθμονομημένα ηχεία).</p>
+      <code mime="application/javascript" style="numbered">
+#!/usr/bin/gjs
+var Gtk = imports.gi.Gtk;
+var Gst = imports.gi.Gst;
+
+const Mainloop = imports.mainloop;
+
+Gtk.init(null, 0);
+Gst.init(null, 0);
+
+var guitarwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL, border_width: 100});
+guitarwindow.title = "Guitar Tuner";
+guitarwindow.connect("destroy", function(){Gtk.main_quit()});
+
+var guitar_box = new Gtk.ButtonBox ({orientation: Gtk.Orientation.VERTICAL, spacing: 10});
+
+var E = new Gtk.Button({label: "E"});
+var A = new Gtk.Button({label: "A"});
+var D = new Gtk.Button({label: "D"});
+var G = new Gtk.Button({label: "G"});
+var B = new Gtk.Button({label: "B"});
+var e = new Gtk.Button({label: "e"});
+
+var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5}
+
+
+function playSound(frequency){
+  var pipeline = new Gst.Pipeline({name: "note"});
+
+  var source = Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+
+  source.set_property('freq', frequency);
+  pipeline.add(source);
+  pipeline.add(sink);
+  source.link(sink);
+  pipeline.set_state(Gst.State.PLAYING);
+
+  Mainloop.timeout_add(500, function () {
+    pipeline.set_state(Gst.State.NULL);
+	  return false;
+});
+}
+
+E.connect("clicked", function() {
+  playSound(frequencies.E);
+});
+A.connect("clicked", function(){
+  playSound(frequencies.A);
+});
+D.connect("clicked", function(){
+  playSound(frequencies.D);
+});
+G.connect("clicked", function(){
+  playSound(frequencies.G);
+});
+B.connect("clicked", function(){
+  playSound(frequencies.B);
+});
+e.connect("clicked", function(){
+  playSound(frequencies.e);
+});
+
+guitar_box.add(E);
+guitar_box.add(A);
+guitar_box.add(D);
+guitar_box.add(G);
+guitar_box.add(B);
+guitar_box.add(e);
+
+guitarwindow.add(guitar_box);
+
+guitar_box.show_all();
+guitarwindow.show();
+Gtk.main();</code>
+  </section>
+
+<section id="terminal">
+  <title>Εκτέλεση της εφαρμογής από τερματικό</title>
+  <p>Για να τρέξετε αυτήν την εφαρμογή ανοίξτε τον τερματικό, πηγαίνετε στον φάκελο όπου είναι αποθηκευμένη η εφαρμογή σας και μετά τρέξτε την</p> <screen> <output style="prompt">$ </output><input> GJS_PATH=`pwd` gjs guitarTuner.js</input> </screen>
+    </section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Αν αντιμετωπίσετε προβλήματα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="guitar-tuner/guitar-tuner.js">κώδικα αναφοράς</link>.</p>
+</section>
+
+
+</page>

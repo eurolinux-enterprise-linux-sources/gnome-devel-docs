@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="magic-mirror.vala" xml:lang="el">
+
+  <info>
+  <title type="text">Μαγικός καθρέπτης (Vala)</title>
+    <link type="guide" xref="vala#examples"/>
+
+    <desc>Χρήση της κάμερας σας ως καθρέφτη χρησιμοποιώντας τον σκελετό GStreamer και GTK+</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
+    <credit type="author">
+      <name>Daniel G. Siegel</name>
+      <email its:translate="no">dgsiegel@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Μαγικός καθρέπτης</title>
+
+<synopsis>
+  <p><em>Ο καθρέφτης σας μόλις έπεσε από τον τοίχο και έσπασε σε χίλια κομμάτια - αλλά χρειάζεται ένας καθρέπτης να ξυρίσετε τη γενειάδα σας και να προσθέσετε κάποια καλλυντικά! Σας απομένουν 15 λεπτά πριν να προλάβετε το λεωφορείο για τη δουλειά. Τι μπορείτε να κάνετε;</em></p>
+  <p>Σε αυτόν τον οδηγό, θα φτιάξουμε ένα πρόγραμμα που επιτρέπει τη χρήση της ιστοκάμεράς σας ως καθρέπτη. Θα μάθετε πώς να:</p>
+  <list>
+    <item><p>Δημιουργήσετε μια εφαρμογή σε GTK+</p></item>
+    <item><p>Έχετε πρόσβαση στην ιστοκάμερά σας χρησιμοποιώντας GStreamer και πως να ενσωματώνετε το αποτέλεσμα σε ένα παράθυρο</p></item>
+    <item><p>Πάρετε φωτογραφίες με την ιστοκάμεράς σας</p></item>
+  </list>
+  <p>Θα χρειαστείτε τα παρακάτω για να μπορέσετε να ακολουθήσετε αυτό το μάθημα:</p>
+  <list>
+    <item><p>Ένα εγκατεστημένο αντίγραφο του <link xref="getting-ready">Anjuta IDE</link></p></item>
+    <item><p>Εγκατεστημένα αντίγραφα του GTK, GStreamer και ένα μεταγλωττιστή Vala</p></item>
+    <item><p>Βασική γνώση μιας αντικειμενοστραφούς γλώσσας προγραμματισμού</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/magic-mirror.png"/>
+
+<section id="anjuta">
+  <title>Δημιουργία έργου με το Anjuta</title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+    <p>Ξεκινήστε το Anjuta και πατήστε <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+    <p>Επιλέξτε <gui>GTK+ (απλό)</gui> από την καρτέλα <gui>Vala</gui>, πατήστε <gui>μπροστά</gui> και συμπληρώστε τις λεπτομέρειές σας στις επόμενες σελίδες. Χρησιμοποιήστε ως όνομα του έργου και του καταλόγου το <file>magic-mirror</file>.</p>
+   	</item>
+   	<item>
+    <p>Απενεργοποιήστε το <gui>Χρήση του GtkBuilder για διεπαφή χρήση</gui> επειδή θα φτιάξουμε τη διεπαφή χρήστη χειροκίνητα σε αυτό το παράδειγμα. Σημειώστε το μάθημα <link xref="guitar-tuner.vala">ρυθμιστής κιθάρας</link> χρησιμοποιώντας τον κατασκευαστή διεπαφής.</p>
+    </item>
+    <item>
+    <p>Βεβαιωθείτε ότι το <gui>ρύθμιση εξωτερικών πακέτων</gui> επιλέχτηκε. Στην επόμενη σελίδα, επιλέξτε <em>gstreamer-0.10</em> από τη λίστα για συμπερίληψη της βιβλιοθήκης <app>GStreamer</app> στο έργο σας.</p>
+    </item>
+    <item>
+    <p>Πατήστε <gui>εφαρμογή</gui> και το έργο θα δημιουργηθεί. Ανοίξτε <file>src/magic_mirror.vala</file> από τις καρτέλες <gui>έργο</gui> ή <gui>αρχείο</gui>. Θα πρέπει να δείτε κάποιο κώδικα που ξεκινά με τις γραμμές:</p>
+    <code mime="text/x-csharp">
+using GLib;
+using Gtk;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Κατασκευάστε τον κώδικα για πρώτη φορά</title>
+  <p>Ο κώδικας φορτώνει ένα (κενό) παράθυρο και το εμφανίζει. Περισσότερες πληροφορίες υπάρχουν πιο κάτω· προσπεράστε αυτή τη λίστα αν καταλαβαίνετε τα βασικά:</p>
+  <list>
+  <item>
+    <p>Οι δύο γραμμές <code>using</code> εισάγουν χώρους ονομάτων έτσι ώστε να μην τους ονομάσουμε ρητά.</p>
+   </item>
+   <item>
+    <p>Ο κατασκευαστής της κλάσης <code>Main</code> δημιουργεί ένα νέο παράθυρο και ορίζει τον τίτλο του. Κατόπιν εμφανίζεται το παράθυρο και ένα σήμα συνδέεται που εγκαταλείπει την εφαρμογή, εάν το παράθυρο κλείσει. Περισσότερα για τα σήματα αργότερα.</p>
+   </item>
+   <item>
+    <p>Η στατική συνάρτηση <code>main</code> τρέχει από προεπιλογή όταν ξεκινάτε μια εφαρμογή Vala. Καλεί λίγες συναρτήσεις που δημιουργούν την κύρια κλάση, ρυθμίζουν και έπειτα εκτελούν την εφαρμογή. Η συνάρτηση <code>Gtk.Main</code> ξεκινά τον κύριο βρόχο του GTK, που εκτελεί τη διεπαφή χρήστη και ξεκινά την ακρόαση για συμβάντα (όπως κλικ και πατήματα πλήκτρου).</p>
+   </item>
+  </list>
+
+  <p>Αυτός ο κώδικας είναι έτοιμος να χρησιμοποιηθεί, οπότε μπορείτε να τον μεταγλωττίσετε με κλικ <guiseq><gui>κατασκευή</gui><gui>κατασκευή έργου</gui></guiseq> (ή πιέζοντας <keyseq><key>Shift</key><key>F7</key></keyseq>).</p>
+  <p>Αλλαγή της <gui>ρύθμισης</gui> σε <gui>προεπιλογή</gui> και τότε πάτημα <gui>εκτέλεση</gui> για ρύθμιση του καταλόγου κατασκευής. Χρειάζεται να το κάνετε μόνο μια φορά, για την πρώτη κατασκευή.</p>
+</section>
+
+<section id="webcam">
+ <title>Πρόσβαση στη ροή βίντεο της κάμερας web με το GStreamer</title>
+ <p>Ο σκελετός πολυμέσων GStreamer είναι ικανός στο χειρισμό βίντεο από ιστοκάμερες. Ας προσθέσουμε το GStreamer στην εφαρμογή μας και έτσι μπορούμε να προσπελάσουμε το ρεύμα βίντεο.</p>
+
+<code mime="text/x-csharp" style="numbered">
+using GLib;
+using Gtk;
+
+public class Main : Object
+{
+	private Gst.Element camerabin;
+
+	public Main () {
+		this.camerabin = Gst.ElementFactory.make ("camerabin", "camera");
+		this.camerabin.set_state (Gst.State.PLAYING);
+	}
+
+	static int main (string[] args) {
+		Gtk.init (ref args);
+		Gst.init (ref args);
+		var app = new Main ();
+
+		Gtk.main ();
+
+		return 0;
+	}
+}
+</code>
+ <steps>
+ <item><p>Πρώτα ας αφαιρέσουμε το παράθυρο που δημιουργήσαμε πριν επειδή το GStreamer θα φροντίσει την εμφάνιση της εικόνας στην οθόνη.</p>
+ </item>
+  <item>
+  <p>Τώρα δημιουργούμε ένα στοιχείο GStreamer που προσπελάζει την ιστοκάμερά μας. Χρησιμοποιούμε το στοιχείο Camerabin, που είναι ένα στοιχείο κάμερας όλα σε ένα και μπορεί να παίρνει φωτογραφίες, βίντεο να εφαρμόζει εφέ και πολύ περισσότερα. Τέλειο για την περίπτωση χρήσης μας! Με τον <code>this.camerabin.set_state (Gst.State.PLAYING)</code> λέμε στη διοχέτευση GStreamer που μόλις δημιουργήσαμε να ξεκινήσει το παίξιμο. Δεν είναι εύκολο;</p>
+  <p>Φυσικά είναι επίσης δυνατό να ενσωματώσουμε το βίντεο πιο σφικτά στα άλλα παράθυρα, αλλά αυτό είναι προχωρημένο θέμα που περιλαμβάνει μερικές λεπτομέρειες του συστήματος παραθύρου Χ που θα παραλείψουμε εδώ.</p>
+  <p>Μεταγλώττιση και τρέξιμο του πάλι. Θα καταλήξετε με δύο παράθυρα. Στο επόμενο βήμα θα ενσωματώσουμε το βίντεο στο παράθυρο GTK+.</p>
+  </item>
+ </steps>
+</section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Εάν έχετε προβλήματα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="magic-mirror/magic-mirror.vala">κώδικα αναφοράς</link>. Υπάρχει επίσης μια πιο <link href="magic-mirror/magic-mirror-advanced.vala">εκτεταμένη υλοποίηση</link> που ενσωματώνει το παράθυρο σε ένα κανονικό Gtk.Window που εμπεριέχει μερικές προχωρημένες τεχνικές και προσθέτει κουμπιά για έναρξη/σταμάτημα της εικόνας.</p>
+</section>
+
+<section id="further">
+<title>Περαιτέρω ανάγνωση</title>
+<p>Για να βρείτε περισσότερα για τη γλώσσα προγραμματισμού Vala ίσως θέλετε να ελέγξετε το <link href="http://live.gnome.org/Vala/Tutorial">μάθημα Vala</link>.</p>
+</section>
+
+<section id="conclusion">
+<title>Συμπέρασμα</title>
+  <p>Αυτό είναι, κατορθώσατε να δημιουργήσετε μια πλήρη εφαρμογή φωτογραφίας ιστοκάμερας σε 15 λεπτά. Τώρα μπορείτε να ξυριστείτε ή να προσθέσετε καλλυντικά στο όμορφό σας πρόσωπο, ακριβώς πριν να έχετε μια όμορφη ημέρα στη δουλειά σας, όπου μπορείτε να εντυπωσιάσετε τους φίλους σας και συναδέλφους σας με μια φοβερή εφαρμογή που μόλις κάνατε σε 15 λεπτά.</p>
+
+</section>
+
+</page>

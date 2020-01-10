@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="magic-mirror.vala" xml:lang="es">
+
+  <info>
+  <title type="text">Espejo mágico (Vala)</title>
+    <link type="guide" xref="vala#examples"/>
+
+    <desc>Utilice su cámara web como un espejo usando el entorno de trabajo GStreamer y GTK+</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
+    <credit type="author">
+      <name>Daniel G. Siegel</name>
+      <email its:translate="no">dgsiegel@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Espejo mágico</title>
+
+<synopsis>
+  <p><em>Su espejo se ha caído al suelo y se ha roto en miles de pedazos; pero necesita un espejo para afeitarse o para maquillarse. Solo tiene 15 minutos antes de coger el autobús para ir al trabajo. ¿Qué puede hacer?</em></p>
+  <p>En este tutorial se va a hacer un programa que le permite usar su cámara web como un espejo. Aprenderá a:</p>
+  <list>
+    <item><p>Crear una aplicación GTK+</p></item>
+    <item><p>Acceder a su cámara web usando GStreamer y empotrar el resultado en una ventana</p></item>
+    <item><p>Obtener las fotos de su cámara web</p></item>
+  </list>
+  <p>Necesitará lo siguiente para poder seguir este tutorial:</p>
+  <list>
+    <item><p>Una copia instalada del <link xref="getting-ready">EID Anjuta</link></p></item>
+    <item><p>Copias instaladas de GTK, GStreamer y de un compilador de Vala</p></item>
+    <item><p>Conocimientos básico de un lenguaje de programación orientado a objetos</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/magic-mirror.png"/>
+
+<section id="anjuta">
+  <title>Crear un proyecto en Anjuta</title>
+  <p>Antes de empezar a programar, deberá configurar un proyecto nuevo en Anjuta. Esto creará todos los archivos que necesite para construir y ejecutar el código más adelante. También es útil para mantener todo ordenado.</p>
+  <steps>
+    <item>
+    <p>Inicie Anjuta y pulse <guiseq><gui>Archivo</gui><gui>Nuevo</gui><gui>Proyecto</gui></guiseq> para abrir el asistente de proyectos.</p>
+    </item>
+    <item>
+    <p>Elija <gui>GTK+ (simple)</gui> de la pestaña <gui>Vala</gui>, pulse <gui>Adelante</gui> y rellene los detalles en las siguientes páginas. Use <file>espejo-magico</file> como nombre de proyecto y de carpeta.</p>
+   	</item>
+   	<item>
+    <p>Desactive la opción <gui>Usar GtkBuilder para la interfaz del usuario</gui>, ya que, en este tutorial, la interfaz de usuario se creará manualmente. Revise el tutorial <link xref="guitar-tuner.vala">afinador-guitarra</link> usando el constructor de interfaces.</p>
+    </item>
+    <item>
+    <p>Asegúrese de que <gui>Configurar paquetes externos</gui> está seleccionada. En la siguiente página, seleccione <em>gstreamermm-0.10</em> de la lista para incluir la biblioteca <app>GStreamer</app> en su proyecto.</p>
+    </item>
+    <item>
+    <p>Pulse <gui>Aplicar</gui> y se creará el proyecto. Abra <file>src/espejo-magico.vala</file> desde las pestañas <gui>Proyecto</gui> o <gui>Archivo</gui>. Debería ver algo de código que comience con las líneas:</p>
+    <code mime="text/x-csharp">
+using GLib;
+using Gtk;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Construir el código por primera vez</title>
+  <p>El código carga una ventana (vacía) y la muestra. A continuación hay más detalles; omita esta lista si entiende los conceptos básicos:</p>
+  <list>
+  <item>
+    <p>Las dos líneas <code>using</code> importan espacios de nombres, por lo que no hay que nombrarlas explícitamente.</p>
+   </item>
+   <item>
+    <p>El constructor de la clase <code>Main</code> crea una ventana nueva y establece su título. Después se muestra la ventana y se conecta una señal que cierra la aplicación si se cierra la ventana. Se verán más señales más adelante.</p>
+   </item>
+   <item>
+    <p>La función estática <code>main</code> se ejecuta de manera predeterminada cuando inicia una aplicación en Vala. Llama a unas pocas funciones que crean la clase «Main», la configuran y ejecutan la aplicación. La función <code>Gtk.Main</code> inicia el bucle principal de GTK+, que ejecuta la interfaz de usuario y empieza a escuchar eventos (como pulsaciones del ratón y del teclado).</p>
+   </item>
+  </list>
+
+  <p>Este código está listo para usarse, por lo que puede compilarlo pulsando <guiseq><gui>Construir</gui><gui>Construir proyecto</gui></guiseq> (o pulsando <keyseq><key>Mayús</key><key>F7</key></keyseq>).</p>
+  <p>Cambie la <gui>Configuración</gui> a <gui>Predeterminada</gui> y pulse <gui>Ejecutar</gui> para configurar la carpeta de construcción. Sólo necesita hacer esto una vez, para la primera construcción.</p>
+</section>
+
+<section id="webcam">
+ <title>Acceder al flujo de vídeo de la cámara web con GStreamer</title>
+ <p>El entorno multimedia de trabajo GStreamer es capaz de manejar vídeo desde cámaras web. Añada GStreamer a su aplicación y podrá acceder al flujo de vídeo.</p>
+
+<code mime="text/x-csharp" style="numbered">
+using GLib;
+using Gtk;
+
+public class Main : Object
+{
+	private Gst.Element camerabin;
+
+	public Main () {
+		this.camerabin = Gst.ElementFactory.make ("camerabin", "camera");
+		this.camerabin.set_state (Gst.State.PLAYING);
+	}
+
+	static int main (string[] args) {
+		Gtk.init (ref args);
+		Gst.init (ref args);
+		var app = new Main ();
+
+		Gtk.main ();
+
+		return 0;
+	}
+}
+</code>
+ <steps>
+ <item><p>Primero se quita la ventana creada anteriormente, ya que GStreamer se encargará de mostrar la imagen en la pantalla.</p>
+ </item>
+  <item>
+  <p>Ahora se va a crear un elemento de GStreamer que accede a la cámara web. Se va a usar el elemento «Camerabin», que es un elemento de cámara todo en uno capaz de hacer fotos, vídeos, aplicar efectos y mucho más. Perfecto para nuestro caso de uso. Con <code>this.camerabin.set_state (Gst.State.PLAYING)</code> se indica a la tubería de GStreamer que se acaba de crear que empiece a reproducir. Fácil, ¿no?</p>
+  <p>Por supuesto, también es posible integrar el vídeo más ajustadamente en otras ventanas, pero esto es un tema avanzado que incluye algunos detalles sobre el sistema «X-Window» que aquí se omiten.</p>
+  <p>Compile y ejecute de nuevo. Acabará teniendo dos ventanas. En el siguiente paso, se integrará el vídeo en una ventana de GTK+.</p>
+  </item>
+ </steps>
+</section>
+
+<section id="impl">
+ <title>Implementación de referencia</title>
+ <p>Si tiene problemas con este tutorial, compare su código con este <link href="magic-mirror/magic-mirror.vala">código de referencia</link>. También hay una <link href="magic-mirror/magic-mirror-advanced.vala">implemnetación más amplia</link> que empotra la ventana en una ventana GTK regular que implica algunas técnicas avanzadas, y añade botones para iniciar/parar la imagen.</p>
+</section>
+
+<section id="further">
+<title>Lectura complementaria</title>
+<p>Para obtener más información sobre el lenguaje de programación Vala, puede querer revisar el <link href="http://live.gnome.org/Vala/Tutorial">tutorial de Vala</link>.</p>
+</section>
+
+<section id="conclusion">
+<title>Conclusión</title>
+  <p>Ya está, ha conseguido crear una aplicación de cámara web con todas las funciones de fotos en 15 minutos. Ahora puede afeitarse la barba o maquillar su bonita cara justo antes de tener un gran día en su trabajo, donde puede impresionar a sus amigos y colegas con una impresionante aplicación que ha hecho en 15 minutos.</p>
+
+</section>
+
+</page>

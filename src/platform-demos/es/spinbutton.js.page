@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.js" xml:lang="es">
+  <info>
+  <title type="text">SpinButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#entry"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="grid.js"/>
+    <link type="seealso" xref="label.js"/>
+    <revision version="0.1" date="2012-06-24" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un campo de entrada numérico que tiene botones «+» y «-».</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>SpinButton</title>
+  <media type="image" mime="image/png" src="media/spinbuttonkittens.png"/>
+  <p>Un «SpinButton» no está relacionado con un <link xref="spinner.js">Spinner</link>. Es un campo de entrada de texto que sólo acepta números, y que tiene botones más y menos para dejarle cambiar el valor sin tener que escribir nada.</p>
+  <p>Su uso es bueno cuando es obvio que sólo se le puede introducir un número. En este ejemplo, se usan dos botones incrementales para el número de gatitos y el número de latas de atún para darles.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Bibliotecas que importar</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Estas son las bibliotecas que necesita importar para que esta aplicación se ejecute. Recuerde que la línea que le dice a GNOME que está usando Gjs siempre tiene que ir al principio.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Crear la ventana de la aplicación</title>
+    <code mime="application/javascript">
+const SpinButtonExample = new Lang.Class({
+    Name: 'SpinButton Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsspinbutton'
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Todo el código de este ejemplo va en la clase «SpinButtonExample». El código anterior crea una <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> para que vayan los widgets y la ventana.</p>
+    <code mime="application/javascript">
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Kitten Feeder"});
+</code>
+    <p>La función _buildUI es donde se pone todo el código que crea la interfaz de usuario de la aplicación. El primer paso es crear una <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> nueva para poner dentro todos los widgets.</p>
+  </section>
+
+  <section id="spinbutton">
+    <title>Crear los botones incrementales</title>
+    <code mime="application/javascript">
+        // Create the first spinbutton using a function
+        this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
+        this._kittens.connect ("value-changed", Lang.bind (this, this._newValue));
+</code>
+
+    <p>Se puede usar la función «new_with_range» para crear un botón incremental nuevo rápidamente. Su primer parámetro es el valor inicial del botón incremental, el segundo es el valor máximo, y el tercero es cuánto se incrementa cuando se presionan los botones más o menos.</p>
+    <p>Después de crear el primer botón incremental, se conecta su señal «value-changed» a una función que maneja qué sucede cuando cambia el número dentro de cada botón incremental.</p>
+
+    <code mime="application/javascript">
+        // Create an adjustment to use for the second spinbutton
+        this._adjustment = new Gtk.Adjustment ({
+            value: 1,
+            lower: 0,
+            upper: 9001,
+            step_increment: 1,
+            page_increment: 10 });
+
+        // Create the second spinbutton
+        this._tuna = new Gtk.SpinButton ({ adjustment: this._adjustment });
+        this._tuna.connect ("value-changed", Lang.bind (this, this._newValue));
+
+        // this._tuna.set_digits (1);
+        // this._tuna.set_wrap (true);
+</code>
+
+    <p>Si quiere un control más fino sobre un botón incremental, o si quiere crear varios botones incrementales que usen todos los mismos parámetros, puede crear un objeto llamado <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Ajuste</link>. Entonces, podrá usar ese objeto como una propiedad de ajuste nueva del botón incremental, y establecer todos los valores de una vez. Después, puede cambiar todos los botones incrementales que usan ese ajuste cambiando las propiedades de su objeto.</p>
+    <p>Las líneas comentadas aquí muestran cosas que puede hacer para personalizar su botón incremental. Puede configurar el número de dígitos que van después de la coma decimal, por ejemplo, o decirle que dé la vuelta si pasa el límite superior o inferior que estableció.</p>
+    <note><p>Por el bien de los gatitos, por favor no use «set_digits» para permitir un número decimal de gatitos.</p></note>
+  </section>
+
+  <section id="UI">
+    <title>Crear el resto de la IU</title>
+
+    <code mime="application/javascript">
+        // Create the text labels to go with the spinbuttons
+        this._startLabel = new Gtk.Label ({ label: "There are " });
+        this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
+        this._tunaLabel = new Gtk.Label ({ label: " can(s) of tuna."});
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
+        this._lastLabel = new Gtk.Label ({
+            label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
+</code>
+    <p>Se crea cada <link xref="label.js">etiqueta</link> individualmente, y después se encadenan con los botones incrementales. La última etiqueta tiene que mostrar el número de latas de atún por gatito, por lo que tiene una variable en el medio, que corresponde a una ecuación que usa las funciones «get_value» de los botones incrementales para descubrir sus valores. El método «floor» de las funciones «Math» de JavaScript se usa para redondear el número de latas atún por gatito al número entero inferior más cercano.</p>
+
+    <code mime="application/javascript">
+        // Create a grid to put the spinbuttons and their labels in
+        this._spinGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_bottom: 20 });
+
+        // Attach everything to the grid
+        this._spinGrid.attach (this._startLabel, 0, 0, 1, 1);
+        this._spinGrid.attach (this._kittens, 1, 0, 1, 1);
+        this._spinGrid.attach (this._kittenLabel, 2, 0, 1, 1);
+        this._spinGrid.attach (this._tuna, 3, 0, 1, 1);
+        this._spinGrid.attach (this._tunaLabel, 4, 0, 1, 1);
+
+        // Create a main grid to hold it and the last label
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Attach the smaller grid and the last label to the main grid
+        this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
+        this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
+</code>
+
+    <p>Aquí se usan widgets <link xref="grid.js">rejilla</link> para mantener todo organizado. Una rejilla mantiene las etiquetas y los botones incrementales en orden, mientras que la otra pone esa rejilla en la parte superior y la última etiqueta en la parte inferior.</p>
+    <p>No hay una manera incorrecta de organizar cosas en rejillas, siempre que le agrade cómo resulta. En este caso, la rejilla superior tiene un margen en la parte inferior para mantenerla espaciada uniformemente de la etiqueta inferior, que está dentro de una rejilla separada por lo que se centrará en relación a las etiquetas y botones incrementales de la parte superior.</p>
+
+    <code mime="application/javascript">
+        // Add the main grid to the window
+        this._window.add (this._mainGrid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+</code>
+    <p>Finalmente, se añade la rejilla más grande a la ventana, después se le dice a la ventana que se muestre con todos sus widgets.</p>
+    </section>
+
+    <section id="spinbutton-handler">
+    <title>Función que maneja los valores numéricos de los botones incrementales que se ajustan</title>
+
+    <code mime="application/javascript">
+    _newValue: function () {
+
+        // Update the label which shows how many cans there are per kitten
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()))
+        this._lastLabel.set_label ("That's " + this.perKitten + " can(s) of tuna per kitten.");
+
+    }
+
+});
+</code>
+    <p>Aquí se actualiza la variable «perKitten» de acuerdo a los valores nuevos de los botones incrementales, y se usa la propiedad «set_label» para actualizar lo que «_lastLabel» muestra. Dado que ambos botones incrementales tienen su señal «value-changed» conectada a esta función, cada vez que cualquiera de los números cambie esta función actualizará la etiqueta.</p>
+
+    <code mime="application/javascript">
+// Run the application
+let app = new SpinButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>Finalmente, se crea una instancia nueva de la clase «SpinButtonExample» terminada, y se ejecuta la aplicación.</p>
+  </section>
+
+  <section id="complete">
+    <title>Código de ejemplo completo</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const SpinButtonExample = new Lang.Class({
+    Name: 'SpinButton Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsspinbutton'
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Kitten Feeder"});
+
+        // Create the first spinbutton using a function
+        this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
+        this._kittens.connect ("value-changed", Lang.bind (this, this._newValue));
+
+        // Create an adjustment to use for the second spinbutton
+        this._adjustment = new Gtk.Adjustment ({
+            value: 1,
+            lower: 0,
+            upper: 9001,
+            step_increment: 1,
+            page_increment: 10 });
+
+        // Create the second spinbutton
+        this._tuna = new Gtk.SpinButton ({ adjustment: this._adjustment });
+        this._tuna.connect ("value-changed", Lang.bind (this, this._newValue));
+
+        // this._tuna.set_digits (1);
+        // this._tuna.set_wrap (true);
+
+        // Create the text labels to go with the spinbuttons
+        this._startLabel = new Gtk.Label ({ label: "There are " });
+        this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
+        this._tunaLabel = new Gtk.Label ({ label: " can(s) of tuna."});
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
+        this._lastLabel = new Gtk.Label ({
+            label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
+
+        // Create a grid to put the spinbuttons and their labels in
+        this._spinGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_bottom: 20 });
+
+        // Attach everything to the grid
+        this._spinGrid.attach (this._startLabel, 0, 0, 1, 1);
+        this._spinGrid.attach (this._kittens, 1, 0, 1, 1);
+        this._spinGrid.attach (this._kittenLabel, 2, 0, 1, 1);
+        this._spinGrid.attach (this._tuna, 3, 0, 1, 1);
+        this._spinGrid.attach (this._tunaLabel, 4, 0, 1, 1);
+
+        // Create a main grid to hold it and the last label
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Attach the smaller grid and the last label to the main grid
+        this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
+        this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
+
+        // Add the main grid to the window
+        this._window.add (this._mainGrid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+
+
+    _newValue: function () {
+
+        // Update the label which shows how many cans there are per kitten
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()))
+        this._lastLabel.set_label ("That's " + this.perKitten + " can(s) of tuna per kitten.");
+
+    }
+
+});
+
+// Run the application
+let app = new SpinButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Documentación en profundidad</title>
+<list>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Gtk.Adjustment</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.SpinButton.html">Gtk.SpinButton</link></p></item>
+</list>
+  </section>
+</page>

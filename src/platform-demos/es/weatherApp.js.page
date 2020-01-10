@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="weatherApp.js" xml:lang="es">
+  <info>
+  <title type="text">Aplicación del clima (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Cómo plantear una aplicación que usa llamadas asíncronas. Las llamadas asíncronas se presentarán mediante una aplicación de información meteorológica.</desc>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Aplicación del clima</title>
+  <synopsis>
+    <p>En esta parte de la guía se construirá una aplicación del clima usando llamadas asíncronas. En este ejemplo, la información del clima se obtiene de geonames.org y la aplicación usa los <link href="http://en.wikipedia.org/wiki/List_of_airports_by_ICAO_code:_E">códigos ICAO</link> para responder a las peticiones. Para escribir y ejecutar todos los ejemplos de código necesita un editor de texto en el que escribir el código, una terminal y GNOME 3 o superior instalado en su equipo. En esta guía se verán las siguientes partes:</p>
+
+    <list>
+      <item><p><link xref="#planningUi">Planificar la interfaz gráfica de usuario</link></p></item>
+      <item><p><link xref="#asynchronous">Llamadas asíncronas</link></p></item>
+      <item><p><link xref="#main">El archivo del programa principal</link></p></item>
+      <item><p><link xref="#main">Biblioteca local GeoNames</link></p></item>
+      <item><p><link xref="#main">«Autotools» e iconos</link></p></item>
+    </list>
+  </synopsis>
+
+  <p>Después de leer este tutorial, debería ver esto en su pantalla:</p>
+  <media type="image" mime="image/png" src="media/weatherAppJs.png"/>
+
+  <section id="planningUi">
+    <title>Planificar la interfaz gráfica de usuario</title>
+    <p>Estructurar una aplicación GNOME 3 significa que usará <link href="http://developer.gnome.org/platform-overview/stable/gtk">GTK+</link>. Lo más importante es recordar que la ventana principal sólo aceptará un widget. Debe planificar su estructura de acuerdo a esto (este ejemplo usa una Gtk.Grid). Un método útil es dibujar la ventana principal y colocar dentro cada widget que necesite. Mirando la imagen de su futura aplicación es fácil definir las relaciones entre los widgets. Por ejemplo, Gtk.Grid coloca sus widgets en relación a otros widgets, por lo que después de colocar el primero, los demás se pueden colocar en relación al primero en la rejilla.</p>
+  </section>
+  <section id="asynchronous">
+    <title>Llamadas asíncronas</title>
+    <p>En muchos lenguajes de programación, todas las operaciones se ejecutan síncronamente: le ordena al programa que haga algo, y esperará hasta que esa acción se complete antes de seguir. Esto, sin embargo, es malo para interfaces gráficas de usuario, ya que la aplicación entera se detendrá mientras el programa espera a la operación. Ser asíncrono (async) ayuda en este caso. Con llamadas async, su IU no se bloqueará con ninguna petición. Las llamadas async hacen su aplicación más flexible y mejor equipada para manejar situaciones en las que las llamadas toman más tiempo de lo esperado o por alguna razón se bloquean. Las llamadas async pueden usarse, por ejemplo, para E/S del sistema de archivos y para cálculos lentos en segundo plano.</p>
+    <p>En este ejemplo, se deben obtener datos de geonames.org. Mientras se hace esto, se quiere que el resto del programa continúe. Si no obtuviéramos ninguna información de geonames.org por la falta de conexión a internet y esta fuera una aplicación síncrona, nunca se llegaría al punto en el que el main_quit() se procesa correctamente y habría que matar la aplicación desde una terminal.</p>
+  </section>
+  <section id="main">
+    <title>Las diferentes partes del programa</title>
+  </section>
+</page>

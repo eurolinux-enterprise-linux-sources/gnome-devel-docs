@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="grid.py" xml:lang="fr">
+  <info>
+    <title type="text">Grid (Python)</title>
+    <link type="guide" xref="beginner.py#layout"/>
+    <link type="seealso" xref="label.py"/>
+    <link type="next" xref="separator.py"/>
+    <revision version="0.2" date="2012-08-01" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ranger les éléments graphiques en lignes et colonnes</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Grille</title>
+
+  <media type="image" mime="image/png" src="media/grid_simple.png"/>
+  <p>Quelques étiquettes dans une grille.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code utilisé pour générer cet exemple</title>
+    <code mime="text/python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Grid Example", application=app)
+
+        # three labels
+        label_top_left = Gtk.Label(label="This is Top Left")
+        label_top_right = Gtk.Label(label="This is Top Right")
+        label_bottom = Gtk.Label(label="This is Bottom")
+
+        # a grid
+        grid = Gtk.Grid()
+
+        # some space between the columns of the grid
+        grid.set_column_spacing(20)
+
+        # in the grid:
+        # attach the first label in the top left corner
+        grid.attach(label_top_left, 0, 0, 1, 1)
+        # attach the second label
+        grid.attach(label_top_right, 1, 0, 1, 1)
+        # attach the third label below the first label
+        grid.attach_next_to(
+            label_bottom, label_top_left, Gtk.PositionType.BOTTOM, 2, 1)
+
+        # add the grid to the window
+        self.add(grid)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Méthodes utiles pour un élément graphique Grille</title>
+
+    <list>
+      <item><p>Pour joindre un élément graphique <code>enfant</code> à l'emplacement <code>gauche, superieur</code> dans un créneaux de taille <code>largeur, hauteur</code> donné, utilisez la méthode <code>attach(enfant, superieur, gauche, largeur, hauteur)</code>. S'il y a déjà un élément graphique <code>sibling</code> à cette place, utilisez la fonction <code>attach_next_to(enfant, sibling, side, largeur, hauteur)</code>, où <code>side</code> est l'une des positions <code>Gtk.PositionType.LEFT, Gtk.PositionType.RIGHT, Gtk.PositionType.TOP, Gtk.PositionType.BOTTOM</code>.</p></item>
+      <item><p><code>insert_row(position)</code> and <code>insert_column(position)</code> do exactly what they say; children which are attached at or below this position are moved one row down, and children which span across this position are grown to span the new row. <code>insert_next_to(sibling, side)</code> inserts a row or column at the specified position. The new row or column is placed next to <code>sibling</code>, on the side determined by <code>side</code>; if side is <code>Gtk.PositionType.TOP</code> or <code>Gtk.PositionType.BOTTOM</code>, a row is inserted, if side is <code>Gtk.PositionType.LEFT</code> or <code>Gtk.PositionType.RIGHT</code>, a column is inserted.</p></item>
+      <item><p>Les méthodes <code>set_row_homogeneous(True)</code> et <code>set_column_homogeneous(True)</code> vérifient que chaque ligne ou chaque colonne a la même largeur ou la même hauteur.</p></item>
+      <item><p><code>set_row_spacing(spacing)</code> and <code>set_column_spacing(spacing)</code> force a spacing between (respectively) rows or columns. The value of <code>spacing</code> can be between <code>0</code>, which is the default value, and <code>32767</code>.</p></item>
+    </list>
+
+  </section>
+
+  <section id="references">
+    <title>Références API</title>
+    <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplication.html">GtkApplication</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplicationWindow.html">GtkApplicationWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkLabel.html">GtkLabel</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkImage.html">GtkImage</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkGrid.html">GtkGrid</link></p></item>
+    </list>
+  </section>
+</page>

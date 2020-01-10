@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="separator.vala" xml:lang="el">
+  <info>
+    <title type="text">Διαχωριστικό (Vala)</title>
+    <link type="guide" xref="beginner.vala#ornaments"/>
+    <link type="seealso" xref="grid.vala"/>
+    <link type="seealso" xref="label.vala"/>
+    <link type="seealso" xref="window.vala"/>
+    <revision version="0.1" date="2013-06-18" status="review"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Ένας διαχωριστής γραφικού στοιχείου</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Διαχωριστής</title>
+
+  <media type="image" mime="image/png" src="media/separator.png"/>
+  <p>Οριζόντιος και κάθετος διαχωριστής διαιρούν κάποιες ετικέτες.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+    <code mime="text/x-csharp" style="numbered">/* Αυτή είναι η εφαρμογή. */
+public class Application : Gtk.Application {
+
+	public Application () {
+		Object (application_id: "org.example.window");
+	}
+
+	/* Αντικατάσταση του σήματος 'activate' της GLib.Application,
+	 * που κληρονομείται από Gtk.Application. */
+	public override void activate () {
+
+		var window = new Gtk.Window ();
+		window.title = "Separator Example";
+
+		var label1 = new Gtk.Label ("Below, a horizontal separator.");
+		var label2 = new Gtk.Label ("On the right, a vertical separator.");
+		var label3 = new Gtk.Label ("On the left, a vertical separator.");
+
+		var hseparator = new Gtk.Separator (Gtk.Orientation.HORIZONTAL);
+		var vseparator = new Gtk.Separator (Gtk.Orientation.VERTICAL);
+
+		var grid = new Gtk.Grid();
+
+		grid.attach (label1, 0, 0, 3, 1);
+		grid.attach (hseparator, 0, 1, 3, 1);
+		grid.attach (label2, 0, 2, 1, 1);
+		grid.attach (vseparator, 1, 2, 1, 1);
+		grid.attach (label3, 2, 2, 1, 1);
+
+		grid.set_column_homogeneous(true);
+
+		window.add (grid);
+		this.add_window (window);
+
+		window.show_all ();
+	}
+}
+
+/* Η κύρια συνάρτηση δημιουργεί την εφαρμογή και την εκτελεί.*/
+int main (string[] args) {
+	var app = new Application ();
+	return app.run (args);
+}
+</code>
+  </section>
+
+  <section id="reference">
+    <title>Αναφορά API</title>
+    <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+    <list>
+      <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Application.html">GtkApplication</link></p></item>
+      <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Window.html">Παράθυρο Gtk (GtkWindow)</link></p></item>
+      <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Separator.html">Διαχωριστικό Gtk (GtkSeparator)</link></p></item>
+      <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Grid.html">Πλέγμα Gtk (GtkGrid)</link></p></item>
+      <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Label.html">Ετικέτα Gtk (GtkLabel)</link></p></item>
+    </list>
+  </section>
+
+</page>

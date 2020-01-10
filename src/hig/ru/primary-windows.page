@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="primary-windows" xml:lang="ru">
+
+  <info>
+    <link type="guide" xref="patterns#primary"/>
+    <desc>The main window(s) for your application</desc> 
+    <credit type="author">
+      <name>Алан Дэй (Allan Day)</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+  </info>
+
+<title>Главные окна</title>
+
+<media type="image" mime="image/svg" src="figures/patterns/primary-windows.svg"/>
+
+<p>Главные окна -- это основной высокоуровневый контейнер для пользовательского интерфейса вашего приложения, который должен предоставлять основную функциональность приложения.</p>
+
+<section id="when-to-use">
+<title>Когда использовать</title>
+
+<p>Любое приложение должно иметь по крайней мере одно главное окно, связанное с приложением.</p>
+
+</section>
+
+<section id="application-types">
+<title>Типы приложений</title>
+
+<p>Существует две основные модели главных окон:</p>
+
+<section id="single-instance-applications">
+<title>Одноэкземплярные приложения</title>
+
+<p>Одноэкзамплярные приложения имеют одно главное окно. Эта модель широко применяется для таких приложений как: клиенты для эл. почты, чаты, адресные книги, клиенты обмена мгновенными сообщениями.</p>
+
+</section>
+
+<section id="multiple-instance-applications">
+<title>Мультэкземплярные приложения</title>
+
+<p>Мультэкземплярные приложения могут иметь несколько главных окон. Обычно все главные окна идентичны друг другу. Эта модель часто применяется в приложениях для просмотра или в редакторах (документов, изображений и т. п.).</p>
+
+<p>Обе модели позволяют открывать. Через <link xref="tabs">вкладки</link> или перемещение в браузерном стиле. Однако мультиоконная модель предоставляет дополнительные возможности:</p>
+
+<list>
+<item><p>одновременный просмотр содержимого нескольких элементов;</p></item>
+<item><p>возможность перемещать содержимое на другие рабочие места;</p></item>
+<item><p>возможность распологать наборы с содержимым в различных окнах (если применяются вкладки).</p></item>
+</list>
+
+<section id="parent-child-primary-windows">
+<title>Parent/child primary windows</title>
+
+<p>Multiple instance applications typically have identical primary windows (in the case multiple web browser windows, for example). However, this is not always the case.</p>
+
+<p>Primary windows can have a parent/child relationship. In this type of application, there is only ever one parent window. This typically contains an overview of content items which can be opened in the parent window, or in a separate child window. This allows multiple content items to be simultaneously open.</p>
+
+<p>While child windows can only be opened through a parent window, they are not dependent on them in order to stay open: closing the parent window does not result in the closure of the application's child windows.</p>
+
+<p>GNOME's <app>Notes</app> application is a good example of parent/child primary windows.</p>
+
+</section>
+
+</section>
+</section>
+
+<section id="general-guidelines">
+<title>Общие рекомендации</title>
+
+<list>
+<item><p>A single primary window should always be displayed when your application is launched.</p></item>
+<item><p>If your application launcher is activated while your application is running, all its primary windows should be displayed.</p></item>
+<item><p>Основная функциональность вашего приложения должна реализовываться через главные окна. Не используйте диалоговые или иные второстепенные окна для основной функциональности.</p></item>
+<item><p>Главные окна должны быть независимыми: закрытие одного главного окна не должно заставлять закрываться другие главные окна.</p></item>
+<item><p>Диалоговые окна должны всегда зависеть от главного окна. Подробнее см. <link xref="dialogs">диалоги</link>.</p></item>
+<item><p>Ваше приложение должно всегда завершаться при закрытии всех его главных окон.</p></item>
+<item><p>The guidelines on <link xref="display-compatibility">display compatibility</link> are particularly relevant for primary windows: be careful to ensure that they follow the advice on minimum display sizes, display orientation, and half-screen snap.</p></item>
+<item><p>Действие <gui>Завершить</gui> должно закрывать все главные окна.</p></item>
+</list>
+
+</section>
+
+<section id="api-reference">
+<title>API reference</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkWindow.html">GtkWindow</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">GtkApplicationWindow</link></p></item>
+</list>
+
+</section>
+
+</page>

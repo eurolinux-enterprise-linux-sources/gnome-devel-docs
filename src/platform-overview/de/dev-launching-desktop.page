@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-launching-desktop" xml:lang="de">
+
+  <info>
+    <link type="next" xref="dev-launching-icons"/>
+    <revision version="0.1" date="2014-01-28" status="draft"/>
+
+    <credit type="author">
+      <name>David King</name>
+      <email its:translate="no">davidk@gnome.org</email>
+      <years>2014</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2009-2012, 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Christian Kirbach</mal:name>
+      <mal:email>christian.kirbach@gmail.com</mal:email>
+      <mal:years>2011, 2012, 2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Aljosha Papsch</mal:name>
+      <mal:email>al@rpapsch.de</mal:email>
+      <mal:years>2012</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Installation einer Desktop-Datei </title>
+
+  <links type="series" style="floatend">
+    <title>Start Ihrer Anwendung</title>
+  </links>
+
+  <p>Schreiben und Installieren Sie eine *.desktop-Datei, über die Benutzer Ihre Anwendung finden und starten können.</p>
+  
+  <p>GNOME verwendet die <link href="http://standards.freedesktop.org/desktop-entry-spec/latest/index.html">DesktopEinträge von freedesktop.org</link> und die <link href="http://standards.freedesktop.org/menu-spec/latest/">Desktop-Menü-Spezifikation</link> für die Beschreibung von Anwendungsstartern. Die Installation einer *.desktop-Datei ist der Standardweg, Ihre Anwendung unter GNOME und anderen Arbeitsumgebungen zu registrieren.</p>
+  
+  <p>Eine *.desktop-Datei enthält den Namen und den Typ der Binärdatei Ihrer Anwendung und kann außerdem ein Symbol, eine Beschreibung und diverse andere Informationen zum Starten der Anwendung enthalten.</p>
+
+  <p>Für eine hypothetische Anwendung namens <app>My Application</app> würde eine *.desktop-Datei folgendermaßen aussehen:</p>
+  <example>
+    <listing>
+      <title><file>myapplication.desktop</file></title>
+<code>[Desktop Entry]
+Name=My Application
+Exec=myapplication
+Type=Application
+Icon=myapplication
+Comment=Do the thing that the application does
+Categories=GTK;GNOME;Utility;</code>
+    </listing>
+  </example>
+
+  <p>Die Zeile <code>[Desktop Entry]</code> gibt an, dass es sich um eine *.desktop-Datei handelt. Darauf folgen Schlüssel, die den Anwendungsstarter beschreiben. Der Schlüssel <code>Name</code> ist der menschenlesbare Name der Anwendung, der in der Benutzeroberfläche angezeigt wird. Das ausführbare Binary gibt der Schlüssel <code>Exec</code>, entweder als vollständigen Pfad oder als Datei, die in einerm der Pfade der Variable <code>PATH</code> zu finden ist. Der letzte obligatorische Schlüssel ist <code>Type</code>, der für Anwendungen immer <code>Application</code> ist. Alternative Typen finden Sie in der »Desktop Entry Specification«.</p>
+
+  <p>Weitere Felder in der *.desktop-Datei sind optional, aber zu empfehlen. Anwendungen sollten ein Symbol installieren und dessen Namen (ohne Erweiterung) im Schlüssel <code>Icon</code> anzeigen. Der <code>Comment</code> (Kommentar) ist eine Kurzbeschreibung der Anwendung. Um den Benutzern beim Suchen nach passenden Anwendungen zu helfen, sollte der Schlüssel <code>Categories</code> eine durch Semikola getrennte Kategorienliste enthalten, die der »Desktop Menu Specification« entsprechen.</p>
+
+  <p>In der »Desktop Entry Specification« sind weitere Schlüssel beschrieben, die zu *.desktop-Dateien hinzugefügt werden können.</p>
+ 
+</page>

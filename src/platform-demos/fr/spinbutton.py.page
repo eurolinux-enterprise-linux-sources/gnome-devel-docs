@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.py" xml:lang="fr">
+  <info>
+    <title type="text">SpinButton (Python)</title>
+    <link type="guide" xref="beginner.py#entry"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="entry.py"/>    
+    <revision version="0.2" date="2012-06-23" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Renvoie un entier ou un nombre à virgule flottante de l'utilisateur.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>SpinButton</title>
+  <media type="image" mime="image/png" src="media/spinbutton.png"/>
+  <p>Choisissez un nombre en le saisissant ou en cliquant sur les boutons -/+ !</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code utilisé pour générer cet exemple</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="SpinButton Example", application=app)
+        self.set_default_size(210, 70)
+        self.set_border_width(5)
+
+        # an adjustment (initial value, min value, max value,
+        # step increment - press cursor keys or +/- buttons to see!,
+        # page increment - not used here,
+        # page size - not used here)
+        ad = Gtk.Adjustment(0, 0, 100, 1, 0, 0)
+
+        # a spin button for integers (digits=0)
+        self.spin = Gtk.SpinButton(adjustment=ad, climb_rate=1, digits=0)
+        # as wide as possible
+        self.spin.set_hexpand(True)
+
+        # we connect the signal "value-changed" emitted by the spinbutton with the callback
+        # function spin_selected
+        self.spin.connect("value-changed", self.spin_selected)
+
+        # a label
+        self.label = Gtk.Label()
+        self.label.set_text("Choose a number")
+
+        # a grid to attach the widgets
+        grid = Gtk.Grid()
+        grid.attach(self.spin, 0, 0, 1, 1)
+        grid.attach(self.label, 0, 1, 2, 1)
+
+        self.add(grid)
+
+    # callback function: the signal of the spinbutton is used to change the
+    # text of the label
+    def spin_selected(self, event):
+        self.label.set_text(
+            "The number you selected is " + str(self.spin.get_value_as_int()) + ".")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Méthodes utiles pour un élément graphique BoutonDactivité</title>
+    <p>Il faut une valeur Gtk.Adjustment pour construire le Gtk.SpinButton. C'est la représentation d'une valeur avec une limite supérieure et une limite inférieure, avec des incréments d'étape et de page, avec une taille de page et elle se présente sous la forme <code>Gtk.Adjustment(valeur, inferieure, superieure, step_increment, page_increment, page_size)</code> où les champs sont du type <code>float</code> ; <code>step_increment</code> est l'incrément ou le décrément obtenu en agissant sur les touches du curseur ou sur les boutons du BoutonDactivité. Notez que les valeurs <code>page_increment</code> et <code>page_size</code> ne sont pas utilisés dans ce cas et qu'ils doivent être définis à <code>0</code>.</p>
+    <p>In line 23 the signal <code>"value-changed"</code> is connected to the callback function <code>spin_selected()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
+    <list>
+      <item><p>Si vous voulez que la valeur du BoutonDactivité aille à la ligne quand elle dépasse les limites supérieure ou inférieure, définissez la fonction <code>set_wrap(True)</code> sur vrai. Le signal <code>"wrapped"</code> est alors émis quand cela se produit.</p></item>
+      <item><p>La méthode <code>set_digits(caracteres)</code> définit la précision d'affichage du BoutonDactivité, jusqu'à 20 caractères.</p></item>
+      <item><p>Pour avoir la valeur du BoutonDactivité sous forme d'un nombre entier, utilisez <code>get_value_as_int()</code>.</p></item>
+    </list>
+  </section>
+
+  <section id="references">
+    <title>Références API</title>
+    <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkSpinButton.html">GtkSpinButton</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkAdjustment.html">GtkAdjustment</link></p></item>
+    </list>
+  </section>
+</page>

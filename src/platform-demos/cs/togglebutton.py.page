@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="togglebutton.py" xml:lang="cs">
+  <info>
+    <title type="text">ToggleButton (Python)</title>
+    <link type="guide" xref="beginner.py#buttons"/>
+    <link type="next" xref="switch.py"/>
+    <revision version="0.1" date="2012-05-23" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Tlačítko, které si ponechává svůj stav</desc>
+  </info>
+
+  <title>ToggleButton</title>
+  <media type="image" mime="image/png" src="media/togglebutton.png"/>
+  <p>Když je ToggleButton aktivován, káča se otáčí.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Kód použitý k vygenerování tohoto příkladu</title>
+
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(
+            self, title="ToggleButton Example", application=app)
+        self.set_default_size(300, 300)
+        self.set_border_width(30)
+
+        # Animovaná káča
+        self.spinner = Gtk.Spinner()
+        # S dodatečným vodorovným místem
+        self.spinner.set_hexpand(True)
+        # S dodatečným svislým místem
+        self.spinner.set_vexpand(True)
+
+        # Přepínací tlačítko
+        button = Gtk.ToggleButton.new_with_label("Start/Stop")
+        # Napojí signál "toggled" vyslaný přepínacím tlačítkem, když
+        # se změní jeho stav, na funkci zpětného volání toggled_cb
+        button.connect("toggled", self.toggled_cb)
+
+        # Mřížka pro umístění widgetů
+        grid = Gtk.Grid()
+        grid.set_row_homogeneous(False)
+        grid.set_row_spacing(15)
+        grid.attach(self.spinner, 0, 0, 1, 1)
+        grid.attach(button, 0, 1, 1, 1)
+
+        # Přidá mřížku do okna
+        self.add(grid)
+
+    # Funkce zpětného volání pro signál "toggled"
+    def toggled_cb(self, button):
+        # Když je přepínací tlačtíko aktivní, spustí se káča
+        if button.get_active():
+            self.spinner.start()
+        # Jina se zastaví
+        else:
+            self.spinner.stop()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+    <title>Užitečné metody pro widget ToggleButton</title>
+    <p>Na řádku 22 je signál <code>"toggled"</code> napojen na funkci zpětného volání <code>toggled_cb()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce zpětného volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+  </section>
+
+  <section id="references">
+    <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkToggleButton.html">GtkToggleButton</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWidget.html">GtkWidget</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkSpinner.html">GtkSpinner</link></p></item>
+    </list>
+  </section>
+</page>

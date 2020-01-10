@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="record-collection.js" xml:lang="ca">
+
+  <info>
+  <title type="text">Record collection (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+
+    <desc>Creació d'una aplicació amb una base de dades per ordenar una col·lecció de música</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-02-22" status="review"/>
+    <credit type="author">
+      <name>Projecte de documentació del GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasettii@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  </info>
+
+<title>Record collection</title>
+
+<synopsis>
+  <p>En aquest programa d'aprenentatge aprendreu a:</p>
+  <list>
+    <item><p>Connectar-se a una base de dades amb la libgda</p></item>
+    <item><p>Inserir i navegar registres a una taula d'una base de dades</p></item>
+  </list>
+</synopsis>
+
+<section id="intro">
+  <title>Introducció</title>
+  <p>Aquesta demostració utilitza el llenguatge JavaScript. Es mostrarà com connectar-se i utilitzar una base de dades des d'un programa escrit amb la GTK+ a través de la biblioteca GDA (Accés a dades del GNOME). Haureu d'instalar-la per poder seguir aquesta demostració.</p>
+  <p>El propòsit de la biblioteca GDA (Accés a dades del GNOME) és proporcionar un accés universal a diferents estils i tipus de fonts de dades. Això compren des dels sistemes tradicionals de bases de dades relacions fins a qualsevol tipus de font de dades imaginable com ara un servidor de correu, un directori d'LDAP, etc. Per més informació i la documentació completa de l'API, aneu al <link href="http://library.gnome.org/devel/libgda/stable/">lloc web de la GDA</link>.</p>
+  <p>Tot i que una gran part del codi està dedicat a la interfície d'usuari (GUI), el programa d'aprenentatge està centrat en les parts relacionades amb la base de dades (es farà menció d'altres parts si es consideren rellevants). Per veure més programes escrits en JavaScript pel GNOME, vegeu el programa d'aprenentatge del <link xref="image-viewer.js">programa de visualització d'imatges</link>.</p>
+</section>
+
+<section id="anjuta">
+  <title>Creació d'un projecte a l'Anjuta</title>
+  <p>Abans de començar a programar, heu de crear un projecte nou a l'Anjuta. L'Anjuta crearà tots els fitxers necessaris per, més endavant, construir i executar el codi. És molt útil per així mantenir-ho tot junt.</p>
+  <steps>
+    <item>
+    <p>Inicieu l'Anjuta i feu clic a <guiseq><gui>Fitxer</gui><gui>Nou</gui><gui>Projecte</gui></guiseq> per obrir l'auxiliar de projectes.</p>
+    </item>
+    <item>
+    <p>Trieu <gui>JavaScript genèric</gui> a la pestanya <gui>JS</gui>, feu clic a <gui>Continua</gui> i empleneu les dades de les pàgines següents de l'auxiliar. Utilitzeu <file>record-collection</file> com a nom de projecte i de directori.</p>
+   	</item>
+    <item>
+    <p>Feu clic a <gui>Aplica</gui> i es crearà el projecte. Obriu el fitxer <file>src/main.js</file> des de la pestanya de <gui>Projecte</gui> o de <gui>Fitxer</gui>. El fitxer ja conté un exemple de codi molt bàsic.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="structure">
+  <title>Estructura del programa</title>
+  <media type="image" mime="image/png" src="media/record-collection.png"/>
+  <p>Aquesta demostració és una aplicació de GTK+ senzilla (amb una sola finestra) que permet inserir registres a una taula d'una base de dades, així com navegar pels registres d'aquesta. La taula conté dos camps: <code>id</code>, per desar nombres enters i <code>name</code> per desar text de llargada variable. La primera secció (al principi) de l'aplicació permet inserir registres a la taula. La secció de baix (al final) permet veure tots els registres de la taula. S'actualitza el contingut de la taula cada vegada que s'afegeix un registre nou i també quan s'inicia l'aplicació.</p>
+</section>
+
+<section id="start">
+  <title>Ara comença lo bo</title>
+  <p>Primera ullada a l'esquelet del programa:</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Gda = imports.gi.Gda;
+const Lang = imports.lang;
+
+function Demo () {
+  this._init ();
+}
+
+Demo.prototype = {
+
+  _init: function () {
+    this.setupWindow ();
+    this.setupDatabase ();
+    this.selectData ();
+  }
+}
+
+Gtk.init (null, null);
+
+var demo = new Demo ();
+
+Gtk.main ();]]></code>
+  <list>
+    <item><p>Línies 1 a 4: importacions inicials. Mireu-vos bé la línia 3 que li diu al JavaScript que importi la biblioteca GDA, la biblioteca central d'aquest programa d'aprenentatge.</p></item>
+    <item><p>Línies 6 a 17: defineixen la classe <code>Demo</code>. Mireu-vos bé les línies 13 a 15, on es criden als 3 mètodes que faran tota la feina i que es descriuran tot seguit.</p></item>
+    <item><p>Línies 19 a 23: inicien l'aplicació.</p></item>
+  </list>
+</section>
+
+<section id="design">
+  <title>Disseny de l'aplicació</title>
+  <p>Feu una ullada al mètode <code>setupWindow</code>. És el responsable de crear la interfície d'usuari (UI). Com que la interfície no és l'eix principal del programa d'aprenentatge només es comenta per sobre.</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+  setupWindow: function () {
+    this.window = new Gtk.Window ({title: "Data Access Demo", height_request: 350});
+    this.window.connect ("delete-event", function () {
+      Gtk.main_quit();
+      return true;
+      });
+
+    // main box
+    var main_box = new Gtk.Box ({orientation: Gtk.Orientation.VERTICAL, spacing: 5});
+    this.window.add (main_box);
+
+    // first label
+    var info1 = new Gtk.Label ({label: "<b>Insert a record</b>", xalign: 0, use_markup: true});
+    main_box.pack_start (info1, false, false, 5);
+
+    // "insert a record" horizontal box
+    var insert_box = new Gtk.Box ({orientation: Gtk.Orientation.HORIZONTAL, spacing: 5});
+    main_box.pack_start (insert_box, false, false, 5);
+
+    // ID field
+    insert_box.pack_start (new Gtk.Label ({label: "ID:"}), false, false, 5);
+    this.id_entry = new Gtk.Entry ();
+    insert_box.pack_start (this.id_entry, false, false, 5);
+
+    // Name field
+    insert_box.pack_start (new Gtk.Label ({label: "Name:"}), false, false, 5);
+    this.name_entry = new Gtk.Entry ({activates_default: true});
+    insert_box.pack_start (this.name_entry, true, true, 5);
+
+    // Insert button
+    var insert_button = new Gtk.Button ({label: "Insert", can_default: true});
+    insert_button.connect ("clicked", Lang.bind (this, this._insertClicked));
+    insert_box.pack_start (insert_button, false, false, 5);
+    insert_button.grab_default ();
+
+    // Browse textview
+    var info2 = new Gtk.Label ({label: "<b>Browse the table</b>", xalign: 0, use_markup: true});
+    main_box.pack_start (info2, false, false, 5);
+    this.text = new Gtk.TextView ({editable: false});
+    var sw = new Gtk.ScrolledWindow ({shadow_type:Gtk.ShadowType.IN});
+    sw.add (this.text);
+    main_box.pack_start (sw, true, true, 5);
+
+    this.count_label = new Gtk.Label ({label: "", xalign: 0, use_markup: true});
+    main_box.pack_start (this.count_label, false, false, 0);
+
+    this.window.show_all ();
+  },]]></code>
+  <list>
+    <item><p>Línies 22 i 27: creen dues entrades (per als dos camps) on els usuaris de l'aplicació escriuran alguna cosa per inserir-la a la base de dades.</p></item>
+    <item><p>Línies 31 a 34: creen el botó d'inserció. Es connecta el seu senyal <code>clicked</code> al mètode de classe privat <code>_insertClicked</code>. Aquest mètode es descriu més endavant.</p></item>
+    <item><p>Línia 30: crea el giny (<code>TextView</code>) on es mostrarà el contingut de la taula.</p></item>
+    <item><p>Línia 44: crea l'etiqueta on es mostrarà el nombre de registres de la taula. Inicialment serà buit, s'actualitzarà més endavant.</p></item>
+  </list>
+</section>
+
+<section id="connect">
+  <title>Connexió i inicialització de la base de dades</title>
+  <p>El codi per connectar a la base de dades és en el mètode <code>setupDatabase</code> que segueix:</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+  setupDatabase: function () {
+    this.connection = new Gda.Connection ({provider: Gda.Config.get_provider("SQLite"),
+                                          cnc_string:"DB_DIR=" + GLib.get_home_dir () + ";DB_NAME=gnome_demo"});
+    this.connection.open ();
+
+    try {
+      var dm = this.connection.execute_select_command ("select * from demo");
+    } catch (e) {
+      this.connection.execute_non_select_command ("create table demo (id integer, name varchar(100))");
+    }
+  },]]></code>
+  <list>
+    <item>
+      <p>Línies 2 i 3: creen l'objecte <code>Connection</code> de la GDA. S'han de proporcionar unes quantes propietats en el seu constructor:</p>
+      <list>
+        <item>
+          <p><code>provider</code>: un dels proveïdors amb els que la GDA permet treballar. Són: SQLite, MySQL, PostgreSQL, Oracle i molts d'altres. Per aquesta demostració utilitzarem la base de dades SQLite ja que ve per defecte en la majoria de distribucions i és senzilla de treballar-hi (només fa servir un fitxer com a base de dades).</p>
+        </item>
+        <item>
+          <p><code>cnc_string</code>: la cadena de connexió. Pot canviar segons el proveïdor. La sintaxi per a l'SQLite és: <code>DB_DIR=<var>CAMÍ</var>;DB_NAME=<var>NOM_DE_FITXER</var></code>. En aquesta demostració farem servir una base de dades anomenada gnome_demo a la carpeta de l'usuari (adoneu-vos de la crida a la funció <code>get_home_dir</code> de la GLib).</p>
+        </item>
+      </list>
+      <note>
+        <p>Si la GDA no sap treballar amb el proveïdor o si a la cadena de connexió li manca algun element, la línia 2 generarà una excepció, de manera que en codi real hauríem de gestionar-ho amb la sentència de JavaScript <code>try</code>...<code>catch</code>.</p>
+      </note>
+    </item>
+
+    <item><p>Línia 4: obre la connexió. Si no existeix la base dades el proveïdor de SQLite la crearà en aquest moment.</p></item>
+    <item>
+      <p>Línies 6 a 10: es realitza un «SELECT» simple per comprovar si existeix la taula (línia 7). Si no existeix (perquè s'acaba de crear la base de dades), aquesta línia generarà una excepció que es gestionarà en el bloc de codi <code>try</code>...<code>catch</code>. Si és el cas, s'executa la sentència per crear la taula (línia 9).</p>
+      <p>In order to run the SQL commands above we are using the GDA connection methods <code>execute_select_command</code> and <code>execute_non_select_command</code>. They are simple to use, and just require two arguments: The <code>Connection</code> object and the SQL command to be parsed.</p>
+    </item>
+  </list>
+
+  <p>En aquest punt d'execució la base de dades ja està configurada i a punt per utilitzar-se.</p>
+</section>
+
+<section id="select">
+  <title>Selecció</title>
+  <p>Després de connectar-se a la base de dades, el constructor de la demostració crida el mètode <code>selectData</code>. Aquest mètode és el responsable d'obtenir els registres de la taula i mostrar-los en el giny <code>TextView</code>. Ara es comentarà amb més detall:</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+  selectData: function () {
+    var dm = this.connection.execute_select_command  ("select * from demo order by 1, 2");
+    var iter = dm.create_iter ();
+
+    var text = "";
+
+    while (iter.move_next ()) {
+      var id_field = Gda.value_stringify (iter.get_value_at (0));
+      var name_field = Gda.value_stringify (iter.get_value_at (1));
+
+      text += id_field + "\t=>\t" + name_field + '\n';
+    }
+
+    this.text.buffer.text = text;
+    this.count_label.label = "<i>" + dm.get_n_rows () + " record(s)</i>";
+  },]]></code>
+  <list>
+    <item><p>Line 2: The <code>SELECT</code> command. We are using the GDA connection's <code>execute_select_command</code> method for that. It returns a <code>DataModel</code> object, which is later used to retrieve the rows.</p></item>
+    <item><p>Línia 3: crea l'objecte <code>Iter</code> que s'utilitza per iterar sobre els registres de <code>DataModel</code>.</p></item>
+    <item><p>Línia 7: itera sobre tots els registres, els recupera amb l'ajuda de l'objecte <code>Iter</code>. En aquest punt la variable <code>iter</code> conté les dades actuals recuperades de la base de dades. El seu mètode <code>move_next</code> retorna <code>false</code> quan arriba a l'últim registre.</p></item>
+    <item>
+      <p>Línies 8 i 9: es fan dues coses a cada línia:</p>
+      <list>
+        <item><p>S'utilitza el mètode <code>get_value_at</code> d'<code>Iter</code> que només necessita un paràmetre: el número de la columna a recuperar, començant a partir de zero. Com que el <code>SELECT</code> que s'ha fet només retorna dues columnes, els índexs de les columnes són el 0 i l'1.</p></item>
+        <item><p>El mètode <code>get_value_at</code> retorna el camp en el format <code>GValue</code> de la GLib. Una manera senzilla de convertir aquest format a una cadena és utilitzant la funció global de la GDA <code>value_stringify</code>. Això és el que es fa aquí i després es desa el resultat a les variables <code>id_field</code> i <code>name_field</code>.</p></item>
+      </list>
+    </item>
+    <item><p>Línia 11: es concatenen els dos camps per fer una sola línia de text separada per <code>"=&gt;"</code> i desada a la variable <code>text</code>.</p></item>
+    <item><p>Línia 14: quan s'acaba la iteració, hi ha tots els registres formatats a la variable <code>text</code>. En aquesta línia només s'estableix que el contingut de <code>TextView</code> sigui el d'aquesta variable.</p></item>
+    <item><p>Línia 15: mostra el nombre de registres de la taula amb el mètode <code>get_n_rows</code> de <code>DataModel</code>.</p></item>
+  </list>
+</section>
+
+<section id="insert">
+  <title>Inserció</title>
+  <p>Fins ara s'ha connectat a la base de dades i s'ha mostrat com seleccionar les files de la taula. Ara només falta fer un <code>INSERT</code> a la taula. Recordeu que abans en el mètode <code>setupWindow</code> s'ha connectat el senyal <code>clicked</code> del botó <gui>Insert</gui> amb el mètode <code>_insertClicked</code>? Ara se'n mostra la implementació.</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+  _insertClicked: function () {
+    if (!this._validateFields ())
+      return;
+
+    // Gda.execute_non_select_command (this.connection,
+    //   "insert into demo values ('" + this.id_entry.text + "', '" + this.name_entry.text + "')");
+
+    var b = new Gda.SqlBuilder ({stmt_type:Gda.SqlStatementType.INSERT});
+    b.set_table ("demo");
+    b.add_field_value_as_gvalue ("id", this.id_entry.text);
+    b.add_field_value_as_gvalue ("name", this.name_entry.text);
+    var stmt = b.get_statement ();
+    this.connection.statement_execute_non_select (stmt, null);
+
+    this._clearFields ();
+    this.selectData ();
+  },]]></code>
+  <p>
+    We have learned how to use the GDA connection's methods <code>execute_select_command</code> and <code>execute_non_select_command</code> to quickly execute SQL commands on the database. GDA allows one to build a SQL statement indirectly, by using its <code>SqlBuilder</code> object. What are the benefits of this? GDA will generate the SQL statement dynamically, and it will be valid for the connection provider used (it will use the same SQL dialect the provider uses). Let's study the code:
+  </p>
+  <list>
+    <item><p>Línies 2 i 3: comproven que l'usuari hagi emplenat tots els camps. El codi del mètode privat <code>_validateFields</code> és molt senzill i li podeu fer una ullada en el codi font sencer de la demostració.</p></item>
+    <item><p>Línia 5: la forma ràpida de fer un <code>INSERT</code>. Està comentat perquè es vol mostrar com utilitzar l'objecte <code>SqlBuilder</code> per construir una ordre SQL que sigui vàlida per qualsevol base de dades.</p></item>
+    <item><p>Línia 7: crea l'objecte <code>SqlBuilder</code>. S'ha d'informar del tipus d'ordre que es vol construir. Pot ser un <code>SELECT</code>, un <code>UPDATE</code>, un <code>INSERT</code> o bé un <code>DELETE</code>.</p></item>
+    <item><p>Línia 8: estableix el nom de la taula on s'efectuarà l'ordre (generarà un <code>INSERT INTO demo</code>)</p></item>
+    <item><p>Línies 9 i 10: estableix els camps i els valors que formaran part de l'ordre. El primer argument és el nom del camp (tal i com està definit a la taula). El segon argument és el valor que li volem donar.</p></item>
+    <item><p>Línia 11: s'obté l'objecte generat dinàmicament <code>Statement</code> que representa una ordre SQL.</p></item>
+    <item><p>Línia 12: ara ja sí, s'executa l'ordre SQL (un <code>INSERT</code>).</p></item>
+    <item><p>Línia 14: es netegen els camps id i nom de la pantalla. El codi del mètode privat <code>_clearFields</code> és molt senzill i es pot trobar en el codi font sencer de la demostració.</p></item>
+    <item><p>Línia 15: actualitza la vista de la pantalla fent un altre <code>SELECT</code>.</p></item>
+  </list>
+  <note><p>També es poden utilitzar paràmetres mentre construïu l'ordre. Pel fet d'utilitzar objectes <code>SqlBuilder</code> i els seus paràmetres es poden evitar atacs d'injecció d'SQL. Per més informació sobre els paràmetres mireu-vos la <link href="http://library.gnome.org/devel/libgda/stable/">documentació de la GDA</link>.</p></note>
+</section>
+
+<section id="run">
+  <title>Execució de l'aplicació</title>
+  <p>Ja s'ha vist tot el codi que fa falta, així que ja es pot executar el codi. S'acaba de crear una aplicació per la gestió d'una col·lecció de música!</p>
+</section>
+
+<section id="impl">
+ <title>Implementació de referència</title>
+ <p>Si teniu algun problema amb el programa d'aprenentatge, compareu el codi amb el <link href="record-collection/record-collection.js">codi de referència</link>.</p>
+</section>
+</page>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-d-bus" xml:lang="el">
+
+  <info>
+    <link type="guide" xref="tech" group="d-bus"/>
+    <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email its:translate="no">shaunm@gnome.org</email>
+      <years>2011–2012</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Ο δίαυλος ενδοδιαδικασιακής επικοινωνίας για να παράσχει APIs σε άλλες διεργασίες</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2010-2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012-2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Τζένη Πετούμενου</mal:name>
+      <mal:email>epetoumenou@gmail.com</mal:email>
+      <mal:years>2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μάριος Ζηντίλης</mal:name>
+      <mal:email>m.zindilis@dmajor.org</mal:email>
+      <mal:years>2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκυδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gnome.org</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Δίαυλος δεδομένων</title>
+
+<p>Το D-Bus είναι ένας δίαυλος μηνυμάτων για αποστολή μηνυμάτων μεταξύ ποικίλων εφαρμογών, της επιφάνειας εργασίας και στοιχείων χαμηλού επιπέδου. Το δίαυλος δεδομένων παρέχει μια απλή API για την αποστολή μηνυμάτων προς συγκεκριμένες υπηρεσίες και για τη μετάδοση των μηνυμάτων σε όλες τις ενδιαφερόμενες υπηρεσίες. Ο δίαυλος δεδομένων ενεργοποιεί διάφορους τύπους εφαρμογών να επικοινωνούν και να συνεργάζονται μεταξύ τους και με την επιφάνεια εργασίας, προσφέροντας στο χρήστη βελτιωμένη διαδραστικότητα και πλουσιότερες εμπειρίες.</p>
+
+<p>Το δίαυλος δεδομένων παρέχει ένα δίαυλο συνεδρίας και ένα δίαυλο συστήματος. Ο δίαυλος συνεδρίας χρησιμοποιείται από εφαρμογές σε συνεδρίες με έναν μοναδικό χρήστη και τους επιτρέπει να μοιράζονται δεδομένα και ειδοποιήσεις για γεγονότα, καθώς και να ενσωματώνονται στην επιφάνεια εργασίας του χρήστη. Για παράδειγμα, οι αναπαραγωγείς ταινιών μπορούν να στείλουν ένα μήνυμα διαύλου δεδομένων για να εμποδίσει την ενεργοποίηση της προστασίας οθόνης, όταν ο χρήστης παρακολουθεί ταινία.</p>
+
+<p>Ο δίαυλος συστήματος είναι ένας δίαυλος μοναδικού μηνύματος που λειτουργεί ανεξάρτητα από τις συνεδρίες χρηστών. Μπορεί να επικοινωνεί με εφαρμογές σε όλες τις συνεδρίες και να τους επιτρέπει να συνεργάζονται με συστατικά του συστήματος χωρίς να υπεισέρχονται στις λεπτομέρειες χαμηλού επιπέδου του συστήματος. Ο δίαυλος συστήματος χρησιμοποιείται για να παρέχει σημαντικές λειτουργίες που οι χρήστες αναμένουν να βρουν στο σύστημά τους. Για παράδειγμα, ο δίαυλος συστήματος παρακολουθεί πότε συνδέεστε ή αποσυνδέεστε από το δίκτυο, αν έχετε συνδέσει εξωτερικούς οδηγούς, ή αν το φορτίο της μπαταρίας είναι χαμηλό.</p>
+
+<p>Το D-Bus αναπτύσσεται από το <link href="http://www.freedesktop.org/">freedesktop.org</link>, επομένως μπορείτε να το χρησιμοποιήσετε σε διαφορετικά περιβάλλοντα και εφαρμογές. Επειδή το D-Bus λειτουργεί σε πολλαπλές επιφάνειες εργασίας, μπορείτε να το χρησιμοποιήσετε για να δημιουργήσετε φορητό και ευέλικτο λογισμικό που θα συνεργάζεται άψογα με την επιφάνεια εργασίας του χρήστη, ανεξάρτητα από το ποια θα είναι αυτή.</p>
+
+  <p>Το GNOME παρέχει πλήρη υποστήριξη για δίαυλο δεδομένων χρησιμοποιώντας APIs του GDBus στο <link xref="tech-gio">GIO</link>.</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/gio/stable/">Εγχειρίδιο αναφοράς του GIO</link></p></item>
+  <item><p><link href="http://dbus.freedesktop.org/doc/dbus-tutorial.html">Μάθημα D-Bus</link></p></item>
+  <item><p><link href="http://dbus.freedesktop.org/doc/dbus-specification.html">Προσδιορισμός του D-Bus</link></p></item>
+</list>
+
+</page>

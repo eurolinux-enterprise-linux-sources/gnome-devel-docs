@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="paned.js" xml:lang="el">
+  <info>
+    <title type="text">Με φάτνωμα (JavaScript)</title>
+    <link type="guide" xref="beginner.js#layout"/>
+    <revision version="0.1" date="2013-06-25" status="review"/>
+
+    <credit type="author copyright">
+      <name>Meg Ford</name>
+      <email its:translate="no">megford@gnome.org</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Ένα γραφικό στοιχείο με δύο ρυθμίσιμα φατνώματα</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Σε φάτνωμα</title>
+  <media type="image" mime="image/png" src="media/paned.png"/>
+  <p>Δύο εικόνες σε δύο ρυθμίσιμα φατνώματα οριζόντια στοιχισμένες.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+    <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const PanedExample = new Lang.Class ({
+    Name: 'Paned Example',
+
+    // Δημιουργία της ίδιας της εφαρμογής
+    _init: function () {
+        this.application = new Gtk.Application({ application_id: 'org.example.panedexample' });
+
+       // Σύνδεση σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Συνάρτηση επανάκλησης για το σήμα 'activate' παριστάνει παράθυρα όταν είναι ενεργή
+    _onActivate: function() {
+        this.window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' κατασκευάζει τη γραφική διεπαφή
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+    // Κατασκευή της γραφικής διεπαφής της εφαρμογής
+    _buildUI: function() {
+        // Create the application window
+        this.window = new Gtk.ApplicationWindow  ({ application: this.application,
+                                                    window_position: Gtk.WindowPosition.CENTER,
+                                                    title: "Paned Window Example",
+                                                    default_width: 450,
+                                                    default_height: 350,
+                                                    border_width: 10 });
+
+        // ένα νέο γραφικό στοιχείο με δύο ρυθμίσιμα παράθυρα,
+        // ένα στα αριστερά και ένα στα δεξιά
+        this.paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL);
+
+        // δύο εικόνες
+        this.image1 = new Gtk.Image();
+        this.image1.set_from_file("gnome-image.png");
+        this.image2 = new Gtk.Image();
+        this.image2.set_from_file("tux.png");
+
+        // προσθήκη της πρώτης εικόνας στο αριστερό παράθυρο
+        this.paned.add1(this.image1);
+        // add the second image to the right pane
+        this.paned.add2(this.image2)
+
+        // προσθήκη των φατνωμάτων στο παράθυρο
+        this.window.add(this.paned)
+        this.window.show_all();
+    }
+});
+
+// εκτέλεση της εφαρμογής
+let app = new PanedExample();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="references">
+    <title>Αναφορές API</title>
+    <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+    <list>
+      <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Paned.html">GtkPaned</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/gtk3-Standard-Enumerations.html#GtkOrientation">Standard Enumerations</link></p></item>
+      <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Image.html">GtkImage</link></p></item>
+    </list>
+  </section>
+</page>

@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.js" xml:lang="el">
+  <info>
+  <title type="text">Γραμμή κατάστασης (JavaScript)</title>
+    <link type="guide" xref="beginner.js#display-widgets"/>
+    <revision version="0.1" date="2012-06-10" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Εμφάνιση ειδοποιήσεων σε μια αφοσιωμένη γραμμή κατάστασης</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Γραμμή κατάστασης</title>
+  <media type="image" mime="image/png" src="media/statusbar2.png"/>
+  <p>Αυτή η γραμμή κατάστασης κρατά ίχνη του αριθμού των φορών που πατήσατε ένα κουμπί. Εφαρμογές όπως <link href="http://projects.gnome.org/gedit/">gedit</link> χρησιμοποιούν τις γραμμές κατάστασης για εμφάνιση πληροφοριών με μια ματιά, και εμφάνιση ειδοποιήσεων χωρίς διακοπή του χρήστη.</p>
+  <p>Μηνύματα που προωθούνται σε μια γραμμή κατάστασης πηγαίνουν στην κορυφή της στοίβα της και μπορούν να φεύγουν για να εμφανίσουν την επόμενη πιο πρόσφατη. Μπορείτε επίσης να καθαρίσετε κάθε μήνυμα συγκεκριμένου τύπου μονομιάς. Αυτό το παράδειγμα εφαρμογής δείχνει αυτές τις συναρτήσεις.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Δημιουργία του παραθύρου εφαρμογής</title>
+    <code mime="application/javascript">
+const StatusbarExample = new Lang.Class({
+    Name: 'Statusbar Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsstatusbar',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση StatusbarExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <code mime="application/javascript">
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 120,
+            default_width: 300,
+            title: "Button Clicker"})·
+
+        // Δημιουργία μιας φατνωμένης διεπαφής
+        this._panes = new Gtk.Paned ({
+            orientation: Gtk.Orientation.VERTICAL })·
+</code>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλο τον κώδικα για δημιουργία διεπαφής χρήστη της εφαρμογής. Το πρώτο βήμα είναι η δημιουργία ενός νέου <link href="GtkApplicationWindow.js.page">Παράθυρο εφαρμογής Gtk (Gtk.ApplicationWindow)</link> για να μπουν μέσα όλα τα γραφικά στοιχεία. Το επόμενο βήμα είναι η δημιουργία μιας κάθετα προσανατολισμένης διεπαφής Gtk.Paned, για διαίρεση του παραθύρου σε δύο ενότητες. Αυτός ο τρόπος της γραμμής κατάστασης φαίνεται όπως αυτών που χρησιμοποιούνται σε άλλες εφαρμογές και παραμένει στη βάση του παραθύρου, ακόμα κι αν ο χρήστης το αυξομειώσει.</p>
+  </section>
+
+  <section id="buttons">
+    <title>Δημιουργία κουμπιών</title>
+    <code mime="application/javascript">
+        // Δημιουργία του κύριου πλήκτρου
+        this._clickMe = new Gtk.Button ({
+            label: "Click Me!" });
+        this._clickMe.connect ("clicked", Lang.bind (this, this._clicked));
+
+        // Δημιουργία του πλήκτρου επιστροφής
+        this._backButton = new Gtk.Button ({
+            label: "gtk-go-back",
+            use_stock: true });
+        this._backButton.connect ("clicked", Lang.bind (this, this._back));
+
+        // Δημιουργία του πλήκτρου καθαρισμού
+        this._clearButton = new Gtk.Button ({
+            label: "gtk-clear",
+            use_stock: true });
+        this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
+</code>
+    <p>Αυτός ο κώδικας δημιουργεί τα τρία <link href="button.js.page">Κουμπιά Gtk (Gtk.Buttons)</link> που θα χρησιμοποιήσουμε για την προώθηση ενός νέου μηνύματος στη γραμμή κατάστασης, κλείνοντας το τελευταίο και καθαρίζοντας όλα τα υπάρχοντα μηνύματα. Τα κουμπιά "πίσω" και "καθαρισμός" είναι <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">κουμπιά παρακαταθήκης</link>, που μεταφράζονται αυτόματα σε οποιαδήποτε γλώσσα υποστηρίζει το GNOME.</p>
+
+    <code mime="application/javascript">
+        // Τοποθέτηση των κουμπιών σε πλέγμα
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+        this._grid.attach (this._backButton, 0, 0, 1, 1);
+        this._grid.attach_next_to (this._clickMe, this._backButton, Gtk.PositionType.RIGHT, 1, 1);
+        this._grid.attach_next_to (this._clearButton, this._clickMe, Gtk.PositionType.RIGHT, 1, 1);
+
+        // Τοποθέτηση του πλέγματος σε ένα μεγάλο πλαίσιο που γεμίζει το περισσότερο παράθυρο
+        this._topFrame = new Gtk.Frame ({
+            border_width: 20,
+            height_request: 90,
+            width_request: 300});
+        this._topFrame.add (this._grid);
+</code>
+    <p>Αυτός ο κώδικας δημιουργεί το <link href="grid.js.page">Gtk.Grid</link> που θα χρησιμοποιήσουμε για οργάνωση των κουμπιών και επισυνάπτει τα κουμπιά σε αυτό σε σειρά. Δημιουργεί έπειτα ένα <link href="paned.js.page">Gtk.Frame</link> που θα καταλάβει το περισσότερο παράθυρο και έχει μεγάλη ποσότητα συμπλήρωσης γύρω από τα κουμπιά και προσθέτει το πλέγμα στο πλαίσιο. Σημειώστε ότι θα χρειαστούμε ακόμα να βάλουμε το πλαίσιο στη φάτνωμα διεπαφή και έπειτα θα το προσθέσουμε στο ApplicationWindow.</p>
+  </section>
+
+  <section id="statusbar">
+    <title>Δημιουργία της γραμμής κατάστασης</title>
+    <code mime="application/javascript">
+        // Δημιουργία της γραμμής κατάστασης
+        this._statusbar = new Gtk.Statusbar();
+
+        // Παρακολούθηση των αριθμών των φορών που το πλήκτρο πατήθηκε
+        this.Clicks = 0;
+        this.ContextID = this._statusbar.get_context_id ("Number of Clicks");
+
+        // Δίνει στη γραμμή κατάστασης ένα αρχικό μήνυμα
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+        // Τοποθέτηση της γραμμής κατάστασης σε δικό της πλαίσιο στο τέλος
+        this._barFrame = new Gtk.Frame ({
+            height_request: 30 });
+        this._barFrame.add (this._statusbar);
+</code>
+    <p>Εδώ δημιουργούμε τη Gtk.Statusbar, και προωθούμε ένα μήνυμα σε αυτό για ξεκίνημα. Έπειτα του δίνουμε το δικό του στενό πλαίσιο στον πάτο του παραθύρου.</p>
+    <p>Κάθε μήνυμα χρειάζεται να έχει μια ταυτότητα συμφραζομένων, που είναι μια ακέραιη τιμή που μπορείτε να πάρετε από τη γραμμή κατάστασης με τη συνάρτηση get_context_id(). Η μόνη παράμετρος του είναι η τιμή συμβολοσειράς που χρησιμοποιείτε για περιγραφή αυτής της συγκεκριμένης ταυτότητας συμφραζομένων. Κανονικά, θα πάρετε μια νέα ταυτότητα συμφραζομένων για διαφορετικά είδη μηνυμάτων, έτσι που να μπορείτε να χρησιμοποιήσετε τη συνάρτηση remove() για να αφαιρέσετε ένα συγκεκριμένο μήνυμα και όχι μόνο το πιο πρόσφατο στη στοίβα. Αυτό είναι ένα απλό παράδειγμα με μόνο ένα είδος μηνύματος, αν και, έτσι χρησιμοποιούμε μόνο ένα για καθένα.</p>
+    <p>Χρησιμοποιούμε τη συνάρτηση push() για την προώθηση ενός νέου μηνύματος στη στοίβα. Η πρώτη της παράμετρος είναι η ταυτότητα συμφραζόμενων και η δεύτερή της είναι το μήνυμα.</p>
+    <code mime="application/javascript">
+        // Συγκέντρωση των πλαισίων στη φατνωμένη διεπαφή
+        this._panes.pack1 (this._topFrame, true, false);
+        this._panes.pack2 (this._barFrame, false, false);
+
+        // Τοποθέτηση των φατνωμάτων στο παράθυρο
+        this._window.add (this._panes);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+</code>
+    <p>Αυτός ο κώδικας τελειώνει δημιουργώντας το παράθυρο, πακετάροντας τα πλαίσια μέσα στο φάτνωμα, το προσθέτει στο παράθυρο και λέει στο παράθυρο να εμφανίσει όλα τα θυγατρικά γραφικά στοιχεία.</p>
+  </section>
+
+  <section id="functions">
+    <title>Συναρτήσεις για αλληλεπίδραση με τη γραμμή κατάστασης</title>
+    <code mime="application/javascript">
+    _clicked: function() {
+
+        // Αύξηση του αριθμού των πατημάτων κατά 1
+        this.Clicks++;
+
+        // Ενημέρωση της γραμμής κατάστασης με τον νέο αριθμό πατημάτων
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    },
+
+
+
+    _back: function () {
+
+        // Αν υπήρξαν πατήματα, μείωση κατά 1 και αφαίρεση της τελευταίας ενημέρωσης της γραμμής κατάστασης
+        if (this.Clicks &gt; 0 ) {
+            this.Clicks--;
+            this._statusbar.pop (this.ContextID);
+        };
+
+    },
+
+
+
+    _clear: function () {
+
+        // Επαναφορά του αριθμού των πατημάτων
+        this.Clicks = 0;
+
+        // Εκκαθάριση όλων των μηνυμάτων που προωθήθηκαν στη γραμμή κατάστασης
+        this._statusbar.remove_all (this.ContextID);
+
+        // Επαναφορά του μηνύματος της γραμμής κατάστασης
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    }
+
+});
+</code>
+    <p>Εδώ έχουμε συναρτήσεις που δείχνουν προώθηση μηνύματος στη στοίβα, διώχνοντας την κορυφή του από αυτό και καθαρίζοντας όλα τα μηνύματα της συγκεκριμένης ταυτότητας συμφραζομένων. Η συνάρτηση pop() παίρνει μόνο μια παράμετρο, που είναι η ταυτότητα συμφραζομένων για τον τύπο του μηνύματος που θέλετε να διώξετε από το πιο πρόσφατο. Η συνάρτηση remove_all() δουλεύει με τον ίδιο τρόπο, εκτός από την αφαίρεση όλων των μηνυμάτων αυτού του τύπου από τη στοίβα.</p>
+    <code mime="application/javascript">
+// Εκτέλεση της εφαρμογής
+let app = new StatusbarExample ();
+app.application.run (ARGV);
+</code>
+    <p>Τελικά, δημιουργούμε ένα νέο παράδειγμα της τελειωμένης κλάσης StatusbarExample και εκτελούμε την εφαρμογή.</p>
+  </section>
+
+  <section id="complete">
+    <title>Δείγμα πλήρους κώδικα</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const StatusbarExample = new Lang.Class({
+    Name: 'Statusbar Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsstatusbar',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 120,
+            default_width: 300,
+            title: "Button Clicker"});
+
+        // Δημιουργία μιας φατνωμένης διεπαφής
+        this._panes = new Gtk.Paned ({
+            orientation: Gtk.Orientation.VERTICAL });
+
+        // Δημιουργία του κύριου πλήκτρου
+        this._clickMe = new Gtk.Button ({
+            label: "Click Me!" });
+        this._clickMe.connect ("clicked", Lang.bind (this, this._clicked));
+
+        // Δημιουργία του πλήκτρου επιστροφής
+        this._backButton = new Gtk.Button ({
+            label: "gtk-go-back",
+            use_stock: true });
+        this._backButton.connect ("clicked", Lang.bind (this, this._back));
+
+        // Δημιουργία του πλήκτρου καθαρισμού
+        this._clearButton = new Gtk.Button ({
+            label: "gtk-clear",
+            use_stock: true });
+        this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
+
+        // Τοποθέτηση των πλήκτρων σε ένα πλέγμα
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+        this._grid.attach (this._backButton, 0, 0, 1, 1);
+        this._grid.attach_next_to (this._clickMe, this._backButton, Gtk.PositionType.RIGHT, 1, 1);
+        this._grid.attach_next_to (this._clearButton, this._clickMe, Gtk.PositionType.RIGHT, 1, 1);
+
+        // Τοποθέτηση του πλέγματος σε ένα μεγάλο πλαίσιο που γεμίζει το περισσότερο παράθυρο
+        this._topFrame = new Gtk.Frame ({
+            border_width: 20,
+            height_request: 90,
+            width_request: 300});
+        this._topFrame.add (this._grid);
+
+        // Δημιουργία της γραμμής κατάστασης
+        this._statusbar = new Gtk.Statusbar();
+
+        // Παρακολούθηση του αριθμού των φορών που πατήθηκε το πλήκτρο
+        this.Clicks = 0;
+        this.ContextID = this._statusbar.get_context_id ("Number of Clicks");
+
+        // Δίνει στη γραμμή κατάστασης ένα αρχικό μήνυμα
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+        // Τοποθέτηση της γραμμής κατάστασης στο δικό της πλαίσιο στο τέλος
+        this._barFrame = new Gtk.Frame ({
+            height_request: 30 });
+        this._barFrame.add (this._statusbar);
+
+        // Συγκέντρωση των πλαισίων στη φατνωμένη διεπαφή
+        this._panes.pack1 (this._topFrame, true, false);
+        this._panes.pack2 (this._barFrame, false, false);
+
+        // Τοποθέτηση των φατνωμάτων στο παράθυρο
+        this._window.add (this._panes);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+
+
+    _clicked: function() {
+
+        // Αύξηση του αριθμού των πατημάτων κατά 1
+        this.Clicks++;
+
+        // Ενημέρωση της γραμμής κατάστασης με τον νέο αριθμό πατημάτων
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    },
+
+
+
+    _back: function () {
+
+        // Αν υπήρξαν πατήματα, μείωση κατά 1 και αφαίρεση της τελευταίας ενημέρωσης της γραμμής κατάστασης
+        if (this.Clicks &gt; 0 ) {
+            this.Clicks--;
+            this._statusbar.pop (this.ContextID);
+        };
+
+    },
+
+
+
+    _clear: function () {
+
+        // Επαναφορά του αριθμού των πατημάτων
+        this.Clicks = 0;
+
+        // Εκκαθάριση όλων των μηνυμάτων που προωθήθηκαν στη γραμμή κατάστασης
+        this._statusbar.remove_all (this.ContextID);
+
+        // Επαναφορά του μηνύματος της γραμμής κατάστασης
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    }
+
+});
+
+// Εκτέλεση της εφαρμογής
+let app = new StatusbarExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Τεκμηρίωση σε βάθος</title>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Button.html">Gtk.Button</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Frame.html">Gtk.Frame</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Paned.html">Gtk.Paned</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Statusbar.html">Gtk.Statusbar</link></p></item>
+</list>
+  </section>
+</page>

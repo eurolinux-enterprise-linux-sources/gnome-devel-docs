@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="magic-mirror.vala" xml:lang="fr">
+
+  <info>
+  <title type="text">Magic mirror (Vala)</title>
+    <link type="guide" xref="vala#examples"/>
+
+    <desc>Use your webcam as a mirror using the GStreamer framework and GTK+</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
+    <credit type="author">
+      <name>Daniel G. Siegel</name>
+      <email its:translate="no">dgsiegel@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Miroir magique</title>
+
+<synopsis>
+  <p><em>Your mirror just fell off the wall and broke into a thousand pieces — but you need a mirror to shave your beard off or add some makeup! You only have 15 minutes left before catching the bus to work. So what can you do?</em></p>
+  <p>Dans ce tutoriel, nous allons faire un programme qui va vous permettre d'utiliser votre webcam comme miroir. Vous apprendrez comment :</p>
+  <list>
+    <item><p>créer une application GTK+,</p></item>
+    <item><p>accéder à votre webcam en utilisant GStreamer et intégrer le résultat dans une fenêtre,</p></item>
+    <item><p>récupérer des photos de votre webcam,</p></item>
+  </list>
+  <p>Vous avez besoin de ce qui suit pour pouvoir suivre ce tutoriel :</p>
+  <list>
+    <item><p>l'installation du paquet <link xref="getting-ready">Anjuta IDE</link>,</p></item>
+    <item><p>l'installation des paquets GTK, GStreamer et d'un compilateur Vala,</p></item>
+    <item><p>des connaissances de base d'un langage de programmation d'objets.</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/magic-mirror.png"/>
+
+<section id="anjuta">
+  <title>Création d'un projet dans Anjuta</title>
+  <p>Avant de commencer à programmer, vous devez ouvrir un nouveau projet dans Anjuta. Ceci crée tous les fichiers qui vous sont nécessaires pour construire et exécuter votre programme plus tard. C'est aussi utile pour tout regrouper en un seul endroit.</p>
+  <steps>
+    <item>
+    <p>Lancez Anjuta et cliquez sur <guiseq><gui>Fichier</gui><gui>Nouveau</gui><gui>Projet</gui></guiseq> pour ouvrir l'assistant de création de projet.</p>
+    </item>
+    <item>
+    <p>Choose <gui>GTK+ (simple)</gui> from the <gui>Vala</gui> tab, click <gui>Forward</gui>, and fill out your details on the next few pages. Use <file>magic-mirror</file> as project name and directory.</p>
+   	</item>
+   	<item>
+    <p>Désactivez <gui>Utiliser GtkBuilder pour l'interface utilisateur</gui> car nous allons créer l'interface utilisateur manuellement. Consultez le tutoriel <link xref="guitar-tuner.vala">Accordeur de guitare</link> à propos de l'utilisation du constructeur d'interface GtkBuilder.</p>
+    </item>
+    <item>
+    <p>Assurez-vous que <gui>Configuration des paquets externes</gui> est activé. Sur la page suivante, sélectionnez <em>gstreamer-0.10</em> dans la liste pour inclure la bibliothèque <app>GStreamer</app> à votre projet.</p>
+    </item>
+    <item>
+    <p>Cliquez sur <gui>Appliquer</gui> et votre projet est créé. Ouvrez <file>src/miroir_magique.vala</file> depuis l'onglet <gui>Projet</gui> ou l'onglet <gui>Fichiers</gui>. Vous devez voir apparaître du code commençant par les lignes :</p>
+    <code mime="text/x-csharp"><![CDATA[
+using GLib;
+using Gtk;]]></code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Première construction du programme</title>
+  <p>Le programme charge et affiche une fenêtre (vide). Vous trouverez plus de détails ci-dessous ; passez cette liste si vous comprenez les bases :</p>
+  <list>
+  <item>
+    <p>Les deux lignes <code>using</code> importent des espaces de noms que nous n'aurons plus à nommer explicitement.</p>
+   </item>
+   <item>
+    <p>Le constructeur de la classe principale <code>Main</code> crée une nouvelle fenêtre et définit son titre. Ensuite, la fenêtre est affichée et un signal permettant de quitter l'application est connecté à la fermeture de la fenêtre. Plus d'informations sur les signaux sont données plus tard.</p>
+   </item>
+   <item>
+    <p>La fonction statique <code>main</code> est exécutée par défaut quand vous lancez une application Vala. Elle appelle d'autres fonctions qui créent la classe « Main », initialise et ensuite exécute l'application. La fonction <code>Gtk.Main</code> démarre la boucle principale GTK, qui lance l'interface utilisateur et commence à écouter les événements (comme des clics de souris ou des appuis sur des touches).</p>
+   </item>
+  </list>
+
+  <p>Le programme est prêt à être utilisé, donc vous pouvez le compiler en cliquant sur <guiseq><gui>Construire</gui><gui>Construire le projet</gui></guiseq> ou en appuyant sur <keyseq><key>Maj</key><key>F7</key></keyseq>.</p>
+  <p>Pour configurer le répertoire de compilation, modifiez la <gui>Configuration</gui> à <gui>Par défaut</gui> et cliquez sur <gui>Exécuter</gui>. Il ne faut le faire qu'une seule fois, à la première compilation.</p>
+</section>
+
+<section id="webcam">
+ <title>Accès au flux vidéo de votre webcam avec GStreamer</title>
+ <p>L'architecture multimédia de GStreamer sait gérer les vidéos en provenance de webcams. Ajoutons GStreamer à notre application et nous pouvons ainsi accéder au flux vidéo.</p>
+
+<code mime="text/x-csharp" style="numbered"><![CDATA[
+using GLib;
+using Gtk;
+
+public class Main : Object
+{
+	private Gst.Element camerabin;
+
+	public Main () {
+		this.camerabin = Gst.ElementFactory.make ("camerabin", "camera");
+		this.camerabin.set_state (Gst.State.PLAYING);
+	}
+
+	static int main (string[] args) {
+		Gtk.init (ref args);
+		Gst.init (ref args);
+		var app = new Main ();
+
+		Gtk.main ();
+
+		return 0;
+	}
+}
+]]></code>
+ <steps>
+ <item><p>Enlevons d'abord la fenêtre créée précédemment, car GStreamer va gérer l'affichage de l'image à l'écran.</p>
+ </item>
+  <item>
+  <p>Créons maintenant un élément GStreamer qui va accéder à notre webcam. Nous utilisons l'élément « Camerabin », qui est un élément caméra tout-en-un et qui sait faire des photos, des vidéos, appliquer des effets et beaucoup plus encore. Parfait dans notre cas ! Avec <code>this.camerabin.set_state (Gst.State.PLAYING)</code> nous disons au pipeline GStreamer, que nous venons de créer, de commencer la lecture. Facile, non ?</p>
+  <p>Bien sûr, il est aussi possible d'ajuster plus précisément la vidéo dans d'autres fenêtres, mais c'est un sujet avancé, qui inclut des détails sur le système X Window et que nous ne traiterons pas ici.</p>
+  <p>Compilez et exécutez le programme à nouveau. Vous obtenez finalement deux fenêtres. À l'étape suivante, nous allons intégrer la vidéo dans la fenêtre GTK+.</p>
+  </item>
+ </steps>
+</section>
+
+<section id="impl">
+ <title>Implémentation de référence</title>
+ <p>Si vous rencontrez des difficultés avec ce tutoriel, comparez votre programme à ce <link href="magic-mirror/magic-mirror.vala">programme de référence</link>. Il existe aussi une <link href="magic-mirror/magic-mirror-advanced.vala">implémentation plus complète</link> qui intègre la fenêtre à une fenêtre standard Gtk, mais qui nécessite des techniques avancées ainsi que l'ajout de boutons pour lire/arrêter l'image.</p>
+</section>
+
+<section id="further">
+<title>Documentation complémentaire</title>
+<p>Pour en savoir plus à propos de la programmation en langage Vala, consultez le <link href="http://live.gnome.org/Vala/Tutorial">manuel Vala</link>.</p>
+</section>
+
+<section id="conclusion">
+<title>Conclusion</title>
+  <p>Ça y est ; vous avez réussi à créer une application fonctionnelle pour webcam en 15 minutes. Maintenant, vous pouvez vous raser ou maquiller votre joli visage avant de passer une belle journée sur votre lieu de travail, où vous allez pouvoir épater vos amis et collègues avec une application géniale faite en 15 minutes.</p>
+
+</section>
+
+</page>

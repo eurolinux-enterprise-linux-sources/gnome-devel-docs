@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="weatherApp.js" xml:lang="el">
+  <info>
+  <title type="text">Εφαρμογή καιρού (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Πώς να σχεδιαστεί μια εφαρμογή που χρησιμοποιεί ασύγχρονες κλήσεις. Οι ασύγχρονες κλήσεις θα αναπαριστώνται μέσα από μια εφαρμογή καιρού.</desc>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Εφαρμογή καιρού</title>
+  <synopsis>
+    <p>Σε αυτόν τον οδηγό πρόκειται να κατασκευάσουμε μια εφαρμογή καιρού χρησιμοποιώντας ασύγχρονες κλήσεις. Οι πληροφορίες του καιρού σε αυτό το παράδειγμα παρέχονται από τον geonames.org και η εφαρμογή χρησιμοποιεί το <link href="http://en.wikipedia.org/wiki/List_of_airports_by_ICAO_code:_E">κώδικες ICAO</link> για να τοποθετήσει την αίτηση σας για τον καιρό. Για να γράψετε και να εκτελέσετε οι ίδιοι τα παραδείγματα του κώδικα, χρειάζεστε έναν επεξεργαστή για να γράψετε τον κώδικα, τερματικό και GNOME 3 ή μεταγενέστερο εγκατεστημένο στον υπολογιστή σας. Σε αυτόν τον οδηγό θα εξετάσουμε τα παρακάτω μέρη:</p>
+
+    <list>
+      <item><p><link xref="#planningUi">Σχεδιασμός της γραφικής διεπαφής χρήστη</link></p></item>
+      <item><p><link xref="#asynchronous">Ασύγχρονες κλήσεις</link></p></item>
+      <item><p><link xref="#main">Το κύριο αρχείο του προγράμματος</link></p></item>
+      <item><p><link xref="#main">Τοπική βιβλιοθήκη GeoNames</link></p></item>
+      <item><p><link xref="#main">Αυτόματα εργαλεία και εικονίδια</link></p></item>
+    </list>
+  </synopsis>
+
+  <p>Μετά την ανάγνωση αυτού του μαθήματος, θα πρέπει να δείτε αυτό στην οθόνη σας:</p>
+  <media type="image" mime="image/png" src="media/weatherAppJs.png"/>
+
+  <section id="planningUi">
+    <title>Σχεδιασμός της γραφικής διεπαφής χρήστη</title>
+    <p>Δομώντας μια εφαρμογή για το GNOME 3 σημαίνει τη χρήση του <link href="http://developer.gnome.org/platform-overview/stable/gtk">GTK+</link>. Το πιο σημαντικό πράγμα είναι να θυμόσαστε ότι το κύριο παράθυρο θα αποδεχθεί μόνο ένα γραφικό στοιχείο. Πρέπει να σχεδιάσετε τη δομή σας ανάλογα (αυτό το παράδειγμα χρησιμοποιεί Gtk.Grid). Μια χρήσιμη μέθοδος είναι η σχεδίαση του κύριου παραθύρου και η τοποθέτηση κάθε απαιτούμενου γραφικού στοιχείου μέσα σε αυτό το πλαίσιο. Κοιτώντας μια εικόνα της μελλοντικής σας εφαρμογής είναι ευκολότερο να πείτε ποιες είναι οι σχέσεις μεταξύ γραφικών στοιχείων. Για παράδειγμα Gtk.Grid τοποθετεί τα γραφικά στοιχεία σας σε σχέση με τα άλλα γραφικά στοιχεία, έτσι μετά τη τοποθέτηση του πρώτου γραφικού στοιχείου στη θέση του, η τοποθέτηση των γραφικών στοιχείων μπορεί να γίνει σε σχέση με οποιοδήποτε γραφικό στοιχείο στο πλέγμα.</p>
+  </section>
+  <section id="asynchronous">
+    <title>Ασύγχρονες κλήσεις</title>
+    <p>Με πολλές προγραμματιστικές γλώσσες, όλες οι λειτουργίες εκτελούνται σύγχρονα - λέτε στο πρόγραμμα να κάνει κάτι και θα περιμένετε μέχρι αυτή η πράξη να ολοκληρωθεί πριν να συνεχίσετε. Αυτό όμως είναι κακό για τη γραφική διεπαφή χρήστη, καθώς όλη η εφαρμογή παγώνει, ενώ το πρόγραμμα περιμένει τη λειτουργία. Πηγαίνοντας ασύγχρονα (async) βοηθά εδώ. Με ασύγχρονες κλήσεις, το UI σας δεν θα φραχτεί με αιτήσεις. Οι ασύγχρονες κλήσεις κάνουν την εφαρμογή σας πιο εύχρηστη και καλύτερα εξοπλισμένη για χειρισμό καταστάσεων όταν οι κλήσεις παίρνουν περισσότερο χρόνο από το αναμενόμενο ή για κάποιο λόγο κολλάνε. Οι ασύγχρονες κλήσεις μπορούν να χρησιμοποιηθούν για παράδειγμα με αρχείο συστήματος I/O και για πιο αργούς υπολογισμούς στο παρασκήνιο.</p>
+    <p>Σε αυτό το παράδειγμα πρέπει να πάρουμε δεδομένα από το geonames.org. Ενώ κάνουμε αυτό θέλουμε το υπόλοιπο πρόγραμμα να συνεχίσει. Εάν δεν παίρναμε καμιά πληροφορία από το geonames.org λόγω έλλειψης σύνδεσης με το διαδίκτυο και αυτό ήταν μια σύγχρονη εφαρμογή δεν θα μπορούσαμε ποτέ να πάμε στο σημείο όπου το main_quit() συνεχίζει σωστά και η εφαρμογή θα έπρεπε να θανατωθεί από το τερματικό.</p>
+  </section>
+  <section id="main">
+    <title>Τα διαφορετικά μέρη του προγράμματος</title>
+  </section>
+</page>

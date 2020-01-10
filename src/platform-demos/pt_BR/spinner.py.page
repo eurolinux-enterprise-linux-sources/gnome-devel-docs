@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinner.py" xml:lang="pt-BR">
+  <info>
+    <title type="text">Spinner (Python)</title>
+    <link type="guide" xref="beginner.py#display-widgets"/>
+    <link type="next" xref="progressbar.py"/>    
+    <revision version="0.2" date="2012-06-12" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A spinner animation</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Spinner</title>
+  <media type="image" mime="image/png" src="media/spinner.png"/>
+  <p>This Spinner is stopped and started by pressing the spacebar.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Code used to generate this example</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gdk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Spinner Example", application=app)
+        self.set_default_size(200, 200)
+        self.set_border_width(30)
+
+        # a spinner
+        self.spinner = Gtk.Spinner()
+        # that by default spins
+        self.spinner.start()
+        # add the spinner to the window
+        self.add(self.spinner)
+
+    # event handler
+    # a signal from the keyboard (space) controls if the spinner stops/starts
+    def do_key_press_event(self, event):
+        # keyname is the symbolic name of the key value given by the event
+        keyname = Gdk.keyval_name(event.keyval)
+        # if it is "space"
+        if keyname == "space":
+            # and the spinner is active
+            if self.spinner.get_property("active"):
+                # stop the spinner
+                self.spinner.stop()
+            # if the spinner is not active
+            else:
+                # start it again
+                self.spinner.start()
+        # stop the signal emission
+        return True
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  <note><p>
+    <code>Gdk.keyval_name(event.keyval)</code> converts the key value <code>event.keyval</code> into a symbolic name. The names and corresponding key values can be found <link href="http://git.gnome.org/browse/gtk+/tree/gdk/gdkkeysyms.h">here</link>,but for instance <code>GDK_KEY_BackSpace</code> becomes the string <code>"BackSpace"</code>.
+  </p></note>
+  </section>
+
+  <section id="references">
+  <title>API References</title>
+  <p>In this sample we used the following:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkSpinner.html">GtkSpinner</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gdk/stable/gdk-Keyboard-Handling.html">Key Values</link></p></item>
+  </list>
+  </section>
+</page>

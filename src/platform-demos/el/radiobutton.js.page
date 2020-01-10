@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="radiobutton.js" xml:lang="el">
+  <info>
+  <title type="text">Ραδιοπλήκτρα -RadioButton- (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-06-15" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Μόνο ένα μπορεί να επιλεγεί τη φορά</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Ράδιοπλήκτρο (RadioButton)</title>
+  <media type="image" mime="image/png" src="media/radiobuttontravel.png"/>
+  <p>RadioButtons ονομάζονται κατά την παλιά μόδα ραδιοφώνων αυτοκινήτων, που είχαν κουμπιά για αλλαγή μεταξύ προκαθορισμένων καναλιών. Επειδή το ραδιόφωνο μπορούσε να συντονιστεί μόνο σε ένα σταθμό τη φορά, μόνο ένα κουμπί μπορούσε να πατηθεί τη φορά· αν πατούσατε ένα νέο, αυτό που ήταν ήδη πατημένο πεταγόταν πίσω. Έτσι δουλεύουν και αυτά τα κουμπιά.</p>
+  <p>Κάθε RadioButton χρειάζεται μία ετικέτα κειμένου και μια ομάδα. Μόνο ένα κουμπί σε μια ομάδα μπορεί να επιλεγεί τη φορά. Δεν ονομάζετε κάθε ομάδα· μόλις ρυθμίσατε νέα RadioButtons για να είναι τμήμα της ίδιας ομάδας ως μια υπάρχουσα. Εάν δημιουργείτε ένα νέο εκτός μιας ομάδας, δημιουργεί αυτόματα μια νέα ομάδα για να είναι μέρος του.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Δημιουργία του παραθύρου εφαρμογής</title>
+    <code mime="application/javascript">
+const RadioButtonExample = new Lang.Class({
+    Name: 'RadioButton Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsradiobutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομέί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση RadioButtonExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <code mime="application/javascript">
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Travel Planning"});
+</code>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+  </section>
+
+  <section id="button">
+    <title>Δημιουργία των ραδιοκουμπιών</title>
+    <code mime="application/javascript">
+        // Δημιουργία μιας ετικέτας για την πρώτη ομάδα κουμπιών
+        this._placeLabel = new Gtk.Label ({label: "Where would you like to travel to?"});
+</code>
+
+    <p>Χρησιμοποιούμε μια <link xref="label.js">Gtk.Label</link> για να ορίσουμε κάθε ομάδα RadioButtons ανεξάρτητα. Τίποτα δεν σας εμποδίζει να βάλετε τα RadioButtons από όλες τις διαφορετικές ομάδες όπου θέλετε, έτσι εάν θέλετε οι άλλοι να ξέρουν ποιο πηγαίνει μαζί, χρειαζόσαστε να οργανώσετε τα πράγματα ανάλογα.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία τριών ραδιοπλήκτρων τριών διαφορετικών τρόπων
+        this._place1 = new Gtk.RadioButton ({label: "The Beach"});
+
+        this._place2 = Gtk.RadioButton.new_from_widget (this._place1);
+        this._place2.set_label ("The Moon");
+
+        this._place3 = Gtk.RadioButton.new_with_label_from_widget (this._place1, "Antarctica");
+        // this._place3.set_active (true);
+</code>
+
+    <p>Εδώ υπάρχουν τρεις διαφορετικοί τρόποι να δημιουργήσετε RadioButtons. Ο πρώτος είναι ο συνηθισμένος τρόπος, όπου δημιουργούμε ένα νέο Gtk.RadioButton και αποδίδουμε τις ιδιότητές του ταυτόχρονα. Ο δεύτερος και τρίτος χρησιμοποιούν συναρτήσεις που χειρίζονται αυτόματα μερικές από τις ιδιότητες· το new_from_widget παίρνει ένα μοναδικό όρισμα, το RadioButton στο οποίο θέλετε να βάλετε αυτό το νέο στην ίδια ομάδα. Εν τω μεταξύ, το new_with_label_from_widget το παίρνει καθώς και την ετικέτα του RadioButton ταυτόχρονα.</p>
+    <p>Το πρώτο RadioButton σε μια ομάδα είναι αυτό που επιλέγεται από προεπιλογή. Δοκιμάστε την αποσχολίαση της τελευταίας γραμμής σε αυτό το δείγμα κώδικα για να δείτε πώς μπορείτε να ρυθμίσετε ένα διαφορετικό να είναι η προεπιλογή.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία μιας ετικέτας για τη δεύτερη ομάδα κουμπιών
+        this._thingLabel = new Gtk.Label ({label: "And what would you like to bring?" });
+
+        // Δημιουργία τριών επιπλέον ραδιοπλήκτρων
+        this._thing1 = new Gtk.RadioButton ({label: "Penguins" });
+        this._thing2 = new Gtk.RadioButton ({label: "Sunscreen", group: this._thing1 });
+        this._thing3 = new Gtk.RadioButton ({label: "A spacesuit", group: this._thing1 });
+</code>
+    <p>Εδώ δημιουργούμε την ετικέτα για τη δεύτερη ομάδα κουμπιών και έπειτα τα δημιουργούμε όλα με τον ίδιο τρόπο.</p>
+    </section>
+
+    <section id="ui">
+    <title>Δημιουργία της υπόλοιπης διεπαφής χρήστη</title>
+
+    <code mime="application/javascript">
+        // Δημιουργία ενός πλήκτρου παρακαταθήκης ΕΝΤΑΞΕΙ
+        this._okButton = new Gtk.Button ({
+            label: 'gtk-ok',
+            use_stock: 'true',
+            halign: Gtk.Align.END });
+
+        // Σύνδεση του κουμπιού με τη συνάρτηση που χειρίζεται το πάτημά του
+        this._okButton.connect ('clicked', Lang.bind (this, this._okClicked));
+</code>
+    <p>Αυτός ο κώδικας δημιουργεί ένα <link xref="button.js">Gtk.Button</link> και το συνδέει με μια συνάρτηση που θα εμφανίσει στους άλλους ένα χαζό μήνυμα όταν πατήσουν εντάξει, ανάλογα με τα επιλεγμένα RadioButtons.</p>
+    <p>Για να βεβαιωθείτε ότι η ετικέτα του κουμπιού "OK" εμφανίζεται κατάλληλα σε κάθε γλώσσα στην οποία μεταφράζεται το GNOME, να θυμάστε να χρησιμοποιήσετε έναν από τους <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">τύπους κουμπιών παρακαταθήκης</link> του Gtk.</p>
+
+    <code mime="application/javascript">
+        // Δημιουρία ενός πλέγματος για τοποθέτηση των στοιχείων "place" μέσα
+        this._places = new Gtk.Grid ();
+
+        // Προσάρτηση των στοιχείων "place" στο πλέγμα
+        this._places.attach (this._placeLabel, 0, 0, 1, 1);
+        this._places.attach (this._place1, 0, 1, 1, 1);
+        this._places.attach (this._place2, 0, 2, 1, 1);
+        this._places.attach (this._place3, 0, 3, 1, 1);
+
+        // Δημιουργία ενός πλέγματος για τοποθέτηση των στοιχείων "thing" μέσα
+        this._things = new Gtk.Grid ({ margin_top: 50 });
+
+        // Προσάρτηση των στοιχείων "thing" στο πλέγμα
+        this._things.attach (this._thingLabel, 0, 0, 1, 1);
+        this._things.attach (this._thing1, 0, 1, 1, 1);
+        this._things.attach (this._thing2, 0, 2, 1, 1);
+        this._things.attach (this._thing3, 0, 3, 1, 1);
+
+        // Δημιουργία ενός πλέγματος για τοποθέτηση όλων μέσα
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_left: 40,
+            margin_right: 50 });
+
+        // Προσάρτηση όλων στο πλέγμα
+        this._grid.attach (this._places, 0, 0, 1, 1);
+        this._grid.attach (this._things, 0, 1, 1, 1);
+        this._grid.attach (this._okButton, 0, 2, 1, 1);
+
+        // Προσάρτηση του πλέγματος στο παράθυρο
+        this._window.add (this._grid);
+</code>
+    <p>Χρησιμοποιούμε ένα ανεξάρτητο <link xref="grid.js">Gtk.Grid</link> για να οργανώσουμε κάθε ομάδα ραδιοπλήκτρων. Με αυτό τον τρόπο μπορούμε να αλλάξουμε τη διάταξη με λιγότερη αναστάτωση αργότερα. Το δεύτερο πλέγμα έχει ένα περιθώριο στην κορυφή, για οπτική διάκριση των δύο συνόλων επιλογών.</p>
+    <p>Αφού τα οργανώσουμε, τα βάζουμε σε ένα τρίτο, κύριο πλέγμα, μαζί με το κουμπί εντάξει. Έπειτα το προσαρτούμε στο παράθυρο.</p>
+
+    <code mime="application/javascript">
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+</code>
+
+    <p>Τελικά, λέμε στο παράθυρο και σε κάθε τι που είναι μέσα του να γίνει ορατό όταν τρέχει η εφαρμογή.</p>
+
+  </section>
+
+  <section id="function">
+    <title>Η συνάρτηση που χειρίζεται την επιλογή σας</title>
+    <code mime="application/javascript">
+    _okClicked: function () {
+
+        // Δημιουργία ενός αναδυόμενου που εμφανίζει ένα χαζό μήνυμα
+        this._travel = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            message_type: Gtk.MessageType.OTHER,
+            buttons: Gtk.ButtonsType.OK,
+            text: this._messageText() });
+
+        // Εμφάνιση του αναδυόμενου
+        this._travel.show();
+
+        // Σύνδεση του κουμπιού ΕΝΤΑΞΕΙ με τη συνάρτηση που κλείνει το αναδυόμενο
+        this._travel.connect ("response", Lang.bind (this, this._clearTravelPopUp));
+
+    },
+</code>
+    <p>Όταν πατάτε εντάξει, ένας <link xref="messagedialog.js">Gtk.MessageDialog</link> εμφανίζεται. Αυτή η συνάρτηση δημιουργεί και εμφανίζει το αναδυόμενο παράθυρο, έπειτα συνδέει το κουμπί της εντάξει με τη συνάρτηση που το κλείνει. Τι κείμενο εμφανίζεται στο αναδυόμενο εξαρτάται από τη συνάρτηση _messageText(), που επιστρέφει μια διαφορετική τιμή ανάλογα με το σύνολο επιλογών που διαλέξατε.</p>
+
+    <code mime="application/javascript">
+    _messageText: function() {
+
+        // Δημιουργία ενός χαζού μηνύματος για το αναδυόμενο ανάλογα με το τι διαλέξατε
+        var stringMessage = "";
+
+        if (this._place1.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "Penguins love the beach, too!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "Make sure to put on that sunscreen!";
+
+            else stringMessage = "Are you going to the beach in space?";
+
+        }
+
+        else if (this._place2.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "The penguins will take over the moon!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "A lack of sunscreen will be the least of your problems!";
+
+            else stringMessage = "You'll probably want a spaceship, too!";
+        }
+
+        else if (this._place3.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "The penguins will be happy to be back home!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "Antarctic sunbathing may be hazardous to your health!";
+
+            else stringMessage = "Try bringing a parka instead!";
+        }
+
+        return stringMessage;
+
+    },
+</code>
+    <p>Η μέθοδος get_active() λέει πώς μπορούμε να πούμε ποιο RadioButton πατιέται. Αυτή η συνάρτηση επιστρέφει ένα διαφορετικό χαζό μήνυμα ανάλογα με ποιο σύνολο κουμπιών πατήθηκε. Η επιστρεφόμενη τιμή χρησιμοποιείται ως ιδιότητα κειμένου του MessageDialog.</p>
+
+    <code mime="application/javascript">
+    _clearTravelPopUp: function () {
+
+        this._travel.destroy();
+
+    }
+
+});
+</code>
+    <p>Αυτή η συνάρτηση καλείται όταν το κουμπί εντάξει του MessageDialog πατιέται. Κάνει απλά το αναδυόμενο να φύγει.</p>
+
+    <code mime="application/javascript">
+// Εκτέλεση της εφαρμογής
+let app = new RadioButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>Τελικά, δημιουργούμε ένα νέο παράδειγμα της τελειωμένης κλάσης RadioButtonExample και εκτελούμε την εφαρμογή.</p>
+  </section>
+
+  <section id="complete">
+    <title>Δείγμα πλήρους κώδικα</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const RadioButtonExample = new Lang.Class({
+    Name: 'RadioButton Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsradiobutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Travel Planning"});
+
+        // Δημιουργία μιας ετικέτας για την πρώτη ομάδα των κουμπιών
+        this._placeLabel = new Gtk.Label ({label: "Where would you like to travel to?"});
+
+        // Δημιουργία τριών ραδιοπλήκτων τριών διαφορετικών δρόμων
+        this._place1 = new Gtk.RadioButton ({label: "The Beach"});
+
+        this._place2 = Gtk.RadioButton.new_from_widget (this._place1);
+        this._place2.set_label ("The Moon");
+
+        this._place3 = Gtk.RadioButton.new_with_label_from_widget (this._place1, "Antarctica");
+        // this._place3.set_active (true);
+
+        // Δημιουργία μιας ετικέτας για τη δεύτερη ομάδα κουμπιών
+        this._thingLabel = new Gtk.Label ({label: "And what would you like to bring?" });
+
+        // Δημιουργία τριών πρόσθετων ραδιοπλήκτρων
+        this._thing1 = new Gtk.RadioButton ({label: "Penguins" });
+        this._thing2 = new Gtk.RadioButton ({label: "Sunscreen", group: this._thing1 });
+        this._thing3 = new Gtk.RadioButton ({label: "A spacesuit", group: this._thing1 });
+
+        // Δημιουργία ενός πλήκτρου παρακαταθήκης ΕΝΤΑΞΕΙ
+        this._okButton = new Gtk.Button ({
+            label: 'gtk-ok',
+            use_stock: 'true',
+            halign: Gtk.Align.END });
+
+        // Σύνδεση του πλήκτρου με τη συνάρτηση που χειρίζεται το πάτημά του
+        this._okButton.connect ('clicked', Lang.bind (this, this._okClicked));
+
+        // Δημιουργία ενός πλέγματος για την τοποθέτηση των στοιχείων "place" μέσα
+        this._places = new Gtk.Grid ();
+
+        // Προσάρτηση των στοιχείων "place" στο πλέγμα
+        this._places.attach (this._placeLabel, 0, 0, 1, 1);
+        this._places.attach (this._place1, 0, 1, 1, 1);
+        this._places.attach (this._place2, 0, 2, 1, 1);
+        this._places.attach (this._place3, 0, 3, 1, 1);
+
+        // Δημιουργία ενός πλέγματος για τοποθέτηση των στοιχείων  "thing" μέσα
+        this._things = new Gtk.Grid ({ margin_top: 50 });
+
+        // Προσάρτηση των στοιχείων "thing" στο πλέγμα
+        this._things.attach (this._thingLabel, 0, 0, 1, 1);
+        this._things.attach (this._thing1, 0, 1, 1, 1);
+        this._things.attach (this._thing2, 0, 2, 1, 1);
+        this._things.attach (this._thing3, 0, 3, 1, 1);
+
+        // Δημιουργία ενός πλέγματος για να μπουν όλα μέσα
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_left: 40,
+            margin_right: 50 });
+
+        // Προσάρτηση όλων στο πλέγμα
+        this._grid.attach (this._places, 0, 0, 1, 1);
+        this._grid.attach (this._things, 0, 1, 1, 1);
+        this._grid.attach (this._okButton, 0, 2, 1, 1);
+
+        // Προσθήκη του πλέγματος στο παράθυρο
+        this._window.add (this._grid);
+
+        // Εμφάνιση των παραθύρων και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+
+
+    _okClicked: function () {
+
+        // Δημιουργία ενός αναδυόμενου που εμφανίζει ένα χαζό μήνυμα
+        this._travel = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            message_type: Gtk.MessageType.OTHER,
+            buttons: Gtk.ButtonsType.OK,
+            text: this._messageText() });
+
+        // Εμφάνιση του αναδυόμενου
+        this._travel.show();
+
+        // Σύνδεση του πλήκτρου ΕΝΤΑΞΕΙ στη συνάρτηση που κλείνει το αναδυόμενο
+        this._travel.connect ("response", Lang.bind (this, this._clearTravelPopUp));
+
+    },
+
+
+
+    _messageText: function() {
+
+        // Δημιουργία ενός χαζού μηνύματος για το αναδυόμενο ανάλογα με το τι επιλέξατε
+        var stringMessage = "";
+
+        if (this._place1.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "Penguins love the beach, too!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "Make sure to put on that sunscreen!";
+
+            else stringMessage = "Are you going to the beach in space?";
+
+        }
+
+        else if (this._place2.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "The penguins will take over the moon!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "A lack of sunscreen will be the least of your problems!";
+
+            else stringMessage = "You'll probably want a spaceship, too!";
+        }
+
+        else if (this._place3.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "The penguins will be happy to be back home!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "Antarctic sunbathing may be hazardous to your health!";
+
+            else stringMessage = "Try bringing a parka instead!";
+        }
+
+        return stringMessage;
+
+    },
+
+
+
+
+    _clearTravelPopUp: function () {
+
+        this._travel.destroy();
+
+    }
+
+});
+
+// Εκτέλεση της εφαρμογής
+let app = new RadioButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Τεκμηρίωση σε βάθος</title>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Button.html">Gtk.Button</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.RadioButton.html">Gtk.RadioButton</link></p></item>
+</list>
+  </section>
+</page>

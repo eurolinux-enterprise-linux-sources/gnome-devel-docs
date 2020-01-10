@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="photo-wall.c" xml:lang="cs">
+  <info>
+    <title type="text">Fotostěna (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>Prohlížeč obrázků používající Clutter.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-22" status="review"/>
+    <credit type="author">
+      <name>Chris Kühl</name>
+      <email its:translate="no">chrisk@openismus.com</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  </info>
+
+<title>Fotostěna</title>
+
+<synopsis>
+  <p>Pro tento příklad vytvoříme jednoduchý prohlížeč obrázků používající Clutter. Naučíte se:</p>
+  <list>
+    <item><p>jak nastavit velikost a pozici objektů <code>ClutterActor</code></p></item>
+    <item><p>jak umístit obrázek do objektu <code>ClutterActor</code></p></item>
+    <item><p>jak udělat jednoduché přechody pomocí základní animační konstrukce Clutter</p></item>
+    <item><p>jak přimět objekty <code>ClutterActor</code> reagovat na události myši</p></item>
+    <item><p>jak získat názvy souborů ze složky</p></item>
+  </list>
+</synopsis>
+
+<section id="intro">
+  <title>Úvod</title>
+  <p>Clutter je knihovna sloužící k vytváření dynamického uživatelského rozhraní pomocí OpenGL s podporou hardwarové akcelerace. Tento příklad předvádí malou, ale podstatnou část knihovny Clutter na vytvoření jednoduchého, ale atraktivního programu k prohlížení obrázků.</p>
+  <p>Abychom dosáhli našeho cíle, využijeme také pár dalších částí GLib. Nejpodstatnější je použití <code>GPtrArray</code>, což je dynamické pole ukazatelů, pro uchování názvů cest. Dále použijeme <code>GDir</code>, což je pomůcka pro práci se složkami, k přístupu k našim složkám s obrázky a ke shromáždění cest k souborům.</p>
+</section>
+
+<section id="anjuta">
+  <title>Vytvoření projektu ve studiu Anjuta</title>
+  <p>Než začnete s kódováním, musíte ve studiu Anjuta vytvořit nový projekt. Tím se vytvoří všechny soubory, které budete později potřebovat k sestavení a spuštění kódu. Je to také užitečné kvůli udržení všeho pohromadě.</p>
+  <steps>
+    <item>
+    <p>Spusťte IDE Anjuta a klikněte na <guiseq><gui>Soubor</gui> <gui>Nový</gui> <gui>Projekt</gui></guiseq>, aby se otevřel průvodce projektem.</p>
+    </item>
+    <item>
+    <p>Na kartě <gui>C</gui> zvolte <gui>GTK+ (jednoduchý)</gui>, klikněte na <gui>Pokračovat</gui> a na několika následujících stránkách vyplňte své údaje. Jako název projektu a složky použijte <file>photo-wall</file>.</p>
+   	</item>
+    <item>
+    <p>Ujistěte se, že <gui>Použít GtkBuilder k tvorbě uživatelského rozhraní</gui> je vypnuto, protože jej chceme v této lekci vytvořit ručně. Na použití návrháře uživatelského rozhraní se podívejte do lekce <link xref="guitar-tuner.c">Kytarová ladička</link>.</p>
+    </item>
+    <item>
+    <p>Zapněte <gui>Konfigurovat externí balíčky</gui>. Na následující stránce vyberte v seznamu <em>clutter-1.0</em>, aby se knihovna Clutter zahrnula do vašeho projektu.</p>
+    </item>
+    <item>
+    <p>Klikněte na <gui>Použít</gui> a vytvoří se vám projekt. Otevřete <file>src/main.c</file> na kartě <gui>Projekt</gui> nebo <gui>Soubor</gui>. Měli byste vidět kód, který začíná řádky:</p>
+    <code mime="text/x-csrc">
+#include &lt;config.h&gt;
+#include &lt;gtk/gtk.h&gt;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="look">
+  <title>Pohled na fotostěnu</title>
+  <p>Náš prohlížeč obrázků zobrazuje uživateli stěnu plnou obrázků.</p>
+  <media type="image" mime="image/png" src="media/photo-wall.png"/>
+  <p>Když se na obrázek klikne, je animován s cílem vyplnit prohlížecí oblast. Když se na zaměřený obrázek klikne, vrátí se na své původní místo, opět pomocí animace. Obě animace trvají 500 milisekund.</p>
+  <media type="image" mime="image/png" src="media/photo-wall-focused.png"/>
+</section>
+
+<section id="setup">
+  <title>Počáteční nastavení</title>
+  <p>Následující úseku kódu obsahuje řadu definic a proměnných, které budeme používat v následujících částech. Použijte to jako vodítko pro následující části. Zkopírujte tento kód na začátek <file>src/main.c</file>:</p>
+<code mime="text/x-csrc" style="numbered">
+#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
+#include &lt;clutter/clutter.h&gt;
+
+#define STAGE_WIDTH  800
+#define STAGE_HEIGHT 600
+
+#define THUMBNAIL_SIZE 200
+#define ROW_COUNT (STAGE_HEIGHT / THUMBNAIL_SIZE)
+#define COL_COUNT (STAGE_WIDTH  / THUMBNAIL_SIZE)
+#define THUMBNAIL_COUNT (ROW_COUNT * COL_COUNT)
+
+#define ANIMATION_DURATION_MS 500
+
+#define IMAGE_DIR_PATH "./berlin_images/"
+
+static GPtrArray *img_paths;
+
+static ClutterPoint unfocused_pos;
+
+</code>
+</section>
+
+<section id="code">
+  <title>Vzhůru do kódu</title>
+  <p>Začneme tím, že se podíváme na celou funkci <code>main()</code>. Pak rozebereme podrobně další části kódu. Změňte <file>src/main.c</file>, aby obsahoval tuto funkci <code>main()</code>. Funkci <code>create_window()</code> můžete smazat, protože ji v tomto příkladu nebudeme potřebovat.</p>
+  <code mime="text/x-csrc" style="numbered">
+int
+main(int argc, char *argv[])
+{
+    ClutterColor stage_color = { 16, 16, 16, 255 };
+    ClutterActor *stage = NULL;
+
+    if (clutter_init (&amp;argc, &amp;argv) != CLUTTER_INIT_SUCCESS)
+        return 1;
+
+    stage = clutter_stage_new();
+    clutter_actor_set_size(stage, STAGE_WIDTH, STAGE_HEIGHT);
+    clutter_actor_set_background_color(stage, &amp;stage_color);
+    clutter_stage_set_title(CLUTTER_STAGE (stage), "Photo Wall");
+    g_signal_connect(stage, "destroy", G_CALLBACK(clutter_main_quit), NULL);
+
+    load_image_path_names();
+
+    guint row = 0;
+    guint col = 0;
+    for(row=0; row &lt; ROW_COUNT; ++row)
+    {
+        for(col=0; col &lt; COL_COUNT; ++col)
+        {
+            const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col);
+            GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL);
+            ClutterContent *image = clutter_image_new ();
+            ClutterActor *actor = clutter_actor_new ();
+
+            if (pixbuf != NULL)
+            {
+                clutter_image_set_data(CLUTTER_IMAGE(image),
+                                       gdk_pixbuf_get_pixels(pixbuf),
+                                       gdk_pixbuf_get_has_alpha(pixbuf)
+                                           ? COGL_PIXEL_FORMAT_RGBA_8888
+                                           : COGL_PIXEL_FORMAT_RGB_888,
+                                       gdk_pixbuf_get_width(pixbuf),
+                                       gdk_pixbuf_get_height(pixbuf),
+                                       gdk_pixbuf_get_rowstride(pixbuf),
+                                       NULL);
+            }
+
+            clutter_actor_set_content(actor, image);
+            g_object_unref(image);
+            g_object_unref(pixbuf);
+
+            initialize_actor(actor, row, col);
+            clutter_actor_add_child(stage, actor);
+        }
+    }
+
+    /* Zobrazí scénu */
+    clutter_actor_show(stage);
+
+    /* Spustí hlavní smyčku clutter */
+    clutter_main();
+
+    g_ptr_array_unref(img_paths);
+
+    return 0;
+}</code>
+  <list>
+    <item><p>Řádek 4: Je definován <code>ClutterColor</code> nastavením hodnot červené, zelené, modré a průhledné (alfa). Hodnoty jsou z rozsahu 0 až 255. Pro průhlednou složku znamená 255 plné krytí.</p></item>
+    <item><p>Řádek 7: Musíte inicializovat Clutter. Pokud na to zapomenete, obdržíte velmi podivné chyby. Dávejte si na to pozor.</p></item>
+    <item><p>Řádky 10 – 14: Zde vytvoříme nový <code>ClutterStage</code>. Pak nastavíme jeho velikost pomocí definicí z předchozí části a adresu objektu <code>ClutterColor</code>, který jsme právě nadefinovali.</p>
+      <note><p><code>ClutterStage</code> je <code>ClutterActor</code> nejvyšší úrovně, do kterého jsou umístěny ostatní objekty <code>ClutterActor</code>.</p></note>
+</item>
+    <item><p>Řádek 16: Zde voláme naši funkci pro získání cest k souborům s obrázky. Pojďme se na to trochu podívat.</p></item>
+    <item><p>Řádky 18 – 49: Zde nastavujeme objekty <code>ClutterActor</code>, načítáme obrázky a umisťujeme na správné místo na fotostěně. Podrobněji se na to podíváme v následující části.</p></item>
+    <item><p>Řádek 52: Zobrazí scénu a <em>všechny její potomky</em>, tzn. naše obrázky.</p></item>
+    <item><p>Řádek 55: Spuštění hlavní smyčky Clutter.</p></item>
+  </list>
+</section>
+
+<section id="actors">
+  <title>Nastavení našich obrázkových účinkujících</title>
+ <note><p>V knihovně Clutter je účinkující (actor) nejzákladnější vizuální prvek. Zjednodušeně, vše co vidíte, jsou účinkující.</p></note>
+<p>V této části se podrobněji podíváme na smyčku použitou k nastavení objektů <code>ClutterActor</code>, který budou zobrazovat naše obrázky.</p>
+  <code mime="text/x-csrc" style="numbered">
+guint row = 0;
+guint col = 0;
+for(row=0; row &lt; ROW_COUNT; ++row)
+{
+    for(col=0; col &lt; COL_COUNT; ++col)
+    {
+        const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col);
+        GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL);
+        ClutterContent *image = clutter_image_new ();
+        ClutterActor *actor = clutter_actor_new ();
+
+        if (pixbuf != NULL)
+        {
+            clutter_image_set_data(CLUTTER_IMAGE(image),
+                                   gdk_pixbuf_get_pixels(pixbuf),
+                                   gdk_pixbuf_get_has_alpha(pixbuf)
+                                       ? COGL_PIXEL_FORMAT_RGBA_8888
+                                       : COGL_PIXEL_FORMAT_RGB_888,
+                                   gdk_pixbuf_get_width(pixbuf),
+                                   gdk_pixbuf_get_height(pixbuf),
+                                   gdk_pixbuf_get_rowstride(pixbuf),
+                                   NULL);
+        }
+
+        clutter_actor_set_content(actor, image);
+        g_object_unref(image);
+        g_object_unref(pixbuf);
+
+        initialize_actor(actor, row, col);
+        clutter_actor_add_child(stage, actor);
+    }
+}
+
+</code>
+<list>
+  <item><p>Řádek 7: Zde chceme získat cestu na <var>n</var>-tém místě v poli <code>GPtrArray</code>, které obsahuje názvy cest k našim obrázkům. <var>n</var>-tá pozice je vypočítána na základě řádku <code>row</code> a sloupce <code>col</code>.</p>
+  </item>
+  <item><p>Řádek 8 – 23: Zde doopravdy vytvoříme <code>ClutterActor</code> a umístíme do něj obrázek. První argument je cesta, přes kterou přistupujeme přes náš uzel <code>GList</code>. Druhý argument je pro hlášení chyb, ale zde jej budeme ignorovat, abychom udrželi rozumnou délku příkladu.</p>
+  </item>
+  <item><p>Řádek 47: Tímto se přidá <code>ClutterActor</code> do scény, což je vlastně kontejner. Předpokládá to také vlastnictví objektu <code>ClutterActor</code>, což je něco, kvůli čemuž byste se museli podívat hlouběji do vývoje GNOME. Drsné podrobnosti viz <link href="http://library.gnome.org/devel/gobject/stable/gobject-memory.html">dokumentace k <code>GObject</code></link>.</p>
+  </item>
+</list>
+</section>
+
+<section id="load">
+  <title>Načítání obrázků</title>
+  <p>Nyní se na chvíli ponechme Clutter stranou a podívejme se, jak získat názvy souborů z naší složky s obrázky.</p>
+  <code mime="text/x-csrc" style="numbered">
+static void
+load_image_path_names()
+{
+    /* Ujištění, že máme přístup do složky. */
+    GError *error = NULL;
+    GDir *dir = g_dir_open(IMAGE_DIR_PATH, 0, &amp;error);
+    if(error)
+    {
+        g_warning("g_dir_open() failed with error: %s\n", error-&gt;message);
+        g_clear_error(&amp;error);
+        return;
+    }
+
+    img_paths = g_ptr_array_new_with_free_func (g_free);
+
+    const gchar *filename = g_dir_read_name(dir);
+    while(filename)
+    {
+        if(g_str_has_suffix(filename, ".jpg") || g_str_has_suffix(filename, ".png"))
+        {
+            gchar *path = g_build_filename(IMAGE_DIR_PATH, filename, NULL);
+            g_ptr_array_add (img_paths, path);
+        }
+        filename = g_dir_read_name(dir);
+    }
+}</code>
+  <list>
+    <item><p>Řádky 5 a 12: Otevře naši složku nebo, když se objeví chyba, vrátí se po vypsání chybové zprávy.</p></item>
+    <item><p>Řádky 16 – 25: První řádek získá jiný název souboru z objektu <code>GDir</code>, který jsem otevřeli již dříve. Pokud se jednalo o soubor s obrázkem (což zkontrolujeme podle jeho přípony „.png“ nebo „.jpg“) ve složce, kterou zpracováváme, přidáme před název souboru cestu a celé to vložíme na začátek seznamu, který jsem dříve vytvořili. Nakonec se pokusíme získat následující název v cestě, a když je nějaký soubor nalezen, vrátíme se do smyčky.</p></item>
+  </list>
+</section>
+
+<section id="actors2">
+  <title>Nastavení účinkujících</title>
+  <p>Nyní se pojďme podívat na nastavení velikosti a polohy objektů <code>ClutterActor</code> a také na jejich přípravu pro komunikaci s uživatelem.</p>
+  <code mime="text/x-csrc" style="numbered">
+/* Tato funkce se stará o vytvoření a umístění obdélníků. */
+static void
+initialize_actor(ClutterActor *actor, guint row, guint col)
+{
+    clutter_actor_set_size(actor, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+    clutter_actor_set_position(actor, col * THUMBNAIL_SIZE, row * THUMBNAIL_SIZE);
+    clutter_actor_set_reactive(actor, TRUE);
+
+    g_signal_connect(actor,
+                     "button-press-event",
+                     G_CALLBACK(actor_clicked_cb),
+                     NULL);
+}</code>
+  <list>
+    <item>
+      <p>Řádek 7: Nastavení účinkujícího jako reagujícího znamená, že reaguje na události, jako je v našem případě <code>"button-press-event"</code>. Pro fotostěnu by měli být všechny objekty <code>ClutterActor</code> nastaveny jako reagující.</p>
+    </item>
+    <item>
+      <p>Řádek 9 – 12: Nyní připojíme <code>button-press-event</code> na zpětné volání <code>actor_clicked_cb</code>, na které se podíváme posléze.</p>
+    </item>
+  </list>
+  <p>V tomto bodě máme stěnu s obrázky, která je připravena k zobrazení.</p>
+</section>
+
+<section id="click">
+  <title>Reakce na kliknutí</title>
+  <p>
+
+  </p>
+  <code mime="text/x-csrc" style="numbered">
+static gboolean
+actor_clicked_cb(ClutterActor *actor,
+                 ClutterEvent *event,
+                 gpointer      user_data)
+{
+    /* Příznak, který bude uchovávat náš stav */
+    static gboolean is_focused = FALSE;
+    ClutterActorIter iter;
+    ClutterActor *child;
+
+    /* Vynuluje stav zaměření u všech obrázků */
+    clutter_actor_iter_init (&amp;iter, clutter_actor_get_parent(actor));
+    while (clutter_actor_iter_next(&amp;iter, &amp;child))
+      clutter_actor_set_reactive(child, is_focused);
+
+    clutter_actor_save_easing_state(actor);
+    clutter_actor_set_easing_duration(actor, ANIMATION_DURATION_MS);
+
+    if(is_focused)
+    {
+        /* Obnoví staré umístění a velikost */
+        clutter_actor_set_position(actor, unfocused_pos.x, unfocused_pos.y);
+        clutter_actor_set_size(actor, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+    }
+    else
+    {
+        /* Uloží aktuální umístění, než se začne animovat */
+        clutter_actor_get_position(actor, &amp;unfocused_pos.x, &amp;unfocused_pos.y);
+        /* Only the currently focused image should receive events. */
+        clutter_actor_set_reactive(actor, TRUE);
+
+        /* Vloží zaměřený obrázek nahoru */
+        clutter_actor_set_child_above_sibling(clutter_actor_get_parent(actor), actor, NULL);
+
+        clutter_actor_set_position(actor, (STAGE_WIDTH - STAGE_HEIGHT) / 2.0, 0);
+        clutter_actor_set_size(actor, STAGE_HEIGHT, STAGE_HEIGHT);
+    }
+
+    clutter_actor_restore_easing_state(actor);
+
+    /* Přepne náš příznak */
+    is_focused = !is_focused;
+
+    return TRUE;
+}</code>
+  <list>
+    <item><p>Řádek 1 – 4: Musíme zajistit, že naše funkce zpětného volání bude formálně odpovídat požadavkům signálu <code>button_clicked_event</code>. Například musíme použít jen první argument, konkrétně <code>ClutterActor</code>, na který bylo kliknuto.</p>
+<note>
+  <p>Pár slov k argumentům, které v tomto příkladu nepoužíváme. <code>ClutterEvent</code> se liší podle toho, která událost je obsluhována. Například událost klávesy zapříčiní <code>ClutterKeyEvent</code>, ze které můžeme mimo jiné údaje zjistit, která klávesa byla zmáčknuta. Pro událost kliknutí myší získáte <code>ClutterButtonEvent</code>, ze kterého můžete zjistit souřadnice <code>x</code> a <code>y</code>. Na další typy objektu <code>ClutterEvent</code> se podívejte do dokumentace knihovny Clutter.</p>
+  <p>Argment <code>user_data</code> jsou data předávaná funkci. Může být předán například ukazatel na libovolná data, takže když potřebujete zpětnému volání předat více údajů, umístěte data do struktury a předejte adresu na ni.</p>
+</note></item>
+    <item><p>Ředek: Vytvoříme statický příznak pro sledování stavu, ve kterém se nacházíme: režim stěny nebo režim zaměření. Začínáme v režimu stěny, kdy žádný obrázek nemá zaměření. Proto nastavíme počáteční hodnotu příznaku na <code>FALSE</code>.</p></item>
+    <item><p>Řádek 12 – 14: Toto nastaví obrázkové účinkující, aby přijímali události, když jsou zaměření.</p></item>
+    <item><p>Řádek 16 – 17: Zde nastavíme délku trvání animace a uložíme aktuální stav.</p></item>
+    <item><p>Řádky 21 – 3: Dosažení tohoto místa znamená, že obrázek je právě zaměřen a my se chceme vrátit do režimu stěny. Nastavením pozice objektu <code>ClutterActor</code> začne animace v délce trvání nastavené na řádku 17.</p>
+    </item>
+    <item><p>Řádek 24: Dosažení tohoto místa v kódu znamená, že jsem právě v režimu stěny a chystáme se dát objektu <code>ClutterActor</code> zaměření. Uložíme zde počáteční pozici, abychom se na ni později mohli vrátit.</p></item>
+    <item><p>Řádek 25: Nastavení vlastnosti <code>reactive</code> objektu <code>ClutterActor</code> na <code>TRUE</code> zajistí, že bude <code>ClutterActor</code> reagovat na události. Ve stavu zaměření bude jediným účinkujícím, u kterého chceme, aby přijímal událost, ten, který je právě zobrazován. Kliknutí na účinkujícího jej vrátí na původní místo.</p></item>
+    <item><p>Řádek 27 – 36: Zde ukládáme aktuální pozici obrázku, nastavujeme jej, aby přijímal události a pak jej necháme objevit na ostatními obrázky a začneme jej animovat, aby zaplnil scénu.</p></item>
+    <item><p>Řádek 39: Zde obnovíme uvolněný stav na hodnotu nastavenou, než jsme ji změnili na řádku 16.</p></item>
+    <item><p>Řádek 42: Zde přepneme příznak <code>is_focused</code> (je zaměřeno) na aktuální stav.</p></item>
+<item><p>Jak už jsem se zmínili dříve, události přijímá <code>ClutterActor</code> s vyšší hodnotou <code>depth</code>, ale můžete to umožnit i ostatním objektům <code>ClutterActor</code> pod ním. Když je vráceno <code>TRUE</code>, předávání událostí dolů se zastaví, zatímco <code>FALSE</code> bude předávat události dolů.</p>
+ <note>
+   <p>Pamatujte ale, že aby objekty <code>ClutterActor</code> přijímaly události, musí být nastavené jako <code>reactive</code> (reagující).</p>
+ </note>
+</item>
+ </list>
+</section>
+
+<section id="run">
+  <title>Sestavení a spuštění aplikace</title>
+  <p>Veškerý kód by nyní měl být připraven k běhu. Vše, co nyní potřebujete, jsou nějaké obrázky k načtení. Ve výchozím stavu se obrázky načítají ze složky <file>berlin_images</file>. Jestli chcete, můžete změnit řádek <code>#define IMAGE_DIR_PATH</code> někde na začátku, který odkazuje na vaší složku s fotografiemi, nebo vytvořit složku <file>berlin_images</file> kliknutím na <guiseq><gui>Projekt</gui><gui>Nová složka…</gui></guiseq> a vytvořením složky <file>berlin_images</file> jako podsložky ve složce <file>photo-wall</file>. Do složky umístěte aspoň dvanáct obrázků!</p>
+  <p>Až to budete mít přichystané, klikněte na <guiseq><gui>Sestavit</gui> <gui>Sestavit projekt</gui></guiseq>, aby se vše znovu sestavilo, a pak na <guiseq><gui>Spustit</gui> <gui>Spustit</gui></guiseq>, aby se spustila aplikace.</p>
+  <p>Pokud jste tak ještě neučinili, zvolte aplikaci <file>Debug/src/photo-wall</file> v dialogovém okně, které se objeví. Nakonec klikněte na <gui>Spustit</gui> a užijte si ji!</p>
+</section>
+
+<section id="impl">
+ <title>Ukázková implementace</title>
+ <p>Pokud v této lekci narazíte na nějaké problémy, porovnejte si svůj kód s tímto <link href="photo-wall/photo-wall.c">ukázkovým kódem</link>.</p>
+</section>
+
+</page>

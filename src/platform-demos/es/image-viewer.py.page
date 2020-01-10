@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.py" xml:lang="es">
+
+  <info>
+    <title type="text">Visor de imágenes (Python)</title>
+    <link type="guide" xref="py#examples"/>
+
+    <desc>Algo más que una sencilla aplicación «Hola mundo»; escribir un visor de imágenes en GTK.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
+    <credit type="author">
+      <name>Jonh Wendell</name>
+      <email its:translate="no">jwendell@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Visor de imágenes</title>
+
+<synopsis>
+  <p>En este tutorial se va a escribir una aplicación GTK+ muy sencilla que carga un archivo e imagen y lo muestra. Aprenderá a:</p>
+  <list>
+    <item><p>Escribir una interfaz de usuario básica en Python</p></item>
+    <item><p>Trabajar con eventos conectando señales a manejadores de señales</p></item>
+    <item><p>La disposición de las interfaces de usuario usando contenedores</p></item>
+    <item><p>Cargar y mostrar archivos de imagen</p></item>
+  </list>
+  <p>Necesitará lo siguiente para poder seguir este tutorial:</p>
+  <list>
+    <item><p>Una copia instalada del <link xref="getting-ready">EID Anjuta</link></p></item>
+    <item><p>Conocimiento básico del lenguaje de programación Python</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Crear un proyecto en Anjuta</title>
+  <p>Antes de empezar a programar, deberá configurar un proyecto nuevo en Anjuta. Esto creará todos los archivos que necesite para construir y ejecutar el código más adelante. También es útil para mantener todo ordenado.</p>
+  <steps>
+    <item>
+    <p>Inicie Anjuta y pulse <guiseq><gui>Archivo</gui><gui>Nuevo</gui><gui>Proyecto</gui></guiseq> para abrir el asistente de proyectos.</p>
+    </item>
+    <item>
+    <p>Seleccione <gui>PyGTK (automake)</gui> en la pestaña <gui>Python</gui>, pulse <gui>Continuar</gui>, y rellene los detalles en las siguientes páginas. Use <file>visor-imagenes</file> como nombre del proyecto y de la carpeta.</p>
+   	</item>
+   	<item>
+   	<p>Asegúrese de desactivar <gui>Usar GtkBuilder para la interfaz del usuario</gui>, ya que, en este ejemplo, la interfaz de usuario se construirá manualmente. Para obtener un ejemplo del uso de diseñador de interfaces. revise la <link xref="guitar-tuner.py">demostración de afinador de guitarra</link>.</p>
+    </item>
+    <item>
+    <p>Pulse <gui>Aplicar</gui> y se creará el proyecto. Abra <file>src/visor-imagenes.py</file> desde las pestañas <gui>Proyecto</gui> o <gui>Archivo</gui>. Contiene un ejemplo de código muy básico:</p>
+    </item>
+  </steps>
+</section>
+
+<section id="first">
+  <title>Una primera aplicación en GTK</title>
+  <p>Vea como queda una aplicación GTK+ muy básica en Python:</p>
+  <code mime="text/python" style="numbered">
+from gi.repository import Gtk, GdkPixbuf, Gdk
+import os, sys
+
+class GUI:
+	def __init__(self):
+		window = Gtk.Window()
+		window.set_title ("Hello World")
+		window.connect_after('destroy', self.destroy)
+
+		window.show_all()
+
+	def destroy(window, self):
+		Gtk.main_quit()
+
+def main():
+	app = GUI()
+	Gtk.main()
+
+if __name__ == "__main__":
+    sys.exit(main())
+
+  </code>
+  <p>Eche un vistazo a lo que está pasando:</p>
+  <list>
+    <item>
+    <p>La primera línea importa el espacio de nombres de GTK+ (es decir, incluye la biblioteca GTK+). Las bibliotecas las proporciona «GObject Introspection (gi)», que implementa asociaciones de lenguajes para la mayoría de las bilbiotecas de GNOME.</p>
+    </item>
+    <item>
+    <p>En el método <code>__init__</code> de la clase <code>GUI</code> se crea un <code>Gtk.Window</code> (vacía), establece su título y después conecta una señal para salir de la aplicación una vez que se cierra la ventana. Es bastante simple, más acerca de señales en adelante.</p>
+    </item>
+    <item>
+    <p>Después se define <code>destroy</code> que simplemente sale de la aplicación. Se le llama a través de la señal <code>destroy</code> conectada anteriormente.</p>
+    </item>
+    <item>
+    <p>El resto del archivo realiza la inicialización de GTK+ y muestra la IGU.</p>
+    </item>
+  </list>
+
+  <p>Este código está listo para usarse, por lo que puede probarlo usando <guiseq><gui>Ejecutar</gui><gui>Ejecutar</gui></guiseq>. Debería mostrar una ventana vacía.</p>
+</section>
+
+<section id="signals">
+  <title>Señales</title>
+  <p>Las señales son un concepto clave en la programación en GTK. Cuando pasa algo en un objeto, emite una señal; por ejemplo, cuando se pulsa un botón, emite la señal <code>clicked</code>. Si quiere que su programa haga algo cuando ocurre ese evento, debe conectar una función (un «manejador de la señal») a esa señal. Aquí hay un ejemplo:</p>
+  <code mime="text/python" style="numbered">
+def button_clicked () :
+  print "you clicked me!"
+
+b = new Gtk.Button ("Click me")
+b.connect_after ('clicked', button_clicked)</code>
+  <p>Las dos últimas líneas crean un <code>Gtk.Button</code> llamado <code>b</code> y conectan su señal <code>clicked</code> con la función <code>button_clicked</code> que se ha definido anteriormente. Cada vez que se pulsa un botón, se ejecuta el código de la función <code>button_clicked</code>. Esto sólo imprime un mensaje aquí.</p>
+</section>
+
+<section id="containers">
+  <title>Contenedores: diseñar la interfaz de usuario</title>
+  <p>Los widgets (controles, como botones y etiquetas) se pueden organizar en la ventana usando <em>contenedores</em>. Puede organizar el diseño mezclando diferentes tipos de contenedores, como cajas y rejillas.</p>
+  <p>Una <code>Gtk.Window</code> es en sí misma un tipo de contenedor, pero sólo puede poner un widget directamente en ella. Se quieren poner dos widgets, una imagen y un botón, por lo que se necesita poner un contenedor «de mayor capacidad» dentro de la ventana para que contenga otros widgets. Hay varios <link href="http://library.gnome.org/devel/gtk/stable/GtkContainer.html">tipos de contenedores</link> disponibles, pero aquí se usará una <code>Gtk.Box</code>. Una <code>Gtk.Box</code> puede contener varios widgets, organizados horizontal o verticalmente. Se pueden hacer diseños más complejos poniendo varias cajas dentro de otras, y así sucesivamente.</p>
+  <note>
+  <p>Hay un diseñador de interfaces gráficas llamado <app>Glade</app> integrado en <app>Anjuta</app> que hace que el diseño de IU sea realmente fácil. Sin embargo, para este ejemplo, se va a codificar todo manualmente.</p>
+  </note>
+  <p>Añada la caja y los widgets a la ventana. Inserte el siguiente código en el método <code>__init__</code>, justo debajo de la línea <code>window.connect_after</code>:</p>
+<code mime="text/python" style="numbered">
+box = Gtk.Box()
+box.set_spacing (5)
+box.set_orientation (Gtk.Orientation.VERTICAL)
+window.add (box)
+
+</code>
+  <p>La primera línea crea una <code>Gtk.Box</code> llamada <code>box</code> y las siguientes líneas establecen dos de sus propiedades: la orientación (<code>orientation</code>) se establece a «vertical» (por lo que los widgets se colocan en columna), y el espaciado (<code>spacing</code>) entre los widgets se establece a 5 píxeles. La siguiente línea añade la <code>Gtk.Box</code> recién creada a la ventana.</p>
+  <p>De momento, la ventana sólo contiene una <code>Gtk.Box</code> vacía, y si ejecuta el programa ahora no verá ningún cambio (la <code>Gtk.Box</code> es un contenedor transparente, por lo que no puede que está ahí).</p>
+</section>
+
+<section id="packing">
+  <title>Empaquetado: añadir widgets al contenedor</title>
+  <p>Para añadir algunos widgets a la <code>Gtk.Box</code>, inserte el siguiente código justo debajo de la línea <code>window.add (box)</code>:</p>
+  <code mime="text/python" style="numbered">
+self.image = Gtk.Image()
+box.pack_start (self.image, False, False, 0)</code>
+  <p>La primera línea crea una <code>Gtk.Image</code> llamada <code>image</code>, que se usará para mostrar un archivo de imagen. Como se necesitará más tarde en el manejador de la señal, se definirá como variable a nivel de clase. Deberá añadir <code>image = 0</code> al principio de la clase <code>GUI</code>. Entonces se añade el widget de imagen (<em>packed</em>) en el contenedor <code>box</code> usando el método <link href="http://library.gnome.org/devel/gtk/stable/GtkBox.html#gtk-box-pack-start"><code>pack_start</code></link> de GtkBox.</p>
+  <p><code>pack_start</code> toma 4 argumentos: el widget que añadir a la GtkBox (<code>child</code>); si la <code>Gtk.Box</code> debe crecer cuando añada el widget nuevo (<code>expand</code>); si el widget nuevo debe tomar todo el espacio adicional creado si la <code>Gtk.Box</code> crece (<code>fill</code>); y cuánto espacio debe haber, en píxeles, entre el widget y sus vecinos dentro de la <code>Gtk.Box</code> (<code>padding</code>).</p>
+  <p>Los contenedores (y los widgets) de GTK+ se expanden dinámicamente, si les deja, para rellenar el espacio disponible. No posicione widgets indicando unas coordenadas x-y precisas en la ventana; en lugar de eso, se posicionan relativos a otro. Esto hace que el manejo de la redimensión de las ventanas sea más fácil, y que los widgets tengan un tamaño sensible automática en la mayoría de las situaciones.</p>
+  <p>También tenga en cuenta cómo se organizan los widgets de manera jerárquica. Una vez empaquetados en la <code>Gtk.Box</code>, la <code>Gtk.Image</code> se considera un <em>hijo</em> de la <code>Gtk.Box</code>. Esto le permite tratar a todos los hijos de un widget como un grupo; por ejemplo, puede ocultar la <code>Gtk.Box</code>, lo que haría que también se ocultaran todos sus hijos a la vez.</p>
+  <p>Ahora inserte estas dos líneas, justo debajo de las dos que acaba de añadir.</p>
+  <code mime="text/python" style="numbered">
+button = Gtk.Button ("Open a picture...")
+box.pack_start (button, False, False, 0)
+</code>
+  <p>Estas líneas son similares a las dos primeras, pero esta vez crean un <code>Gtk.Button</code> y lo añaden a la <code>box</code>. Tenga en cuenta que se está estableciendo el argumento <code>expand</code> (el segundo) a <code>False</code>, mientras que para la <code>Gtk.Image</code> se estableció a <code>True</code>. Esto hará que la imagen tome todo el espacio disponible y que el botón tome sólo el espacio que necesite. Cuando se maximiza la ventana, el tamaño del botón será el mismo, pero el tamaño de la imagen aumentará junto con el resto de la ventana.</p>
+</section>
+
+<section id="loading">
+  <title>Cargar la imagen: conectar con la señal <code>clicked</code> del botón</title>
+  <p>Cuando el usuario pulse sobre el botón <gui>Abrir imagen...</gui>, debería aparece un diálogo en el que el usuario pueda elegir una imagen. una vez elegida, la imagen debería cargarse y mostrarse en el widget de imagen.</p>
+  <p>El primer paso es conectar la señal <code>clicked</code> del botón a una función manejadora de la señal, llamada <code>on_open_clicked</code>. Ponga este código inmediatamente después de la línea <code>button = Gtk.Button()</code> en la que se creó el botón:</p>
+  <code mime="text/python">
+button.connect_after('clicked', self.on_open_clicked)
+</code>
+  <p>Esto conectará la señal <code>clicked</code> al método <code>on_open_clicked</code> que se definirá más adelante.</p>
+</section>
+
+<section id="loading2">
+  <title>Cargar la imagen: escribir la llamada de retorno de la señal</title>
+  <p>Ahora se puede crear el método <code>on_open_clicked</code>. Inserte lo siguente dentro del bloque de clase <code>GUI</code>, después del método <code>__init__</code>:</p>
+    <code mime="text/javascript" style="numbered">
+def on_open_clicked (self, button):
+	dialog = Gtk.FileChooserDialog ("Open Image", button.get_toplevel(), Gtk.FileChooserAction.OPEN);
+	dialog.add_button (Gtk.STOCK_CANCEL, 0)
+	dialog.add_button (Gtk.STOCK_OK, 1)
+	dialog.set_default_response(1)
+
+	filefilter = Gtk.FileFilter ()
+	filefilter.add_pixbuf_formats ()
+	dialog.set_filter(filefilter)
+
+	if dialog.run() == 1:
+		self.image.set_from_file(dialog.get_filename())
+
+	dialog.destroy()</code>
+  <p>Esto es un poco más complicado que todo lo que se ha intentado hasta ahora, así que se puede desglosar:</p>
+  <list>
+    <item>
+      <p>La línea que empieza por <code>dialog</code> crea un diálogo <gui>Abrir</gui>, que el usuario puede utilizar para abrir archivos. Se establecen tres propiedades: el título del diálogo; la acción (tipo) del diálogo (es un diálogo «open», pero se podría haber usado <code>SAVE</code> si se quisiese guardar un archivo; y <code>transient_for</code>, que establecer la ventana padre del diálogo.</p>
+    </item>
+    <item>
+    <p>Las dos siguientes líneas añaden los botones <gui>Cancelar</gui> y <gui>Abrir</gui> al diálogo. el segundo argumento del método <code>add_button</code> es el valor (entero) que se devuelve cuando se pulsa el botón: 0 para <gui>Cancelar</gui> y 1 para <gui>Abrir</gui>.</p>
+    <p>Note que se está usando nombres de botones del <em>almacén</em> de GTK, en lugar de escribir manualmente «Cancelar» o «Abrir». La ventaja de usar nombres del almacén es que las etiquetas de los botones ya estarán traducidas en el idioma del usuario.</p>
+    </item>
+    <item>
+    <p><code>set_default_response</code> determina qué botón se activará si el usuario hace una doble pulsación o presiona <key>Intro</key>. En este caso, se usa el botón <gui>Abrir</gui> como predeterminado (que tiene el valor «1»).</p>
+    </item>
+    <item>
+    <p>Las tres líneas siguientes restringen el diálogo <gui>Abrir</gui> para que sólo muestre archivos que se puedan abrir con <code>Gtk.Image</code>. Primero se crea un objeto de filtro; luego se añaden los tipos de archivos soportados por el <code>Gdk.Pixbuf</code> (que incluye la mayoría de los formatos de imagen como PNG y JPEG) al filtro. Por último, se establece que este filtro sea el filtro del diálogo <gui>Abrir</gui>.</p>
+    </item>
+    <item>
+    <p><code>dialog.run</code> muestra el diálogo <gui>Abrir</gui>. El diálogo esperará a que el usuario elija una imagen; cuando lo haga, <code>dialog.run</code> devolverá el valor <output>1</output> (devolvería <output>0</output> si el usuario pulsara <gui>Cancelar</gui>). La sentencia <code>if</code> comprueba esto.</p>
+    </item>
+    <item><p>Asumiendo que el usuario pulsó <gui>Abrir</gui>, la siguiente línea establece la propiedad <code>file</code> de la <code>Gtk.Image</code> al nombre del archivo de imagen seleccionada por el usuario. La <code>Gtk.Image</code> cargará y mostrará la imagen elegida.</p>
+    </item>
+    <item>
+    <p>En la última línea de este método se destruye el diálogo <gui>Abrir</gui> porque ya no se necesita.</p>
+    </item>
+  </list>
+
+  </section>
+
+<section id="run">
+  <title>Ejecutar la aplicación</title>
+  <p>Todo el código que necesita debe estar en su lugar, así que trate de ejecutar el código. Esto debería ser todo; un visor de imágenes completamente funcional (y un completo tour sobre Python y GTK+) en poco tiempo.</p>
+</section>
+
+<section id="impl">
+ <title>Implementación de referencia</title>
+ <p>Si tiene problemas con este tutorial, compare su código con este <link href="image-viewer/image-viewer.py">código de referencia</link>.</p>
+</section>
+
+<section id="next">
+  <title>Siguientes pasos</title>
+  <p>Aquí hay algunas ideas sobre cómo puede extender esta sencilla demostración:</p>
+  <list>
+   <item>
+   <p>Haga que el usuario selecciona una carpeta en vez de un archivo, y proporcione controles para moverse por todas las imágenes de una carpeta.</p>
+   </item>
+   <item>
+   <p>Aplicar filtros aleatorios y efectos a la imagen cuando se carga y permitir al usuario guardar la imagen modificada.</p>
+   <p><link href="http://www.gegl.org/api.html">GEGL</link> proporciona la capacidad de manipular imágenes de manera potente.</p>
+   </item>
+   <item>
+   <p>Permitir al usuario cargar imágenes desde recursos de red compartidos, escáneres y otras fuentes más complicadas.</p>
+   <p>Puede usar <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> para gestionar transferencias de archivos de red y similares, y <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> para gestionar el escaneado.</p>
+   </item>
+  </list>
+</section>
+
+</page>

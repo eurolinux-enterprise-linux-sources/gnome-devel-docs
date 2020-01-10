@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="image.py" xml:lang="el">
+  <info>
+    <title type="text">Εικόνα (Python)</title>
+    <link type="guide" xref="beginner.py#display-widgets"/>
+    <link type="seealso" xref="properties.py"/>
+    <link type="next" xref="strings.py"/>
+    <revision version="0.2" date="2012-06-14" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Sindhu S</name>
+      <email its:translate="no">sindhus@live.in</email>
+      <years>2014</years>
+    </credit>
+
+    <desc>Ένα γραφικό στοιχείο που εμφανίζει μια εικόνα</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Εικόνα</title>
+  <media type="image" mime="image/png" src="media/image.png"/>
+  <p>Αυτή η GtkApplication εμφανίζει ένα αρχείο εικόνας από τον τρέχοντα κατάλογο.</p>
+
+  <note><p>Εάν το αρχείο εικόνας δεν φορτωθεί επιτυχώς, η εικόνα θα περιέχει ένα εικονίδιο "σπασμένης εικόνας". Το <file>filename.png</file> χρειάζεται να είναι στον τρέχοντα κατάλογο για να δουλέψει αυτός ο κώδικας.</p></note>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+
+  <code mime="text/x-python" style="numbered">
+  from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # create a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(300, 300)
+
+        # create an image
+        image = Gtk.Image()
+        # set the content of the image as the file filename.png
+        image.set_from_file("gnome-image.png")
+        # add the image to the window
+        self.add(image)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+
+  </code>
+
+  <p>Ένας άλλος τρόπος για να πάρετε ότι έχουμε στο παράδειγμα είναι η δημιουργία της εικόνας ως ένα στιγμιότυπο μιας άλλης κλάσης και προσθήκη του στο στιγμιότυπο του <code>MyWindow</code> στη μέθοδο <code>do_activate(self)</code>:</p>
+
+  <code mime="text/x-python">
+    # a class to create a window
+    class MyWindow(Gtk.ApplicationWindow):
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(300, 300)
+
+    # a class to create an image
+    class MyImage(Gtk.Image):
+    def __init__(self):
+        Gtk.Image.__init__(self)
+        self.set_from_file("gnome-image.png")
+
+    class MyApplication(Gtk.Application):
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        # create an instance of MyWindow
+        win = MyWindow(self)
+        # create an instance of MyImage and add it to the window
+        win.add(MyImage())
+        # show the window and everything on it
+        win.show_all()
+  </code>
+
+  <note>
+    <p>Για να χρησιμοποιήσετε αυτό το τμήμα κώδικα, θα χρειαστεί να προσθέσετε τον κώδικα που εισάγει τα <code>Gtk</code> και <code>GdkPixbuf</code> από το <code>gi.repository</code> και τις γραμμές που αντιπροσωπεύουν το παράθυρο <code>MyApplication</code>.</p>
+  </note>
+  </section>
+
+  <section id="methods">
+  <title>Χρήσιμες μέθοδοι για γραφικό στοιχείο εικόνας</title>
+
+  <list>
+    <item>
+      <p>Για φόρτωση εικόνας μέσω δικτύου χρησιμοποιήστε <code>set_from_pixbuf(pixbuf)</code>, όπου <code>pixbuf</code> είναι <link href="https://developer.gnome.org/gdk-pixbuf/unstable/index.html"> GdkPixbuf</link>.</p>
+      <code mime="text/python">
+        from gi.repository import Gtk
+        from gi.repository import GdkPixbuf
+        import sys
+
+        class MyWindow(Gtk.ApplicationWindow):
+            # create a window
+            def __init__(self, app):
+                Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+                self.set_default_size(300, 300)
+
+                # create a pixbuf from file filename="gnome-image.png", with width=32
+                # and height=64 amd boolean preserve_aspect_ratio=False.
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("gnome-image.png", 64, 128, False)
+
+                # create an image
+                image = Gtk.Image()
+                # set the content of the image as the pixbuf
+                image.set_from_pixbuf(pixbuf)
+                # add the image to the window
+                self.add(image)
+        </code>
+        <p>Εάν <code>preserve_aspect_ratio=True</code> μπορούμε να χρησιμοποιήσουμε <code>new_from_file_at_size(filename, width, height)</code>. Εάν <code>width</code> ή <code>height</code> είναι <code>-1</code>, δεν περιορίζεται.</p>
+        <p>Για φόρτωση από ροή εισόδου, δείτε <code>new_from_stream()</code> και <code>new_from_stream_at_scale()</code> στην τεκμηρίωση</p>
+    </item>
+  </list>
+  </section>
+
+  <section id="references">
+    <title>Αναφορές API</title>
+
+    <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+    <list>
+      <item>
+        <p><link href="https://developer.gnome.org/gtk3/unstable/GtkImage.html"> GtkImage</link></p>
+      </item>
+      <item>
+        <p><link href="https://developer.gnome.org/gtk3/unstable/GtkWindow.html"> GtkWindow</link></p>
+      </item>
+    </list>
+
+  </section>
+</page>

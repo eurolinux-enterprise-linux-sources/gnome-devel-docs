@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-launching-desktop" xml:lang="es">
+
+  <info>
+    <link type="next" xref="dev-launching-icons"/>
+    <revision version="0.1" date="2014-01-28" status="draft"/>
+
+    <credit type="author">
+      <name>David King</name>
+      <email its:translate="no">davidk@gnome.org</email>
+      <years>2014</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2007-2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Carrión</mal:name>
+      <mal:email>mario@monouml.org</mal:email>
+      <mal:years>2006</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Instalar un archivo .desktop</title>
+
+  <links type="series" style="floatend">
+    <title>Lanza su aplicación</title>
+  </links>
+
+  <p>Escriba e instale un archivo .desktop para que el usuario pueda encontrar y lanzar su aplicación.</p>
+  
+  <p>GNOME usa las especificaciones <link href="http://standards.freedesktop.org/desktop-entry-spec/latest/index.html">Desktop Entry de freedesktop.org</link> y <link href="http://standards.freedesktop.org/menu-spec/latest/">Desktop Menu</link> para describir los lanzadores de aplicaciones. Instalar un archivo .desktop es la manera estándar de registrar su aplicación en GNOME y en otros escritorios.</p>
+  
+  <p>Un archivo .desktop indica el binario de la aplicación, el nombre y el tipo, y también puede especificar un icono, una descripción y otros fragmentos de información sobre cómo lanzar la aplicación.</p>
+
+  <p>Para una hipotética aplicación <app>My Application</app>, el archivo .desktop se parecería a esto:</p>
+  <example>
+    <listing>
+      <title><file>myapplication.desktop</file></title>
+<code>[Desktop Entry]
+Name=My Application
+Exec=myapplication
+Type=Application
+Icon=myapplication
+Comment=Do the thing that the application does
+Categories=GTK;GNOME;Utility;</code>
+    </listing>
+  </example>
+
+  <p>La línea <code>[Desktop Entry]</code> indica que esto es un archivo .desktop. A continuación aparecen las claves, que describen el lanzador de la aplicación. La clave <code>Name</code> es el nombre legible de la aplicación, que se mostrará en la IU. El binario de la aplicación se indica en la clave <code>Exec</code>, bien la ruta completa o el binario para buscarlo en la variable <code>PATH</code>. La última clave requerida es <code>Type</code>, que para una aplicación siempre es <code>Application</code>. Los tipos alternativos se listan en la especificación de entradas de archivos .desktop.</p>
+
+  <p>Hay otros campos opcionales en el archivo .desktop, pero recomendados. Las aplicaciones deben instalar un icono, indicar el nombre del icono (sin incluir la extensión) en la clave <code>Icon</code>. El campo <code>Comment</code> es una breve descripción de la aplicación. Para ayudar a los usuarios a buscar aplicaciones, se debe informar la clave <code>Categories</code> con una lista de categorías, separadas por punto y coma, de la «Desktop Menu Specification».</p>
+
+  <p>Se pueden añadir otros campos a los archivos .desktop, que se listan y describen en la especificación de entradas de archivos .desktop.</p>
+ 
+</page>

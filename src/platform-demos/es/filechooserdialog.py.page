@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="filechooserdialog.py" xml:lang="es">
+  <info>
+    <title type="text">FileChooserDialog (Python)</title>
+    <link type="guide" xref="beginner.py#file-selectors"/>
+    <link type="seealso" xref="gmenu.py"/>
+    <link type="seealso" xref="toolbar_builder.py"/>
+    <link type="seealso" xref="textview.py"/>
+    <link type="next" xref="combobox.py"/>
+    <revision version="0.1" date="2012-08-14" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un diálogo adecuado para comandos «Abrir» y «Guardar»</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>FileChooserDialog</title>
+  <media type="image" mime="image/png" src="media/filechooserdialog_save.png"/>
+  <p>Este «FileChooserDialog» guarda un documento de texto, que puede abrirse o escribirse desde cero en un «TextView» (vea a continuación).</p>
+  <media type="image" mime="image/png" src="media/filechooserdialog_menu.png"/>
+  <p>También es posible llamar a un «FileChooserDialog» para abrir un documento nuevo.</p>
+
+  <links type="sections"/>
+  
+  <section id="overview">
+  <title>Pasos para recrear el ejemplo</title>
+  <steps>
+    <item><p>Cree un archivo «.ui» para describir un menú de aplicación con elementos «New», «Open», «Save», «Save as», y «Quit». Esto puede hacerse con Glade o en un editor de texto. Consulte <link xref="#xml"/></p></item>
+    <item><p>Cree un programa en Python para un «Gtk.TextView» con un «Gtk.Buffer» <code>self.buffer</code>, y un <code>self.file</code> que será un «Gio.File» establecido inicialmente a <code>None</code>.</p></item>
+    <item><p>En este programa, también cree las acciones correspondientes a los elementos en el menú de aplicación, conéctelos a funciones de retorno de llamada, e importe el menú en el método <code>do_startup()</code> con un «Gtk.Builder».</p></item>
+    <item><p>Las acciones y funciones de retorno de llamada «New» y «Quit» son bastante directas, consulte <link xref="#code"/>. Consulte la <link xref="signals-callbacks.py"/> para obtener una explicación más detallada de señales y funciones de retorno de llamada.</p></item>
+    <item><p>La devolución de llamada «Open» debe crear y abrir un «Gtk.FileChooserDialog» para «Abrir», conectado con otra función de retorno de llamada por cada uno de los dos botones «Open» y «Cancel» del «FileChooserDialog».</p></item>
+    <item><p>«Save as» funciona básicamente como «Open», pero la función de retorno de llamada del botón «Save» depende en un método más complejo, <code>save_to_file()</code>.</p></item>
+    <item><p>«Save» puede reducirse al caso en el que el archivo es <code>None</code>, es decir en el caso en el que <code>self.file</code> es un archivo nuevo, que a su vez es el caso de «Save as»; y al caso en el que el archivo no es <code>None</code>, que a su vez se reduce a <code>save_to_file()</code>.</p></item>
+    <item><p>Finalmente, el método <code>save_to_file()</code>: consulte <link xref="#code"/>, líneas 146 - 175.</p></item>
+  </steps>
+  </section>
+  
+  <section id="xml">
+  <title>Archivo XML que crea el menú de aplicación</title>
+  <code mime="application/xml" style="numbered">&lt;?xml version="1.0"?&gt;
+&lt;interface&gt;
+  &lt;menu id="appmenu"&gt;
+    &lt;section&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;win.new&lt;/attribute&gt;
+      &lt;/item&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Open&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;win.open&lt;/attribute&gt;
+      &lt;/item&gt;
+    &lt;/section&gt;
+    &lt;section&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Save&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;win.save&lt;/attribute&gt;
+      &lt;/item&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Save As...&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;win.save-as&lt;/attribute&gt;
+      &lt;/item&gt;
+    &lt;/section&gt;
+    &lt;section&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+      &lt;/item&gt;
+    &lt;/section&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+  </section>
+  
+  <section id="code">
+  <title>Código usado para generar este ejemplo</title>
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import Gio
+from gi.repository import GObject
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(
+            self, title="FileChooserDialog Example", application=app)
+        self.set_default_size(400, 400)
+
+        # the actions for the window menu, connected to the callback functions
+        new_action = Gio.SimpleAction.new("new", None)
+        new_action.connect("activate", self.new_callback)
+        self.add_action(new_action)
+
+        open_action = Gio.SimpleAction.new("open", None)
+        open_action.connect("activate", self.open_callback)
+        self.add_action(open_action)
+
+        save_action = Gio.SimpleAction.new("save", None)
+        save_action.connect("activate", self.save_callback)
+        self.add_action(save_action)
+
+        save_as_action = Gio.SimpleAction.new("save-as", None)
+        save_as_action.connect("activate", self.save_as_callback)
+        self.add_action(save_as_action)
+
+        # the file
+        self.file = None
+
+        # the textview with the buffer
+        self.buffer = Gtk.TextBuffer()
+        textview = Gtk.TextView(buffer=self.buffer)
+        textview.set_wrap_mode(Gtk.WrapMode.WORD)
+
+        # a scrolled window for the textview
+        self.scrolled_window = Gtk.ScrolledWindow()
+        self.scrolled_window.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.scrolled_window.add(textview)
+        self.scrolled_window.set_border_width(5)
+
+        # add the scrolled window to the window
+        self.add(self.scrolled_window)
+
+    # callback for new
+    def new_callback(self, action, parameter):
+        self.buffer.set_text("")
+        print("New file created")
+
+    # callback for open
+    def open_callback(self, action, parameter):
+        # create a filechooserdialog to open:
+        # the arguments are: title of the window, parent_window, action,
+        # (buttons, response)
+        open_dialog = Gtk.FileChooserDialog("Pick a file", self,
+                                            Gtk.FileChooserAction.OPEN,
+                                           (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                            Gtk.STOCK_OPEN, Gtk.ResponseType.ACCEPT))
+
+        # not only local files can be selected in the file selector
+        open_dialog.set_local_only(False)
+        # dialog always on top of the textview window
+        open_dialog.set_modal(True)
+        # connect the dialog with the callback function open_response_cb()
+        open_dialog.connect("response", self.open_response_cb)
+        # show the dialog
+        open_dialog.show()
+
+    # callback function for the dialog open_dialog
+    def open_response_cb(self, dialog, response_id):
+        open_dialog = dialog
+        # if response is "ACCEPT" (the button "Open" has been clicked)
+        if response_id == Gtk.ResponseType.ACCEPT:
+            # self.file is the file that we get from the FileChooserDialog
+            self.file = open_dialog.get_file()
+            # an empty string (provisionally)
+            content = ""
+            try:
+                # load the content of the file into memory:
+                # success is a boolean depending on the success of the operation
+                # content is self-explanatory
+                # etags is an entity tag (can be used to quickly determine if the
+                # file has been modified from the version on the file system)
+                [success, content, etags] = self.file.load_contents(None)
+            except GObject.GError as e:
+                print("Error: " + e.message)
+            # set the content as the text into the buffer
+            self.buffer.set_text(content, len(content))
+            print("opened: " + open_dialog.get_filename())
+        # if response is "CANCEL" (the button "Cancel" has been clicked)
+        elif response_id == Gtk.ResponseType.CANCEL:
+            print("cancelled: FileChooserAction.OPEN")
+        # destroy the FileChooserDialog
+        dialog.destroy()
+
+    # callback function for save_as
+    def save_as_callback(self, action, parameter):
+        # create a filechooserdialog to save:
+        # the arguments are: title of the window, parent_window, action,
+        # (buttons, response)
+        save_dialog = Gtk.FileChooserDialog("Pick a file", self,
+                                            Gtk.FileChooserAction.SAVE,
+                                           (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                            Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
+        # the dialog will present a confirmation dialog if the user types a file name that
+        # already exists
+        save_dialog.set_do_overwrite_confirmation(True)
+        # dialog always on top of the textview window
+        save_dialog.set_modal(True)
+        # if self.file has already been saved
+        if self.file is not None:
+            try:
+                # set self.file as the current filename for the file chooser
+                save_dialog.set_file(self.file)
+            except GObject.GError as e:
+                print("Error: " + e.message)
+        # connect the dialog to the callback function save_response_cb()
+        save_dialog.connect("response", self.save_response_cb)
+        # show the dialog
+        save_dialog.show()
+
+    # callback function for the dialog save_dialog
+    def save_response_cb(self, dialog, response_id):
+        save_dialog = dialog
+        # if response is "ACCEPT" (the button "Save" has been clicked)
+        if response_id == Gtk.ResponseType.ACCEPT:
+            # self.file is the currently selected file
+            self.file = save_dialog.get_file()
+            # save to file (see below)
+            self.save_to_file()
+        # if response is "CANCEL" (the button "Cancel" has been clicked)
+        elif response_id == Gtk.ResponseType.CANCEL:
+            print("cancelled: FileChooserAction.SAVE")
+        # destroy the FileChooserDialog
+        dialog.destroy()
+
+    # callback function for save
+    def save_callback(self, action, parameter):
+        # if self.file is not already there
+        if self.file is not None:
+            self.save_to_file()
+        # self.file is a new file
+        else:
+            # use save_as
+            self.save_as_callback(action, parameter)
+
+    # save_to_file
+    def save_to_file(self):
+        # get the content of the buffer, without hidden characters
+        [start, end] = self.buffer.get_bounds()
+        current_contents = self.buffer.get_text(start, end, False)
+        # if there is some content
+        if current_contents != "":
+            # set the content as content of self.file.
+            # arguments: contents, etags, make_backup, flags, GError
+            try:
+                self.file.replace_contents(current_contents,
+                                           None,
+                                           False,
+                                           Gio.FileCreateFlags.NONE,
+                                           None)
+                print("saved: " + self.file.get_path())
+            except GObject.GError as e:
+                print("Error: " + e.message)
+        # if the contents are empty
+        else:
+            # create (if the file does not exist) or overwrite the file in readwrite mode.
+            # arguments: etags, make_backup, flags, GError
+            try:
+                self.file.replace_readwrite(None,
+                                            False,
+                                            Gio.FileCreateFlags.NONE,
+                                            None)
+                print("saved: " + self.file.get_path())
+            except GObject.GError as e:
+                print("Error: " + e.message)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        # app action quit, connected to the callback function
+        quit_action = Gio.SimpleAction.new("quit", None)
+        quit_action.connect("activate", self.quit_callback)
+        self.add_action(quit_action)
+
+        # get the menu from the ui file with a builder
+        builder = Gtk.Builder()
+        try:
+            builder.add_from_file("filechooserdialog.ui")
+        except:
+            print("file not found")
+            sys.exit()
+        menu = builder.get_object("appmenu")
+        self.set_app_menu(menu)
+
+    # callback function for quit
+    def quit_callback(self, action, parameter):
+        self.quit()
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+  
+  <section id="methods">
+  <title>Métodos útiles para un «FileChooserDialog»</title>
+    <p>Tenga en cuenta que la acción del «FileChooserDialog» puede ser una de las siguientes: <code>Gtk.FileChooserAction.OPEN</code> (el selector de archivo sólo le permitirá al usuario elegir un archivo existente), <code>Gtk.FileChooserAction.SAVE</code> (se le permitirá al usuario elegir un archivo existente, o introducir uno nuevo), <code>Gtk.FileChooserAction.SELECT_FOLDER</code> se le permitirá al usuario elegir una carpeta existente), o  <code>Gtk.FileChooserAction.CREATE_FOLDER</code> (se le permitirá al usuario elegir una carpeta nueva o existente).</p>
+    <p>Además de los métodos usados en el <link xref="#code"/>, existen:</p>
+    <list>
+      <item><p><code>set_show_hidden(True)</code> se usa para mostrar carpetas y archivos ocultos.</p></item>
+      <item><p><code>set_select_multiple(True)</code> indica que se pueden seleccionar múltiples archivos. Esto sólo es relevante si el modo es <code>Gtk.FileChooserAction.OPEN</code> o <code>Gtk.FileChooserAction.SELECT_FOLDER</code>.</p></item>
+      <item><p>En el diálogo «Save as», <code>set_current_name(nombre_actual)</code> establece <code>nombre_actual</code> en el selector de archivo, como si lo hubiera introducido el usuario; <code>nombre_actual</code> puede ser algo como <code>Sin nombre.txt</code>. Este método no debe usarse excepto en un diálogo «Save as».</p></item>
+      <item><p>La carpeta actual predeterminada es «elementos recientes». Para establecer otra carpeta use <code>set_current_folder_uri(uri)</code>; pero tenga en cuenta que debe usar este método y hacer que el selector de archivo muestre una carpeta específica sólo cuando está ejecutando un comando «Save as» y ya tenga un archivo guardado en algún lado.</p></item>
+    </list>
+  </section>
+
+  <section id="references">
+  <title>Referencias de la API</title>
+  <p>En este ejemplo se usa lo siguiente:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkFileChooserDialog.html">GtkFileChooserDialog</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkFileChooser.html">GtkFileChooser</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkWindow.html">GtkWindow</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkTextView.html">GtkTextView</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkTextBuffer.html">GtkTextBuffer</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkScrolledWindow.html">GtkScrolledWindow</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gio/stable/GFile.html">GFile</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkBuilder.html">GtkBuilder</link></p></item>
+  </list>
+  </section>
+</page>

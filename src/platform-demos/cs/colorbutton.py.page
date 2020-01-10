@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="colorbutton.py" xml:lang="cs">
+  <info>
+    <title type="text">ColorButton (Python)</title>
+    <link type="guide" xref="beginner.py#color-selectors"/>
+    <link type="next" xref="fontchooserwidget.py"/>
+    <revision version="0.1" date="2012-06-03" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Tlačítko, které zobrazí dialogové okno pro výběr barvy</desc>
+  </info>
+
+  <title>ColorButton</title>
+  <media type="image" mime="image/png" src="media/colorbutton.png"/>
+  <p>ColorButton spustí dialogové okno pro výběr barvy a vypíše do terminálu hodnoty RGB vybrané barvy.</p>
+
+  <links type="sections"/>
+  
+  <section id="code">
+  <title>Kód použitý k vygenerování tohoto příkladu</title>
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gdk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="ColorButton", application=app)
+        self.set_default_size(150, 50)
+        self.set_border_width(10)
+
+        # ColorButton (které otevře dialogové okno, ve
+        # kterém si vybíráme barvu)
+        self.button = Gtk.ColorButton()
+        # s výchozí barvou (v tomto případě modrou)
+        color = Gdk.RGBA()
+        color.red = 0.0
+        color.green = 0.0
+        color.blue = 1.0
+        color.alpha = 0.5
+        self.button.set_rgba(color)
+
+        # Výběr barvy v dialogovém okně vyšle signál
+        self.button.connect("color-set", self.on_color_chosen)
+
+        # Popisek
+        label = Gtk.Label()
+        label.set_text("Click to choose a color")
+
+        # Mřížka pro připojení tlačítka a popisku
+        grid = Gtk.Grid()
+        grid.attach(self.button, 0, 0, 2, 1)
+        grid.attach(label, 0, 1, 2, 1)
+        self.add(grid)
+
+    # Když je vybrána nová barva, vypíše ji ve formátu rgb(r,g,b) v terminálu
+    def on_color_chosen(self, user_data):
+        print("You chose the color: " + self.button.get_rgba().to_string())
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+  <title>Užitečné metody pro widget ColorButton</title>
+  <p><code>set_color(barva)</code>, kde <code>barva</code> je definována tak, jako v tomto příkladu, nastaví barvu u widgetu ColorButton. Výchozí barva je černá. <code>get_color()</code> vrátí aktuální barvu.</p>
+    <p>Na řádku 23 je signál <code>"color-set"</code> napojen na funkci zpětného volání <code>on_color_chosen()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce zpětného volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+  </section>
+  
+  <section id="references">
+  <title>Odkazy k API</title>
+  <p>V této ukázce se používá následující:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkColorButton.html">GtkColorButton</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkColorChooser.html">GtkColorChooser</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gdk3/stable/gdk3-RGBA-Colors.html">Barvy RGBA</link></p></item>
+  </list>
+  </section>
+</page>

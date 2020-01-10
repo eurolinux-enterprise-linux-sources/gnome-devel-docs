@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="textview.py" xml:lang="el">
+  <info>
+    <title type="text">Προβολή κειμένου (TextView) (Python)</title>
+    <link type="guide" xref="beginner.py#multiline"/>
+    <link type="seealso" xref="strings.py"/>
+    <link type="seealso" xref="scrolledwindow.py"/>
+    <link type="next" xref="dialog.py"/>
+    <revision version="0.2" date="2012-06-19" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Sebastian Pölsterl</name>
+      <email its:translate="no">sebp@k-d-w.org</email>
+      <years>2011</years>
+    </credit>
+
+    <credit type="author copyright editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Γραφικό στοιχείο που εμφανίζει ένα GtkTextBuffer</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Προβολή κειμένου (TextView)</title>
+
+  <note style="sidebar"><p>Αυτό είναι ένα παράδειγμα του Gtk.TextView.</p>
+  <p>Εάν πατήσετε "enter", έχουμε νέα γραμμή.</p>
+  <p>Αλλά μπορούμε επίσης να έχουμε μια νέα γραμμή εάν γράψουμε μια μεγάλη πρόταση (το κείμενο θα αναδιπλωθεί διακόπτοντας τις γραμμές μεταξύ των λέξεων).</p>
+  <p>Εάν έχουμε μια μεγάαααααααααααααααααααααααααααααααλη</p>
+  <p>(που ήταν μεγάλη)</p>
+  <p>λέξη, μια οριζόντια γραμμή κύλισης θα εμφανιστεί.</p></note>
+
+  <media type="image" mime="image/png" src="media/textview.png"/>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="TextView Example", application=app)
+        self.set_default_size(300, 450)
+
+        # a scrollbar for the child widget (that is going to be the textview)
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_border_width(5)
+        # we scroll only if needed
+        scrolled_window.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+
+        # a text buffer (stores text)
+        buffer1 = Gtk.TextBuffer()
+
+        # a textview (displays the buffer)
+        textview = Gtk.TextView(buffer=buffer1)
+        # wrap the text, if needed, breaking lines in between words
+        textview.set_wrap_mode(Gtk.WrapMode.WORD)
+
+        # textview is scrolled
+        scrolled_window.add(textview)
+
+        self.add(scrolled_window)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+  <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο TextView</title>
+  <p>Μια <code>Gtk.TextView</code> εμφανίζει το αποθηκευμένο κείμενο σε μια <code>Gtk.TextBuffer</code>. Όμως, η περισσότερη επεξεργασία του κειμένου πραγματοποιείται με επαναλήπτες, αντιπροσωπευόμενοι από ένα <code>Gtk.TextIter</code> - μια θέση μεταξύ δύο χαρακτήρων στην ενδιάμεση μνήμη του κειμένου. Οι επαναλήπτες δεν είναι έγκυροι επ' άπειρο· όποτε η ενδιάμεση μνήμη τροποποιείται με τρόπο που επηρεάζει τα περιεχόμενα της ρυθμιστικής μνήμης, όλοι οι εκκρεμείς επαναλήπτες γίνονται άκυροι. Λόγω αυτού, οι επαναλήπτες δεν μπορούν να χρησιμοποιηθούν για να διατηρήσουν τις θέσεις με τις τροποποιήσεις της ενδιάμεσης μνήμης. Για να διατηρήσετε μια θέση, χρησιμοποιούμε ένα <code>Gtk.TextMark</code>, που μπορεί να οριστεί ορατό με <code>visible(True)</code>. Μια ενδιάμεση μνήμη κειμένου περιέχει δύο ενσωματωμένα σημάδια· ένα σημάδι "εισαγωγής" (η θέση του δρομέα) και το σημάδι "δέσμευση_επιλογής".</p>
+  <p>Μέθοδοι για ένα γραφικό στοιχείο προβολής κειμένου (TextView):</p>
+  <list>
+    <item><p>Το γραφικό στοιχείο TextView είναι από προεπιλογή επεξεργάσιμο. Εάν προτιμάτε αλλιώς, χρησιμοποιήστε <code>set_editable(False)</code>. Εάν η ενδιάμεση μνήμη δεν έχει επεξεργάσιμο κείμενο, ίσως να είναι μια καλή ιδέα να χρησιμοποιήσετε <code>set_cursor_visible(False)</code> επίσης.</p></item>
+    <item><p>Η στοίχιση του κειμένου ορίζεται με <code>set_justification(Gtk.Justification.JUSTIFICATION)</code> όπου <code>JUSTIFICATION</code> είναι ένα από τα <code>LEFT, RIGHT, CENTER, FILL</code>.</p></item>
+    <item><p>Η αναδίπλωση γραμμής του κειμένου ορίζεται με <code>set_wrap_mode(Gtk.WrapMode.WRAP)</code> όπου <code>WRAP</code> είναι ένα από <code>NONE</code> (η περιοχή του κειμένου γίνεται πλατύτερη), <code>CHAR</code> (η αλλαγή γραμμών οπουδήποτε ο δρομέας μπορεί να εμφανιστεί), <code>WORD</code> (αλλαγή γραμμών μεταξύ λέξεων), <code>WORD_CHAR</code> (αλλαγή γραμμών μεταξύ λέξεων, αλλά εάν αυτό δεν είναι αρκετό μεταξύ χαρακτήρων).</p></item>
+  </list>
+  <p>Μέθοδοι για ένα γραφικό στοιχείο TextBuffer:</p>
+  <list>
+    <item><p>Η <code>get_insert()</code> επιστρέφει το <code>Gtk.TextMark</code> που αναπαριστά τον δρομέα, που είναι το σημείο εισαγωγής.</p></item>
+    <item><p>Η <code>get_selection_bound()</code> επιστρέφει το <code>Gtk.TextMark</code> που αναπαριστά την δεσμευμένη επιλογή.</p></item>
+    <item><p>Ο <code>set_text("some text", length)</code> όπου <code>length</code> είναι ένας θετικός ακέραιος ή <code>-1</code>, ορίζει το περιεχόμενο της ενδιάμεσης μνήμης ως τους πρώτους χαρακτήρες <code>length</code> του κειμένου <code>"some text"</code>. Εάν το <code>length</code> παραλείπεται ή <code>-1</code>, το κείμενο εισάγεται πλήρως. Το περιεχόμενο της ενδιάμεσης μνήμης, εάν υπάρχει κάποια, καταστρέφεται.</p></item>
+    <item><p>Η <code>insert(iter, "some text", length)</code> όπου <code>iter</code> είναι ένας επαναλήπτης κειμένου και <code>length</code> είναι ένας θετικός ακέραιος ή <code>-1</code>, εισάγει στην ενδιάμεση μνήμη στο <code>iter</code> τους πρώτους χαρακτήρες <code>length</code> του κειμένου <code>"some text"</code>. Εάν το <code>length</code> παραληφθεί ή <code>-1</code>, το κείμενο εισάγεται πλήρως.</p></item>
+    <item><p>Η <code>insert_at_cursor("some text", length)</code> κάνει το ίδιο με την <code>insert(iter, "some text", length)</code>, με τον τρέχοντα δρομέα να λαμβάνεται ως <code>iter</code>.</p></item>
+    <item><p>Η <code>create_mark("mark_name", iter, left_gravity)</code> όπου <code>iter</code> είναι ένα <code>Gtk.TextIter</code> και <code>left_gravity</code> είναι τιμή Μπουλ, δημιουργεί ένα <code>Gtk.TextMark</code> στη θέση του <code>iter</code>. Εάν <code>"mark_name"</code> είναι <code>None</code>, το σημάδι είναι ανώνυμο· αλλιώς, το σημάδι μπορεί να ανακτηθεί κατά όνομα χρησιμοποιώντας <code>get_mark()</code>. Εάν ένα σημάδι έχει υπολειπόμενη βαρύτητα και το κείμενο εισάγεται στην τρέχουσα θέση του σημαδιού, το σημάδι θα μετακινηθεί στα αριστερά του νεοεισαγμένου κειμένου. Εάν η <code>left_gravity</code> παραληφθεί, προεπιλέγεται το <code>False</code>.</p></item>
+    <item><p>Για να ορίσετε ότι κάποιο κείμενο στην ενδιάμεση μνήμη πρέπει να έχει ειδική μορφοποίηση, πρέπει να ορίσετε μια ετικέτα να κρατήσει αυτήν την πληροφορία μορφοποίησης και έπειτα να εφαρμόσει αυτήν την ετικέτα στην περιοχή του κειμένου χρησιμοποιώντας <code>create_tag("tag name", property)</code> και <code>apply_tag(tag, start_iter, end_iter)</code> όπως στο, για παράδειγμα:</p>
+      <code>
+tag = textbuffer.create_tag("orange_bg", background="orange")
+textbuffer.apply_tag(tag, start_iter, end_iter)</code>
+     <p>Τα ακόλουθα είναι μερικές από τις κοινές εφαρμοζόμενες τεχνοτροπίες στο κείμενο:</p>
+      <list>
+        <item><p>Χρώμα παρασκηνίου (ιδιότητα "background")</p></item>
+        <item><p>Χρώμα προσκηνίου (ιδιότητα "foreground")</p></item>
+        <item><p>Υπογράμμιση (ιδιότητα "underline")</p></item>
+        <item><p>Έντονα (ιδιότητα "weight")</p></item>
+        <item><p>Πλάγια (ιδιότητα "style")</p></item>
+        <item><p>Διαγράμμιση (ιδιότητα "strikethrough")</p></item>
+        <item><p>Στοίχιση (ιδιότητα "justification")</p></item>
+        <item><p>Μέγεθος (ιδιότητες "size" και "size-points")</p></item>
+        <item><p>Αναδίπλωση κειμένου (ιδιότητα "wrap-mode")</p></item>
+      </list>
+    <p>Μπορείτε επίσης να διαγράψετε συγκεκριμένες ετικέτες αργότερα χρησιμοποιώντας <code>remove_tag()</code> ή να διαγράψετε όλες τις ετικέτες σε μια δεδομένη περιοχή καλώντας <code>remove_all_tags()</code>.</p></item>
+  </list>
+  <p>Μέθοδοι για γραφικό στοιχείο TextIter</p>
+  <list>
+    <item><p>Η <code>forward_search(needle, flags, limit)</code> αναζητά μπροστά για <code>needle</code>. Η αναζήτηση δεν θα συνεχίσει πέρα από το όριο <code>Gtk.TextIter</code>. Οι <code>flags</code> μπορούν να οριστούν σε ένα από τα ακόλουθα, ή οποιονδήποτε συνδυασμό του συνενώνοντας τους με τον τελεστή OR <code>|</code>: <code>0</code> (η συμφωνία πρέπει να είναι ακριβής)· <code>Gtk.TextSearchFlags.VISIBLE_ONLY</code> (η συμφωνία μπορεί να έχει αόρατο κείμενο διανθισμένο σε βελόνα)· <code>Gtk.TextSearchFlags.TEXT_ONLY</code> (η συμφωνία μπορεί να έχει γραφικά στοιχεία pixbufs ή θυγατρικά ανακατεμένα μέσα στην περιοχή συμφωνίας)· το <code>Gtk.TextSearchFlags.CASE_INSENSITIVE</code> (το κείμενο θα ταιριάζει ανεξάρτητα από κεφαλαία/μικρά). Η μέθοδος επιστρέφει μια πλειάδα που περιέχει ένα <code>Gtk.TextIter</code> που δείχνει στην αρχή και στον πρώτο χαρακτήρα μετά τη συμφωνία· εάν δεν βρεθεί συμφωνία, ο <code>None</code> επιστρέφεται.</p></item>
+    <item><p>Η <code>backward_search(needle, flags, limit)</code> κάνει το ίδιο όπως η <code>forward_search()</code>, αλλά κινείται προς τα πίσω.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Αναφορές API</title>
+  <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextView.html">GtkTextView</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextBuffer.html">GtkTextBuffer</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextTag.html">GtkTextTag</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkScrolledWindow.html">GtkScrolledWindow</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">Standard Enumerations</link></p></item>
+  </list>
+  </section>
+</page>

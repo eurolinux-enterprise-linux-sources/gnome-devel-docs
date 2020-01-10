@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.js" xml:lang="cs">
+  <info>
+  <title type="text">Statusbar (JavaScript)</title>
+    <link type="guide" xref="beginner.js#display-widgets"/>
+    <revision version="0.1" date="2012-06-10" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Zobrazuje upozornění ve vyhrazené stavové liště</desc>
+  </info>
+
+  <title>Statusbar</title>
+  <media type="image" mime="image/png" src="media/statusbar2.png"/>
+  <p>Tato stavová lišta sleduje, kolikrát jste klikli na tlačítko. Aplikace, jako je <link href="http://projects.gnome.org/gedit/">gedit</link>, používají stavovou lištu k přehlednému zobrazení informací a k upozorněním, která uživatele nepřeruší v práci.</p>
+  <p>Zprávy vložené do stavové lišty se umístí na vrchol zásobníku a od tam mohou být vybrány k zobrazení nejnovější zprávy. Můžete také naráz vymazat všechny zprávy určitého typu. Tato ukázková aplikace předvádí právě tyto funkce.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Importované knihovny</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Toto jsou knihovny, které potřebujeme naimportovat, aby aplikace běžela. Pamatujte si, že řádek, který GNOME říká, že používáme Gjs, musí být vždy na začátku.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Vytvoření okna aplikace</title>
+    <code mime="application/javascript">
+const StatusbarExample = new Lang.Class({
+    Name: 'Statusbar Example',
+
+    // Vytvoří vlastní aplikaci
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsstatusbar',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Napojí signály "activate" a "startup" k funkcím zpětného volání
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Všechen kód této ukázky je ve třídě <code>StatusbarExample</code>. Výše uvedený kód vytvoří <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pro naše widgety a okno, ve kterém budou.</p>
+    <code mime="application/javascript">
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI: function() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 120,
+            default_width: 300,
+            title: "Button Clicker"});
+
+        // Vytvoří dvoupanelového rozhraní
+        this._panes = new Gtk.Paned ({
+            orientation: Gtk.Orientation.VERTICAL });
+</code>
+    <p>Funkce <code>_buildUI</code> je místo, ze kterého voláme všechen kód, který vytváří uživatelské rozhraní aplikace. Prvním krokem je vytvoření nového <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link>, do kterého vložíme všechny naše widgety. Následujícím krokem je vytvoření svisle orientovaného rozhraní Gtk.Paned, které rozdělí okno na dvě části. Díky tomu stavová lišta vypadá stejně, jako jste zvyklí z jiných aplikací, a zůstává v dolní části okna, i když uživatel mění jeho velikost.</p>
+  </section>
+
+  <section id="buttons">
+    <title>Vytvoření tlačítek</title>
+    <code mime="application/javascript">
+        // Vytvoří hlavní tlačítko
+        this._clickMe = new Gtk.Button ({
+            label: "Click Me!" });
+        this._clickMe.connect ("clicked", Lang.bind (this, this._clicked));
+
+        // Vytvoří tlačítko Undo
+        this._backButton = new Gtk.Button ({
+            label: "gtk-go-back",
+            use_stock: true });
+        this._backButton.connect ("clicked", Lang.bind (this, this._back));
+
+        // Vytvoří tlačítko Clear
+        this._clearButton = new Gtk.Button ({
+            label: "gtk-clear",
+            use_stock: true });
+        this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
+</code>
+    <p>Tento kód vytvoří tři <link href="button.js.page">Gtk.Button</link>, která použijeme ke vkládání zprávy do stavové lišty, k odebírání poslední zprávy a k mazání všech existujících zpráv. Tlačítka <gui>Back</gui> a <gui>Clear</gui> jsou <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">standardní tlačítka</link>, která jsou automaticky přeložena do kteréhokoliv národního jazyka, který GNOME podporuje.</p>
+
+    <code mime="application/javascript">
+        // Vloží tlačítka do mřížky
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+        this._grid.attach (this._backButton, 0, 0, 1, 1);
+        this._grid.attach_next_to (this._clickMe, this._backButton, Gtk.PositionType.RIGHT, 1, 1);
+        this._grid.attach_next_to (this._clearButton, this._clickMe, Gtk.PositionType.RIGHT, 1, 1);
+
+        // Vloží mřížku do většího rámu, který vyplní většinu okna
+        this._topFrame = new Gtk.Frame ({
+            border_width: 20,
+            height_request: 90,
+            width_request: 300});
+        this._topFrame.add (this._grid);
+</code>
+    <p>Tento kód vytvoří <link href="grid.js.page">Gtk.Grid</link>, kterou použijeme k uspořádání tlačítek, a tlačítka do mřížky ve správném pořadí připojí. Pak vytvoří <link href="paned.js.page">Gtk.Frame</link>, který zabere většinu okna a má velké odsazení okolo tlačítek, a přidá mřížku do tohoto rámu. Upozorňujeme, že stále potřebujeme vložit rám do dvoupanelového rozhraní a to zase přidat do okna aplikace.</p>
+  </section>
+
+  <section id="statusbar">
+    <title>Vytvoření stavové lišty</title>
+    <code mime="application/javascript">
+        // Vytvoří stavovou lištu
+        this._statusbar = new Gtk.Statusbar();
+
+        // Uchovává počet, kolikrát bylo na kliknuto na tlačítko
+        this.Clicks = 0;
+        this.ContextID = this._statusbar.get_context_id ("Number of Clicks");
+
+        // Předá stavové liště počáteční zprávu
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+        // Vloží stavovou lištu do jím vlastněného rámu dole
+        this._barFrame = new Gtk.Frame ({
+            height_request: 30 });
+        this._barFrame.add (this._statusbar);
+</code>
+    <p>Zde vytvoříme <code>Gtk.Statusbar</code> a vložíme do něj zprávu, se kterou začne. Pak mu přidělíme vlastní úzký rám v dolní části okna.</p>
+    <p>Každá zpráva musí mít ID kontexu, což je celočíselná hodnota, kterou můžete získat od stavové lišty pomocí funkce <code>get_context_id()</code>. Její jediný parametr je řetězcová hodnota, která slouží k popisu tohoto konkrétního kontextu. Za normálních okolností dostanete nové ID kontextu pro různé druhy zpráv, takže můžete použít funkci <code>remove()</code> k odstranění zadané zprávy a ne nutně jen nejnovější zprávy v zásobníku. Toto je jednoduchý příklad jen s jedním druhem zpráv, takže používáme jen jedno ID pro všechno.</p>
+    <p>Používáme funkci <code>push()</code> k vložení nové zprávy do zásobníku. Prvním parametrem je ID kontextu a druhým zpráva.</p>
+    <code mime="application/javascript">
+        // Sestaví rámy do dvoupanelového rozhraní
+        this._panes.pack1 (this._topFrame, true, false);
+        this._panes.pack2 (this._barFrame, false, false);
+
+        // Vloží panely do okna
+        this._window.add (this._panes);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    },
+</code>
+    <p>Tento kód dokončí vytváření okna tím, že zabalí rámy do panelu, přidá jej do okna a řekne oknu, aby zobrazilo všechny synovské widgety.</p>
+  </section>
+
+  <section id="functions">
+    <title>Funkce pro komunikaci se stavovou lištou</title>
+    <code mime="application/javascript">
+    _clicked: function() {
+
+        // Zvýší počet kliknutí o 1
+        this.Clicks++;
+
+        // Aktualizuje stavovou lištu na nový počet kliknutí
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    },
+
+
+
+    _back: function () {
+
+        // Pokud bylo kliknuto, sníží o 1 a odstraní poslední aktualizaci stavové lišty
+        if (this.Clicks &gt; 0 ) {
+            this.Clicks--;
+            this._statusbar.pop (this.ContextID);
+        };
+
+    },
+
+
+
+    _clear: function () {
+
+        // Vynuluje počet kliknutí
+        this.Clicks = 0;
+
+        // Vymaže všechny zprávy vložené do stavové lišty
+        this._statusbar.remove_all (this.ContextID);
+
+        // Nataví výchozí zprávu ve stavové liště
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    }
+
+});
+</code>
+    <p>Zde máme funkci, která předvádí vložení zprávy na zásobník, odebrání zprávy úplně na vrcholu zásobníku a smazání všech zpráv s konkrétním ID kontextu. Funkce <code>pop()</code> přebírá jen jeden parametr, což je ID kontextu pro typ zpráv, z nichž nejnovější chcete odebrat ze zásobníku. Funkce <code>remove_all()</code> pracuje stejným způsobem, akorát že odstraní ze zásobníku všechny zprávy zadaného typu.</p>
+    <code mime="application/javascript">
+// Spustí aplikaci
+let app = new StatusbarExample ();
+app.application.run (ARGV);
+</code>
+    <p>Nakonec vytvoříme novou instanci konečné třídy <code>StatusbarExample</code> a aplikaci spustíme.</p>
+  </section>
+
+  <section id="complete">
+    <title>Úplný kód ukázky</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const StatusbarExample = new Lang.Class({
+    Name: 'Statusbar Example',
+
+    // Vytvoří vlastní aplikaci
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsstatusbar',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Napojí signály "activate" a "startup" k funkcím zpětného volání
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI: function() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 120,
+            default_width: 300,
+            title: "Button Clicker"});
+
+        // Vytvoří dvoupanelového rozhraní
+        this._panes = new Gtk.Paned ({
+            orientation: Gtk.Orientation.VERTICAL });
+
+        // Vytvoří hlavní tlačítko
+        this._clickMe = new Gtk.Button ({
+            label: "Click Me!" });
+        this._clickMe.connect ("clicked", Lang.bind (this, this._clicked));
+
+        // Vytvoří tlačítko Undo
+        this._backButton = new Gtk.Button ({
+            label: "gtk-go-back",
+            use_stock: true });
+        this._backButton.connect ("clicked", Lang.bind (this, this._back));
+
+        // Vytvoří tlačítko Clear
+        this._clearButton = new Gtk.Button ({
+            label: "gtk-clear",
+            use_stock: true });
+        this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
+
+        // Vloží tlačítka do mřížky
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+        this._grid.attach (this._backButton, 0, 0, 1, 1);
+        this._grid.attach_next_to (this._clickMe, this._backButton, Gtk.PositionType.RIGHT, 1, 1);
+        this._grid.attach_next_to (this._clearButton, this._clickMe, Gtk.PositionType.RIGHT, 1, 1);
+
+        // Vloží mřížku do většího rámu, který vyplní většinu okna
+        this._topFrame = new Gtk.Frame ({
+            border_width: 20,
+            height_request: 90,
+            width_request: 300});
+        this._topFrame.add (this._grid);
+
+        // Vytvoří stavovou lištu
+        this._statusbar = new Gtk.Statusbar();
+
+        // Uchovává počet, kolikrát bylo na kliknuto na tlačítko
+        this.Clicks = 0;
+        this.ContextID = this._statusbar.get_context_id ("Number of Clicks");
+
+        // Předá stavové liště počáteční zprávu
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+        // Vloží stavovou lištu do jím vlastněného rámu dole
+        this._barFrame = new Gtk.Frame ({
+            height_request: 30 });
+        this._barFrame.add (this._statusbar);
+
+        // Sestaví rámy do dvoupanelového rozhraní
+        this._panes.pack1 (this._topFrame, true, false);
+        this._panes.pack2 (this._barFrame, false, false);
+
+        // Vloží panely do okna
+        this._window.add (this._panes);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    },
+
+
+
+    _clicked: function() {
+
+        // Zvýší počet kliknutí o 1
+        this.Clicks++;
+
+        // Aktualizuje stavovou lištu na nový počet kliknutí
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    },
+
+
+
+    _back: function () {
+
+        // Pokud bylo kliknuto, sníží o 1 a odstraní poslední aktualizaci stavové lišty
+        if (this.Clicks &gt; 0 ) {
+            this.Clicks--;
+            this._statusbar.pop (this.ContextID);
+        };
+
+    },
+
+
+
+    _clear: function () {
+
+        // Vynuluje počet kliknutí
+        this.Clicks = 0;
+
+        // Vymaže všechny zprávy vložené do stavové lišty
+        this._statusbar.remove_all (this.ContextID);
+
+        // Nataví výchozí zprávu ve stavové liště
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
+    }
+
+});
+
+// Spustí aplikaci
+let app = new StatusbarExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Dokumentace jdoucí do hloubky</title>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Button.html">Gtk.Button</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Frame.html">Gtk.Frame</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Paned.html">Gtk.Paned</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Statusbar.html">Gtk.Statusbar</link></p></item>
+</list>
+  </section>
+</page>

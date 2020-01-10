@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.js" xml:lang="el">
+
+  <info>
+  <title type="text">Προβολέας εικόνων (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+
+    <desc>Μια λίγο περισσότερο από απλή εφαρμογή σαν το "Hello world"- συγγραφή ενός προβολέα εικόνων σε GTK+. Περιλαμβάνει μια εισαγωγή στη γλώσσα JavaScript.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
+    <credit type="author">
+      <name>Jonh Wendell</name>
+      <email its:translate="no">jwendell@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasettii@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Προβολή εικόνων</title>
+
+<synopsis>
+  <p>Σε αυτόν το μάθημα θα γράψουμε μια πολύ απλή εφαρμογή σε GTK που φορτώνει και εμφανίζει ένα αρχείο εικόνας. Θα μάθετε πώς να:</p>
+  <list>
+    <item><p>Γράψε μια βασικά διεπαφή χρήστη GTK σε JavaScript</p></item>
+    <item><p>Να αντιμετωπίζετε συμβάντα συνδέοντας σήματα με τους χειριστές σημάτων</p></item>
+    <item><p>Σχεδιάζετε διεπαφές χρήστη GTK χρησιμοποιώντας περιέκτες</p></item>
+    <item><p>Φορτώνετε και να εμφανίζετε αρχεία εικόνων</p></item>
+  </list>
+  <p>Θα χρειαστείτε τα παρακάτω για να μπορέσετε να ακολουθήσετε αυτό το μάθημα:</p>
+  <list>
+    <item><p>Ένα εγκατεστημένο αντίγραφο του <link xref="getting-ready">Anjuta IDE</link></p></item>
+    <item><p>Ένα εγκατεστημένο αντίγραφο του διερμηνευτή <em>gjs</em></p></item>
+    <item><p>Βασική γνώση οποιασδήποτε αντικειμενοστραφούς γλώσσας προγραμματισμού</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/image-viewer.png"/>
+
+<section id="anjuta">
+  <title>Δημιουργία έργου με το Anjuta</title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+    <p>Ξεκινήστε το Anjuta και πατήστε <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+    <p>Επιλέξτε <gui>Γενική Javascript</gui> από την καρτέλα <gui>JS</gui>, πατήστε <gui>Μπροστά</gui>, και συμπληρώστε τις λεπτομέρειές σας στις επόμενες λίγες σελίδες. Χρησιμοποιήστε το <file>image-viewer</file> ως όνομα έργου και καταλόγου.</p>
+   	</item>
+    <item>
+    <p>Πατήστε <gui>Εφαρμογή</gui> και το έργο θα δημιουργηθεί για εσάς. Ανοίξτε το <file>src/main.js</file> από τις καρτέλες <gui>έργο</gui> ή <gui>αρχείο</gui>. Περιλαμβάνει πολύ βασικό παράδειγμα κώδικα.</p>
+    </item>
+  </steps>
+</section>
+
+
+<section id="js">
+  <title>Βασικά JavaScript: Hello World</title>
+  <p>Πριν να ξεκινήσουμε την σύνταξη του προβολέα εικόνας, ας εξετάσουμε περισσότερα για τον τρόπο χρήσης του JavaScript στο GNOME. Φυσικά, η πρώτη σας με οποιαδήποτε γλώσσα προγραμματισμού πρέπει να είναι το πρόγραμμα Hello World που μπορεί να βρεθεί ήδη στο <file>main.js</file>:</p>
+  <code mime="application/javascript">εκτύπωση ("Hello world!")·</code>
+  <p>Αυτό θα φαίνεται ολότελα φυσικό, εάν είστε εξοικειωμένος με σχεδόν οποιαδήποτε άλλη γλώσσα προγραμματισμού. Η συνάρτηση <code>print</code> καλείται με το όρισμα <code>"Hello world!"</code>, που θα εκτυπωθεί στην οθόνη. Σημειώστε ότι κάθε γραμμή κώδικα τελειώνει με ;.</p>
+</section>
+
+<section id="classes">
+  <title>Κλάσεις στη JavaScript</title>
+  <p>Αυτός είναι ο τυπικός τρόπος ορισμού μιας κλάσης στη JavaScript:</p>
+  <code mime="application/javascript" style="numbered">
+function MyClass () {
+  this._init ();
+}
+
+MyClass.prototype = {
+
+  _init: function () {
+    this.propertyA = "This is an object's field";
+    this.propertyB = 10;
+  },
+
+  aMethod: function (arg1, arg2) {
+    print ("inside aMethod: " + arg1 + " " + arg2);
+  },
+
+  dumpProperties: function () {
+    print (this.propertyA);
+    print (this.propertyB);
+  }
+
+}</code>
+  <p>Αυτό ορίζει μια κλάση που λέγεται <code>MyClass</code>. Ας δούμε κάθε τμήμα του ορισμού της κλάσης:</p>
+  <steps>
+    <item>
+    <p><code>function MyClass</code> είναι ο κατασκευαστής της κλάσης — το όνομά του πρέπει να ταιριάζει με το όνομα της κλάσης. Μπορείτε να προσπελάσετε οποιοδήποτε μέλος της κλάσης χρησιμοποιώντας το αντικείμενο <code>this</code>· εδώ, ο κατασκευαστής καλεί τη μέθοδο της κλάσης <code>_init</code>.</p>
+    </item>
+    <item>
+    <p>Η ομάδα <code>MyClass.prototype</code> είναι εκεί που ορίζετε τη <em>δομή</em> της κλάσης. Κάθε κλάση αποτελείται από μεθόδους (συναρτήσεις) και πεδία (μεταβλητές)· υπάρχουν τρεις μέθοδοι και δύο πεδία σε αυτό το παράδειγμα.</p>
+    </item>
+    <item>
+    <p>Η πρώτη μέθοδος που καθορίστηκε εδώ λέγεται <code>_init</code> και καθορίζουμε ότι είναι μια συνάρτηση χωρίς ορίσματα:</p>
+    <code>_init: function ()</code>
+    <p>Γράφουμε τη συνάρτηση μέσα σε μερικές αγκύλες. Δύο πεδία ορίζονται εδώ, <code>propertyA</code> και <code>propertyB</code>. Το πρώτο ορίζεται σε μια συμβολοσειρά και το δεύτερο ορίζεται σε έναν ακέραιο (10). Η συνάρτηση δεν επιστρέφει καμία τιμή.</p>
+    </item>
+    <item>
+    <p>Η επόμενη μέθοδος λέγεται <code>aMethod</code> και έχει δύο ορίσματα, που εκτυπώνεται όταν την καλείτε. Η τελική μέθοδος είναι <code>dumpProperties</code> και τυπώνει τα πεδία <code>propertyA</code> και <code>propertyB</code>.</p>
+    </item>
+    <item>
+    <p>Σημειώστε πώς τακτοποιείται ο ορισμός κλάσης (πρωτότυπο)· κάθε ορισμός συνάρτησης ξεχωρίζεται με κόμμα.</p>
+    </item>
+  </steps>
+
+  <p>Τώρα που η MyClass ορίστηκε, μπορούμε να παίξουμε μαζί της:</p>
+  <code mime="application/javascript" style="numbered">
+var o = new MyClass ();
+o.aMethod ("Hello", "world");
+o.propertyA = "Just changed its value!";
+o.dumpProperties ();</code>
+  <p>Αυτός ο κώδικας δημιουργεί ένα νέο στιγμιότυπο της κλάσης που λέγεται <code>o</code>, τρέχει τη <code>aMethod</code>, αλλάζει την <code>propertyA</code> σε διαφορετική συμβολοσειρά και έπειτα καλεί <code>dumpProperties</code> (που εξάγει τα πεδία).</p>
+  <p>Αποθηκεύστε τον κώδικα στο <file>main.js</file> και έπειτα τρέξτε τον χρησιμοποιώντας <guiseq><gui>τρέξιμο</gui><gui>εκτέλεση</gui></guiseq> από το μενού ή χρησιμοποιώντας την εργαλειοθήκη.</p>
+</section>
+
+<section id="gtk">
+  <title>Μια πρώτη εφαρμογή σε Gtk</title>
+  <p>Για να δούμε πώς μια πολύ βασική εφαρμογή Gtk φαίνεται σε JavaScript:</p>
+  <code mime="application/javascript" style="numbered">
+const Gtk = imports.gi.Gtk;
+
+Gtk.init (null, null);
+
+var w = new Gtk.Window ({title: "Image Viewer Demo"});
+w.show ();
+
+Gtk.main ();</code>
+  <p>Ας ρίξουμε μια ματιά στο τι γίνεται:</p>
+  <list>
+    <item>
+    <p>Η πρώτη γραμμή εισάγει το όνομα χώρου Gtk (αυτό είναι που περιέχει την βιβλιοθήκη του Gtk). Οι βιβλιοθήκες παρέχονται από το GObject Introspection (gi), που παρέχει γλωσσικές συσχετίσεις για πολλές βιβλιοθήκες του GNOME.</p>
+    </item>
+    <item>
+    <p>Το <code>Gtk.init</code> αρχικοποιεί τη βιβλιοθήκη Gtk· αυτή η πρόταση είναι υποχρεωτική για όλα τα προγράμματα Gtk.</p>
+    </item>
+    <item>
+    <p>Η επόμενη γραμμή δημιουργεί το κύριο παράθυρο δημιουργώντας ένα νέο αντικείμενο <code>Gtk.Window</code>. Μπορείτε να περάσετε αρκετές ιδιότητες στον κατασκευαστή παραθύρου χρησιμοποιώντας τη σύνταξη <code>{property: value, property: value, ...}</code>. Σε αυτήν την περίπτωση ορίζουμε τον τίτλο του παραθύρου.</p></item>
+    <item><p>Η επόμενη γραμμή ρητά εμφανίζει το παράθυρο. Στο Gtk, κάθε γραφικό στοιχείο κρύβεται από προεπιλογή.</p></item>
+    <item><p>Τελικά, το <code>Gtk.main</code> τρέχει τον κύριο βρόχο — με άλλα λόγια, εκτελεί το πρόγραμμα. Ο κύριος βρόχος απαντά σε συμβάντα (σήματα) από τη διεπαφή χρήστη και έπειτα καλεί έναν χειριστή σήματος που θα κάνει κάτι χρήσιμο. Θα μάθουμε περισσότερα για τα σήματα σύντομα.</p></item>
+  </list>
+
+  <p>Αποθήκευση του κώδικα στο <file>main.js</file> και εκτέλεσή του. Θα σημειώσετε ότι η εφαρμογή δεν εγκαταλείπει όταν κλείνετε το παράθυρο. Αυτό συμβαίνει επειδή δεν εγκαταστήσαμε έναν χειριστή σήματος για ασχοληθεί με το σήμα του παραθύρου <code>destroy</code> (κλείσιμο) ακόμα. Θα το κάνουμε σύντομα, αλλά για τώρα μπορείτε απλά να πατήσετε <keyseq><key>Ctrl</key><key>C</key></keyseq> στο παράθυρο τερματικού για να αφήσετε το πρόγραμμα.</p>
+
+</section>
+
+<section id="classes2">
+  <title>Προσθήκη κλάσεων</title>
+  <p>Ο κατάλληλος τρόπος για να γίνει προγραμματισμός Gtk είναι χρησιμοποιώντας κλάσεις. Ας ξαναγράψουμε τον απλό κώδικα που μόλις γράψατε χρησιμοποιώντας κλάσεις:</p>
+  <code mime="application/javascript" style="numbered">
+const Gtk = imports.gi.Gtk;
+
+function ImageViewer () {
+  this._init ();
+}
+
+ImageViewer.prototype = {
+  _init: function () {
+    this.window = new Gtk.Window ({title: "Image Viewer Demo"});
+    this.window.show ();
+  }
+}
+
+Gtk.init (null, null);
+var iv = new ImageViewer ();
+Gtk.main ();</code>
+  <!-- FIXME: Throws an error, "JS ERROR: !!!   Unhandled type int32 releasing GArgument" on Ubuntu 10.10 -->
+  <p>σημειώστε ότι το πρόγραμμα είναι το ίδιο· μόλις μετακινήσαμε τον κώδικα δημιουργίας παραθύρου στη δική μας κλάση <code>ImageViewer</code>. Ο κατασκευαστής κλάσης καλεί τη μέθοδο <code>_init</code>, που δημιουργεί και εμφανίζει το παράθυρο. Έπειτα δημιουργούμε ένα στιγμιότυπο της κλάσης πριν το τρέξιμο του κύριου βρόχου (<code>Gtk.main</code>).</p>
+  <p>Αυτός ο κώδικας είναι αρθρωτός και μπορεί να σπάσει σε πολλαπλά αρχεία εύκολα. Αυτό τον κάνει καθαρότερο και πιο εύκολα αναγνώσιμο.</p>
+</section>
+
+<section id="signals">
+  <title>Σήματα</title>
+  <p>Τα σήματα είναι μια από τις έννοιες κλειδιά για τον προγραμματισμό Gtk. Όποτε κάτι συμβαίνει σε ένα αντικείμενο, εκπέμπει ένα σήμα· για παράδειγμα, όταν πατιέται ένα κουμπί εκπέμπει το σήμα <code>clicked</code>. Άμα θέλετε το πρόγραμμά σας να κάνει κάτι όταν αυτό συμβαίνει, πρέπει να συνδέσετε μια συνάρτηση (έναν "χειριστή σημάτων") σε αυτό το σήμα. Ορίστε ένα παράδειγμα:</p>
+  <code mime="application/javascript" style="numbered">
+function button_clicked () {
+  print ("you clicked me!");
+}
+var b = new Gtk.Button ({label:"Click me"});
+b.connect ("clicked", button_clicked);</code>
+  <p>Οι τελευταίες δύο γραμμές δημιουργούν ένα <code>Gtk.Button</code> που ονομάζεται <code>b</code> και συνδέει το σήμα το <code>clicked</code> στην συνάρτηση <code>button_clicked</code>, η οποία ορίζεται πιο πάνω. Κάθε φορά που πατιέται ένα κουμπί, ο κώδικας στη συνάρτηση <code>button_clicked</code> θα εκτελείται. Εδώ απλά τυπώνει ένα μήνυμα.</p>
+  <p>Η σύνταξη για σύνδεση οποιουδήποτε σήματος σε μια συνάρτηση είναι:</p>
+  <code mime="application/javascript">
+object.connect (&lt;signal_name&gt;, &lt;function_to_be_called&gt;);</code>
+  <p>Μπορείτε να βρείτε ορισμούς σήματος για κάθε αντικείμενο στο <link href="https://developer.gnome.org/gtk3/stable/gtkobjects.html">αναφορά κλάσης GTK</link>.</p>
+
+  <note>
+    <p>Μπορείτε να απλοποιήσετε τον κώδικα χρησιμοποιώντας έναν ενσωματωμένο ορισμό συνάρτησης:</p>
+    <code mime="application/javascript">
+b.connect ("clicked", function () { print ("you clicked me!"); });</code>
+  </note>
+
+</section>
+
+<section id="close">
+  <title>Κλείσιμο του παραθύρου</title>
+  <p>Όταν κλείνεται ένα παράθυρο Gtk δεν κλείνει πραγματικά, κρύβεται. Αυτό επιτρέπει τη διατήρηση του παραθύρου τριγύρω (που είναι χρήσιμο εάν θέλετε να ζητήσετε από τον χρήστη εάν θέλει πραγματικά να κλείσει το παράθυρο, για παράδειγμα).</p>
+  <p>Στην περίπτωσή μας, θέλουμε πραγματικά να κλείσουμε το παράθυρο. Ο απλούστερος τρόπος είναι συνδέοντας το σήμα <code>hide</code> του αντικειμένου GtkWindow με μια συνάρτηση που κλείνει την εφαρμογή. Επιστρέψτε στο αρχείο <file>image-viewer.js</file> και προσθέστε τον παρακάτω κώδικα στη μέθοδο <code>_init</code>, στην παραπάνω γραμμή <code>this.window.show</code>:</p>
+  <code mime="application/javascript" style="numbered">this.window.connect ("hide", Gtk.main_quit)·</code>
+  <p>Αυτό συνδέει το σήμα <code>hide</code> του παραθύρου στη συνάρτηση του Gtk <code>main_quit</code>, που τελειώνει την εκτέλεση του κύριου βρόχου Gtk. Μόλις ο κύριος βρόχος τελειώσει, η συνάρτηση <code>Gtk.main</code> επιστρέφει. Το πρόγραμμά μας συνεχίζει να τρέχει οποιοδήποτε κώδικα γραμμένο μετά τη γραμμή <code>Gtk.main ();</code>, αλλά αφού δεν έχουμε οποιοδήποτε κώδικα μετά από αυτό το σημείο, το πρόγραμμα απλά τελειώνει.</p>
+</section>
+
+<section id="containers2">
+  <title>Περιέκτες: Σχεδίαση διεπαφής χρήστη</title>
+  <p>Γραφικά στοιχεία (έλεγχοι, όπως τα κουμπιά και οι ετικέτες) μπορούν να τοποθετηθούν στο παράθυρο κάνοντας χρήση των <em>περιεκτών</em>. Μπορείτε να οργανώσετε την διάταξη συνδυάζοντας διαφορετικών ειδών περιέκτες, όπως πλαίσια και πλέγματα.</p>
+  <p>Ένα <code>Gtk.Window</code> είναι από μόνο του ένα είδος περιέκτη, αλλά μπορείτε να τοποθετήσετε μόνο ένα γραφικό στοιχείο άμεσα πάνω του. Θα θέλαμε να είχαμε δύο γραφικά στοιχεία, μια εικόνα και ένα κουμπί, άρα θα πρέπει να τοποθετήσουμε έναν υποδοχέα "υψηλότερης χωρητικότητας" μέσα στο παράθυρο για να κρατάει τα άλλα γραφικά στοιχεία. Ένας αριθμός από <link href="http://library.gnome.org/devel/gtk/stable/GtkContainer.html">τύπους περιεκτών</link> είναι διαθέσιμοι, αλλά θα χρησιμοποιήσουμε εδώ ένα <code>Gtk.Box</code>. Ένα <code>Gtk.Box</code> μπορεί να κρατήσει πολλά γραφικά στοιχεία, οργανωμένα οριζόντια ή κάθετα. Μπορείτε να κάνετε και πιο περίπλοκες διατάξεις βάζοντας πολλά πλαίσια το ένα μέσα στο άλλο κ.ο.κ.</p>
+  <note>
+  <p>Υπάρχει ένας γραφικός σχεδιαστής διεπαφής χρήστη με όνομα <app>Glade</app> ενσωματωμένος στο <app>Anjuta</app> που κάνει τη σχεδίαση γραφικού περιβάλλοντος πολύ εύκολη. Για αυτό το απλό παράδειγμα, όμως, θα κωδικοποιήσουμε τα πάντα χειροκίνητα.</p>
+  </note>
+  <p>Ας προσθέσουμε ένα πλαίσιο και γραφικά στοιχεία στο παράθυρο. Προσθέστε τον παρακάτω κώδικα στη μέθοδο <code>_init</code>, αμέσως πάνω από τη γραμμή <code>this.window.show</code> line:</p>
+  <code mime="application/javascript" style="numbered">
+var main_box = new Gtk.Box ({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
+this.window.add (main_box);</code>
+  <p>Η πρώτη γραμμή δημιουργεί ένα <code>Gtk.Box</code> που ονομάζεται <code>main_box</code> και ορίζει δύο από τις ιδιότητες του: την <code>orientation</code> που ρυθμίζεται στο κάθετο (οπότε τα γραφικά στοιχεία τακτοποιούνται σε στήλη), και το <code>spacing</code> ανάμεσα στα γραφικά στοιχεία που έχει ρυθμιστεί στα 0 εικονοστοιχεία. Η επόμενη γραμμή έπειτα προσθέτει στο παράθυρο το νεοδημιουργημένο <code>Gtk.Box</code>.</p>
+  <p>Μέχρι στιγμής το παράθυρο περιέχει μόνο ένα άδειο <code>Gtk.Box</code> και άμα εκτελέσετε τώρα το πρόγραμμα δε θα δείτε καμία απολύτως αλλαγή (το <code>Gtk.Box</code> είναι ένας διαφανής περιέκτης, οπότε δεν μπορείτε να δείτε ότι είναι εκεί).</p>
+</section>
+
+<section id="packing2">
+  <title>Συσκευασία: Πρόσθεση γραφικών στοιχείων στον περιέκτη</title>
+  <p>Για να προσθέσετε κάποια γραφικά στοιχεία στο <code>Gtk.Box</code>, εισάγετε τον ακόλουθο κώδικα ακριβώς κάτω από την γραμμή <code>this.window.add (main_box)</code>:</p>
+  <code mime="application/javascript" style="numbered">
+this.image = new Gtk.Image ();
+main_box.pack_start (this.image, true, true, 0);</code>
+  <p>Η πρώτη γραμμή δημιουργεί ένα καινούργιο <code>Gtk.Image</code> που ονομάζεται <code>image</code>, το οποίο θα εμφανίζει ένα αρχείο εικόνας. Έπειτα, το γραφικό στοιχείο εικόνας προστίθεται (<em>πακεταρισμένο</em>) στον περιέκτη <code>main_box</code> χρησιμοποιώντας τη μέθοδο του <code>Gtk.Box</code> <link href="http://library.gnome.org/devel/gtk/stable/GtkBox.html#gtk-box-pack-start"><code>pack_start</code></link>.</p>
+  <p>Το <code>pack_start</code> παίρνει 4 ορίσματα: το γραφικό στοιχείο που προστίθεται στο <code>Gtk.Box</code> (<code>child</code>)· αν το <code>Gtk.Box</code> πρέπει να μεγαλώσει όταν προστεθεί νέο γραφικό στοιχείο (<code>expand</code>)· αν το νέο γραφικό στοιχείο θα έπρεπε να καλύψει όλο τον διαθέσιμο χώρο αν μεγαλώσει το <code>Gtk.Box</code> (<code>fill</code>)· και πόσος χώρος πρέπει να υπάρχει, σε εικονοστοιχεία, ανάμεσα στο γραφικό στοιχείο και στους γείτονές του μέσα στο <code>Gtk.Box</code>, (<code>padding</code>).</p>
+  <p>Οι περιέκτες (και τα γραφικά στοιχεία) του Gtk επεκτείνονται δυναμικά για να καλύψουν τον διαθέσιμο χώρο, αν τα αφήσετε. Δεν τοποθετείτε τα γραφικά στοιχεία δίνοντας τους ακριβείς θέσεις x, y-συντεταγμένων στο παράθυρο· αλλά, τοποθετούνται σχετικά μεταξύ τους. Αυτό κάνει το χειρισμό της αλλαγής του μεγέθους του παραθύρου πιο εύκολη και τα γραφικά στοιχεία πρέπει να πάρουν αυτόματα ένα λογικό μέγεθος στις περισσότερες περιπτώσεις.</p>
+  <p>Επίσης σημειώστε πώς τα γραφικά στοιχεία οργανώνονται σε μια ιεραρχία. Μόλις πακεταριστούν μέσα στο <code>Gtk.Box</code>, το <code>Gtk.Image</code> θεωρείται <em>θυγατρικό</em> του <code>Gtk.Box</code>. Αυτό επιτρέπει να συμπεριφερθούμε σε όλα τα θυγατρικά ενός γραφικού στοιχείου ως μια ομάδα· για παράδειγμα, μπορείτε να κρύψετε το <code>Gtk.Box</code>, που θα κρύψει επίσης όλα τα θυγατρικά του ταυτόχρονα.</p>
+  <p>Τώρα προσθέστε αυτές τις δύο γραμμές, κάτω από αυτές που μόλις προσθέσατε:</p>
+  <code mime="application/javascript" style="numbered">
+var open_button = new Gtk.Button ({label: "Open a picture..."});
+main_box.pack_start (open_button, false, false, 0);</code>
+  <p>Αυτές οι γραμμές είναι παρόμοιες με τις δυο πρώτες, αλλά αυτή τη φορά δημιουργούν ένα <code>Gtk.Button</code> και το προσθέτουν στο <code>main_box</code>. Σημειώστε ότι ορίζουμε το όρισμα <code>expand</code> (το δεύτερο) στο <code>false</code> εδώ, ενώ είχε οριστεί σε <code>true</code> για το <code>Gtk.Image</code>. Αυτό θα προκαλέσει στην εικόνα να καλύψει όλο το διαθέσιμο χώρο και το κουμπί να πάρει μόνο όσο χρειάζεται. Όταν μεγιστοποιήσετε το παράθυρο, το μέγεθος των κουμπιών θα παραμείνει το ίδιο, ενώ το μέγεθος της εικόνας θα αυξηθεί, καταλαμβάνοντας όλο το υπόλοιπο παράθυρο.</p>
+  <p>Τελικά, πρέπει να αλλάξουμε τη γραμμή <code>this.window.show ();</code> για να διαβάσει:</p>
+  <code>this.window.show_all ()·</code>
+  <p>Αυτό θα εμφανίσει το θυγατρικό του παραθύρου Gtk και όλα τα θυγατρικά του και τα θυγατρικά των θυγατρικών του κ.ο.κ. (Να θυμάστε ότι τα γραφικά στοιχεία Gtk κρύβονται όλα από προεπιλογή)</p>
+</section>
+
+<section id="loading2">
+  <title>Φόρτωση της εικόνας: Σύνδεση στο σήμα του κουμπιού <code>clicked</code></title>
+  <p>Όταν ο χρήστης πατήσει στο κουμπί <gui>άνοιγμα</gui>, ένας διάλογος θα εμφανιστεί έτσι ώστε ο χρήστης να διαλέξει μια εικόνα. Μόλις διαλέξει, η εικόνα θα φορτωθεί και θα εμφανιστεί στο γραφικό στοιχείο της εικόνας.</p>
+  <p>Το πρώτο βήμα είναι να συνδέσουμε το σήμα <code>clicked</code> του κουμπιού με μια συνάρτηση χειριστή σημάτων, την οποία καλούμε με <code>_openClicked</code>. Βάλτε αυτόν τον κώδικα αμέσως μετά την γραμμή <code>var open_button = new Gtk.Button</code> όπου το κουμπί δημιουργήθηκε:</p>
+  <code mime="application/javascript">
+open_button.connect ("clicked", Lang.bind (this, this._openClicked));</code>
+  <p>Χρησιμοποιούμε τον βοηθό <em>Lang</em> JavaScript εδώ. Επιτρέπει τη σύνδεση μιας <em>μεθόδου κλάσης</em> με το σήμα, αντί για απλή συνάρτηση (χωρίς κλάση) που χρησιμοποιήσαμε πριν για το σήμα του παραθύρου <code>hide</code>. Μην ανησυχείτε για αυτό για τώρα, είναι απλά μια τεχνική λεπτομέρεια. Για να δουλέψει χρειαζόσαστε επίσης να βάλετε την παρακάτω γραμμή στην κορυφή του αρχείου:</p>
+  <code mime="application/javascript">const Lang = imports.lang·</code>
+</section>
+
+<section id="loading3">
+  <title>Φόρτωση της εικόνας: Γράφοντας την επανάκληση του σήματος</title>
+  <p>Τώρα μπορούμε να δημιουργήσουμε τη μέθοδο <code>_openClicked()</code>. Εισάγετε τα ακόλουθα στην ομάδα κώδικα <code>ImageViewer.prototype</code>, μετά τη μέθοδο <code>_init</code> (και μη ξεχάσετε το κόμμα):</p>
+    <code mime="application/javascript" style="numbered">
+  _openClicked: function () {
+    var chooser = new Gtk.FileChooserDialog ({title: "Select an image",
+                                              action: Gtk.FileChooserAction.OPEN,
+                                              transient_for: this.window,
+                                              modal: true});
+    chooser.add_button (Gtk.STOCK_CANCEL, 0);
+    chooser.add_button (Gtk.STOCK_OPEN, 1);
+    chooser.set_default_response (1);
+
+    var filter = new Gtk.FileFilter ();
+    filter.add_pixbuf_formats ();
+    chooser.filter = filter;
+
+    if (chooser.run () == 1)
+      this.image.file = chooser.get_filename ();
+
+    chooser.destroy ();
+  }</code>
+  <p>Αυτό είναι λίγο πιο περίπλοκο από όσα έχουμε κάνει μέχρι τώρα, για αυτό θα το χωρίσουμε σε κομμάτια:</p>
+  <list>
+    <item>
+      <p>Η γραμμή που ξεκινάει με <code>var chooser</code> δημιουργεί έναν διάλογο <gui>ανοίγματος</gui>, τον οποίο ο χρήστης μπορεί να χρησιμοποιήσει για επιλογή αρχείων. Ορίζουμε τέσσερις ιδιότητες: τον τίτλο του διαλόγου· την ενέργεια (τύπο) του διαλόγου (είναι διάλογος "open", αλλά θα μπορούσαμε να χρησιμοποιήσουμε <code>SAVE</code> αν η πρόθεση ήταν να αποθηκεύσουμε ένα αρχείο· <code>transient_for</code>, που ορίζει το ανιόν παράθυρο του διαλόγου· και <code>modal</code> που, εάν οριστεί <code>true</code>, αποτρέπει το χρήστη από κλικ σε μια άλλη περιοχή της εφαρμογής μέχρι το κλείσιμο του διαλόγου.</p>
+    </item>
+    <item>
+    <p>Οι επόμενες δύο γραμμές προσθέτουν τα κουμπιά <gui>Cancel</gui> και <gui>Open</gui> στο διάλογο. Το δεύτερο όρισμα της μεθόδου του <code>add_button</code> είναι η (ακέραιη) τιμή που επιστρέφει όταν πατιέται το κουμπί: 0 για το <gui>Ακύρωση</gui> και 1 για το <gui>Άνοιγμα</gui>.</p>
+    <p>Σημειώστε όταν χρησιμοποιούμε τα <em>προκαθορισμένα</em> ονόματα κουμπιών που υπάρχουν στο Gtk, αντί να γράψουμε οι ίδιοι "Ακύρωση" ή "Άνοιγμα". Το πλεονέκτημα στη χρήση των προκαθορισμένων ονομάτων είναι ότι οι ετικέτες των κουμπιών θα έχουν ήδη μεταφραστεί στη γλώσσα του χρήστη.</p>
+    </item>
+    <item>
+    <p>To <code>set_default_response</code> καθορίζει ποιο κουμπί θα ενεργοποιηθεί όταν ο χρήστης επιλέξει ένα αρχείο με διπλό κλικ ή πατήσει <key>Enter</key>. Στην περίπτωση μας, χρησιμοποιούμε το κουμπί <gui>Άνοιγμα</gui> σαν προεπιλεγμένο (το οποίο έχει τιμή 1).</p>
+    </item>
+    <item>
+    <p>Οι επόμενες τρεις γραμμές περιορίζουν το διάλογο <gui>Άνοιγμα</gui> να εμφανίζει μόνο αρχεία που μπορούν να ανοιχθούν από το <code>Gtk.Image</code>. Δημιουργούμε πρώτα ένα αντικείμενο φίλτρου· προσθέτουμε στο φίλτρο όλων των ειδών αρχεία που υποστηρίζονται από το <code>Gdk.Pixbuf</code> (το οποίο περιέχει τα περισσότερα είδη εικόνων όπως PNG και JPEG). Τέλος, καθορίζουμε το φίλτρο να είναι το φίλτρο του διαλόγου <gui>Άνοιγμα</gui>.</p>
+    </item>
+    <item>
+    <p>Το <code>dialog.run</code> εμφανίζει το διάλογο <gui>άνοιγμα</gui>. Ο διάλογος θα περιμένει τον χρήστη να διαλέξει μια εικόνα· όταν διαλέξει, το <code>chooser.run</code> θα επιστρέψει την τιμή <output>1</output> (θα επιστρέψει <output>0</output> αν ο χρήστης πατήσει <gui>ακύρωση</gui>). Η πρόταση <code>if</code> το ελέγχει.</p>
+    </item>
+    <item><p>Αν υποθέσουμε ότι ο χρήστης πάτησε το <gui>Άνοιγμα</gui>, η επόμενη γραμμή ορίζει την ιδιότητα <code>file</code> του <code>Gtk.Image</code> στο όνομα του αρχείου εικόνας που επέλεξε ο χρήστης. Το <code>Gtk.Image</code> θα φορτώσει και θα εμφανίσει την επιλεγμένη εικόνα.</p>
+    </item>
+    <item>
+    <p>Στην τελευταία γραμμή αυτής της μεθόδου, καταστρέφουμε τον διάλογο <gui>άνοιγμα</gui> γιατί δεν τον χρειαζόμαστε πια.</p>
+    </item>
+  </list>
+
+  </section>
+
+<section id="run">
+  <title>Τρέξτε την εφαρμογή</title>
+  <p>Όλος ο κώδικας που χρειάζεστε πρέπει να είναι τώρα στη θέση του, οπότε δοκιμάστε την εκτέλεση του κώδικα. Αυτό ήτανε· ένας πλήρως λειτουργικός προβολέας εικόνων (και μια περιήγηση του JavaScript και Gtk) σε ελάχιστο χρόνο!</p>
+</section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Αν αντιμετωπίσετε πρόβλημα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="image-viewer/image-viewer.js">κώδικα αναφοράς</link>.</p>
+</section>
+
+<section id="next">
+  <title>Επόμενα βήματα</title>
+  <p>Εδώ είναι κάποιες ιδέες για το πώς μπορείτε να επεκτείνετε αυτή την απλή παρουσίαση:</p>
+  <list>
+   <item>
+   <p>Βάλτε τον χρήστη να επιλέξει ένα κατάλογο αντί για αρχείο και δώστε ελέγχους να γυρίζουν όλες τις εικόνες σε έναν κατάλογο.</p>
+   </item>
+   <item>
+   <p>Εφαρμόστε τυχαία φίλτρα και εφέ στην εικόνα όταν αυτή φορτωθεί και επιτρέψτε στον χρήστη να αποθηκεύσει την επεξεργασμένη εικόνα.</p>
+   <p>Το <link href="http://www.gegl.org/api.html">GEGL</link> παρέχει ισχυρές δυνατότητες επεξεργασίας εικόνας.</p>
+   </item>
+   <item>
+   <p>Επιτρέψτε στον χρήστη να φορτώνει εικόνες από μερισμό δικτύου, από σαρωτές και από άλλες περίπλοκες πηγές.</p>
+   <p>Μπορείτε να χρησιμοποιήσετε το <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> για χειρισμό μεταφορών αρχείων δικτύου και τα παρόμοια, και τη <link href="http://library.gnome.org/devel/gnome-scan/unstable/">Σάρωση του GNOME</link> για χειρισμό σάρωσης.</p>
+   </item>
+  </list>
+</section>
+
+</page>

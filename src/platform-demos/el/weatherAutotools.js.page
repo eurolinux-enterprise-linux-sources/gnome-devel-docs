@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherAutotools.js" xml:lang="el">
+  <info>
+    <link type="guide" xref="weatherApp.js#main" group="#last"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Αυτόματα εργαλεία (Autotools) και εικονίδια</title>
+  <synopsis>
+    <p>Σε αυτό το τμήμα του οδηγού θα κατασκευάσουμε τα αυτόματα εργαλεία και θα προσαρμόσουμε τα απαιτούμενα εικονίδια για την εφαρμογή καιρού για να είναι άρραφο μέρος της επιφάνειας εργασίας σας. Για να γράψετε και να τρέξετε όλα τα παραδείγματα κώδικα οι ίδιοι, χρειαζόσαστε έναν επεξεργαστή για να γράψιμο του κώδικα, τερματικό και GNOME 3 ή μεταγενέστερο εγκατεστημένο στον υπολογιστή σας. Σε αυτόν τον οδηγό θα εξετάσουμε τα παρακάτω μέρη:</p>
+
+    <list>
+      <item><p><link xref="#autotools">Αυτόματα εργαλεία (Autotools)</link></p></item>
+      <item><p><link xref="#icons">Προσαρμοσμένα εικονίδια για την εφαρμογή σας</link></p></item>
+    </list>
+  </synopsis>
+
+
+
+  <section id="autotools">
+  <title>Αυτόματα εργαλεία (Autotools) και απαραίτητα αρχεία</title>
+  <p>Έχοντας περισσότερα από ένα αρχεία στον φάκελό σας κάνει τη χρήση του autotools λίγο περίπλοκο. Χρειαζόσαστε το αρχείο .desktop, autogen.sh, Makefile.am, configure.ac και ως νέο αρχείο: το αρχείο myapp.sh.in. Η επεξεργασία του αρχείου autotools είναι ένα περίπλοκο πεδίο. Περισσότερες πληροφορίες μπορείτε να βρείτε σε πολλές διαφορετικές πηγές, <link href="http://en.wikipedia.org/wiki/GNU_build_system">το άρθρο της βίκι</link> παρέχει μια καλή επισκόπηση του θέματος.</p>
+    <list>
+      <item><p>weatherapp.desktop</p></item>
+      <item><p>weatherapp.sh.in</p></item>
+      <item><p>Makefile.am</p></item>
+      <item><p>configure.ac</p></item>
+      <item><p>autogen.sh</p></item>
+    </list>
+    <p>weatherapp.desktop</p>
+    <code mime="text/.desktop" style="numbered">
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Weather app
+Comment=Weather showing application
+Exec=weatherapp.sh
+Icon=application-default-icon
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Utility;</code>
+    <p>Αυτό που πρέπει να σημειώσετε σε αυτό το αρχείο είναι ότι η γραμμή Exec θα κάνει αυτό το αρχείο .desktop να δουλέψει μόνο μετά την εκτέλεση όλων των άλλων makefiles. Το Weatherapp.sh είναι ένα μικρό σενάριο κελύφους που δημιουργήθηκε με το weatherapp.sh.in.</p>
+
+    <p>weatherapp.sh.in</p>
+    <code mime="text/sh.in" style="numbered">
+#!/bin/sh
+export GJS_PATH=@bindir@
+gjs @bindir@/weatherapp.js</code>
+    <p>Αυτό το αρχείο είναι ένα πρότυπο στο αρχείο Makefile για να εκτελεστεί από .desktop.</p>
+
+    <p>Makefile.am</p>
+    <code mime="text/am" style="numbered">
+# Το ενεργό εκτελέσιμο πρόγραμμα ορίζεται στο θεμελιακό SCRIPTS . Το πρόθεμα bin_ λέει πού θα αντιγραφεί αυτό
+bin_SCRIPTS = weatherapp.js geonames.js weatherapp.sh
+# Ο κατάλογος αρχείων για διανομή
+EXTRA_DIST=  \
+    $(bin_SCRIPTS) \
+    $(private_icons)	\
+	  $(NULL)
+
+CLEANFILES =
+
+# Τα αρχεία της επιφάνειας εργασίας
+desktopdir = $(datadir)/applications
+desktop_DATA =weatherapp.desktop
+
+# Κατάλληλη εντολή για εκτέλεση αντικαταστάσεων μεταβλητής Makefile σε μη Makefile
+# Αρχεία (σενάρια, αρχεία υπηρεσίας, κλπ.)
+do_subst = sed -e 's|@abs_top_srcdir[@]|$(abs_top_srcdir)|g' \
+               -e 's|@abs_top_builddir[@]|$(abs_top_builddir)|g' \
+               -e 's|@localedir[@]|$(localedir)|g' \
+               -e 's|@bindir[@]|$(bindir)|g' \
+               -e 's|@libexecdir[@]|$(libexecdir)|g' \
+	       -e 's|@pkglibdir[@]|$(pkglibdir)|g' \
+	       -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+	       -e 's|@have_libnotify[@]|$(HAVE_LIBNOTIFY)|g' \
+	       -e 's|@have_libsoup[@]|$(HAVE_LIBSOUP)|g' \
+	       -e 's|@have_cheese[@]|$(HAVE_CHEESE)|g'
+
+weatherapp.sh: weatherapp.sh.in
+	$(AM_V_GEN) $(do_subst) $&lt; &gt; $@
+	chmod +x $@
+
+CLEANFILES += weatherapp.sh
+EXTRA_DIST += weatherapp.sh.in
+
+#Το εικονίδιο της εφαρμογής
+appicondir=$(datadir)/icons/hicolor/scalable/apps
+appicon_DATA=weather-icon.svg
+
+#Εικονίδια στην εφαρμογή
+NULL =
+
+private_icons = \
+	weather-clear.svg \
+  weather-few-clouds.svg \
+  weather-fog.svg \
+  weather-icon.svg \
+  weather-overcast.svg \
+  weather-showers.svg \
+  weather-showers-scattered.svg \
+  weather-snow.svg \
+  $(NULL)
+
+install-icons:
+	for icon in $(private_icons); do \
+		mkdir -p $(DESTDIR)$(pkgdatadir)/icons/; \
+		$(INSTALL_DATA) $(srcdir)/$$icon $(DESTDIR)$(pkgdatadir)/icons/; \
+	done
+
+install-data-local: install-icons</code>
+    <p>Αυτό χρειάζεται λίγη περισσότερη εξήγηση. Συγκρινόμενο με το HelloWorld Makefile.am αυτό έχει αλλάξει αρκετά. Ας εξετάσουμε όλες τις νέες ομάδες:</p>
+    <p>Τα bin_scripts είναι αρχεία που απαιτούνται για την εκτέλεση της εφαρμογής σας. Σε αυτήν την περίπτωση τα δύο πρώτα είναι το ίδιο το πρόγραμμα και το τρίτο είναι το σενάριο που ξεκινά την εφαρμογή.</p>
+    <p>EXTRA_DIST είναι τα αρχεία που πρόκειται να διανεμηθούν</p>
+    <p>ομάδα do_subst είναι δυαδικά και κομμάτια που πρέπει να είναι εκεί που βρίσκονται</p>
+    <p>μετά το σχόλιο #εικονίδια στην εφαρμογή υπάρχουν όλα τα εικονίδια που χρησιμοποιούνται από το πρόγραμμα. Για να είναι χρήσιμα αυτά πρέπει να εγκαταστήσετε τα εικονίδια σε σωστές θέσεις και αυτό γίνεται από τα install-icons: bit</p>
+
+    <p>configure.ac</p>
+    <code mime="text/ac" style="numbered">
+dnl This file is processed by autoconf to create a configure script
+AC_INIT([Weather App], 1.0)
+AM_INIT_AUTOMAKE([1.10 no-define foreign])
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT</code>
+    <p>autogen.sh</p>
+    <code mime="text/sh" style="numbered">
+#!/bin/sh
+# Αυτό θα εκτελέσει autoconf, automake, κλπ. για μας
+autoreconf --force --install</code>
+  </section>
+  <section id="icons">
+  <title>Προσαρμογή εικονιδίων για την εφαρμογή σας</title>
+  <p>Εάν σκέφτεστε τα προσαρμοσμένα εικονίδια ένας καλός πρόχειρος κανόνας είναι ο εξής: περιμένετε να δείτε αυτό το εικονίδιο να χρησιμοποιείται κάπου αλλού ή είναι μόνο για την εφαρμογή σας; Εάν συμβαίνει το πρώτο (π.χ. τα εικονίδια στο αρχείο της επιφάνειας εργασίας που εμφανίζονται από το κέλυφος) τότε χρειαζόσαστε /usr/share/hicolor, αλλιώς (π.χ. τα εικονίδια καιρού της εφαρμογής σας) /usr/share/$application/bla/bla</p>
+  <p>Χρησιμοποιώντας το autotools πρέπει να κάνετε μερικές αλλαγές στα αρχεία σας .desktop and Makefile.am. Στο αρχείο επιφάνειας εργασίας αλλάξτε το όνομα του εικονιδίου Icon=weather-icon. Στο αρχείο Makefile.am προσθέστε αυτές τις δύο γραμμές στο τέλος της εφαρμογή σας #the application icon</p>
+  <p>appicondir=$(datadir)/icons/hicolor/scalable/apps</p>
+  <p>appicon_DATA=weather-icon.svg</p>
+  </section>
+
+</page>

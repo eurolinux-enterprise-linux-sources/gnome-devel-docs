@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.py" xml:lang="es">
+  <info>
+    <title type="text">GMenu (Python)</title>
+    <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="menubutton.py"/>
+    <revision version="0.1" date="2012-04-28" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Una implementación sencilla de GMenu</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>GMenu</title>
+  <media type="image" mime="image/png" src="media/gmenu.py.png"/>
+  <p>Una GtkApplication con un GMenu sencillo y SimpleActions</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Código usado para generar este ejemplo</title>
+    <code mime="text/x-python" style="numbered">
+    from gi.repository import Gtk
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GMenu Example", application=app)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        # start the application
+        Gtk.Application.do_startup(self)
+
+        # create a menu
+        menu = Gio.Menu()
+        # append to the menu three options
+        menu.append("New", "app.new")
+        menu.append("About", "app.about")
+        menu.append("Quit", "app.quit")
+        # set the menu as menu of the application
+        self.set_app_menu(menu)
+
+        # create an action for the option "new" of the menu
+        new_action = Gio.SimpleAction.new("new", None)
+        # connect it to the callback function new_cb
+        new_action.connect("activate", self.new_cb)
+        # add the action to the application
+        self.add_action(new_action)
+
+        # option "about"
+        about_action = Gio.SimpleAction.new("about", None)
+        about_action.connect("activate", self.about_cb)
+        self.add_action(about_action)
+
+        # option "quit"
+        quit_action = Gio.SimpleAction.new("quit", None)
+        quit_action.connect("activate", self.quit_cb)
+        self.add_action(quit_action)
+
+    # callback function for "new"
+    def new_cb(self, action, parameter):
+        print("This does nothing. It is only a demonstration.")
+
+    # callback function for "about"
+    def about_cb(self, action, parameter):
+        print("No AboutDialog for you. This is only a demonstration.")
+
+    # callback function for "quit"
+    def quit_cb(self, action, parameter):
+        print("You have quit.")
+        self.quit()
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Métodos útiles para una «GSimpleAction» y un GMenu</title>
+
+    <p>En la línea 33, la señal <code>«activate»</code> de la acción <code>new_action</code> (no el menú) se conecta a la función de retorno de llamada <code>new_cb()</code> usando <code><var>action</var>.connect(<var>señal</var>, <var>función de retorno de llamada</var>)</code>. Consulte la <link xref="signals-callbacks.py"/> para obtener una explicación más detallada.</p>
+
+    <p>Métodos útiles para una «GSimpleAction»:</p>
+    <list>
+      <item><p>Para crear una acción nueva que <em>no dependa del estado</em>, es decir, una acción que no retenga o dependa de un estado dado a la acción en sí, use</p>
+      <code>
+action = Gio.SimpleAction.new("name", parameter_type)</code>
+      <p>donde <code>"name"</code> es el nombre de la acción y <code>parameter_type</code> es el tipo de parámetro que recibe la acción cuando se activa. Este puede ser <code>None</code>, o <code>GLib.VariantType.new('s')</code> si el parámetro es del tipo <code>str</code>, o en lugar de <code>'s'</code> un carácter como se describe <link href="http://developer.gnome.org/glib/unstable/glib-GVariantType.html">aquí</link>. Para crear una acción nueva <em>con estado</em>, use</p>
+      <code>
+action = Gio.SimpleAction.new_stateful("name", parameter_type, initial_state)</code>
+      <p>donde <code>initial_state</code> está definido como una GVariant: por ejemplo <code>Glib.Variant.new_string('start')</code>; para una lista de posibilidades consulte <link href="http://developer.gnome.org/glib/unstable/glib-GVariant.html">aquí</link>.</p></item>
+      <item><p><code>set_enabled(True)</code> configura la acción como habilitada; una acción debe habilitarse para poder activarse o para que llamantes exteriores cambien su estado. Sólo el que implementa la acción debe llamarlo. Los usuarios de la acción no deben intentar modificar su opción «enabled».</p></item>
+      <item><p><code>set_state(estado)</code>, donde <code>estado</code> es una GVariant, establece el estado de la acción, actualizando la propiedad «state» a un valor dado. Sólo el que implementa la acción debe llamarlo; los usuarios de la acción, en cambio, deben llamar a <code>change_state(estado)</code> (donde <code>estado</code> es como se mencionó) para solicitar el cambio.</p></item>
+    </list>
+
+    <p>Métodos útiles para un GMenu:</p>
+    <list>
+      <item><p>Para insertar un elemento en el menú en una <code>posición</code>, use <code>insert(posición, etiqueta, acción_detallada)</code>, donde <code>etiqueta</code> es la etiqueta que aparecerá en el menú y <code>acción_detallada</code> es una cadena compuesta por el nombre de la acción a la que se la agrega el prefijo <code>app.</code>. Puede encontrar una discusión más detallada de esto en la <link xref="menubar.py#win-app"/>.</p>
+      <p>Para agregar o anteponer un elemento en el menú use respectivamente <code>append(etiqueta, acción_detallada)</code> y <code>prepend(etiqueta, acción_detallada)</code>.</p></item>
+      <item><p>Otra manera de añadir elementos al menú es crearlos como <code>GMenuItem</code> y usar <code>insert_item(posición, elemento)</code>, <code>append_item(elemento)</code>, o <code>prepend_item(elemento)</code>; por lo que por ejemplo se podría tener:</p>
+      <code>
+about = Gio.MenuItem.new("About", "app.about")
+menu.append_item(about)</code>
+      </item>
+      <item><p>También se puede añadir una subsección completa a un menú usando <code>insert_section(posición, etiqueta, sección)</code>, <code>append_section(etiqueta, sección)</code>, o <code>prepend_section(etiqueta, sección)</code>, donde <code>etiqueta</code> es el título de la subsección.</p></item>
+      <item><p>Para añadir un submenú que se expanda y colapse, use <code>insert_submenu(posición, etiqueta, sección)</code>, <code>append_submenu(etiqueta, sección)</code>, o <code>prepend_submenu(etiqueta, sección)</code>, donde <code>etiqueta</code> es el título de la subsección.</p></item>
+      <item><p>Para eliminar un elemento del menú, use <code>remove(posición)</code>.</p></item>
+      <item><p>Para establecer una etiqueta para el menú, use <code>set_label(etiqueta)</code>.</p></item>
+    </list>
+
+  </section>
+
+  <section id="references">
+    <title>Referencias de la API</title>
+    <p>En este ejemplo se usa lo siguiente:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gio/unstable/GMenu.html">GMenu</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+      <item><p><link href="http://developer.gnome.org/glib/unstable/glib-GVariantType.html">GVariantType</link></p></item>
+      <item><p><link href="http://developer.gnome.org/glib/unstable/glib-GVariant.html">GVariant</link></p></item>
+    </list>
+  </section>
+</page>

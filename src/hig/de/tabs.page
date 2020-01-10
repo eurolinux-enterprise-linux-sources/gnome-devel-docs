@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="tabs" xml:lang="de">
+
+  <info>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <credit>
+      <name>Calum Benson</name>
+    </credit>
+    <credit>
+      <name>Adam Elman</name>
+    </credit>
+    <credit>
+      <name>Seth Nickell</name>
+    </credit>
+    <credit>
+      <name>Colin Robertson</name>
+    </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/tabs.svg"/>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Christian Kirbach</mal:name>
+      <mal:email>christian.kirbach@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2016</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Reiter</title>
+
+<p>Reiter unterteilen ein Fenster in mehrere Ansichten. Es gibt zwei Formen, feste und dynamische Reiter.</p>
+
+<p>Fixed tabs provide an immutable set of predefined views, and are primarily used in dialog windows. Dynamic tabs allow a window to contain mutable selection of content items, such as pages, documents or images. They are primarily used within <link xref="primary-windows">primary windows</link>, as a part of editor or browser applications.</p>
+
+<media type="image" mime="image/svg" src="figures/ui-elements/tabs.svg"/>
+
+<section id="when-to-use">
+<title>Anwendungsfälle</title>
+
+<p>Verwenden Sie feste Reiter, wenn ein <link xref="dialogs">Dialogfenster</link> zu viele Bedienelemente enthält (oder zu viele Informationen), die nicht komfortabel auf einmal angezeigt werden können.</p>
+
+<p>Dynamic tabs are primarily useful for browser or editor applications, where a user might want to use several locations or content items simultaneously.</p>
+
+</section>
+
+<section id="fixed">
+<title>Feste Reiter</title>
+
+<list>
+<item><p>Verwenden Sie nicht zu viele Reiter. Wenn Sie ohne Scrollen oder Teilen in mehrere Ansichten nicht alle Reiter anzeigen können, sollten Sie vielleicht stattdessen eine Listenansicht verwenden.</p></item>
+<item><p>Label tabs with <link xref="writing-style#capitalization">header capitalization</link>, and use nouns rather than verbs, for example <gui>Font</gui> or <gui>Alignment</gui>. Try to give tab labels a similar length.</p></item>
+<item><p>Do not design tabs such that changing controls on one page affects the controls on any other page. Users are unlikely to discover such dependencies.</p></item>
+<item><p>Wenn ein Bedienelement jeden Reiter beeinflusst, platzieren Sie es außerhalb der Reiter.</p></item>
+<item><p>With fixed tabs, make the width of each tab proportional to the width of its label. Don’t just set all the tabs to the same width, as this makes them harder to scan visually, and limits the number of tabs you can display without scrolling.</p></item>
+</list>
+
+</section>
+
+<section id="dynamic">
+<title>Dynamische Reiter</title>
+
+<list>
+<item><p>Tabs often have a constrained width, so ensure that tab labels are short and concise, and that the most useful part of the label is displayed first. This ensures that the label continues to be useful even when ellipsized.</p></item>
+<item><p>If the content of a tab changes or requires attention, a visual hint can be displayed.</p></item>
+<item><p>Provide a context menu on each tab. This menu should only include actions for manipulating the tab itself, such as <gui>Move Left</gui>, <gui>Move Right</gui>, <gui>Move to New Window</gui>, and <gui>Close</gui>.</p></item>
+<item><p>If tabs are an important part of the application, a new tab button can be placed in the header bar or toolbar. Do not show a new tab button in applications where tabs will not always be used - keyboard shortcuts and/or menu items are sufficient in these cases.</p></item>
+</list>
+
+<section id="keyboard-shortcuts">
+<title>Standard-Tastenkürzel</title>
+
+<p>When using dynamic tabs, ensure that the standard keyboard shortcuts are supported.</p>
+
+<table>
+<tr>
+<td><p><keyseq><key>Strg</key><key>T</key></keyseq></p></td>
+<td><p>Einen neuen Reiter öffnen</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Strg</key><key>W</key></keyseq></p></td>
+<td><p>Den aktuellen Reiter schließen</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Strg</key><key>Bild auf</key></keyseq></p></td>
+<td><p>Zum nächsten Reiter wechseln</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Strg</key><key>Bild ab</key></keyseq></p></td>
+<td><p>Zum vorherigen Reiter wechseln</p></td>
+</tr>
+</table>
+
+</section>
+
+</section>
+
+<section id="api-reference">
+<title>API-Referenz</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkNotebook.html">GtkNotebook</link></p></item>
+</list>
+
+</section>
+</page>

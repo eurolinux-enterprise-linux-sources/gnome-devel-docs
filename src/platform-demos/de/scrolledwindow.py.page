@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scrolledwindow.py" xml:lang="de">
+  <info>
+    <title type="text">ScrolledWindow (Python)</title>
+    <link type="guide" xref="beginner.py#scrolling"/>
+    <link type="next" xref="paned.py"/>
+    <revision version="0.1" date="2012-05-26" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Adds scrollbars to its child widget</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2011, 2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ScrolledWindow</title>
+  <media type="image" mime="image/png" src="media/scrolledwindow.png"/>
+  <p>An image in a scrolled window.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code used to generate this example</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(
+            self, title="ScrolledWindow Example", application=app)
+        self.set_default_size(200, 200)
+
+        # the scrolledwindow
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_border_width(10)
+        # there is always the scrollbar (otherwise: AUTOMATIC - only if needed
+        # - or NEVER)
+        scrolled_window.set_policy(
+            Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS)
+
+        # an image - slightly larger than the window...
+        image = Gtk.Image()
+        image.set_from_file("gnome-image.png")
+
+        # add the image to the scrolledwindow
+        scrolled_window.add_with_viewport(image)
+
+        # add the scrolledwindow to the window
+        self.add(scrolled_window)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+  <section id="methods">
+    <title>Useful methods for a ScrolledWindow widget</title>
+    <list>
+      <item><p><code>set_policy(hscrollbar_policy, vscrollbar_policy)</code> where each of the arguments is one of <code>Gtk.Policy.AUTOMATIC, Gtk.Policy.ALWAYS, Gtk.Policy.NEVER</code> regulates whether the horizontal and vertical scrollbars should appear: with <code>AUTOMATIC</code> they appear only if needed, <code>ALWAYS</code> and <code>NEVER</code> are self-explanatory.</p></item>
+      <item><p><code>add_with_viewport(widget)</code> is used to add the Gtk.Widget <code>widget</code> without native scrolling capabilities inside the window.</p></item>
+      <item><p><code>set_placement(window_placement)</code> sets the placement of the contents with respect to the scrollbars for the scrolled window. The options for the argument are <code>Gtk.CornerType.TOP_LEFT</code> (default: the scrollbars are on the bottom and on the right of the window), <code>Gtk.CornerType.TOP_RIGHT, Gtk.CornerType.BOTTOM_LEFT, Gtk.CornerType.BOTTOM_RIGHT</code>.</p></item>
+      <item><p><code>set_hadjustment(adjustment)</code> and <code>set_vadjustment(adjustment)</code> set the Gtk.Adjustment <code>adjustment</code>. This is the representation of a value with a lower and upper bound, together with step and page increments, and a page size, and it is constructed as <code>Gtk.Adjustment(value, lower, upper, step_increment, page_increment, page_size)</code> where the fields are of type <code>float</code>. (Note that <code>step_increment</code> is not used in this case, it can be set to <code>0</code>.)</p></item>
+    </list>
+  </section>
+  <section id="references">
+    <title>API-Referenzen</title>
+    <p>In this sample we used the following:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkScrolledWindow.html">GtkScrolledWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">Standard-Aufzählungen</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkImage.html">GtkImage</link></p></item>
+    </list>
+  </section>
+</page>

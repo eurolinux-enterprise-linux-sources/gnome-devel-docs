@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherAutotools.js" xml:lang="es">
+  <info>
+    <link type="guide" xref="weatherApp.js#main" group="#last"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Autotools e iconos</title>
+  <synopsis>
+    <p>En esta parte de la guía se construirán las «autotools» y los iconos necesarios para la aplicación del clima para que sea una parte integral de su escritorio. Para escribir y ejecutar todos los ejemplos de código necesita un editor de texto en el que escribir el código, una terminal y GNOME 3 o superior instalado en su equipo. En esta guía se verán las siguientes partes:</p>
+
+    <list>
+      <item><p><link xref="#autotools"> Autotools</link></p></item>
+      <item><p><link xref="#icons">Iconos personalizados para su aplicación</link></p></item>
+    </list>
+  </synopsis>
+
+
+
+  <section id="autotools">
+  <title>Autotools y archivos necesarios</title>
+  <p>Tener más de un archivo en la carpeta complica un poco el uso de autotools. Necesita los archivos .desktop, autogen.sh, Makefile.am, configure.ac y un archivo nuevo: myapp.sh.in. Hackear el archivo de autotools es complicado. Puede encontrar más información en diferentes fuentes; <link href="http://en.wikipedia.org/wiki/GNU_build_system">este artículo de la wikipedia</link> proporciona una visión general de este tema.</p>
+    <list>
+      <item><p>weatherapp.desktop</p></item>
+      <item><p>weatherapp.sh.in</p></item>
+      <item><p>Makefile.am</p></item>
+      <item><p>configure.ac</p></item>
+      <item><p>autogen.sh</p></item>
+    </list>
+    <p>weatherapp.desktop</p>
+    <code mime="text/.desktop" style="numbered">
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Weather app
+Comment=Weather showing application
+Exec=weatherapp.sh
+Icon=application-default-icon
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Utility;</code>
+    <p>Lo importante de este archivo es que la línea Exec hará que el archivo .desktop funcione sólo después de ejecutar el resto de makefiles. Weatherapp.sh es un pequeño script creado a partir de weatherapp.sh.in.</p>
+
+    <p>weatherapp.sh.in</p>
+    <code mime="text/sh.in" style="numbered">
+#!/bin/sh
+export GJS_PATH=@bindir@
+gjs @bindir@/weatherapp.js</code>
+    <p>Este archivo es una plantilla que el Makefile creará para ejecutarlo desde el .desktop.</p>
+
+    <p>Makefile.am</p>
+    <code mime="text/am" style="numbered">
+# The actual runnable program is set to the SCRIPTS primitive. Prefix bin_ tells where to copy this
+bin_SCRIPTS = weatherapp.js geonames.js weatherapp.sh
+# List of files to be distributed
+EXTRA_DIST=  \
+    $(bin_SCRIPTS) \
+    $(private_icons)	\
+	  $(NULL)
+
+CLEANFILES =
+
+# The desktop files
+desktopdir = $(datadir)/applications
+desktop_DATA =weatherapp.desktop
+
+# convenience command for doing Makefile variable substitutions in non-Makefile
+# files (scripts, service files, etc.)
+do_subst = sed -e 's|@abs_top_srcdir[@]|$(abs_top_srcdir)|g' \
+               -e 's|@abs_top_builddir[@]|$(abs_top_builddir)|g' \
+               -e 's|@localedir[@]|$(localedir)|g' \
+               -e 's|@bindir[@]|$(bindir)|g' \
+               -e 's|@libexecdir[@]|$(libexecdir)|g' \
+	       -e 's|@pkglibdir[@]|$(pkglibdir)|g' \
+	       -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+	       -e 's|@have_libnotify[@]|$(HAVE_LIBNOTIFY)|g' \
+	       -e 's|@have_libsoup[@]|$(HAVE_LIBSOUP)|g' \
+	       -e 's|@have_cheese[@]|$(HAVE_CHEESE)|g'
+
+weatherapp.sh: weatherapp.sh.in
+	$(AM_V_GEN) $(do_subst) $&lt; &gt; $@
+	chmod +x $@
+
+CLEANFILES += weatherapp.sh
+EXTRA_DIST += weatherapp.sh.in
+
+#the application icon
+appicondir=$(datadir)/icons/hicolor/scalable/apps
+appicon_DATA=weather-icon.svg
+
+#icons in the application
+NULL =
+
+private_icons = \
+	weather-clear.svg \
+  weather-few-clouds.svg \
+  weather-fog.svg \
+  weather-icon.svg \
+  weather-overcast.svg \
+  weather-showers.svg \
+  weather-showers-scattered.svg \
+  weather-snow.svg \
+  $(NULL)
+
+install-icons:
+	for icon in $(private_icons); do \
+		mkdir -p $(DESTDIR)$(pkgdatadir)/icons/; \
+		$(INSTALL_DATA) $(srcdir)/$$icon $(DESTDIR)$(pkgdatadir)/icons/; \
+	done
+
+install-data-local: install-icons</code>
+    <p>Esto necesita más explicación. Comparado con el Makefile.am de HelloWorld, esto ha cambiado un poco. Eche un vistazo a los bloques nuevos.</p>
+    <p>bin_scripts son los archivos necesarios para ejecutar la aplicación. En este caso, los dos primeros archivos son el programa en sí y el tercero es el script que lanza la aplicación.</p>
+    <p>EXTRA_DIST son los archivos que se deben distribuir</p>
+    <p>El bloque do_subst son partes que deben estar donde están</p>
+    <p>después del comentario «#icons» en la aplicación, están todos los iconos usados por el programa. Para que sean útiles, debe instalar los iconos en los lugares correctos, y esto se hace con el bit «install-icons:»</p>
+
+    <p>configure.ac</p>
+    <code mime="text/ac" style="numbered">
+dnl This file is processed by autoconf to create a configure script
+AC_INIT([Weather App], 1.0)
+AM_INIT_AUTOMAKE([1.10 no-define foreign])
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT</code>
+    <p>autogen.sh</p>
+    <code mime="text/sh" style="numbered">
+#!/bin/sh
+# This will run autoconf, automake, etc. for us
+autoreconf --force --install</code>
+  </section>
+  <section id="icons">
+  <title>Iconos personalizados para su aplicación</title>
+  <p>Cuando piense en iconos personalizados, una buena regla es: ¿espera ver un este icono en cualquier parte o es privado para su aplicación? En el primer caso (ej. iconos en el archivo .desktop que se muestran en GNOME Shell) necesita /usr/share/hicolor; si no, (ej. iconos del tiempo en su aplicación), necesita /usr/share/$application/bla/bla.</p>
+  <p>Usando autotools debe hacer algunos cambios en sus archivos .desktop y Makefile.am. En el archivo .desktop, debe cambiar el nombre del icono a Icon=weather-icon. En el Makefile.am, debe añadir estas líneas al final del archivo</p>
+  <p>#the application icon
+appicondir=$(datadir)/icons/hicolor/scalable/apps</p>
+  <p>appicon_DATA=weather-icon.svg</p>
+  </section>
+
+</page>

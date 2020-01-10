@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.c" xml:lang="fr">
+  <info>
+    <title type="text">Entry (C)</title>
+    <link type="guide" xref="c#entry"/>
+    <revision version="0.1" date="2012-06-14" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un champ de saisie de texte sur une ligne</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Entrée</title>
+
+  <media type="image" mime="image/png" src="media/entry.png"/>
+  <p>Cette application vous accueille dans le terminal.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+
+
+/*This is the callback function. It is a handler function 
+which reacts to the signal. In this case, it will grab the 
+text input from the entry box and print out a line to the user.*/
+static void
+on_activate (GtkEntry *entry,
+             gpointer  user_data)
+{
+  const char *name;
+  name = gtk_entry_get_text (entry);
+
+  g_print ("\nHello %s!\n\n", name);
+}
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *entry_box;
+
+  /*Create a window with a title, a default size, 
+  and a set border width*/
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "What is your name?");
+  gtk_window_set_default_size (GTK_WINDOW (window), 300, 100);
+  gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+
+  /*Create a new entry box, and add it to the window*/
+  entry_box = gtk_entry_new ();
+  gtk_container_add (GTK_CONTAINER (window), entry_box);
+
+  /*Connecting the activate signal to the callback*/
+  g_signal_connect (GTK_ENTRY (entry_box), "activate", 
+                    G_CALLBACK (on_activate), NULL);
+
+  gtk_widget_show_all (window);
+}
+
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkEntry.html">GtkEntry</link></p></item>
+</list>
+</page>

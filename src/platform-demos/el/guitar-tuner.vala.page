@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.vala" xml:lang="el">
+
+  <info>
+    <link type="guide" xref="vala#examples"/>
+
+    <desc>Χρησιμοποιήστε <link href="http://developer.gnome.org/platform-overview/stable/gtk">GTK+</link> και <link href="http://developer.gnome.org/platform-overview/stable/gstreamer">GStreamer</link> για να φτιάξετε ένα απλό πρόγραμμα ρυθμιστή κιθάρας για το GNOME. Αναδεικνύει πώς να χρησιμοποιήσετε το σχεδιαστή διεπαφής.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2012-02-09" status="candidate"/>
+    <credit type="author">
+      <name>Έργο τεκμηρίωσης GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+    </credit>
+  <credit type="editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2013</years>
+  </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Συντονιστής κιθάρας</title>
+
+<synopsis>
+  <p>Σε αυτό το μάθημα, θα δημιουργήσουμε μια εφαρμογή που παίζει τόνους και μπορεί να συντονίσει μια κιθάρα. Θα μάθετε πώς να:</p>
+  <list type="numbered">
+    <item><p>Εγκαταστήσετε ένα βασικό έργο χρησιμοποιώντας το <link xref="getting-ready">Anjuta IDE</link>.</p></item>
+    <item><p>Δημιουργήσετε ένα απλό GUI με τον σχεδιαστή UI του <app>Anjuta</app>.</p></item>
+    <item><p>Χρησιμοποιήσετε τη βιβλιοθήκη <link href="http://developer.gnome.org/platform-overview/stable/gstreamer">GStreamer</link> για να παίξει ήχους.</p></item>
+  </list>
+  <p>Θα χρειαστείτε τα παρακάτω για να μπορέσετε να ακολουθήσετε αυτό το μάθημα:</p>
+  <list>
+    <item><p>Βασική γνώση της γλώσσας προγραμματισμού <link href="https://live.gnome.org/Vala/Tutorial">Vala</link>.</p></item>
+    <item><p>Ένα εγκατεστημένο αντίγραφο του <app>Anjuta</app>.</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/guitar-tuner.png"/>
+
+<section id="anjuta">
+  <title>Δημιουργήστε ένα έργο με το <app>Anjuta</app></title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+    <p>Ξεκινήστε το <app>Anjuta</app> και πατήστε <gui>δημιουργία νέου έργου</gui> ή <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+    <p>Πατήστε στην καρτέλα <gui>Vala</gui> και επιλέξτε <gui>GTK+ (απλό)</gui>. Πατήστε <gui>συνέχεια</gui> και συμπληρώστε τις λεπτομέρειές σας στις επόμενες λίγες σελίδες. Χρησιμοποιήστε ως όνομα του έργου και του καταλόγου το <file>guitar-tuner</file>.</p>
+   	</item>
+    <item>
+    <p>Βεβαιωθείτε ότι η <gui>ρύθμιση εξωτερικών πακέτων</gui> είναι <gui>ενεργή</gui>. Στην επόμενη σελίδα, επιλέξτε <link href="http://valadoc.org/gstreamer-0.10/index.htm"><em>gstreamer-0.10</em></link> από τη λίστα για συμπερίληψη της βιβλιοθήκης GStreamer στο έργο σας. Κάντε κλικ στη <gui>συνέχεια</gui></p>
+    </item>
+    <item>
+    <p>Κλικ στην <gui>εφαρμογή</gui> και το έργο θα δημιουργηθεί για σας. Από τις καρτέλες <gui>έργο</gui> ή <gui>αρχεία</gui>, ανοίξτε το <file>src/guitar_tuner.vala</file> με διπλό κλικ πάνω του. Θα πρέπει να δείτε κάποιο κώδικα που ξεκινάει με τις γραμμές:</p>
+    <code mime="text/x-csharp">
+using GLib;
+using Gtk;</code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Κατασκευάστε τον κώδικα για πρώτη φορά</title>
+  <p>Ο κώδικας φορτώνει ένα (κενό) παράθυρο από το αρχείο περιγραφής διεπαφής χρήστη και το εμφανίζει. Περισσότερες λεπτομέρειες δίνονται παρακάτω· μπορεί να επιλέξετε να προσπεράστε αυτή τη λίστα αν καταλαβαίνετε τα βασικά:</p>
+
+  <list>
+  <item>
+    <p>Οι δύο γραμμές <code>using</code> εισάγουν χώρους ονομάτων έτσι ώστε να μην τους ονομάσουμε ρητά.</p>
+   </item>
+   <item>
+    <p>Ο κατασκευαστής της κλάσης <code>Main</code> δημιουργεί ένα νέο παράθυρο ανοίγοντας ένα αρχείο GtkBuilder (<file>src/guitar-tuner.ui</file>, που ορίζεται λίγες γραμμές παραπάνω), συνδέοντας τα σήματά του και έπειτα εμφανίζοντας τα σε παράθυρο. Αυτό το αρχείο GtkBuilder περιέχει μια περιγραφή μιας διεπαφής χρήστη και όλων των στοιχείων του. Μπορείτε να χρησιμοποιήσετε τον επεξεργαστή του Anjuta για σχεδίαση διεπαφών χρήστη GtkBuilder.</p>
+    <note>
+    <p>Η σύνδεση σημάτων είναι πώς ορίζετε τι συμβαίνει όταν πατάτε ένα κουμπί, ή όταν συμβεί κάποιο άλλο συμβάν. Εδώ, καλείται η συνάρτηση <code>on_destroy</code> (και τερματίζει την εφαρμογή) όταν κλείνετε το παράθυρο.</p>
+    </note>
+   </item>
+   <item>
+    <p>Η στατική συνάρτηση <code>main</code> τρέχει από προεπιλογή όταν ξεκινάτε μια εφαρμογή Vala. Καλεί λίγες συναρτήσεις που δημιουργούν την κύρια κλάση, ρυθμίζουν και έπειτα εκτελούν την εφαρμογή. Η συνάρτηση <code>Gtk.main</code> ξεκινά τον κύριο βρόχο του GTK, που εκτελεί τη διεπαφή χρήστη και ξεκινά την απάντηση για συμβάντα (όπως κλικ και πατήματα πλήκτρου).</p>
+   </item>
+  </list>
+
+  <p>Αυτός ο κώδικας είναι έτοιμος να χρησιμοποιηθεί. έτσι μπορείτε να τον μεταγλωττίσετε με κλικ <guiseq><gui>κατασκευή</gui><gui>κατασκευή έργου</gui></guiseq> (ή πατώντας <keyseq><key>Shift</key><key>F7</key></keyseq>). Όταν το κάνετε αυτό, θα εμφανιστεί ένας διάλογος. Αλλάξτε τη <gui>ρύθμιση</gui> σε <gui>προεπιλογή</gui> και έπειτα κλικ <gui>εκτέλεση</gui> για ρύθμιση του καταλόγου κατασκευής. Χρειάζεστε να το κάνετε αυτό μόνο μια φορά, για την πρώτη κατασκευή.</p>
+</section>
+
+<section id="ui">
+  <title>Δημιουργία της διεπαφής χρήστη</title>
+  <p>Μια περιγραφή της διεπαφής χρήστη (UI) περιέχεται στο αρχείο του GtkBuilder <file>src/guitar_tuner.ui</file> που ορίστηκε στην κορυφή της κλάσης. Για να επεξεργαστείτε τη διεπαφή χρήστη, ανοίξτε το <file>src/guitar_tuner.ui</file> με διπλό κλικ πάνω του στην ενότητα <gui>έργο</gui> ή <gui>αρχεία</gui>. Θα βρεθείτε στο σχεδιαστή διεπαφής. Το παράθυρο σχεδίασης είναι στο κέντρο· τα <gui>γραφικά στοιχεία</gui> και οι ιδιότητες γραφικού στοιχείου είναι στα δεξιά και η <gui>παλέτα</gui> με τα διαθέσιμα γραφικά στοιχεία είναι στα αριστερά.</p>
+  <p>Η διάταξη κάθε διεπαφής χρήστη στο Gtk+ οργανώνεται σε πλαίσια και πίνακες. Ας χρησιμοποιήσουμε εδώ ένα κάθετο GtkButtonBox για να αποδώσουμε έξι GtkButtons, ένα για κάθε μία από τις έξι χορδές της κιθάρας.</p>
+
+<media type="image" mime="image/png" src="media/guitar-tuner-glade.png"/>
+
+  <steps>
+   <item>
+   <p>Στην καρτέλα <gui>παλέτα</gui>, από την ενότητα <gui>περιέκτες</gui>, επιλέξτε ένα <gui>πλαίσιο κουμπιού</gui> (GtkButtonBox) με κλικ στο εικονίδιο. Έπειτα κλικ στο παράθυρο σχεδίασης στο κέντρο για τοποθέτηση του στο παράθυρο. Ένας διάλογος θα εμφανίσει που μπορείτε να ορίσετε τον <gui>αριθμό των στοιχείων</gui> σε <input>6</input>. Έπειτα κλικ στο <gui>δημιουργία</gui>.</p>
+ <note><p>Μπορείτε επίσης να αλλάξετε τον <gui>αριθμό των στοιχείων</gui> και τον <gui>προσανατολισμό</gui> στην καρτέλα <gui>γενικά</gui> στα δεξιά.</p></note>
+   </item>
+   <item>
+    <p>Τώρα, από την ενότητα <gui>έλεγχος και εμφάνιση</gui> της <gui>παλέτας</gui> επιλέξτε ένα <gui>κουμπί</gui> (GtkButton) με κλικ πάνω του. Τοποθετήστε το στην πρώτη ενότητα του GtkButtonBox με κλικ στην πρώτη ενότητα.</p>
+   </item>
+   <item>
+    <p>Έχοντας το κουμπί ακόμα επιλεγμένο, κυλήστε κάτω στην καρτέλα <gui>γενικά</gui> στα δεξιά της ιδιότητας <gui>ετικέτα</gui> και αλλάξτε την σε <gui>E</gui>. Αυτή θα είναι η χαμηλή χορδή της κιθάρας Ε.</p>
+  <note><p>Η καρτέλα <gui>γενικά</gui> εντοπίζεται στην ενότητα <gui>γραφικά στοιχεία</gui> στα δεξιά.</p></note>
+    </item>
+    <item>
+     <p>Πηγαίνετε στην καρτέλα <gui>σήματα</gui> στην ενότητα <gui>γραφικά στοιχεία</gui> στα δεξιά και βρείτε το σήμα <code>clicked</code> του κουμπιού. Μπορείτε να το χρησιμοποιήσετε για να συνδέσετε έναν χειριστή σημάτων που θα καλείται όταν πατηθεί το κουμπί από τον χρήστη. Για να το κάνετε αυτό, κλικ στο σήμα και πληκτρολογήστε <code>main_on_button_clicked</code> στη στήλη <gui>χειριστής</gui> και πατήστε <key>Enter</key>.</p>
+    </item>
+    <item>
+    <p>Επαναλάβετε τα παραπάνω βήματα για τα υπόλοιπα κουμπιά, προσθέστε τις επόμενες 5 χορδές με τα ονόματα <em>A</em>, <em>D</em>, <em>G</em>, <em>B</em>, και <em>e</em>.</p>
+    </item>
+    <item>
+    <p>Αποθηκεύστε τη σχεδίαση UI (πατώντας <guiseq><gui>αρχείο</gui><gui>αποθήκευση</gui></guiseq>) και κρατήστε το ανοιχτό.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="gstreamer">
+  <title>Διοχετεύσεις GStreamer</title>
+  <p>Αυτή η ενότητα θα δείξει πώς να παράξει ο κώδικας ήχους. <link href="http://developer.gnome.org/platform-overview/stable/gstreamer">GStreamer</link> είναι ο σκελετός πολυμέσων του GNOME - μπορείτε να τον χρησιμοποιήσετε για παίξιμο, εγγραφή και επεξεργασία βίντεο, ήχου, ροών ιστοκάμερας και τα παρόμοια. Εδώ, θα το χρησιμοποιήσουμε για να παράξουμε τόνους μιας συχνότητας.</p>
+  <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείτε μια<link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-intro-basics-bins.html"> <em>διοχέτευση</em></link> που περιέχει διάφορα στοιχεία επεξεργασίας που πηγαίνουν από την <em>πηγή</em> στο <em>ταμιευτήρα</em> (έξοδο). Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι γραφικό στοιχείο ή κάρτα ήχου.</p>
+  <p>Ανάμεσα στην πηγή και στην έξοδο, μπορείτε να εφαρμόσετε διάφορα φίλτρα και οι μετατροπείς να χειριστούν εφέ, μετατροπές μορφών και λοιπά. Κάθε στοιχείο της διοχέτευσης έχει ιδιότητες που μπορούν να χρησιμοποιηθούν για να αλλάξουν τη συμπεριφορά τους.</p>
+  <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
+    <p>Ένα παράδειγμα διοχέτευσης GStreamer.</p>
+  </media>
+</section>
+
+<section id="pipeline">
+  <title>Ρύθμιση της διοχέτευσης</title>
+  <p>Σε αυτό το παράδειγμα θα χρησιμοποιήσουμε μια πηγή παραγωγής τόνων που λέγεται <code>audiotestsrc</code> και θα στείλουμε την έξοδο στην προεπιλεγμένη συσκευή ήχου του συστήματος, <code>autoaudiosink</code>. Πρέπει μόνο να ρυθμίσουμε την συχνότητα της παραγωγής τόνου· αυτό είναι διαθέσιμο μέσα από την ιδιότητα <code>freq</code> του <code>audiotestsrc</code>.</p>
+
+  <p>Χρειάζεται να προσθέσουμε μια γραμμή για αρχικοποίηση του GStreamer· βάλτε τον παρακάτω κώδικα στην γραμμή πάνω από την κλήση <code>Gtk.init</code> στη συνάρτηση <code>main</code>:</p>
+  <code mime="text/x-csharp">Gst.init (ref args);</code>
+  <p>Μετά, αντιγράψτε την ακόλουθη συνάρτηση στο <file>guitar_tuner.vala</file> μέσα στην κλάση μας <code>Main</code>:</p>
+  <code mime="text/x-csharp">
+Gst.Element sink;
+Gst.Element source;
+Gst.Pipeline pipeline;
+
+private void play_sound(double frequency)
+{
+	pipeline = new Gst.Pipeline ("note");
+	source   = Gst.ElementFactory.make ("audiotestsrc",
+	                                    "source");
+	sink     = Gst.ElementFactory.make ("autoaudiosink",
+	                                    "output");
+
+	/* set frequency */
+	source.set ("freq", frequency);
+
+	pipeline.add (source);
+	pipeline.add (sink);
+	source.link (sink);
+
+	pipeline.set_state (Gst.State.PLAYING);
+
+	/* stop it after 200ms */
+	var time = new TimeoutSource(200);
+
+	time.set_callback(() =&gt; {
+		pipeline.set_state (Gst.State.NULL);
+		return false;
+	});
+	time.attach(null);
+}</code>
+
+  <steps>
+    <item>
+    <p>Οι τρεις πρώτες γραμμές δημιουργούν τα στοιχεία πηγή και έξοδο του GStreamer (<link href="http://valadoc.org/gstreamer-0.10/Gst.Element.html"><code>Gst.Element</code></link>), και ένα <link href="http://valadoc.org/gstreamer-0.10/Gst.Pipeline.html">στοιχείο διοχέτευσης</link> (το οποίο θα χρησιμοποιηθεί σαν περιέκτης για τα δυο άλλα στοιχεία). Αυτά είναι μεταβλητές κλάσεων, έτσι ορίζονται έξω από τη μέθοδο. Δίνουμε το όνομα "note" στη διοχέτευση· ονομάζουμε την πηγή "source" και ρυθμίζεται στην πηγή <code>audiotestsrc</code>· και ονομάζουμε την έξοδο "output" και ρυθμίζεται στην έξοδο <code>autoaudiosink</code> (προεπιλεγμένη έξοδος κάρτας ήχου).</p>
+    </item>
+    <item>
+    <p>Η κλήση στο <link href="http://valadoc.org/gobject-2.0/GLib.Object.set.html"><code>source.set</code></link> ορίζει την ιδιότητα <code>freq</code> του στοιχείου πηγής σε <code>frequency</code>, η οποία έχει περαστεί ως όρισμα στη συνάρτηση <code>play_sound</code>. Αυτή είναι η συχνότητα της νότας σε Hertz· πολλές χρήσιμες συχνότητες θα οριστούν αργότερα.</p>
+    </item>
+    <item>
+    <p>Το <link href="http://valadoc.org/gstreamer-0.10/Gst.Bin.add.html"><code>pipeline.add</code></link> βάζει την πηγή και την έξοδο στη διοχέτευση. Η διοχέτευση είναι ένα <link href="http://valadoc.org/gstreamer-0.10/Gst.Bin.html"><code>Gst.Bin</code></link>,που είναι απλά ένα στοιχείο που μπορεί να περιέχει πολλαπλά άλλα στοιχεία GStreamer. Γενικά, μπορείτε να προσθέσετε όσα στοιχεία θέλετε στη διοχέτευση προσθέτοντας περισσότερες κλήσεις στο <code>pipeline.add</code>.</p>
+    </item>
+    <item>
+    <p>Κατόπιν, το <link href="http://valadoc.org/gstreamer-0.10/Gst.Element.link.html"><code>sink.link</code></link> χρησιμοποιείται για σύνδεση των στοιχείων μαζί, έτσι ώστε η έξοδος της πηγής (ένας τόνος) να πηγαίνει στην είσοδο της εξόδου (η οποία μετά είναι έξοδος στην κάρτα ήχου). Το <link href="http://www.valadoc.org/gstreamer-0.10/Gst.Element.set_state.html"><code>pipeline.set_state</code></link> χρησιμοποιείται έπειτα για την εκκίνηση της αναπαραγωγής, ρυθμίζοντας την <link href="http://www.valadoc.org/gstreamer-0.10/Gst.State.html">κατάσταση της σωλήνωσης</link> να παίξει (<code>Gst.State.PLAYING</code>).</p>
+    </item>
+    <item>
+    <p>Δεν θέλουμε να παίζουμε έναν ενοχλητικό ήχο για πάντα, οπότε το τελευταίο πράγμα που κάνει ο <code>play_sound</code> είναι να προσθέσει έναν <link href="http://www.valadoc.org/glib-2.0/GLib.TimeoutSource.html"><code>TimeoutSource</code></link>. Αυτό ορίζει ένα χρονικό όριο που θα σταματήσει τον ήχο· περιμένει για 200 ms πριν καλέσει τον χειριστή σήματος που ορίστηκε στη γραμμή που σταματά και καταστρέφει τη διοχέτευση. Επιστρέφει <code>false</code> για να αφαιρέσει την ίδια από το χρονικό όριο, αλλιώς θα συνέχιζε να καλείται κάθε 200 ms.</p>
+    </item>
+  </steps>
+</section>
+
+
+<section id="signal">
+  <title>Δημιουργία χειριστή σημάτων</title>
+  <p>Στον σχεδιαστή διεπαφών χρήστη, κάνατε όλα τα κουμπιά να καλούν την ίδια συνάρτηση, <gui>on_button_clicked</gui>, όταν πατηθούν. Στην πραγματικότητα, πληκτρολογούμε <gui>main_on_button_clicked</gui> που λέει στον σχεδιαστή UI ότι αυτή η μέθοδος είναι τμήμα του <code>Main</code> μας. Πρέπει να προσθέσουμε αυτή την συνάρτηση στο πηγαίο αρχείο.</p>
+  <p>Για να το κάνετε αυτό, στο αρχείο διεπαφής χρήστη (guitar_tuner.ui), επιλέξτε ένα από τα κουμπιά με κλικ πάνω του, έπειτα ανοίξτε <file>guitar_tuner.vala</file> (με κλικ στην καρτέλα στο κέντρο). Εναλλαγή στην καρτέλα <gui>σήματα</gui> στα δεξιά, που χρησιμοποιήσατε για τον ορισμό του ονόματος αρχείου. Τώρα, πάρτε τη γραμμή όπου ορίσατε το σήμα <gui>πατημένο</gui> και σύρσιμο και απόθεσή του στο πηγαίο αρχείο στην αρχή της κλάσης. Ο παρακάτω κώδικας θα προστεθεί στο πηγαίο σας αρχείο:</p>
+<code mime="text/x-csharp">
+public void on_button_clicked (Gtk.Button sender) {
+
+}</code>
+
+ <note><p>Μπορείτε επίσης να πληκτρολογήσετε απλά των κώδικα στην αρχή της κλάσης αντί της χρήσης συρσίματος και απόθεσης.</p></note>
+  <p>Αυτός ο χειριστής σήματος έχει μόνο ένα όρισμα: το <link href="http://valadoc.org/gtk+-3.0/Gtk.Widget.html"><code>Gtk.Widget</code></link> που κάλεσε η συνάρτηση (στην περίπτωσή μας, πάντοτε ένα <link href="http://valadoc.org/gtk+-3.0/Gtk.Button.html"><code>Gtk.Button</code></link>).</p>
+</section>
+
+
+<section id="handler">
+  <title>Ορισμός του χειριστή σημάτων</title>
+  <p>Θέλουμε να παίξουμε τον σωστό ήχο όταν ο χρήστης πατά ένα κουμπί. Για αυτό, ζωντανεύουμε τον χειριστή σήματος που ορίσαμε παραπάνω, <code>on_button_clicked</code>. Θα μπορούσαμε να έχουμε συνδέσει κάθε κουμπί σε διαφορετικό χειριστή σήματος, αλλά αυτό θα μπορούσε να οδηγήσει σε εκτεταμένο διπλασιασμό του κώδικα. Αντίθετα, μπορούμε να χρησιμοποιήσουμε την ετικέτα του κουμπιού για να καταλάβουμε ποιο κουμπί πατήθηκε:</p>
+  <code mime="text/x-csharp">
+public void on_button_clicked (Gtk.Button sender) {
+	var label = sender.get_child () as Gtk.Label;
+	switch (label.get_label()) {
+		case "E":
+			play_sound (329.63);
+			break;
+		case "A":
+			play_sound (440);
+			break;
+		case "D":
+			play_sound (587.33);
+			break;
+		case "G":
+			play_sound (783.99);
+			break;
+		case "B":
+			play_sound (987.77);
+			break;
+		case "e":
+			play_sound (1318);
+			break;
+		default:
+			break;
+	}
+}
+</code>
+  <p>Το <code>Gtk.Button</code> που πατήθηκε περνά ως όρισμα (<code>sender</code>) στο <code>on_button_clicked</code>. Μπορούμε να πάρουμε την ετικέτα αυτού του κουμπιού χρησιμοποιώντας τον <code>get_child</code> και έπειτα να πάρουμε το κείμενο από αυτήν την ετικέτα χρησιμοποιώντας <code>get_label</code>.</p>
+  <p>Η πρόταση διακόπτη συγκρίνει το κείμενο ετικέτας με τις νότες που μπορούμε να παίξουμε και καλείται ο <code>play_sound</code> με την κατάλληλη συχνότητα για αυτήν την νότα. Αυτό παίζει τον τόνο· ο ρυθμιστής κιθάρας είναι έτοιμος!</p>
+</section>
+
+<section id="run">
+  <title>Κατασκευή και εκτέλεση της εφαρμογής</title>
+  <p>Όλος ο κώδικας πρέπει να είναι έτοιμος τώρα. Κλικ <guiseq><gui>κατασκευή</gui><gui>κατασκευή έργου</gui></guiseq> για ανακατασκευή των πάντων και έπειτα <guiseq><gui>τρέξιμο</gui><gui>εκτέλεση</gui></guiseq> για έναρξη της εφαρμογής.</p>
+  <p>Εάν δεν το έχετε ήδη κάνει, επιλέξτε την εφαρμογή <file>Debug/src/guitar-tuner</file> στον διάλογο που εμφανίζεται. Τελικά, πατήστε <gui>τρέξιμο</gui> και απολαύστε!</p>
+</section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Αν αντιμετωπίσετε προβλήματα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="guitar-tuner/guitar-tuner.vala">κώδικα αναφοράς</link>.</p>
+</section>
+
+<section id="further">
+<title>Περαιτέρω ανάγνωση</title>
+<p>Για να βρείτε περισσότερα για τη γλώσσα προγραμματισμού Vala ίσως θελήσετε να κοιτάξετε το <link href="http://live.gnome.org/Vala/Tutorial">μάθημα Vala</link> και το <link href="http://valadoc.org/">τεκμηρίωση API Vala</link></p>
+</section>
+
+<section id="next">
+  <title>Επόμενα βήματα</title>
+  <p>Εδώ είναι κάποιες ιδέες για το πώς μπορείτε να επεκτείνετε αυτή την απλή παρουσίαση:</p>
+  <list>
+   <item>
+   <p>Βάλτε το πρόγραμμα να περνάει αυτόματα μέσα από τις νότες.</p>
+   </item>
+   <item>
+   <p>Κάντε το πρόγραμμα να αναπαράγει ηχογραφήσεις από αληθινές χορδές κιθάρας που έχουν εισαχθεί.</p>
+   <p>Για να το κάνετε αυτό, πρέπει να ρυθμίσετε μια πιο περίπλοκη διοχέτευση GStreamer που θα σας επιτρέπει να φορτώνετε και να αναπαράγετε αρχεία ήχου. Θα πρέπει να διαλέξετε τα στοιχεία GStreamer <link href="http://gstreamer.freedesktop.org/documentation/plugins.html">decoder και demuxer</link> με βάση τον τύπο του αρχείου των ηχογραφημένων ήχων — για παράδειγμα το MP3 χρησιμοποιεί διαφορετικά στοιχεία από το Ogg Vorbis.</p>
+   <p>Ίσως χρειαστεί να συνδέσετε τα στοιχεία με πιο περίπλοκους τρόπους. Αυτό μπορεί να συμπεριλαμβάνει τη χρήση <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/chapter-intro-basics.html">Εννοιών GStreamer</link> που δεν καλύπτουμε σε αυτόν τον οδηγό, όπως και <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-intro-basics-pads.html">pad</link>. Ίσως βρείτε χρήσιμη και την εντολή <cmd>gst-inspect</cmd>.</p>
+   </item>
+   <item>
+   <p>Αυτόματη ανάλυση νότων που παίζει ο χρήστης.</p>
+   <p>Μπορείτε να συνδέσετε μικρόφωνο και να ηχογραφήσετε από αυτό χρησιμοποιώντας την <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-autoaudiosrc.html">πηγή εισόδου</link>. Ίσως κάποια μορφή της <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-plugin-spectrum.html">ανάλυσης φάσματος</link> θα σας βοηθούσε να καταλάβετε ποια νότα παίζει;</p>
+   </item>
+  </list>
+</section>
+
+</page>

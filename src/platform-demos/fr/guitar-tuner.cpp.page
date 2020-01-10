@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.cpp" xml:lang="fr">
+
+  <info>
+    <link type="guide" xref="cpp#examples"/>
+
+    <desc>Utilisation de GTKmm et de GStreamermm pour construire une application accordeur de guitare simple pour GNOME. Explications sur la manière d'utiliser le concepteur d'interface.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-17" status="review"/>
+    <credit type="author">
+      <name>Projet de Documentation GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Guitar tuner</title>
+
+<synopsis>
+  <p>Dans ce tutoriel, nous allons écrire un programme qui émet des sons servant à accorder une guitare. Nous allons apprendre comment :</p>
+  <list>
+    <item><p>créer un projet basique dans Anjuta,</p></item>
+    <item><p>créer une interface graphique simple avec le concepteur d'interface utilisateur d'Anjuta,</p></item>
+    <item><p>utiliser GStreamer pour émettre des sons.</p></item>
+  </list>
+  <p>Vous avez besoin de ce qui suit pour pouvoir suivre ce tutoriel :</p>
+  <list>
+    <item><p>l'installation du paquet <link xref="getting-ready">Anjuta IDE</link>,</p></item>
+    <item><p>des connaissances de base de la programmation en langage C++.</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/guitar-tuner.png"/>
+
+<section id="anjuta">
+  <title>Création d'un projet dans Anjuta</title>
+  <p>Avant de commencer à programmer, vous devez ouvrir un nouveau projet dans Anjuta. Ceci crée tous les fichiers qui vous sont nécessaires pour construire et exécuter votre programme plus tard. C'est aussi utile pour tout regrouper en un seul endroit.</p>
+  <steps>
+    <item>
+    <p>Lancez Anjuta et cliquez sur <guiseq><gui>Fichier</gui><gui>Nouveau</gui><gui>Projet</gui></guiseq> pour ouvrir l'assistant de création de projet.</p>
+    </item>
+    <item>
+    <p>Sélectionnez <gui>GTKmm (Simple)</gui> dans l'onglet <gui>C++</gui>, cliquez sur <gui>Continuer</gui> et saisissez vos informations sur les pages suivantes. Utilisez <file>guitar-tuner</file> comme nom de projet et de répertoire.</p>
+   	</item>
+    <item>
+    <p>Assurez-vous que <gui>Configuration des paquets externes</gui> est activé. Sur la page suivante, choisissez <em>gstreamermm-0.10</em> dans la liste pour inclure la bibliothèque GStreamermm à votre projet.</p>
+    </item>
+    <item>
+    <p>Cliquez sur <gui>Appliquer</gui> et votre projet est créé. Ouvrez <file>src/main.cc</file> depuis l'onglet <gui>Projet</gui> ou l'onglet <gui>Fichiers</gui>. Vous devez voir apparaître du code commençant par les lignes :</p>
+    <code mime="text/x-csrc"><![CDATA[
+#include <gtkmm.h>
+#include <iostream>]]></code>
+    </item>
+  </steps>
+</section>
+
+<section id="build">
+  <title>Première construction du programme</title>
+  <p>C'est un programme C++ très basique pour configurer GTKmm. Vous trouverez plus de détails ci-dessous ; passez cette liste si vous comprenez les bases :</p>
+  <list>
+  <item>
+    <p>Les trois lignes <code>#include</code> du haut incorporent les bibliothèques <code>config</code> (définitions utiles pour la construction autoconf), <code>gtkmm</code> (interface utilisateur) et <code>iostream</code> (STL). Les fonctions de ces bibliothèques seront utilisées dans le reste du programme.</p>
+   </item>
+   <item>
+    <p>La fonction <code>main</code> crée une nouvelle fenêtre en ouvrant un fichier GtkBuilder (<file>src/guitar-tuner.ui</file>, défini quelques lignes plus haut) et en l'affichant. Le fichier GtkBuilder contient une description de l'interface utilisateur et de tous ses éléments. Vous pouvez utiliser l'éditeur d'Anjuta pour concevoir des interfaces utilisateur GtkBuilder.</p>
+   </item>
+   <item>
+    <p>Ensuite quelques fonctions sont appelées pour configurer puis exécuter l'application. La fonction <code>kit.run</code> démarre la boucle principale de GTKmm qui affiche l'interface utilisateur et commence à écouter les événements (comme des clics de souris ou des appuis sur des touches).</p>
+   </item>
+  </list>
+
+  <p>Le programme est prêt à être utilisé, donc vous pouvez le compiler en cliquant sur <guiseq><gui>Construire</gui><gui>Construire le projet</gui></guiseq> ou en appuyant sur <keyseq><key>Maj</key><key>F7</key></keyseq>.</p>
+  <p>Cliquez sur <gui>Exécuter</gui> dans la fenêtre suivante pour configurer une construction avec débogage. Vous ne devez le faire qu'une seule fois, lors de la première exécution.</p>
+</section>
+
+<section id="ui">
+  <title>Création de l'interface utilisateur</title>
+  <p>Une description de l'interface utilisateur est contenue dans le fichier GtkBuilder. Pour la modifier, ouvrez le fichier <file>src/guitar_tuner.ui</file>. Ceci vous bascule vers le concepteur d'interface. La fenêtre de conception se trouve au centre ; les éléments graphiques et leurs propriétés sont sur la gauche et la palette des composants graphiques disponibles est sur la droite.</p>
+  <p>La disposition de toute interface utilisateur dans GTK+ est organisée à l'aide de boîtes et de tableaux. Dans cet exemple, prenons une <gui>GtkButtonBox</gui> verticale pour y mettre six <gui>GtkButtons</gui>, un pour chacune des six cordes de la guitare.</p>
+
+<media type="image" mime="image/png" src="media/guitar-tuner-glade.png"/>
+
+  <steps>
+   <item>
+   <p>Choisissez une <gui>GtkButtonBox</gui> (Boîte) dans la section <gui>Conteneurs</gui> de la <gui>Palette</gui> à droite et mettez-la dans la fenêtre. Dans l'onglet <gui>Propriétés</gui>, définissez le nombre d'éléments à 6 (pour les six cordes) et l'orientation à verticale.</p>
+   </item>
+   <item>
+    <p>Ensuite, choisissez un <gui>GtkButton</gui> (Bouton) dans la palette et mettez-le dans la première partie de la boîte.</p>
+   </item>
+   <item>
+    <p>Pendant que le bouton est encore sélectionné, modifiez la propriété <gui>Étiquette</gui> dans l'onglet <gui>Composants graphiques</gui> à <gui>E</gui>. Ce sera la corde E du bas. Modifiez aussi la propriété <gui>Nom</gui> en <gui>bouton_E</gui>. Nous nous référerons à cet élément graphique par ce nom plus tard dans le programme.</p>
+    </item>
+    <item>
+    <p>Répétez cette procédure pour les autres boutons, en ajoutant les 5 cordes suivantes avec les étiquettes <em>A</em>, <em>D</em>, <em>G</em>, <em>B</em> et <em>e</em> et les noms des <em>bouton_A</em>, etc. correspondants.</p>
+    </item>
+    <item>
+    <p>Enregistrez le fichier de conception de l'interface utilisateur (en cliquant sur <guiseq><gui>Fichier</gui><gui>Enregistrer</gui></guiseq>) et fermez le fichier.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="gst">
+  <title>Les pipelines GStreamer</title>
+  <p>GStreamer est l'architecture multimédia de GNOME — vous pouvez vous en servir pour des jeux, des enregistrements, pour traiter des flux vidéo, audio, de webcam entre autres. Ici, nous allons nous en servir pour émettre des tonalités à une seule fréquence. GStreamermm est le lien C++ à GStreamer que nous utilisons dans cet exemple.</p>
+  <p>Le concept de GStreamer est le suivant : il y a création d'un <em>pipeline</em> contenant plusieurs éléments de traitement en provenance d'une <em>source</em> à destination d'un <em>collecteur</em> (sortie). La source peut être un fichier image, une vidéo ou un fichier musical, par exemple, et la sortie un élément graphique ou une carte son.</p>
+  <p>Entre la source et le collecteur, vous pouvez appliquer différents filtres et convertisseurs pour prendre en charge les effets, les conversions de format et ainsi de suite. Chaque élément du pipeline possède des propriétés pouvant être utilisées pour modifier son comportement.</p>
+  <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
+    <p>Un exemple de pipeline GStreamer.</p>
+  </media>
+</section>
+
+<section id="usinggst">
+  <title>Utilisation de GStreamermm</title>
+  <p>Pour utiliser GStreamermm, il faut l'initialiser. Ajoutez la ligne de code suivante en dessous de la ligne <code>Gtk::Main kit(argc, argv);</code> du fichier <file>main.cc</file> :</p>
+  <code>	Gst::init (argc, argv);</code>
+  <p>Vérifiez que le fichier <file>gstreamermm.h</file> est correctement inclus dans <file>main.cc</file>.</p>
+
+  <p>Dans ce petit exemple, nous utilisons une source génératrice de son de fréquence pure appelée <code>audiotestsrc</code> et envoyons sa sortie au périphérique son par défaut du système, <code>autoaudiosink</code>. Il nous faut seulement configurer la fréquence du générateur accessible depuis la propriété <code>freq</code> de <code>audiotestsrc</code>.</p>
+
+  <p>Pour simplifier la gestion du pipeline, nous définissons une classe assistant <code>Sound</code>. Ceci est réalisé dans le fichier <file>main.cc</file> pour garder toute sa simplicité à cet exemple, alors que normalement vous le feriez dans un fichier séparé :</p>
+  <code><![CDATA[
+class Sound
+{
+	public:
+		Sound();
+
+		void start_playing(double frequency);
+		bool stop_playing();
+
+	private:
+		Glib::RefPtr<Gst::Pipeline> m_pipeline;
+		Glib::RefPtr<Gst::Element> m_source;
+		Glib::RefPtr<Gst::Element> m_sink;
+};
+
+Sound::Sound()
+{
+	m_pipeline = Gst::Pipeline::create("note");
+	m_source = Gst::ElementFactory::create_element("audiotestsrc",
+	                                               "source");
+	m_sink = Gst::ElementFactory::create_element("autoaudiosink",
+	                                             "output");
+	m_pipeline->add(m_source);
+	m_pipeline->add(m_sink);
+	m_source->link(m_sink);
+}
+
+void Sound::start_playing (double frequency)
+{
+	m_source->set_property("freq", frequency);
+	m_pipeline->set_state(Gst::STATE_PLAYING);
+
+	/* stop it after 200ms */
+	Glib::signal_timeout().connect(sigc::mem_fun(*this, &Sound::stop_playing),
+	                               200);
+}
+
+bool Sound::stop_playing()
+{
+	m_pipeline->set_state(Gst::STATE_NULL);
+	return false;
+}
+]]></code>
+
+  <p>L'objectif du programme est le suivant :</p>
+  <steps>
+    <item>
+    <p>Le constructeur crée les éléments GStreamer source et sink (collecteur) (<code>Gst.Element</code>) et un élément pipeline (qui sera utilisé comme conteneur pour les deux autres). Le pipeline est nommé « note » ; la source est nommée « source » et définie comme étant le connecteur <code>audiotestsrc</code> et le collecteur est nommé « output » et défini comme étant le connecteur <code>autoaudiosink</code> (qui est la sortie par défaut de la carte son). Après avoir lié entre eux et ajouté les éléments au pipeline, il est prêt à fonctionner.</p>
+    </item>
+    <item>
+    <p><code>start_playing</code> définit l'élément source à une fréquence donnée et démarre réellement le pipeline pour commencer à diffuser le son. Comme nous ne voulons pas jouer indéfiniment une note ennuyeuse, un délai de 200 ms est défini avant d'interrompre le pipeline en appelant la fonction <code>stop_playing</code>.</p>
+    </item>
+    <item>
+    <p>Dans <code>stop_playing</code>, après que la durée soit échue, le pipeline s'arrête et donc il n'y a plus de sortie son. Comme GStreamer utilise le comptage des références à l'objet <code>Glib::RefPtr</code>, la mémoire est automatiquement libérée dès que la classe <code>Sound</code> est détruite.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="signals">
+  <title>Connexion des signaux</title>
+  <p>Nous voulons jouer la note adéquate quand l'utilisateur clique sur un bouton. Cela signifie que nous devons connecter le signal émis par ce bouton. Nous voulons aussi informer la fonction appelée du son à diffuser. GTKmm rend la chose facile car il est facile de lier des informations avec la bibliothèque <em>sigc</em>.</p>
+
+  <p>La fonction appelée lors d'un clic sur un bouton peut être très simple, car tout le travail intéressant se fait maintenant dans la classe assistant :</p>
+  <code mime="text/x-csrc"><![CDATA[
+static void
+on_button_clicked(double frequency, Sound* sound)
+{
+	sound->start_playing (frequency);
+}
+]]></code>
+  <p>Elle ne fait qu'appeler la classe assistant que nous avons configurée auparavant pour diffuser la fréquence appropriée. Avec un programme un peu plus malin, nous aurions pu aussi nous connecter directement à la classe sans passer par la fonction, mais laissons cela pour un exercice futur.</p>
+
+  <p>Le code qui configure les signaux doit être ajouté à la fonction <code>main()</code>, juste après la ligne <code>builder-&gt;get_widget("main_window",main_win);</code> :</p>
+  <code mime="text/x-csrc"><![CDATA[
+Sound sound;
+Gtk::Button* button;
+
+builder->get_widget("button_E", button);
+button->signal_clicked().connect (sigc::bind<double, Sound*>(sigc::ptr_fun(&on_button_clicked),
+                                              329.63, &sound));
+]]></code>
+	<steps>
+	<item>
+	<p>D'abord, nous créons une instance de notre classe assistant que nous voulons maintenant utiliser et déclarons une variable pour le bouton que nous voulons connecter.</p>
+	</item>
+	<item>
+	<p>Ensuite, nous récupérons l'objet bouton de l'interface utilisateur qui a été créé à partir du fichier de l'interface utilisateur. Souvenez-vous que <em>bouton_E</em> est le nom que nous avons donné au premier bouton.</p>
+	</item>
+	<item>
+	<p>Enfin, nous connectons le signal <em>clicked</em>. Il est vrai que cela ne paraît pas très simple car nous prenons beaucoup de précautions sur le type des variables et que nous désirons en réalité transmettre notre classe assistant et la fréquence au récepteur de signal. <code>sigc::ptr_fun(&amp;on_button_clicked)</code> crée un <em>connecteur</em> pour la méthode <code>on_button_clicked</code> définie plus haut. Nous pouvons transmettre d'autres arguments avec <code>sigc::bind</code> et dans notre exemple, nous transmettons la fréquence (de type « double ») et notre classe assistant.</p>
+	</item>
+  </steps>
+  <p>Après avoir configuré le bouton <em>E</em>, nous devons connecter les autres boutons en fonction de leur fréquence : 440 pour A, 587,33 pour D, 783,99 pour G, 987,77 pour B et 1318,5 pour E aiguë. Le processus est le même, seule la fréquence transmise au récepteur change.</p>
+</section>
+
+<section id="run">
+  <title>Construction et lancement de l'application</title>
+  <p>À ce stade, tout le programme est fonctionnel. Cliquez sur <guiseq><gui>Construire</gui><gui>Construire le projet</gui></guiseq> pour tout reconstruire et faites <guiseq><gui>Exécuter</gui><gui>Exécuter</gui></guiseq> pour lancer l'application.</p>
+  <p>Si ce n'est déjà fait, choisissez l'application <file>Debug/src/guitar-tuner</file> dans la boîte de dialogue qui s'affiche. Enfin, cliquez sur <gui>Exécuter</gui> et amusez-vous !</p>
+</section>
+
+<section id="impl">
+ <title>Implémentation de référence</title>
+ <p>Si vous rencontrez des difficultés avec ce tutoriel, comparez votre programme à ce <link href="guitar-tuner/guitar-tuner.cc">programme de référence</link>.</p>
+</section>
+
+<section id="further">
+  <title>Lecture complémentaire</title>
+  <p>Pour des informations plus détaillées sur les exemples ci-dessus, consultez le <link href="http://library.gnome.org/devel/gtkmm-tutorial/stable/">manuel de GTKmm</link> qui couvre beaucoup plus de sujets clés pour utiliser toute la puissance de GTKmm, ainsi que la <link href="http://library.gnome.org/devel/gstreamermm/">documentation de référence de gstreamermm</link>.</p>
+</section>
+
+<section id="next">
+  <title>Les étapes suivantes</title>
+  <p>Voici quelques idées sur la manière d'étendre ce simple exemple :</p>
+  <list>
+   <item>
+   <p>Faire que le programme joue automatiquement les notes de manière cyclique.</p>
+   </item>
+   <item>
+   <p>Faire que le programme lise des enregistrements de vraies cordes de guitare pincées.</p>
+   <p>Pour y parvenir, vous devrez configurer un pipeline GStreamer un peu plus sophistiqué qui vous permette de charger et lire des fichiers musicaux. Vous devrez choisir des éléments GStreamer <link href="http://gstreamer.freedesktop.org/documentation/plugins.html">décodeur et démuxeur</link> basés sur le format des sons enregistrés — par exemple, les MP3 utilisent des éléments différents de ceux des fichiers Ogg Vorbis.</p>
+   <p>Il vous faudra aussi peut-être connecter les éléments de façon plus complexe. Vous aurez sans doute besoin de consulter les <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/chapter-intro-basics.html">concepts GStreamer</link> que nous ne couvrons pas dans ce tutoriel, comme les <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-intro-basics-pads.html">pads</link>. La commande <cmd>gst-inspect</cmd> peut également vous être utile.</p>
+   </item>
+   <item>
+   <p>Analyser automatiquement les notes jouées par l'utilisateur.</p>
+   <p>Vous pourriez branchez un microphone et enregistrez les sons obtenus en utilisant l'<link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-autoaudiosrc.html">entrée source</link>. Peut-être qu'une espèce d'<link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-plugin-spectrum.html">analyseur de spectre</link> peut vous aider à trouver les notes jouées ?</p>
+   </item>
+  </list>
+</section>
+
+</page>

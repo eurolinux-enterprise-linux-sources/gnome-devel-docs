@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="textview.py" xml:lang="es">
+  <info>
+    <title type="text">TextView (Python)</title>
+    <link type="guide" xref="beginner.py#multiline"/>
+    <link type="seealso" xref="strings.py"/>
+    <link type="seealso" xref="scrolledwindow.py"/>
+    <link type="next" xref="dialog.py"/>
+    <revision version="0.2" date="2012-06-19" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Sebastian Pölsterl</name>
+      <email its:translate="no">sebp@k-d-w.org</email>
+      <years>2011</years>
+    </credit>
+
+    <credit type="author copyright editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un widget que muestra un GtkTextBuffer</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>TextView</title>
+
+  <note style="sidebar"><p>Esto es un ejemplo de Gtk.TextView.</p>
+  <p>Si se pulsa «Intro» se obtiene una línea nueva.</p>
+  <p>Pero también se puede obtener una línea nueva si se escribe una frase larga (el texto se ajustará a los saltos de línea entre palabras.</p>
+  <p>Si es escribe una palabra laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarga</p>
+  <p>(esto es una palabra larga)</p>
+  <p>, aparecerá una barra de desplazamiento horizontal.</p></note>
+
+  <media type="image" mime="image/png" src="media/textview.png"/>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Código usado para generar este ejemplo</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="TextView Example", application=app)
+        self.set_default_size(300, 450)
+
+        # a scrollbar for the child widget (that is going to be the textview)
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_border_width(5)
+        # we scroll only if needed
+        scrolled_window.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+
+        # a text buffer (stores text)
+        buffer1 = Gtk.TextBuffer()
+
+        # a textview (displays the buffer)
+        textview = Gtk.TextView(buffer=buffer1)
+        # wrap the text, if needed, breaking lines in between words
+        textview.set_wrap_mode(Gtk.WrapMode.WORD)
+
+        # textview is scrolled
+        scrolled_window.add(textview)
+
+        self.add(scrolled_window)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+  <title>Métodos útiles para un widget «TextView»</title>
+  <p>Un <code>Gtk.TextView</code> muestra el texto almacenado en un <code>Gtk.TextBuffer</code>. Sin embargo, la mayor parte de la manipulación de texto se hace con iteradores, representados por un <code>Gtk.TextIter</code>: una posición entre dos caracteres en el búfer de texto. Los iteradores no son válidos indefinidamente; cada vez que se modifica el búfer de alguna manera que se altere su contenido, todos los iteradores relevantes dejan de ser válidos. Es por esto que no se pueden usar iteradores para mantener posiciones entre modificaciones del búfer. Para mantener una posición, se usa una <code>Gtk.TextMark</code>, que puede hacerse visible con <code>visible(True)</code>. Un búfer de texto contiene dos marcas empotradas: una marca «insert» (la posición del cursor) y la marca «selection_bound».</p>
+  <p>Métodos para un widget «TextView»:</p>
+  <list>
+    <item><p>El widget «TextView» es editable de manera predeterminada. Si prefiere que no lo sea, use <code>set_editable(False)</code>. Si el búfer no tiene texto editable, puede ser una buena idea usar <code>set_cursor_visible(False)</code> también.</p></item>
+    <item><p>La alineación del texto se establece con <code>set_justification(Gtk.Justification.JUSTIFICACIÓN)</code> donde <code>JUSTIFICACIÓN</code> puede ser <code>LEFT, RIGHT, CENTER, FILL</code>.</p></item>
+    <item><p>El ajuste de línea del texto se establece con <code>set_wrap_mode(Gtk.WrapMode.WRAP)</code> donde <code>WRAP</code> es uno de <code>NONE</code> (el área de texto se hace más ancha), <code>CHAR</code> (rompe líneas en cualquier lugar en que el cursor pueda aparecer), <code>WORD</code> (rompe líneas entre palabras), <code>WORD_CHAR</code> (rompe líneas entre palabras, pero si no es suficiente, entre caracteres).</p></item>
+  </list>
+  <p>Métodos para un widget «TextBuffer»:</p>
+  <list>
+    <item><p><code>get_insert()</code> devuelve la <code>Gtk.TextMark</code> que representa al cursor, que es el punto de inserción.</p></item>
+    <item><p><code>get_selection_bound()</code> devuelve la <code>Gtk.TextMark</code> que representa los límites de la selección.</p></item>
+    <item><p><code>set_text("texto", longitud)</code> donde <code>longitud</code> es un entero positivo o <code>-1</code>, establece el contenido del búfer como los primeros <code>longitud</code> caracteres del <code>"texto"</code>. Si se omite <code>longitud</code> o es <code>-1</code>, se inserta todo el texto. El contenido del búfer, si existe, se destruye.</p></item>
+    <item><p><code>insert(iter, "texto", longitud)</code>, donde <code>iter</code> es un iterador de texto y <code>longitud</code> es un entero positivo o <code>-1</code>, inserta en el búfer en <code>iter</code> los primeros <code>longitud</code> caracteres del <code>texto</code>. Si se omite <code>longitud</code> o es <code>-1</code>, se inserta todo el texto.</p></item>
+    <item><p><code>insert_at_cursor("texto", longitud)</code> hace los mismo que <code>insert(iter, "texto", longitud)</code>, tomando el cursor actual como <code>iter</code>.</p></item>
+    <item><p><code>create_mark("nombre_de_la_marca", iter, gravedad_izquierda)</code> donde <code>iter</code> es un <code>Gtk.TextIter</code> y <code>gravedad_izquierda</code> es un booleano, crea una <code>Gtk.TextMark</code> en la posición de <code>iter</code>. Si <code>"nombre_de_la_marca"</code> es <code>None</code>, la marca es anónima; de lo contrario, la marca puede obtenerse por su nombre usando <code>get_mark()</code>. Si una marca tiene gravedad izquierda, y el texto se inserta en la posición actual de la marca, esta se moverá a la izquierda del texto recién insertado. Si <code>gravedad_izquierda</code> se omite, su valor predeterminado es <code>False</code>.</p></item>
+    <item><p>Para especificar que algún texto en el búfer debe tener un formato específico, defina una etiqueta que contenga esa información de formato, y luego aplíquela a la región de texto usando <code>create_tag("nombre de la etiqueta", propiedad)</code> y <code>apply_tag(etiqueta, iter_inicial, iter_final)</code> como en, por ejemplo:</p>
+      <code>
+tag = textbuffer.create_tag("orange_bg", background="orange")
+textbuffer.apply_tag(tag, start_iter, end_iter)</code>
+     <p>A continuación se muestran algunos de los estilos comunes aplicados al texto:</p>
+      <list>
+        <item><p>Color de fondo (propiedad «background»)</p></item>
+        <item><p>Color de primer plano (propiedad «foreground»)</p></item>
+        <item><p>Subrayado (propiedad «underline»)</p></item>
+        <item><p>Negrita (propiedad «weight»)</p></item>
+        <item><p>Cursiva (propiedad «style»)</p></item>
+        <item><p>Tachado (propiedad «strikethrough»)</p></item>
+        <item><p>Justificación (propiedad «justification»)</p></item>
+        <item><p>Tamaño (propiedades «size» y «size-points»)</p></item>
+        <item><p>Ajuste de texto (propiedad «wrap-mode»)</p></item>
+      </list>
+    <p>También puede eliminar etiquetas particulares más tarde usando <code>remove_tag()</code> o eliminar todas las etiquetas en una región dada llamando a <code>remove_all_tags()</code>.</p></item>
+  </list>
+  <p>Métodos para un widget «TextIter»</p>
+  <list>
+    <item><p><code>forward_search(cadena, banderas, límite)</code> busca <code>cadena</code> hacia delante. La búsqueda no continuará después del límite <code>Gtk.TextIter</code>. Las <code>banderas</code> pueden ser cualquier combinación de las siguientes, concatenándolas con el operador OR a nivel de bits <code>|</code>: <code>0</code> (la coincidencia debe ser exacta); <code>Gtk.TextSearchFlags.VISIBLE_ONLY</code> (la coincidencia puede tener texto invisible intercalado en «aguja»); <code>Gtk.TextSearchFlags.TEXT_ONLY</code> (la coincidencia puede tener «pixbufs» o widgets hijos mezclados dentro del rango coincidente); <code>Gtk.TextSearchFlags.CASE_INSENSITIVE</code> (el texto coincidirá sin importar su capitalización). El método devuelve una tupla que contiene un <code>Gtk.TextIter</code> apuntando al inicio y al primer carácter después de la coincidencia; si no se encuentra, se devuelve <code>None</code>.</p></item>
+    <item><p><code>backward_search(cadena, banderas, límite)</code> hace lo mismo que <code>forward_search()</code>, pero hacia atrás.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Referencias de la API</title>
+  <p>En este ejemplo se usa lo siguiente:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextView.html">GtkTextView</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextBuffer.html">GtkTextBuffer</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextTag.html">GtkTextTag</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkScrolledWindow.html">GtkScrolledWindow</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">Enumeraciones estándar</link></p></item>
+  </list>
+  </section>
+</page>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="progressbar.vala" xml:lang="gl">
+  <info>
+  <title type="text">ProgressBar (Vala)</title>
+    <link type="guide" xref="beginner.vala#display-widgets"/>
+    <revision version="0.1" date="2012-05-08" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A widget which indicates progress visually</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Fran Dieguez</mal:name>
+      <mal:email>frandieguez@gnome.org</mal:email>
+      <mal:years>2012-2013.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ProgressBar</title>
+  <media type="video" mime="application/ogv" src="media/progressbar_fill.ogv"/>
+  <p>This ProgressBar "fills in" by a fraction of the bar until it is full.</p>
+
+<code mime="text/x-csharp" style="numbered">public class MyApplication : Gtk.Application {
+
+	Gtk.ProgressBar progress_bar;
+
+	protected override void activate () {
+		var window = new Gtk.ApplicationWindow (this);
+		window.set_title ("ProgressBar Example");
+		window.set_default_size (220, 20);
+
+		progress_bar = new Gtk.ProgressBar ();
+		window.add (progress_bar);
+		window.show_all ();
+
+		double fraction = 0.0;
+		progress_bar.set_fraction (fraction);
+		GLib.Timeout.add (500, fill);
+	}
+
+	bool fill () {
+		double fraction = progress_bar.get_fraction (); //get current progress
+		fraction += 0.1; //increase by 10% each time this function is called
+
+		progress_bar.set_fraction (fraction);
+
+		/* This function is only called by GLib.Timeout.add while it returns true; */
+		if (fraction &lt; 1.0)
+			return true;
+		return false;
+	}
+}
+
+public int main (string[] args) {
+	var progress_bar_application = new MyApplication ();
+	int status =  progress_bar_application.run (args);
+	return status;
+}
+</code>
+<p>Neste exemplo empregaremos o seguinte:</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.ProgressBar.html">Gtk.ProgressBar</link></p></item>
+  <item><p><link href="http://www.valadoc.org/glib-2.0/GLib.Timeout.html">GLib.Timeout</link></p></item>
+</list>
+</page>

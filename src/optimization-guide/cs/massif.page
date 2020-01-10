@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="massif" xml:lang="cs">
+    <info>
+      <link type="guide" xref="index#massif"/>
+    
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Marek Černocký</mal:name>
+      <mal:email>marek@manet.cz</mal:email>
+      <mal:years>2010, 2013</mal:years>
+    </mal:credit>
+  </info>
+      <title>Použití aplikace <app>Massif</app> k profilování využití paměti v softwaru GNOME</title>
+
+    <p>Tento článek popisuje jak používat profiler zásobníku <app>Massif</app> s aplikacemi GNOME. Popisuje jak získat, interpretovat a využít výstup z aplikace <app>Massif</app>. Jako příklad je použita hra <app>Swell Foop</app>.</p>
+   <section id="optimization-massif-TBL-intro">
+        <title>Úvod</title>
+        <p><app>Massif</app> je součástí sady nástrojů na profilování paměti <ulink url="http://valgrind.org/">valgrind</ulink>. Jeho účelem je poskytnout podrobný pohled na dynamické využití paměti během životního cyklu programu. Speciálně zaznamenává využití paměti haldy a zásobníku.</p>
+        <p>Halda je oblast paměti, která se alokuje funkcemi jako je malloc. Podle požadavků se zvětšuje a obvykle je to největší paměťová oblast v programu. Zásobník je místo, ve kterém jsou uchovávána lokální data funkcí. To zahrnuje „automatické“ proměnné v C a návratovou adresu podprogramu. Zásobník je obvykle podstatně menší a méně aktivní než halda. Zásobníkem se výslovně zabývat nechceme, protože aplikace <app>Massif</app> s ním zachází stejně, jako by to byla jen další část haldy. Aplikace <app>Massif</app> rovněž poskytuje informace o tom, kolik paměti je využito ke správě haldy.</p>
+        <p>Aplikace <app>Massif</app> vytváří dva výstupní soubory: grafický přehled v postskriptovém souboru a podrobný rozpis v textovém souboru.</p>
+    </section>
+    <section id="optimization-massif-TBL-using-massif">
+        <title>Používání aplikace <app>Massif</app> s GNOME</title>
+        <p>Aplikace <app>Massif</app> má jen velmi málo přepínačů a pro mnoho programů je ani nepotřebujete. Když ale aplikace pro GNOME alokují paměť, mohou se zanořit  hluboko do glib nebo GTK, a proto je potřeba zvýšit počet úrovní zanoření zásobníku volání v Massif. Toho se dosáhne použitím přepínače --depth. Výchozí je 3, zvýšení na 5 zajistí dostatek zdrojů zásobníku volání pro váš kód. Jedna nebo více úrovní může být také žádoucí k poskytnutí vašeho kódu s nějakým kontextem. Jelikož s úrovní podrobností přichází rychlé zahlcení, je nejlepší začít s menší hodnotou přepínače depth a zvýšit ji jen v případě, kdy se ukáže nedostačující.</p>
+        <p>Užitečné je také aplikaci <app>Massif</app> sdělit, které funkce v glib alokují paměť. Tím se odstraní z výstupní sestavy vrstvy volání funkcí, které nejsou nutné a získáte tak jasnější přehled, který kód alokuje paměť. Alokační funkce glib jsou g_malloc, g_malloc0, g_realloc, g_try_malloc a g_mem_chunk_alloc. Aplikaci Masiff to sdělíte přepínačem --alloc-fn.</p>
+        <p>Váš příkazový řádek by pro předchozí měl vypadat nějak takto:</p>
+        <code>
+valgrind --tool=massif --depth=5  --alloc-fn=g_malloc --alloc-fn=g_realloc --alloc-fn=g_try_malloc \
+         --alloc-fn=g_malloc0 --alloc-fn=g_mem_chunk_alloc swell-foop
+        </code>
+        <p><app>Swell Foop</app> je program, který je použit jako ukázkový. Dopředu vás varujeme, že valgrind emuluje procesor, takže běh je <em>velmi</em> pomalý. K tomu ještě budete potřebovat velké množství paměti.</p>
+    </section>
+    <section id="optimization-massif-TBL-interpreting-results">
+        <title>Interpretace výsledků</title>
+        <p>Grafický výstup aplikace <app>Massif</app> je pochopitelný i bez vysvětlování. Každý pás představuje paměť alokovanou jednou funkcí v průběhu času. Když zjistíte, který pás využívá nejvíce paměti, což je obvykle ten nejtlustší z nich nahoře, dohledejte si k němu podrobnosti v textovém souboru.</p>
+        <p>Textový soubor je uspořádán do hierarchie oddílů, na začátku je seznam nejhorších uživatelů paměti v sestupném pořadí podle časoprostoru. Nasledují další oddíly, každý rozebírající výsledky do větších podrobností, jak se postupně zanořujete do zásobníku volání. Pro ilustraci použijeme výstup předchozího příkazu.</p>
+        <figure>
+            <title>Výstup z aplikace <app>Massif</app> pro neoptimalizovanou verzi programu <app>Swell Foop</app>.</title>
+            <media type="image" src="figures/massif-before.png"/>
+         </figure>
+        <p>Obrázek výše ukazuje typický postskriptový výstup z aplikace <app>Massif</app>. Toto je výsledek, který byste získali, když odehrajete jednu hry <app>Swell Foop</app> (verze 2.8.0) a po té ji ukončíte. Postskriptový soubor bude mít název ve stylu <file>massif.12345.ps</file> a textový soubor obdobně <file>massif.12345.txt</file>. Číslo uprostřed je ID procesu programu, který byl spuštěn. Pokud právě zkoušíte tento příklad, najdete dvě verze každého souboru s lehce odlišnými čísly, což je proto, že aplikace <app>Swell Foop</app> spouští druhý proces a aplikace <app>Massif</app> jej následuje. Tento druhý proces budeme ignorovat, protože spotřebovává jen velmi málo paměti.</p>
+        <p>V horní části grafu vidíme velký žlutý pás označený gdk_pixbuf.new. Ten se zdá jako nejlepší kandidát na optimalizaci, ale nejdříve potřebujeme použít textový soubor, abychom našli co gdk_pixbuf_new volá. Začátek textového souboru vypadá nějak takto:</p>
+        <code>
+Příkaz: ./swell-foop 
+
+== 0 ===========================
+Funkce pro alokaci haldy zodpovídají za 90,40% měřeného časoprostoru
+
+Voláno z:
+  28.8% : 0x6BF83A: gdk_pixbuf_new (v /usr/lib/libgdk_pixbuf-2.0.so.0.400.9)
+
+    6.1% : 0x5A32A5: g_strdup (v /usr/lib/libglib-2.0.so.0.400.6)
+
+    5.9% : 0x510B3C: (uvnitř /usr/lib/libfreetype.so.6.3.7)
+
+    3.5% : 0x2A4A6B: __gconv_open (v /lib/tls/libc-2.3.3.so)
+        </code>
+        <p>Řádek se znaky „=“ uvádí, jak hluboko v zásobníku sledování jsme zanoření, v tomto konkrétním případě jsem úplně nahoře. Následuje seznam nejnáročnějších uživatelů paměti v sestupném pořadí podle časoprostoru. Časoprostor je veličina představující jak moc paměti je použito a jako dlouho je použita. Odpovídá to ploše pásu v grafu. Tato část souboru nám říká, co již víme: nejvíce časoprostoru si zabrala funkce gdk_pisbuf_new. Abychom věděli, co gdk_pixbuf_new volá, musíme hledat v textovém souboru dále:</p>
+        <code>
+== 4 ===========================
+Kontext zodpovídá za 28,8% měřeného časového prostoru
+  0x6BF83A: gdk_pixbuf_new (v /usr/lib/libgdk_pixbuf-2.0.so.0.400.9)
+  0x3A998998: (uvnitř /usr/lib/gtk-2.0/2.4.0/loaders/libpixbufloader-png.so)
+  0x6C2760: (uvnitř /usr/lib/libgdk_pixbuf-2.0.so.0.400.9)
+  0x6C285E: gdk_pixbuf_new_from_file (v /usr/lib/libgdk_pixbuf-2.0.so.0.400.9)
+
+Voláno z:
+  27.8% : 0x804C1A3: load_scenario (swell-foop.c:463)
+
+    0.9% : 0x3E8095E: (uvnitř /usr/lib/libgnomeui-2.so.0.792.0)
+
+  a 1 dalšího nedůležitého místa
+        </code>
+        <p>První řádek nám říká, že jsme zanoření do čtvrté úrovně v zásobníku. Níže je seznam volání funkcí, které vedou odtud na gdk_pixbuf_new. Nakonec je zde seznam funkcí, které jsou o další úroveň níže a volají tyto funkce. Jsou zde také samozřejmě  položky pro úrovně 1, 2 a 3, ale toto je první úroveň, která opravdu zasahuje přes kód GDK do kódu <app>Swell Foop</app>. Z tohoto seznamu můžeme ihned vidět, že problémovým kódem je load_scenario.</p>
+        <p>Nyní, když víme, která část našeho kódu používá všechen časoprostor, můžeme se na ni podívat a zjistit proč. Ukáže se, že load_scenario načítá pixbuf ze souboru a potom nikdy neuvolní paměť. Tím mám zjištěno, kde je v kódu problém a muže jej začít opravovat.</p>
+    </section>
+    <section id="optimization-massif-TBL-acting-on-results">
+        <title>Využití výsledků</title>
+        <p>Omezení spotřeby časoprostoru je dobré, ale existují dva způsoby jak jej zredukovat a nejsou rovnocenné. Buď můžete omezit množství alokované paměti nebo omezit dobu, po kterou je alokováno. Na chvíli si představte modelový systém, ve kterém běží jen dva procesy. Oba procesy využívají téměř všechnu fyzickou paměť a když ji vyčerpají celou, začne systém odkládat na disk a vše se zpomalí. Je zjevné, že když omezíme použití paměti rovnoměrně každým z obou procesů, mohou klidně běžet naráz, aniž by bylo potřeba odkládat na disk. Když místo toho omezíme čas, po který je paměť alokována, rovnoměrně u obou programů, mohou opět běžet v klidu současně, ale jen ve chvílích, kdy se nesejdou jejich největší požadavky na paměť. Proto je lepší omezit množství alokované paměti.</p>
+        <p>Bohužel je volba optimalizace odvislá i od potřeb programu. Velikost dat pixbuf v aplikaci <app>Swell Foop</app> je dána velikostí grafiky hry a nelze ji jednoduše zmenšit. Může být ale značně omezeno množství času, po který je načtena v paměti. Obrázek níže ukazuje analýzu provedenou aplikací <app>Massif</app> pro program <app>Swell Foop</app> po úpravě vedoucí k uvolnění pixbuf, jakmile jsou obrázky načteny na X server.</p>
+        <figure>
+            <title>Výstup z aplikace <app>Massif</app> pro optimalizovanou verzi programu <app>Swell Foop</app>.</title>
+           <media type="image" src="figures/massif-after.png"/>
+            </figure>
+        <p>Využití časoprostoru funkcí gdk_pixbuf_new představuje nyní tenčí pás, který jen zřídka povyskočí (je teď o šestnáct pozic níž a vyplněný purpurovou barvou). Jako bonus poklesl špičkový odběr paměti o 200 kB, protože špička se objeví před dalšími alokacemi paměti. Pokud běží naráz dva takové podobné procesy, je šance, že takové dvě paměťové špičky nastanou naráz, a tím vznikne riziko odkládání na disk, docela malá.</p>
+        <p>Můžeme to udělat lépe? Rychlý průzkum textového výstupu <app>Massif</app> odhalí že: nový hlavní viník je g_strdup.</p>
+        <code>
+Příkaz: ./swell-foop
+
+== 0 ===========================
+Funkce pro alokaci haldy zodpovídají za 87,6% měřeného časoprostoru
+
+Voláno z:
+    7.7% : 0x5A32A5: g_strdup (v /usr/lib/libglib-2.0.so.0.400.6)
+
+    7.6% : 0x43BC9F: (uvnitř /usr/lib/libgdk-x11-2.0.so.0.400.9)
+
+    6.9% : 0x510B3C: (uvnitř /usr/lib/libfreetype.so.6.3.7)
+
+    5.2% : 0x2A4A6B: __gconv_open (v /lib/tls/libc-2.3.3.so)
+        </code>
+        <p>Když se na to podíváme blíže, uvidíme, že je volán na mnoha, opravdu mnoha místech.</p>
+        <code>
+== 1 ===========================
+Kontext zodpovídá za 7,7% měřeného časového prostoru
+  0x5A32A5: g_strdup (v /usr/lib/libglib-2.0.so.0.400.6)
+
+Called from:
+    1.8% : 0x8BF606: gtk_icon_source_copy (v /usr/lib/libgtk-x11-2.0.so.0.400.9)
+
+    1.1% : 0x67AF6B: g_param_spec_internal (v /usr/lib/libgobject-2.0.so.0.400.6)
+
+    0.9% : 0x91FCFC: (uvnitř /usr/lib/libgtk-x11-2.0.so.0.400.9)
+
+    0.8% : 0x57EEBF: g_quark_from_string (v /usr/lib/libglib-2.0.so.0.400.6)
+
+  a 155 dalších nedůležitých míst
+        </code>
+        <p>Nyní stojíme oproti klesající návratnost naší snahy o optimalizaci. Graf nám poradí jiný možný přístup: Pásy „ostatní“ a „správa haldy“ jsou docela velké. To nám říká, že je zde spousta malých alokací prováděných na různých místech. Odstranění něčeho takového může být obtížné, ale když je sloučíme do jediné alokace, může být větší a „správa haldy“ se tím zmenší.</p>
+    </section>
+    <section id="optimization-massif-TBL-caveats">
+        <title>Upozornění</title>
+        <p>Je zde pár věcí, na které je třeba si dávat pozor: Zaprvé, časové úseky jsou uváděny jako procentuální část, musíte je vztáhnout na celkovou velikost programu, abyste mohli usoudit, zda množství paměti stojí za sledování. Dobrý je k tomu graf s hodnotami v kilobajtech na svislé ose.</p>
+        <p>Zadruhé, aplikace <app>Massif</app> bere v úvahu jen paměť použitou vašim vlastním programem. Zdroje jako pixelové mapy jsou uložené na X serveru a aplikace <app>Massif</app> je nebere v úvahu. V ukázkovém programu <app>Swell Foop</app> máme právě jen přesuny spotřeby paměti ze strany klienta do pixelových map na straně serveru. Dokonce je tu nárůst výkonu, přestože tím vlastně švindlujeme. Uchováním obrazových dat na X serveru grafické rutiny zrychluje a odstraňuje spoustu meziprocesové komunikace. Mimo to jsou pixelové mapy uchované v nativním grafickém formátu, který je povětšinou více kompaktní než 32bitový RGBA formát používaný u gdk_pixbuf. K měření účinnosti pixelových map a ostatních zdrojů X serveru použijte program <ulink url="http://www.freedesktop.org/Software/xrestop">xrestop</ulink>.</p>
+    </section>
+</page>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="paned.py" xml:lang="de">
+  <info>
+    <title type="text">Paned (Python)</title>
+    <link type="guide" xref="beginner.py#layout"/>
+    <link type="next" xref="signals-callbacks.py"/>
+    <revision version="0.1" date="2012-08-15" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A widget with two adjustable panes</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2011, 2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Paned</title>
+  <media type="image" mime="image/png" src="media/paned.png"/>
+  <p>Two images in two adjustable panes, horizontally aligned.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code used to generate this example</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Paned Example", application=app)
+        self.set_default_size(450, 350)
+
+        # a new widget with two adjustable panes,
+        # one on the left and one on the right
+        paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+
+        # two images
+        image1 = Gtk.Image()
+        image1.set_from_file("gnome-image.png")
+        image2 = Gtk.Image()
+        image2.set_from_file("tux.png")
+
+        # add the first image to the left pane
+        paned.add1(image1)
+        # add the second image to the right pane
+        paned.add2(image2)
+
+        # add the panes to the window
+        self.add(paned)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Useful methods for a Paned widget</title>
+    <p>To have two vertically aligned panes, use <code>Gtk.Orientation.VERTICAL</code> instead of <code>Gtk.Orientation.HORIZONTAL</code>. The method <code>add1(widget1)</code> will add the <code>widget1</code> to the top pane, and <code>add2(widget2)</code> will add the <code>widget2</code> to the bottom pane.</p>
+  </section>
+
+  <section id="references">
+    <title>API-Referenzen</title>
+    <p>In this sample we used the following:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkPaned.html">GtkPaned</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/gtk3-Standard-Enumerations.html#GtkOrientation">Standard-Aufzählungen</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkImage.html">GtkImage</link></p></item>
+    </list>
+  </section>
+</page>

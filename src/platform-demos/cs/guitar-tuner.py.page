@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.py" xml:lang="cs">
+
+  <info>
+    <title type="text">Kytarová ladička (Python)</title>
+    <link type="guide" xref="py#examples"/>
+
+    <desc>Jak použít GTK+ a GStreamer k sestavení jednoduché aplikace pro GNOME fungující jako kytarová ladička. Předvedeme si, jako používat návrhář rozhraní.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="stub"/>
+    <credit type="author">
+      <name>Dokumentační projekt GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  </info>
+
+<title>Kytarová ladička</title>
+
+<synopsis>
+  <p>V této lekci vytvoříme program, který přehrává tóny, které můžete použít k ladění kytary. Naučíte se, jak udělat tyto věci:</p>
+  <list>
+    <item><p>Vytvořit základní projekt ve studiu Anjuta.</p></item>
+    <item><p>Vytvořit jednoduché GUI v návrháři GUI ve studiu Anjuta.</p></item>
+    <item><p>Použít GStreamer k přehrání zvuku.</p></item>
+  </list>
+  <p>Abyste mohli pokračovat v této lekci, budete potřebovat následující:</p>
+  <list>
+    <item><p>Nainstalovanou kopii <link xref="getting-ready">IDE Anjuta</link></p></item>
+    <item><p>Základní znalosti programovacího jazyka Python</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/guitar-tuner.png"/>
+
+<section id="anjuta">
+  <title>Vytvoření projektu ve studiu Anjuta</title>
+  <p>Než začnete s kódováním, musíte ve studiu Anjuta vytvořit nový projekt. Tím se vytvoří všechny soubory, které budete později potřebovat k sestavení a spuštění kódu. Je to také užitečné kvůli udržení všeho pohromadě.</p>
+  <steps>
+    <item>
+    <p>Spusťte IDE Anjuta a klikněte na <guiseq><gui>Soubor</gui> <gui>Nový</gui> <gui>Projekt</gui></guiseq>, aby se otevřel průvodce projektem.</p>
+    </item>
+    <item>
+    <p>Na kartě <gui>Python</gui> zvolte <gui>PyGTK (automake)</gui>, klikněte na <gui>Pokračovat</gui> a na několika následujících stránkách vyplňte své údaje. Jako název projektu a složky použijte <file>guitar-tuner</file>.</p>
+   	</item>
+    <item>
+    <p>Klikněte na <gui>Použít</gui> a vytvoří se vám projekt. Otevřete <file>src/guitar_tuner.py</file> na kartě <gui>Projekt</gui> nebo <gui>Soubor</gui>. Měli byste vidět kód, který začíná řádky:</p>
+    <code mime="test/x-python">
+from gi.repository import Gtk, GdkPixbuf, Gdk
+import os, sys</code>
+    </item>
+  </steps>
+</section>
+
+<section id="run">
+  <title>Spuštění kódu poprvé</title>
+  <p>Většina toho je kód šablony. Načte (prázdné) okno ze souboru s popisem uživatelského rozhraní a zobrazí jej. Dále to podrobněji rozebereme. Pokud jste již pochopili základy, tak tento seznam můžete přeskočit:</p>
+
+  <list>
+  <item>
+    <p>Řádky <code>import</code> na začátku říkají interpretru jazyka Pyton, aby načetl uživatelské rozhraní a potřebné systémové knihovny.</p>
+   </item>
+   <item>
+    <p>Zde deklarovaná třída bude hlavní třídou pro naši aplikaci. V metodě <code>__init__</code> se načte hlavní okno ze souboru GtkBuilder (<file>src/guitar-tuner.ui</file>) a napojí se signály.</p>
+    <p>Napojení signálu je způsob, jak definovat, co se má stát, když zmáčknete tlačítko nebo se prostě něco přihodí. Zde je zavolána metoda <code>destroy</code> (a ukončení aplikace) při zavření okna.</p>
+   </item>
+   <item>
+    <p>Funkce <code>main</code> se spustí jako výchozí, když spustíte aplikaci v jazyce Python. Vytvoří instanci hlavní třídy a spustí hlavní smyčku, aby se zobrazilo okno.</p>
+   </item>
+  </list>
+
+  <p>Kód je připraven k použití, takže jej můžete spustit kliknutím na <guiseq><gui>Spustit</gui> <gui>Spustit</gui></guiseq>.</p>
+</section>
+
+<section id="ui">
+  <title>Vytvoření uživatelského rozhraní</title>
+  <p>Popis uživatelského rozhraní se nachází v souboru GtkBuilder. Když chcete uživatelské rozhraní upravit, otevřete <file>src/guitar_tuner.ui</file>. Přepnete se tím do návrháře rozhraní. Navrhované okno je uprostřed, widgety a jejich vlastnosti jsou napravo a paleta dostupných widgetů je nalevo.</p>
+  <p>Rozvržení každého uživatelského rozhraní v GTK+ je provedeno pomocí boxů a mřížek. Zde použijeme svislý <code>GtkButtonBox</code>, do kterého přiřadíme šest <code>GtkButtons</code>, jedno pro každou z kytarových strun.</p>
+
+<media type="image" mime="image/png" src="media/guitar-tuner-glade.png"/>
+
+  <steps>
+   <item>
+   <p>Vyberte <gui>GtkButtonBox</gui> z oddílu <gui>Kontejnery</gui> v <gui>Paletě</gui> napravo a vložte jej do okna. V panelu <gui>Vlastnosti</gui> nastavte počet prvků na 6 (pro 6 strun) a orientaci na svislou.</p>
+   </item>
+   <item>
+    <p>Nyní v paletě zvolte <gui>GtkButton</gui> a vložte jej do první části boxu.</p>
+   </item>
+   <item>
+    <p>Zatímco je tlačítko stále vybráno, změňte vlastnost <gui>Popisek</gui> na kartě <gui>Widgety</gui> na <gui>E</gui>. Bude se jednat o spodní strunu E.</p>
+    </item>
+    <item>
+     <p>Přepněte se na kartu <gui>Signál</gui> (uvnitř karty <gui>Widgety</gui>) a podívejte se po signálu <code>clicked</code> tlačítka. Můžete jej použít k napojení na obsluhu signálu, která bude volána, když uživatel na tlačítko klikne. Provede se to kliknutím na signál a vepsáním <code>on_button_clicked</code> do sloupce <gui>Obslužná rutina</gui> a zmáčknutím <key>Enter</key>.</p>
+    </item>
+    <item>
+    <p>Zopakujte předchozí kroky pro ostatní tlačítka, takže přidáte následujících 5 strun s názvy <em>A</em>, <em>D</em>, <em>G</em>, <em>B</em> a <em>e</em>.</p>
+    </item>
+    <item>
+    <p>Návrh uživatelského rozhraní uložte (kliknutím na <guiseq><gui>Soubor</gui> <gui>Uložit</gui></guiseq>) a ponechte jej otevřený.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="signal">
+  <title>Psaní obsluhy signálu</title>
+  <p>V návrháři uživatelského rozhraní můžete nastavit to, že všechna tlačítka budou při kliknutí volat stejnou funkci <gui>on_button_clicked</gui>. Tuto funkci musíme přidat do zdrojového kódu.</p>
+<p>K tomu otevřete <file>guitar_tuner.py</file> a soubor s uživatelským rozhraním při tom ponechte stále otevřený. Přepněte se na kartu <gui>Signály</gui>, kterou jste již použili pro nastavení názvu signálu. Nyní chytněte řádek, na kterém jste nastavili signál <gui>clicked</gui> a přetáhněte jej do zdrojového kódu dovnitř třídy. Do zdrojového kódu se přidá následující kód:</p>
+<code mime="text/x-csrc">
+def on_button_clicked (self, button):
+</code>
+
+  <p>Tato obsluha signálu má dva argumenty: ukazatel na běžnou třídu jazyka Python a <code>Gtk.Button</code>, které funkci zavolalo.</p>
+  <p>Prozatím ponecháme obsluhu signálu prázdnou a budeme pracovat na psaní kódu pro vyluzování zvuků.</p>
+</section>
+
+<section id="gstreamer">
+  <title>Roury systému GStreamer</title>
+  <p>GStreamer je základní multimediální rámec GNOME. Můžete jej použít k přehrávání, nahrávání a zpracování videa, zvuku, vysílání z webové kamery a podobně. Zde jej použijeme ke generování tónu s jednou frekvencí.</p>
+  <p>Koncepčně GStreamer funguje následovně: Vytvoříte <em>rouru</em> (pipeline) obsahující různé prvky zpracující směrem od <em>zdroje</em> (source) do <em>cíle</em> (sink), tj. výstupu. Zdrojem může být například soubor s obrázkem, videosoubor nebo hudební soubor, výstupem pak widget nebo zvuková karta.</p>
+  <p>Na cestě mezi zdrojem a cílem můžete použít různé filtry a převodníky k vytvoření efektů, převodníky formátů atd. Každý prvek roury má vlastnosti, které můžete použít ke změně jeho chování.</p>
+  <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
+    <p>Příklad roury systému GStreamer.</p>
+  </media>
+</section>
+
+<section id="pipeline">
+  <title>Vytvoření roury</title>
+  <p>V tomto příkladu použijeme jako zdroj tónový generátor nazývaný <code>audiotestsrc</code> a výstup pošleme do výchozího systémového zvukového zařízení <code>autoaudiosink</code>. Nastavit potřebujeme jen frekvenci tónového generátoru. Ta je přístupná přes vlastnost <code>freq</code> zmíněného <code>audiotestsrc</code>.</p>
+
+  <p>Změňte řádek s <code>import</code> v <file>guitar_tuner.py</file>, aby začínal:</p>
+  <code mime="test/x-python">from gi.repository import Gtk, Gst, GObject </code>
+  <p><code>Gst</code> vloží knihovnu GStreamer. Musíte ji také správně inicializovat, což je uděláno v metodě <code>main()</code> tímto voláním přidaným nad řádek <code>app = GUI()</code>:</p>
+  <code mime="test/x-python">Gst.init_check(sys.argv)</code>
+  <p>Potom nakopírujte následující funkci kamkoliv do třídy <file>guitar_tuner.py</file>:</p>
+  <code mime="test/x-python">
+def play_sound(self, frequency):
+	pipeline = Gst.Pipeline(name='note')
+	source = Gst.ElementFactory.make('audiotestsrc', 'src')
+	sink = Gst.ElementFactory.make('autoaudiosink', 'output')
+
+	source.set_property('freq', frequency)
+	pipeline.add(source)
+	pipeline.add(sink)
+	source.link(sink)
+	pipeline.set_state(Gst.State.PLAYING)
+
+	GObject.timeout_add(self.LENGTH, self.pipeline_stop, pipeline)</code>
+  <steps>
+    <item>
+    <p>První tři řádky vytvoří prvky GStreamer typu zdroj a cíl a prvek typu roura (který bude použit jako kontejner pro první dva prvky). Roura dostane název „note“. Zdroj je pojmenován „source“ a je nastaven jako <code>audiotestsrc</code>. Cíl je pojmenován „output“ a je nastaven jako <code>autoaudiosink</code> (výchozí výstup zvukové karty).</p>
+    </item>
+    <item>
+    <p>Volání <code>source.set_property</code> nastaví vlastnost <code>freq</code> prvku <code>source</code> na frekvenci <code>frequency</code>, která je předána jako argument do funkce <code>play_sound</code>. Jedná se o frekvenci v Hertzích. Správné frekvence nadefinujeme později.</p>
+    </item>
+    <item>
+    <p>Následující dva řádky volají <code>pipeline.add</code>, čímž se vloží zdroj a cíl do roury. Roura může obsahovat více dalších prvků GStreamer. Obecně můžete přidat tolik prvků, kolik chcete, tak, že zavoláte metodu <code>add</code> opakovaně.</p>
+    </item>
+    <item>
+    <p>Následující <code>pipeline.set_state</code> je použito ke spuštění přehrávání tím, že se nastaví stav roury na přehrávání (<code>Gst.State.PLAYING</code>).</p>
+    </item>
+  </steps>
+
+</section>
+
+<section id="playback">
+  <title>Zastavení přehrávání</title>
+  <p>Nechceme ale hrát nějaký tón navždycky, takže poslední věcí, kterou <code>play_sound</code> udělá, je že zavolá <code>GObject.timeout_add</code>. Tím se nastaví časový limit pro zastavení zvuku. Čeká v délce <code>LENGTH</code> milisekund a pak zavolá funkci <code>pipeline_stop</code>, která vrátí <code>False</code>, jinak by se v jejím volání pokračovalo.</p>
+  <p>Nyní napíšeme funkci <code>pipeline_stop</code>, která je volána z <code>GObject.timeout_add</code>. Vložte následující kód <em>nad</em> funkci <code>play_sound</code>:</p>
+  <code mime="test/x-python">
+def pipeline_stop(self, pipeline):
+	pipeline.set_state(Gst.State.NULL)
+	return False
+</code>
+  <p>Konstantu <code>LENGTH</code> je třeba definovat uvnitř třídy, takže tento kód přidáme na začátek třídy main:</p>
+  <code mime="test/x-python">
+LENGTH = 500
+</code>
+  <p>Zavolání <code>pipeline.set_state</code> zastaví přehrávání roury.</p>
+</section>
+
+<section id="tones">
+  <title>Definice tónů</title>
+  <p>Když uživatel klikne na tlačítko, chceme zahrát správný zvuk. Ze všeho nejdříve potřebujeme vědět frekvence pro šest kytarových strun, které jsou definovány (na začátku třídy main) ve slovníku, který můžeme jednoduše mapovat na názvy těchto strun:</p>
+  <code mime="test/x-python">
+# Řetězce pro frekvence
+frequencies = {
+	'E': 329.63,
+	'A': 440,
+	'D': 587.33,
+	'G': 783.99,
+	'B': 987.77,
+	'e': 1318.5
+}
+</code>
+  <p>Nyní oživíme obsluhu signálu, kterou jsme zadeklarovali již dříve po názvem <code>on_button_clicked</code>. Mohli bychom mít napojená všechna tlačítka na různé obslužné funkce, ale to by vedlo ke zbytečné duplicitě kódu. Místo toho použijeme popisek každého z tlačítek ke zjištění, na které tlačítko bylo kliknuto:</p>
+  <code mime="test/x-python">
+def on_button_clicked(self, button):
+	label = button.get_child()
+	text = label.get_label()
+
+	self.play_sound (self.frequencies[text])
+</code>
+  <p>Tlačítko, na které bylo kliknuto, je předáno jako argument <code>tlačítko</code> do <code>on_button_clicked</code>. Pomocí <code>button.get_child</code> můžeme získat popisek tohoto tlačítka a následně pomocí <code>label.get_label</code> získat text z tohoto popisku.</p>
+  <p>Text popisku je použit jako klíč do slovníku a funkce <code>play_sound</code> je zavolána s příslušnou frekvencí pro tuto notu. Tím se zahraje tón – máme funkční kytarovou ladičku!</p>
+</section>
+
+<section id="run2">
+  <title>Spuštění aplikace</title>
+  <p>Všechen kód je nyní připravený k použití. Klikněte na <guiseq><gui>Spustit</gui> <gui>Spustit</gui></guiseq>, aby se aplikace spustila a užijte si ji!</p>
+</section>
+
+<section id="impl">
+ <title>Ukázková implementace</title>
+ <p>Pokud v této lekci narazíte na nějaké problémy, porovnejte si svůj kód s tímto <link href="guitar-tuner/guitar-tuner.py">ukázkovým kódem</link>.</p>
+</section>
+
+<section id="next">
+  <title>Další postup</title>
+  <p>Zde je pár nápadů, jak byste mohli tuto jednoduchou ukázku rozšířit:</p>
+  <list>
+   <item>
+   <p>Přidat do programu možnost cyklicky procházet tóny.</p>
+   </item>
+   <item>
+   <p>Naučit program přehrávat nahrávky vybrnkání jednotlivých reálných kytarových strun.</p>
+   <p>Abychom to mohli udělat, potřebujeme sestavit mnohem složitější rouru GStreamer, která umožní načíst a přehrát hudební soubory. Budete muset zvolit prvky GStreamer typu <link href="http://gstreamer.freedesktop.org/documentation/plugins.html">dekodér a demultiplexor</link> podle formátu souborů s vašimi zvukovými nahrávkami – například MP3 používá jiné prvky než Ogg Vorbis.</p>
+   <p>Můžete také potřebovat prvky propojit mnohem komplikovanějším způsobem. Toho lze dosáhnout pomocí <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/chapter-intro-basics.html">konceptů GStreamer</link>, které jsme v této lekci neprobírali. Mezi ně patří například <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-intro-basics-pads.html">přípojné body</link>. Hodit se vám může také příkaz <cmd>gst-inspect</cmd>.</p>
+   </item>
+   <item>
+   <p>Automaticky analyzovat tóny, které uživatel zahraje.</p>
+   <p>Mohli byste připojit mikrofón a nahrávat z něj zvuky pomocí <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-autoaudiosrc.html">vstupního zdroje</link>. Zjistit, který tón je přehráván, by vám možná pomohla <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-plugin-spectrum.html">spektrální analýza</link>.</p>
+   </item>
+  </list>
+</section>
+
+</page>

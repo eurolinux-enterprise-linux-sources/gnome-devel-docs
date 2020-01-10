@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="icons-and-artwork" xml:lang="ru">
+
+  <info>
+    <credit type="author">
+      <name>Алан Дэй (Allan Day)</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Якуб Штайнер (Jakub Steiner)</name>
+    </credit>
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+    <desc>Выбор и создание значков.</desc>   
+  </info>
+
+<title>Icons and artwork</title>
+
+<p>Значки играют важную роль в пользовательском интерфейсе: чтобы приложением было удобно пользоваться, необходимо правильно выбирать значки. Также важен значок и самого приложения, так как он является составной частью его облика.</p>
+
+<section id="using-icons">
+<title>Using icons in your user interface</title>
+
+<p>Часто возникают ситуации, когда требуется принять решение, что использовать в интерфейсе, текстовую метку или значок (особенно когда речь идёт о кнопках). Значки обладают тем преимуществом, что они занимают меньше места и не требуют перевода. В то же время неправильное использование значков может испортить интерфейс настолько, что им станет невозможно пользоваться.</p>
+
+<list>
+<item><p>Используйте только широко распространённые значки. Если вы не можете подобрать подходящий значок, используйте вместо него текстовую метку.</p>
+<list>
+<item><p>При выборе значков следуйте устоявшимся соглашениям об использовании значков. Если сомневатесь, посмотрите, какие значки используются в других приложениях.</p></item>
+<item><p>Подумайте какие значки подходят в контексте использования вашего приложения, пользователи специализированных приложений часто также знакомы с символическими обозначениями, используемыми в соответствующей предметной области.</p></item>
+</list></item>
+<item><p>Помните, что некоторые значки используются только вместе со значками такого же типа. Например, значок «Стоп», который чаще всего представлен в виде квадратика, может быть неправильно растолкован, если он используется изолировано, без дополнительных медиа-кнопок (воспроизведения, паузы, перемотки и т. д.). Или например значок с изображением минуса, который используется для удаления элементов из списка, также может быть неправильно понят, если рядом нет значка с изображением плюса.</p></item>
+</list>
+
+</section>
+
+<section id="stock-icons">
+<title>Choosing stock GNOME icons</title>
+
+<p>GNOME предоставляет полный набор стандартных значков. Старайтесь использовать стандартные значки, создавайте собственные значки только в крайнем случае.</p>
+
+<p>При выборе значков руководствуйтесь их названием. Название значка отражает его назначение. Это важно для людей, использующих экранный диктор.</p>
+
+<p>Для поиска рекомендуемых значков можно воспользоваться браузером значков GTK+.</p>
+
+<section id="color-vs-symbolic">
+<title>Color vs. symbolic icons</title>
+
+<p>GNOME 3 предоставляет два набора значков: цветных и монохромных.</p>
+
+<p>Цветные значки используются для:</p>
+
+<list>
+<item><p>обозначения устройств;</p></item>
+<item><p>обозначения типов файлов;</p></item>
+<item><p>значков приложений.</p></item>
+</list>
+
+<p>Все прочие значки должны быть монохромными. Кроме того, монохромные значки должны всегда использоваться для:</p>
+
+<list>
+<item><p>кнопок;</p></item>
+<item><p>списков;</p></item>
+<item><p>поле ввода;</p></item>
+<item><p>полупрозрачного фона (значки используются в качестве элементов управления мультимедиа и переходом в полноэкранный режим).</p></item>
+</list>
+
+</section>
+
+</section>
+
+<section id="application-icons">
+<title>Application icons</title>
+
+<p>Каждое приложение должно иметь свой собственный значок, являющийся визитной карточкой приложения. Значок — это первый визуальный элемент, с которым встречается пользователь. В разделе «<link xref="application-basics">Что такое приложение</link>» подробно объясняется, что такое приложение, и когда у него должен быть свой собственный значок.</p>
+
+<p>Because application icons are presented at larger sizes, legacy Tango styled 48x48 px or SVG icons no longer suffice (lacking detail). It is essential your application has a 256x256 px icon. With the advent of high-DPI displays, a 512x512 px variant is recommended.</p>
+
+<media type="image" mime="image/png" src="figures/icons/sizes.png"/>
+
+<p>While not as critical, there are still areas where application icons are presented at a small size. To keep the icon sharp and well defined, a specific rendering is required to sizes of 48x48 px, 32x32 px, 24x24 px and 16x16 px. Many GNOME icons also ship a 22x22 px size for legacy reasons, but that isn’t required.</p>
+
+<media type="image" mime="image/png" src="figures/icons/sizes-small-24.png"/>
+
+<p>В значках небольших размеров приходится жертвовать детализацией и использовать линию шириной в 1 пиксел для создания силуэта объекта.</p>
+
+<p>В разделе «Создание цветных значков» вы найдёте дополнительную информацию о создании значков для приложений.</p>
+
+</section>
+
+<section id="custom-symbolic-icons">
+<title>Custom symbolic icons</title>
+
+<p>Symbolic icons have a simple form and are drawn within a 16x16 pixel grid. They are then programmatically scaled and colored within the user interface itself.</p>
+
+<list>
+<item><p>При поиске метафоры для значка определите её главное свойство, сосредоточьтесь на том, что может выразить данную идею. Например, при описании действия, выполняемого над изображением, не нужно использовать его метафору в каждом значке. Вместо этого используйте метафору действия: повернуть, выровнять, отметить и т. п.</p></item>
+<item><p>Избегайте использования перспективы в символических значках, используйте ортогональную сетку.</p></item>
+<item><p>Фигуры со сплошной заливкой быстрее воспринимаются зрительной системой, чем контурные фигуры.</p></item>
+<item><p>Символические значки окрашиваются во время исполнения, чтобы их цвет соответствовал контексту (также как и текст). Не используйте полупрозрачность и дизеринг для передачи теней.</p></item>
+<item><p>Если метафора имеет противоположный смысл, используйте инвертирование цветов. Например, эффект блика на линзе включён, если он светлее, чем линза.</p></item>
+</list>
+
+<media type="image" mime="image/svg" src="figures/icons/inverting.svg"/>
+
+<section id="size-and-grid">
+<title>Размер и сетка</title>
+
+<p>Поскольку значки масштабируются, они могут иметь любой размер. Базовым размером холста будет сетка 16x16. Старайтесь полностью заполнить канву, но помните, что заполненные прямоугольные объекты выглядят больше, если они размещены рядом с элементами, которые используют только тонкие линии. Рекомендуется также создать негативный набор значков.</p>
+
+</section>
+
+</section>
+
+<section id="custom-full-color-icons">
+<title>Custom full-color icons</title>
+
+<p>Цветные значки представлены наборами различных размеров.</p>
+
+<section id="perspective">
+<title>Перспектива</title>
+
+<p>В значках может применяться два вида перспективы. Первый можно условно назвать настольным — наблюдатель находится перед объектом и смотрит на него слегка вниз. Второй вид перспективы можно назвать прямым или полочным — наблюдатель смотрит на объект, который находится на уровне его глаз.</p>
+
+</section>
+
+<section id="palette">
+<title>Палитра</title>
+
+<p>При создании полноцветных приложений и значков устройств используйте цветовую палитру Tango.</p>
+
+<table>
+<tr>
+<td><p>Жёлтый</p></td>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/butter.svg"/></td>
+<td><p>Сливовый</p></td>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/plum.svg"/></td>
+</tr>
+<tr>
+<td><p>Оранжевый</p></td>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/orange.svg"/></td>
+<td><p>Красный</p></td>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/scarlet-red.svg"/></td>
+</tr>
+<tr>
+<td><p>Коричневый</p></td>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/chocolate.svg"/></td>
+<td><p>Серый</p></td>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/aluminium1.svg"/></td>
+</tr>
+<tr>
+<td><p>Зелёный</p></td>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/chameleon.svg"/></td>
+<td/>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/aluminium2.svg"/></td>
+</tr>
+<tr>
+<td><p>Синий</p></td>
+<td><media type="image" mime="image/svg" src="figures/icons/palette/sky-blue.svg"/></td>
+</tr>
+
+</table>
+
+<p>Это основные цвета, которые можно использовать при создании значков. Вы также можете использовать различные оттенки этих цветов. Палитра Tango предустановлена во многих популярных свободных графических пакетах.</p>
+
+</section>
+
+</section>
+
+<section id="see-also">
+<title>See also</title>
+
+<p><link href="http://tango.freedesktop.org/Tango_Icon_Theme_Guidelines">Руководство по значкам в стиле Tango</link></p>
+
+</section>
+
+</page>

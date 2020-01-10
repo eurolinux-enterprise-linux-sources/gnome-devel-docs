@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar.py" xml:lang="es">
+  <info>
+    <title type="text">Toolbar (Python)</title>
+    <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
+    <link type="seealso" xref="grid.py"/>
+    <link type="next" xref="tooltip.py"/>
+    <revision version="0.1" date="2012-06-05" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Una barra de botones y otros widgets</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Barra de herramientas</title>
+
+  <media type="image" mime="image/png" src="media/toolbar.png"/>
+  <p>Un ejemplo de barra de herramientas con botones (con iconos del almacén).</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Código usado para generar este ejemplo</title>
+
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Toolbar Example", application=app)
+        self.set_default_size(400, 200)
+
+        # a grid to attach the toolbar
+        grid = Gtk.Grid()
+
+        # a toolbar created in the method create_toolbar (see below)
+        toolbar = self.create_toolbar()
+        # with extra horizontal space
+        toolbar.set_hexpand(True)
+        # show the toolbar
+        toolbar.show()
+
+        # attach the toolbar to the grid
+        grid.attach(toolbar, 0, 0, 1, 1)
+
+        # add the grid to the window
+        self.add(grid)
+
+        # create the actions that control the window and connect their signal to a
+        # callback method (see below):
+
+        # undo
+        undo_action = Gio.SimpleAction.new("undo", None)
+        undo_action.connect("activate", self.undo_callback)
+        self.add_action(undo_action)
+
+        # fullscreen
+        fullscreen_action = Gio.SimpleAction.new("fullscreen", None)
+        fullscreen_action.connect("activate", self.fullscreen_callback)
+        self.add_action(fullscreen_action)
+
+    # a method to create the toolbar
+    def create_toolbar(self):
+        # a toolbar
+        toolbar = Gtk.Toolbar()
+
+        # which is the primary toolbar of the application
+        toolbar.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR)
+
+        # create a button for the "new" action, with a stock image
+        new_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW)
+        # label is shown
+        new_button.set_is_important(True)
+        # insert the button at position in the toolbar
+        toolbar.insert(new_button, 0)
+        # show the button
+        new_button.show()
+        # set the name of the action associated with the button.
+        # The action controls the application (app)
+        new_button.set_action_name("app.new")
+
+        # button for the "open" action
+        open_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_OPEN)
+        open_button.set_is_important(True)
+        toolbar.insert(open_button, 1)
+        open_button.show()
+        open_button.set_action_name("app.open")
+
+        # button for the "undo" action
+        undo_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_UNDO)
+        undo_button.set_is_important(True)
+        toolbar.insert(undo_button, 2)
+        undo_button.show()
+        undo_button.set_action_name("win.undo")
+
+        # button for the "fullscreen/leave fullscreen" action
+        self.fullscreen_button = Gtk.ToolButton.new_from_stock(
+            Gtk.STOCK_FULLSCREEN)
+        self.fullscreen_button.set_is_important(True)
+        toolbar.insert(self.fullscreen_button, 3)
+        self.fullscreen_button.set_action_name("win.fullscreen")
+
+        # return the complete toolbar
+        return toolbar
+
+    # callback method for undo
+    def undo_callback(self, action, parameter):
+        print("You clicked \"Undo\".")
+
+    # callback method for fullscreen / leave fullscreen
+    def fullscreen_callback(self, action, parameter):
+        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which
+        # is a bit flag
+        is_fullscreen = self.get_window().get_state(
+        ) &amp; Gdk.WindowState.FULLSCREEN != 0
+        if not is_fullscreen:
+            self.fullscreen_button.set_stock_id(Gtk.STOCK_LEAVE_FULLSCREEN)
+            self.fullscreen()
+        else:
+            self.fullscreen_button.set_stock_id(Gtk.STOCK_FULLSCREEN)
+            self.unfullscreen()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        # create the actions that control the window and connect their signal to a
+        # callback method (see below):
+
+        # new
+        new_action = Gio.SimpleAction.new("new", None)
+        new_action.connect("activate", self.new_callback)
+        app.add_action(new_action)
+
+        # open
+        open_action = Gio.SimpleAction.new("open", None)
+        open_action.connect("activate", self.open_callback)
+        app.add_action(open_action)
+
+    # callback method for new
+    def new_callback(self, action, parameter):
+        print("You clicked \"New\".")
+
+    # callback method for open
+    def open_callback(self, action, parameter):
+        print("You clicked \"Open\".")
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Métodos útiles para un widget de barra de herramientas</title>
+    <p>En la línea 32, la señal <code>«activate»</code> de la acción <code>undo_action</code> se conecta a la función de retorno de llamada <code>undo_callback()</code> usando <code><var>action</var>.connect(<var>señal</var>, <var>función de retorno de llamada</var>)</code>. Consulte la <link xref="signals-callbacks.py"/> para una explicación más detallada.</p>
+
+    <list>
+      <item><p>Use <code>insert(tool_item, position)</code> para insertar el <code>tool_item</code> en <code>position</code>. Si <code>position</code> es negativo, el elemento se añade al final de la barra de herramientas.</p></item>
+      <item><p><code>get_item_index(tool_item)</code> obtiene la posición de <code>tool_item</code> en la barra de herramientas.</p></item>
+      <item><p><code>get_n_items()</code> devuelve el número de elementos en la barra de herramientas; <code>get_nth_item(position)</code> devuelve el elemento en la posición <code>position</code>.</p></item>
+      <item><p>Si la barra de herramientas no tiene espacio para todos los elementos del menú, y <code>set_show_arrow(True)</code>, los elementos que no entran se muestran a través de un menú flotante.</p></item>
+      <item><p><code>set_icon_size(icon_size)</code> establece el tamaño de los iconos en la barra de herramientas; <code>icon_size</code> puede ser uno de <code>Gtk.IconSize.INVALID, Gtk.IconSize.MENU, Gtk.IconSize.SMALL_TOOLBAR, Gtk.IconSize.LARGE_TOOLBAR, Gtk.IconSize.BUTTON, Gtk.IconSize.DND, Gtk.IconSize.DIALOG</code>. Esto solo debe usarse para barras de herramientas con propósitos especiales, las barras de herramientas de aplicaciones normales deben respetar las preferencias del usuario para el tamaño de los iconos. <code>unset_icon_size()</code> restablece las preferencias establecidas con <code>set_icon_size(icon_size)</code>, para que las preferencias de usuario se usen para determinar el tamaño de los iconos.</p></item>
+      <item><p><code>set_style(style)</code>, donde <code>style</code> es uno de <code>Gtk.ToolbarStyle.ICONS, Gtk.ToolbarStyle.TEXT, Gtk.ToolbarStyle.BOTH, Gtk.ToolbarStyle.BOTH_HORIZ</code>, determina si la barra de herramientas muestra solo iconos, solo texto, o ambos (apilados verticalmente o uno al lado de otro). Para dejar que las preferencias del usuario determinen el estilo de la barra de herramientas, y restablecer el estilo de barra de herramientas, use <code>unset_style()</code>.</p></item>
+    </list>
+
+  </section>
+
+  <section id="reference">
+    <title>Referencias de la API</title>
+    <p>En este ejemplo se usa lo siguiente:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkToolbar.html">GtkToolbar</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkToolButton.html">GtkToolButton</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkToolItem.html">GtkToolItem</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Stock-Items.html">Elementos del almacén</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkActionable.html">GtkActionable</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWidget.html">GtkWidget</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gdk3/unstable/gdk3-Event-Structures.html#GdkEventWindowState">Estructuras de eventos</link></p></item>
+    </list>
+  </section>
+</page>

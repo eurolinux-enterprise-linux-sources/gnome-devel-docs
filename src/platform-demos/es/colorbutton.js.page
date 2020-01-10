@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="colorbutton.js" xml:lang="es">
+  <info>
+    <title type="text">ColorButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#color-selectors"/>
+    <revision version="0.1" date="2013-06-25" status="review"/>
+
+    <credit type="author copyright">
+      <name>Meg Ford</name>
+      <email its:translate="no">megford@gnome.org</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Un botón para mostrar el diálogo de selección de color</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ColorButton</title>
+  <media type="image" mime="image/png" src="media/colorbutton.png"/>
+  <p>Este ColorButton muestra un diálogo de selección de color e imprime por la terminal los valores RGB del color seleccionado.</p>
+
+  <links type="sections"/>
+  
+  <section id="code">
+  <title>Código usado para generar este ejemplo</title>
+  <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gdk = imports.gi.Gdk;
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const ColorbuttonExample = new Lang.Class ({
+    Name: 'Colorbutton Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ({ application_id: 'org.example.jscolorbutton' });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function() {
+        this.window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this.window = new Gtk.ApplicationWindow ({ application: this.application,
+                                                   window_position: Gtk.WindowPosition.CENTER,
+                                                   title: "ColorButton",
+                                                   default_width: 150,
+                                                   default_height: 50,
+                                                   border_width: 10 });
+
+        this.button = new Gtk.ColorButton();
+        this.color = new Gdk.RGBA();
+        this.color.red = 0.0;
+        this.color.green = 0.0;
+        this.color.blue = 1.0;
+        this.color.alpha = 0.5;
+        this.button.set_rgba(this.color);
+        this.button.connect("color-set", Lang.bind(this, this.onColorChosen));
+        this.label = new Gtk.Label();
+        this.label.set_text("Click to choose a color");
+
+        let grid = new Gtk.Grid();
+        grid.attach(this.button, 0, 0, 2, 1);
+        grid.attach(this.label, 0, 1, 2, 1);
+        this.window.add(grid);
+        this.window.show_all();
+    },
+
+    onColorChosen: function() {
+    let colorName = this.color.to_string();
+    this.label.set_text("You chose the color " + colorName);
+    }
+});
+
+// Run the application
+let app = new ColorbuttonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="references">
+  <title>Referencias de la API</title>
+  <p>En este ejemplo se usa lo siguiente:</p>
+  <list>
+    <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.ColorButton.html">GtkColorButton</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gdk3/stable/gdk3-RGBA-Colors.html">Colores RGBA</link></p></item>
+  </list>
+  </section>
+</page>

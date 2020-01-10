@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="switch.js" xml:lang="es">
+  <info>
+  <title type="text">Interruptor (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-06-18" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un interruptor deslizante que se puede activar y desactivar</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Interruptor</title>
+  <media type="image" mime="image/png" src="media/switchanimals.png"/>
+  <p>Un interruptor tiene dos posiciones: encendido y apagado. Este ejemplo muestra cómo puede usar múltiples interruptores para controlar qué <link xref="image.js">Imagen</link> se muestra en la ventana. Las imágenes usadas en este ejemplo <link href="https://live.gnome.org/TarynFox?action=AttachFile&amp;do=get&amp;target=Animal+Photos.zip">se pueden descargar aquí</link>.</p>
+  <note><p>La ventana contendrá un icono de «imagen rota» en lugar de una imagen si los archivos llamados <file>redfox.png</file>, <file>muteswan.png</file>, <file>fruitbat.png</file>, y <file>gentoopenguin.png</file> no están en la misma carpeta. Puede cambiar el código y las imágenes como quiera, pero las fotos con licencia Creative Commons usadas en este ejemplo se tomaron desde las siguientes fuentes y se redujeron a 640x425:</p>
+    <list>
+        <item><p><link href="http://en.wikipedia.org/wiki/File:Fuzzy_Freddy.jpg">Foto de un zorro rojo</link> por Rob Lee, con licencia <link href="http://creativecommons.org/licenses/by/2.0/deed.en">CC-By</link></p></item>
+        <item><p><link href="http://en.wikipedia.org/wiki/File:Pygoscelis_papua_-Nagasaki_Penguin_Aquarium_-swimming_underwater-8a.jpg">Foto de un pingüino papúa</link> por Ken Funakoshi, con licencia <link href="http://creativecommons.org/licenses/by-sa/2.0/deed.en">CC-By-SA</link></p></item>
+        <item><p><link href="http://www.flickr.com/photos/shekgraham/127431519/in/photostream/">Foto de un murciélago de la fruta</link> por Shek Graham, con licencia <link href="http://creativecommons.org/licenses/by/2.0/deed.en">CC-By</link></p></item>
+        <item><p><link href="http://commons.wikimedia.org/wiki/File:Mute_Swan-Mindaugas_Urbonas.jpg">Foto de un cisne mudo</link> por Mindaugas Urbonas, con licencia <link href="http://creativecommons.org/licenses/by-sa/2.5/deed.en">CC-By-SA</link></p></item>
+    </list>
+    <p>Los créditos de las fotografías y la información de licencia se muestran en el <link xref="aboutdialog.js">AboutDialog</link> de la aplicación. Recuerde reconocer siempre al artista original cuando use <link href="http://creativecommons.org">trabajos con licencia Creative Commons</link>.</p></note>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Bibliotecas que importar</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Estas son las bibliotecas que necesita importar para que esta aplicación se ejecute. Recuerde que la línea que le dice a GNOME que está usando Gjs siempre tiene que ir al principio.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Crear la ventana de la aplicación</title>
+    <code mime="application/javascript">
+const SwitchExample = new Lang.Class({
+    Name: 'Switch Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsswitch',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal creates the menu and builds the UI
+    _onStartup: function() {
+        this._initMenus();
+        this._buildUI ();
+    },
+</code>
+    <p>Todo el código de este ejemplo va en la clase «SwitchExample». El código anterior crea una <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> para que vayan los widgets y la ventana. </p>
+    <note><p>Antes de llamar a «_buildUI» para crear la ventana y sus widgets, es necesario llamar a «_initMenus», que le dice a GNOME que cree el menú. Se puede poner el código de «_initMenus» después del código de «_buildUI», dado que no importa en qué orden se esté mientras que «_initMenus» se llame primero en «_onStartup».</p></note>
+    <code mime="application/javascript">
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Animal Creator"});
+</code>
+    <p>La función _buildUI es donde se pone todo el código que crea la interfaz de usuario de la aplicación. El primer paso es crear una <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> nueva para poner dentro todos los widgets.</p>
+  </section>
+
+  <section id="button">
+    <title>Crear los interruptores</title>
+    <code mime="application/javascript">
+        // Create the image widget and set its default picture
+        this._image = new Gtk.Image ({file: "redfox.png"});
+</code>
+
+    <p>Primero se crea la <link xref="image.js">Imagen</link> que los interruptores controlarán. Recuerde que el archivo llamado <file>redfox.png</file> debe estar en la misma carpeta que la aplicación.</p>
+
+    <code mime="application/javascript">
+        // Create a label for the first switch
+        this._flyLabel = new Gtk.Label ({
+            label: "Make it fly",
+            margin_right: 30});
+
+        // Create the first switch and set its default position
+        this._flySwitch = new Gtk.Switch ({active: false});
+        this._flySwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
+
+        // Create a label for the second switch
+        this._birdLabel = new Gtk.Label ({
+            label: "Make it a bird",
+            margin_right: 30});
+
+        // Create the second switch
+        this._birdSwitch = new Gtk.Switch ({active: false});
+        this._birdSwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
+</code>
+
+    <p>Se usa una <link xref="label.js">Etiqueta</link> para marcar cada interruptor, y se les da un poco de margen a la derecha para que no se peguen a los interruptores. Después de esto se crean los interruptores, y se configuran para que estén apagados de forma predeterminada.</p>
+    <p>La señal que envía un interruptor cuando se activa o desactiva se llama «notify::active». Después de crear cada interruptor, se conecta su señal «notify::active» a una función llamada «_switchFlip». Si tiene múltiples interruptores, y cada uno hace algo diferente, tal vez quiera conectarlos a funciones diferentes, pero aquí ambos se usan para lo mismo: para controlar qué imagen muestra «_image».</p>
+
+    <code mime="application/javascript">
+        // Create a grid for the labels and switches beneath the picture
+        this._UIGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_top: 20});
+
+        // Attach the labels and switches to that grid
+        this._UIGrid.attach (this._flyLabel, 0, 0, 1, 1);
+        this._UIGrid.attach (this._flySwitch, 1, 0, 1, 1);
+        this._UIGrid.attach (this._birdLabel, 0, 1, 1, 1);
+        this._UIGrid.attach (this._birdSwitch, 1, 1, 1, 1);
+
+        // Create a master grid to put both the UI and the picture into
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Attach the picture and the UI grid to the master grid
+        this._mainGrid.attach (this._image, 0, 0, 1, 1);
+        this._mainGrid.attach (this._UIGrid, 0, 1, 1, 1);
+</code>
+    <p>Primero se crea una <link xref="grid.js">rejilla</link> para las etiquetas y los interruptores, para que se puedan organizar en una distribución 2x2 con un margen entre estos y la imagen. Después se pone esa rejilla en una rejilla más grande de 2x1 que tiene una imagen en su parte superior, y la rejilla con las etiquetas y los interruptores en su parte inferior.</p>
+    <code mime="application/javascript">
+        // Add the master grid to the window
+        this._window.add (this._mainGrid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+</code>
+    <p>Finalmente, se añade la rejilla más grande a la ventana, después se le dice a la ventana que se muestre con todos sus widgets.</p>
+    </section>
+
+    <section id="switch-handler">
+    <title>Función que maneja los interruptores que se están pulsando</title>
+
+    <code mime="application/javascript">
+    _switchFlip: function() {
+
+        // Change the picture depending on which switches are flipped
+        if (this._flySwitch.get_active()) {
+
+            if (this._birdSwitch.get_active()) this._image.set_from_file ("muteswan.png");
+
+            else this._image.set_from_file ("fruitbat.png");
+        }
+
+        else {
+
+            if (this._birdSwitch.get_active()) this._image.set_from_file ("gentoopenguin.png");
+
+            else this._image.set_from_file ("redfox.png");
+
+        }
+
+    },
+</code>
+    <p>Cada vez que un interruptor se pulsa, esta función verifica cuál de los dos interruptores está activo, usando la función «get_active()» empotrada al interruptor. Después cambia la imagen consecuentemente. Puede cambiar los nombres de archivo como quiera, siempre que tenga imágenes que correspondan.</p>
+</section>
+
+<section id="about">
+    <title>Crear el AboutDialog</title>
+    <code mime="application/javascript">
+    _initMenus: function() {
+
+        // Build the application's menu so we can have an "About" button
+        let menu = new Gio.Menu();
+        menu.append("About", 'app.about');
+        menu.append("Quit",'app.quit');
+        this.application.set_app_menu(menu);
+
+        // Bind the "About" button to the _showAbout() function
+        let aboutAction = new Gio.SimpleAction ({ name: 'about' });
+        aboutAction.connect('activate', Lang.bind(this,
+            function() {
+                this._showAbout();
+            }));
+        this.application.add_action(aboutAction);
+
+        // Bind the "Quit" button to the function that closes the window
+        let quitAction = new Gio.SimpleAction ({ name: 'quit' });
+        quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._window.destroy();
+            }));
+        this.application.add_action(quitAction);
+    },
+</code>
+    <p>El primer paso es construir el <link xref="gmenu.js">GMenu</link> en el que va el botón «About». Este es el menú que aparece cuando pulsa en el nombre de la aplicación en la esquina superior izquierda de la pantalla, al lado del menú de actividades. Este menú sólo tiene dos opciones: «About» y «Quit».</p>
+
+    <code mime="application/javascript">
+    _showAbout: function () {
+
+        // String arrays of the names of the people involved in the project
+        var artists = ['Rob Lee http://en.wikipedia.org/wiki/File:Fuzzy_Freddy.jpg', 'Ken Funakoshi http://en.wikipedia.org/wiki/File:Pygoscelis_papua_-Nagasaki_Penguin_Aquarium_-swimming_underwater-8a.jpg', 'Shek Graham http://www.flickr.com/photos/shekgraham/127431519/in/photostream/', 'Mindaugas Urbonas http://commons.wikimedia.org/wiki/File:Mute_Swan-Mindaugas_Urbonas.jpg'];
+        var authors = ["GNOME Documentation Team"];
+        var documenters = ["GNOME Documentation Team"];
+
+        // Create the About dialog
+        let aboutDialog = new Gtk.AboutDialog({
+            title: "AboutDialog Example",
+            program_name: "Animal Creator",
+            copyright: "Copyright \xa9 2012 GNOME Documentation Team\n\nRed fox photo licensed CC-By by Rob Lee\nGentoo penguin photo licensed CC-By-SA by Ken Funakoshi\nFruit bat photo licensed CC-By by Shek Graham\nMute swan photo licensed CC-By-SA by Mindaugas Urbonas\nLinks to the originals are available under Credits.\n\nHave you hugged a penguin today?",
+            artists: artists,
+            authors: authors,
+            documenters: documenters,
+            website: "http://developer.gnome.org",
+            website_label: "GNOME Developer Website" });
+
+        // Attach the About dialog to the window
+        aboutDialog.modal = true;
+        aboutDialog.transient_for = this._window;
+
+        // Show the About dialog
+        aboutDialog.show();
+
+        // Connect the Close button to the destroy signal for the dialog
+        aboutDialog.connect('response', function() {
+            aboutDialog.destroy();
+        });
+    }
+
+});
+</code>
+    <p>Un <link xref="aboutdialog.js">AboutDialog</link> tiene muchas cosas que puede establecer, para reconocer a todos los que trabajaron en la aplicación y dejar una nota a cualquiera que la lea. En este caso, la sección de derechos de autor contiene una nota y reconoce a los fotógrafos originales, mientras que la sección de artistas muestra una lista de los fotógrafos con enlaces a las fotografías originales cuando pulsa en el botón «Credits». Las URL web después de sus nombres en la matriz convierten sus nombres en enlaces que puede pulsar en la sección de créditos.</p>
+
+    <code mime="application/javascript">
+// Run the application
+let app = new SwitchExample ();
+app.application.run (ARGV);
+</code>
+    <p>Finalmente, se crea una instancia nueva de la clase «SwitchExample» terminada, y se ejecuta la aplicación.</p>
+  </section>
+
+  <section id="complete">
+    <title>Código de ejemplo completo</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const SwitchExample = new Lang.Class({
+    Name: 'Switch Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsswitch'
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal creates the menu and builds the UI
+    _onStartup: function() {
+        this._initMenus();
+        this._buildUI ();
+    },
+
+
+
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Animal Creator"});
+
+        // Create the image widget and set its default picture
+        this._image = new Gtk.Image ({file: "redfox.png"});
+
+        // Create a label for the first switch
+        this._flyLabel = new Gtk.Label ({
+            label: "Make it fly",
+            margin_right: 30});
+
+        // Create the first switch and set its default position
+        this._flySwitch = new Gtk.Switch ({active: false});
+        this._flySwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
+
+        // Create a label for the second switch
+        this._birdLabel = new Gtk.Label ({
+            label: "Make it a bird",
+            margin_right: 30});
+
+        // Create the second switch
+        this._birdSwitch = new Gtk.Switch ({active: false});
+        this._birdSwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
+
+        // Create a grid for the labels and switches beneath the picture
+        this._UIGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_top: 20});
+
+        // Attach the labels and switches to that grid
+        this._UIGrid.attach (this._flyLabel, 0, 0, 1, 1);
+        this._UIGrid.attach (this._flySwitch, 1, 0, 1, 1);
+        this._UIGrid.attach (this._birdLabel, 0, 1, 1, 1);
+        this._UIGrid.attach (this._birdSwitch, 1, 1, 1, 1);
+
+        // Create a master grid to put both the UI and the picture into
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Attach the picture and the UI grid to the master grid
+        this._mainGrid.attach (this._image, 0, 0, 1, 1);
+        this._mainGrid.attach (this._UIGrid, 0, 1, 1, 1);
+
+        // Add the master grid to the window
+        this._window.add (this._mainGrid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+
+
+    _switchFlip: function() {
+
+        // Change the picture depending on which switches are flipped
+        if (this._flySwitch.get_active()) {
+
+            if (this._birdSwitch.get_active()) this._image.set_from_file ("muteswan.png");
+
+            else this._image.set_from_file ("fruitbat.png");
+        }
+
+        else {
+
+            if (this._birdSwitch.get_active()) this._image.set_from_file ("gentoopenguin.png");
+
+            else this._image.set_from_file ("redfox.png");
+
+        }
+
+    },
+
+
+
+    _initMenus: function() {
+
+        // Build the application's menu so we can have an "About" button
+        let menu = new Gio.Menu();
+        menu.append("About", 'app.about');
+        menu.append("Quit",'app.quit');
+        this.application.set_app_menu(menu);
+
+        // Bind the "About" button to the _showAbout() function
+        let aboutAction = new Gio.SimpleAction ({ name: 'about' });
+        aboutAction.connect('activate', Lang.bind(this,
+            function() {
+                this._showAbout();
+            }));
+        this.application.add_action(aboutAction);
+
+        // Bind the "Quit" button to the function that closes the window
+        let quitAction = new Gio.SimpleAction ({ name: 'quit' });
+        quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._window.destroy();
+            }));
+        this.application.add_action(quitAction);
+    },
+
+
+
+    _showAbout: function () {
+
+        // String arrays of the names of the people involved in the project
+        var artists = ['Rob Lee http://en.wikipedia.org/wiki/File:Fuzzy_Freddy.png', 'Ken Funakoshi http://en.wikipedia.org/wiki/File:Pygoscelis_papua_-Nagasaki_Penguin_Aquarium_-swimming_underwater-8a.png', 'Shek Graham http://www.flickr.com/photos/shekgraham/127431519/in/photostream/', 'Mindaugas Urbonas http://commons.wikimedia.org/wiki/File:Mute_Swan-Mindaugas_Urbonas.png'];
+        var authors = ["GNOME Documentation Team"];
+        var documenters = ["GNOME Documentation Team"];
+
+        // Create the About dialog
+        let aboutDialog = new Gtk.AboutDialog({
+            title: "AboutDialog Example",
+            program_name: "Animal Creator",
+            copyright: "Copyright \xa9 2012 GNOME Documentation Team\n\nRed fox photo licensed CC-By by Rob Lee\nGentoo penguin photo licensed CC-By-SA by Ken Funakoshi\nFruit bat photo licensed CC-By by Shek Graham\nMute swan photo licensed CC-By-SA by Mindaugas Urbonas\nLinks to the originals are available under Credits.\n\nHave you hugged a penguin today?",
+            artists: artists,
+            authors: authors,
+            documenters: documenters,
+            website: "http://developer.gnome.org",
+            website_label: "GNOME Developer Website" });
+
+        // Attach the About dialog to the window
+        aboutDialog.modal = true;
+        aboutDialog.transient_for = this._window;
+
+        // Show the About dialog
+        aboutDialog.show();
+
+        // Connect the Close button to the destroy signal for the dialog
+        aboutDialog.connect('response', function() {
+            aboutDialog.destroy();
+        });
+    }
+
+});
+
+// Run the application
+let app = new SwitchExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Documentación en profundidad</title>
+<list>
+  <item><p><link href="http://developer.gnome.org/gio/unstable/GMenu.html">GMenu</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Image.html">Gtk.Image</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Switch.html">Gtk.Switch</link></p></item>
+</list>
+  </section>
+</page>

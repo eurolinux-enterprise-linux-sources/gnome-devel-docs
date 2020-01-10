@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="progressbar.c" xml:lang="el">
+  <info>
+    <title type="text">Γραμμή προόδου -ProgressBar- (C)</title>
+    <link type="guide" xref="c#display-widgets"/>
+    <link type="seealso" xref="spinner.c"/>
+    <revision version="0.1" date="2012-06-16" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα γραφικό στοιχείο που δείχνει την πρόοδο οπτικά</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Γραμμή προόδου (ProgressBar)</title>
+
+  <media type="video" mime="application/ogv" src="media/progressbar_fill.ogv"/>
+  <p>Αυτή η ProgressBar "γεμίζει" με ένα κλάσμα της γραμμής μέχρι να γεμίσει.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+
+static gboolean
+fill (gpointer   user_data)
+{
+  GtkWidget *progress_bar = user_data;
+
+  /*Get the current progress*/
+  gdouble fraction;
+  fraction = gtk_progress_bar_get_fraction (GTK_PROGRESS_BAR (progress_bar));
+
+  /*Increase the bar by 10% each time this function is called*/
+  fraction += 0.1;
+
+  /*Fill in the bar with the new fraction*/
+  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progress_bar), fraction);
+
+  /*Ensures that the fraction stays below 1.0*/
+  if (fraction &lt; 1.0) 
+    return TRUE;
+  
+  return FALSE;
+}
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *progress_bar;
+
+  gdouble fraction = 0.0;
+
+  /*Create a window with a title, and a default size*/
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "ProgressBar Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 220, 20);
+ 
+  /*Create a progressbar and add it to the window*/
+  progress_bar = gtk_progress_bar_new ();
+  gtk_container_add (GTK_CONTAINER (window), progress_bar);
+
+  /*Fill in the given fraction of the bar. Has to be between 0.0-1.0 inclusive*/
+  gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (progress_bar), fraction);
+
+  /*Use the created fill function every 500 milliseconds*/
+  g_timeout_add (500, fill, GTK_PROGRESS_BAR (progress_bar));
+ 
+  gtk_widget_show_all (window);
+}
+ 
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+ 
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+ 
+  return status;
+}
+</code>
+<p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkProgressBar.html">GtkProgressBar</link></p></item>
+  <item><p><link href="http://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-timeout-add">G_Timeout</link></p></item>
+</list>
+</page>

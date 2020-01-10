@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar_builder.vala" xml:lang="es">
+  <info>
+  <title type="text">Barra de herramientas creada con Glade (Vala)</title>
+    <link type="guide" xref="beginner.vala#menu-combo-toolbar"/>
+    <link type="seealso" xref="toolbar.vala"/>
+    <link type="seealso" xref="grid.vala"/>
+    <revision version="0.1" date="2012-05-08" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Una barra de botones</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Barra de herramientas creada con Glade</title>
+
+  <media type="image" mime="image/png" src="media/toolbar.png"/>
+  <p>Este ejemplo es similar a <link xref="toolbar.vala"/>, excepto que se usa Glade para crear la barra de herramientas en un archivo ui de XML.</p>
+
+  <p>Para crear la barra de herramientas usando el <link href="http://glade.gnome.org/">diseñador de interfaces Glade</link>:</p>
+  <steps>
+    <item><p>Abra Glade y guarde el archivo como <file>toolbar_builder.ui</file></p>
+          <p><media type="image" src="media/glade_ui.png" width="900"> Captura de pantalla de la IU de Glade </media></p>
+    </item>
+
+    <item><p>Bajo <gui>Contenedores</gui> en el lado izquierdo, pulse con el botón derecho en el icono de la barra de herramientas y seleccione <gui>Añadir widget como nivel superior</gui>.</p>
+          <p><media type="image" src="media/glade_select_toolbar.png"> Captura de pantalla del icono de la barra de herramientas en la IU de Glade </media></p>
+    </item>
+
+    <item><p>Bajo la pestaña <gui>General</gui> en la parte inferior derecha, cambie el <gui>Nombre</gui> a <input>toolbar</input> y <gui>Mostrar flecha</gui> a <gui>No</gui>.</p>
+          <p><media type="image" src="media/glade_toolbar_general.png"> Captura de pantalla de la pestaña «General» </media></p>
+    </item>
+
+    <item><p>Bajo la pestaña <gui>Comunes</gui>, establezca <gui>Expansión horizontal</gui> a <gui>Sí</gui>.</p>
+         <p><media type="image" src="media/glade_toolbar_common.png"> Captura de pantalla de la pestaña «Común» </media></p>
+     </item>
+
+     <item><p>Pulse el botón derecho sobre la barra de herramientas en la parte superior derecha y seleccione <gui>Editar</gui>. La ventana <gui>Editor de barras de herramientas</gui> aparecerá.</p>
+         <p><media type="image" src="media/glade_toolbar_edit.png"> Captura de pantalla que muestra dónde pulsar el botón derecho para editar la barra de herramientas. </media></p>
+   </item>
+
+   <item><p>Se quieren añadir 5 «ToolButton»: «New», «Open», «Undo», «Fullscreen», y «Leave Fullscreen». Primero, se añadirá el «ToolButton» «New».</p>
+     <steps>
+       <item><p>Bajo la pestaña <gui>Jerarquía</gui>, pulse <gui>Añadir</gui>.</p></item>
+       <item><p>Cambie el nombre del «ToolItem» a <input>new_button</input>.</p></item>
+       <item><p>Deslícese hacia abajo y establezca <gui>Es Importante</gui> a <gui>Sí</gui>. Esto hará que la etiqueta del «ToolButton» se muestre cuando vea la barra de herramientas.</p></item>
+       <item><p>Introduzca el <gui>Nombre de la acción</gui>: <input>app.new</input>.</p></item>
+       <item><p>Cambie la <gui>Etiqueta</gui> a <input>New</input>.</p></item>
+       <item><p>Seleccione el ID del inventario <gui>Nuevo</gui> desde el menú desplegable, o escriba <input>gtk-new</input>.</p></item>
+     </steps>
+     <p>Repita los pasos anteriores para los «ToolButton» restantes, con las siguientes propiedades:</p>
+  <table frame="all" rules="rows">
+    <thead>
+      <tr>
+        <td><p>Name</p></td>
+        <td><p>Es importante</p></td>
+        <td><p>Nombre de la acción</p></td>
+        <td><p>Etiqueta</p></td>
+        <td><p>ID del inventario</p></td>
+      </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><p>open_button</p></td>
+      <td><p>Sí</p></td>
+      <td><p>app.open</p></td>
+      <td><p>Open</p></td>
+      <td><p>gtk-open</p></td>
+    </tr>
+    <tr>
+      <td><p>undo_button</p></td>
+      <td><p>Sí</p></td>
+      <td><p>win.undo</p></td>
+      <td><p>Undo</p></td>
+      <td><p>gtk-undo</p></td>
+    </tr>
+    <tr>
+      <td><p>fullscreen_button</p></td>
+      <td><p>Sí</p></td>
+      <td><p>win.fullscreen</p></td>
+      <td><p>Fullscreen</p></td>
+      <td><p>gtk-fullscreen</p></td>
+    </tr>
+    <tr>
+      <td><p>leave_fullscreen_button</p></td>
+      <td><p>Sí</p></td>
+      <td><p>win.fullscreen</p></td>
+      <td><p>Leave Fullscreen</p></td>
+      <td><p>gtk-leave-fullscreen</p></td>
+    </tr>
+    </tbody>
+</table>
+          <media type="image" src="media/glade_toolbar_editor.png">
+
+          </media>
+    </item>
+
+    <item><p>Cierre el <gui>Editor de la barra de herramientas</gui>.</p>
+   </item>
+
+   <item><p>No se quiere que se vea el «ToolButton» <gui>Leave Fullscreen</gui> cuando el programa se inicie por primera vez, dado que la aplicación no estará en modo a pantalla completa. Puede establecer esto en la pestaña <gui>Comunes</gui>, pulsando <gui>No</gui> en la propiedad <gui>Visible</gui>. El «ToolButton» aparecerá de todos modos en el diseñador de interfaces, pero se comportará correctamente cuando se cargue el archivo en el código de su programa.</p>
+          <p><media type="image" src="media/glade_visible_no.png"> Establecer la propiedad «visible» a «No» </media></p>
+   </item>
+
+    <item><p>Guarde su trabajo y cierre Glade.</p>
+   </item>
+
+   <item><p>El archivo XML generado por Glade se muestra debajo. Este es la descripción de la barra de herramientas. En el momento en el que se escribe esto, la opción para añadir la clase «Gtk.STYLE_CLASS_PRIMARY_TOOLBAR» en el diseñador de interfaces Glade no existe. Se puede añadir manualmente al archivo XML. Para hacer esto, añada el siguiente código XML en la línea 9 de <file>toolbar_builder.ui</file>:</p>
+   <code>
+  &lt;style&gt;
+     &lt;class name="primary-toolbar"/&gt;
+  &lt;/style&gt;
+  </code>
+  <p>Si no añade esto, el programa seguirá funcionando bien. La barra de herramientas resultante se verá, sin embargo, ligeramente distinta a la de la captura de pantalla en la parte superior de esta página.</p>
+   </item>
+</steps>
+  <code mime="application/xml" style="numbered">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;!-- interface-requires gtk+ 3.0 --&gt;
+  &lt;object class="GtkToolbar" id="toolbar"&gt;
+    &lt;property name="visible"&gt;True&lt;/property&gt;
+    &lt;property name="can_focus"&gt;False&lt;/property&gt;
+    &lt;property name="hexpand"&gt;True&lt;/property&gt;
+    &lt;property name="show_arrow"&gt;False&lt;/property&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="new_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="visible"&gt;True&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;app.new&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;New&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-new&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="open_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="visible"&gt;True&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;app.open&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;Open&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-open&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="undo_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="visible"&gt;True&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;win.undo&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;Undo&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-undo&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="fullscreen_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="visible"&gt;True&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;win.fullscreen&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;Fullscreen&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-fullscreen&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="leave_fullscreen_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;win.fullscreen&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;Leave Fullscreen&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-leave-fullscreen&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+  &lt;/object&gt;
+&lt;/interface&gt;
+</code>
+
+  <p>Ahora se crea el código siguiente, que añade la barra de herramientas desde el archivo que se acaba de crear.</p>
+<code mime="text/x-csharp" style="numbered">/* This is the Window */
+class MyWindow : Gtk.ApplicationWindow {
+
+	/* Declare these two ToolButtons, as we will get them
+	 * from the ui file (see lines 32 and 33), so we can
+	 * hide() and show() them as needed.*/
+	Gtk.ToolButton fullscreen_button;
+	Gtk.ToolButton leave_fullscreen_button;
+
+	/* Constructor */
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "Toolbar Example");
+
+		this.set_default_size (400, 200);
+		var grid = new Gtk.Grid ();
+		this.add (grid);
+		grid.show ();
+
+		/* add the toolbar from the ui file */
+		var builder = new Gtk.Builder ();
+		try {
+			builder.add_from_file ("toolbar_builder.ui");
+		}
+		/* Handle the exception */
+		catch (Error e) {
+			error ("Unable to load file: %s", e.message);
+		}
+
+		grid.attach (builder.get_object ("toolbar") as Gtk.Toolbar, 0, 0, 1, 1);
+
+		/* get these objects from the ui file so we can toggle between them */
+		fullscreen_button = builder.get_object ("fullscreen_button") as Gtk.ToolButton;
+		leave_fullscreen_button = builder.get_object ("leave_fullscreen_button") as Gtk.ToolButton;
+
+		/* create the "undo" window action action */
+		var undo_action = new SimpleAction ("undo", null);
+		undo_action.activate.connect (undo_callback);
+		this.add_action (undo_action);
+
+		/* create the "fullscreen" window action */
+		var fullscreen_action = new SimpleAction ("fullscreen", null);
+		fullscreen_action.activate.connect (fullscreen_callback);
+		this.add_action (fullscreen_action);
+	}
+
+	void undo_callback (SimpleAction simple, Variant? parameter) {
+			print ("You clicked \"Undo\".\n");
+	}
+
+	void fullscreen_callback (SimpleAction simple, Variant? parameter) {
+		if ((this.get_window ().get_state () &amp; Gdk.WindowState.FULLSCREEN) != 0) {
+			this.unfullscreen ();
+			leave_fullscreen_button.hide ();
+			fullscreen_button.show ();
+		}
+		else {
+			this.fullscreen ();
+			fullscreen_button.hide ();
+			leave_fullscreen_button.show ();
+		}
+	}
+}
+
+/* This is the application */
+class MyApplication : Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+
+	protected override void startup () {
+		base.startup ();
+
+		/* Create the "new" action and add it to the app*/
+		var new_action = new SimpleAction ("new", null);
+		new_action.activate.connect (new_callback);
+		this.add_action (new_action);
+
+		/* Create the "open" action, and add it to the app */
+		var open_action = new SimpleAction ("open", null);
+		open_action.activate.connect (open_callback);
+		this.add_action (open_action);
+
+		/* You could also add the action to the app menu
+		 * if you wanted to.
+		 */
+		//var menu = new Menu ();
+		//menu.append ("New", "app.new");
+		//this.app_menu = menu;
+	}
+
+	void new_callback (SimpleAction action, Variant? parameter) {
+		print ("You clicked \"New\".\n");
+	}
+
+	void open_callback (SimpleAction action, Variant? parameter) {
+			print ("You clicked \"Open\".\n");
+	}
+}
+
+/* The main function creates the application and runs it. */
+int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+
+<p>En este ejemplo se usa lo siguiente:</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Toolbar.html">Gtk.Toolbar</link></p></item>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.ToolButton.html">Gtk.Toolbutton</link></p></item>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Stock.html">Gtk.Stock</link></p></item>
+</list>
+
+</page>

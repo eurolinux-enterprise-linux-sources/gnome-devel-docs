@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="tour-events" xml:lang="cs">
+
+  <info>
+    <link type="next" xref="tour-get_object"/>
+    <revision version="0.1" date="2013-06-17" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Gordon Hill</name>
+      <email its:translate="no">caseyweederman@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Napojení funkcí na události pomocí jazyka Lang.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Lucas Lommer</mal:name>
+      <mal:email>llommer@svn.gnome.org</mal:email>
+      <mal:years>2009.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Marek Černocký</mal:name>
+      <mal:email>marek@manet.cz</mal:email>
+      <mal:years>2015.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Akce a signály</title>
+
+  <links type="prevnext" style="top"/>
+  <links type="series" style="floatend">
+    <title>Začínáme s GNOME</title>
+  </links>
+
+  <p>Gtk má sadu předdefinovaných událostí, které můžete ve své aplikaci použít.</p>
+  <example>
+    <p>Deklarujte <code>HelloWorld</code> jako novou třídu jazyka <code>Lang</code>. Gjs vyžaduje, aby třídy měly definovánu vlastnost Name.</p>
+
+    <code>
+const HelloWorld = new Lang.Class({
+    Name: 'HelloWorld',
+</code>
+
+    <p><code>_init</code> je voláno ve chvíli, kdy je vytvořena nová instance. Vytvořte <code>GtkApplication</code>, pak napojte <code>activate</code> na existující událost Gtk <code>_onActivate</code> a <code>startup</code> na <code>_onStartup</code>.</p>
+
+    <code>
+    _init: function() {
+        this.application = new Gtk.Application();
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+</code>
+
+    <p>Zobrazte okno ihned po aktivaci aplikace:</p>
+    <code>
+    _onActivate: function(){
+        this._window.show_all();
+    },
+</code>
+  </example>
+  <links type="prevnext"/>
+</page>

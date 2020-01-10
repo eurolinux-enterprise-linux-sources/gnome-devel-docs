@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="weatherApp.js" xml:lang="fr">
+  <info>
+  <title type="text">Weather application (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>Comment planifier une application qui utilise des appels asynchrones. Les appels asynchrones sont présentés au travers d'une application météo.</desc>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Weather application</title>
+  <synopsis>
+    <p>Dans cette partie du guide, nous allons construire une application météo utilisant des appels asynchrones. Dans cet exemple, les informations météorologiques sont récupérées sur geonames.org et l'application utilise les <link href="http://fr.wikipedia.org/wiki/Liste_des_codes_OACI_des_a%C3%A9roports">codes OACI</link> pour localiser les requêtes météo. Pour écrire et lancer tous les exemples de code, vous avez besoin d'un éditeur pour écrire le code, de l'application Terminal et d'un ordinateur sur lequel GNOME 3 ou supérieur est installé. Dans ce guide, nous illustrerons les éléments suivants :</p>
+
+    <list>
+      <item><p> <link xref="#planningUi">Planning the graphical user interface</link></p></item>
+      <item><p> <link xref="#asynchronous">Asynchronous calls</link></p></item>
+      <item><p> <link xref="#main">The main program file</link></p></item>
+      <item><p> <link xref="#main">Local library GeoNames</link></p></item>
+      <item><p> <link xref="#main">Autotools and Icons</link></p></item>
+    </list>
+  </synopsis>
+
+  <p>Après avoir suivi ce tutoriel, vous devriez voir ceci sur votre écran :</p>
+  <media type="image" mime="image/png" src="media/weatherAppJs.png"/>
+
+  <section id="planningUi">
+    <title>Organisation de l'interface graphique utilisateur</title>
+    <p>Pour structurer une application pour GNOME 3, vous devez utiliser <link href="http://developer.gnome.org/platform-overview/stable/gtk">GTK+</link>. Vous devez aussi vous souvenir que la fenêtre principale ne peut comporter qu'un seul composant graphique, donc organisez votre structure en fonction de cet impératif (dans cet exemple, nous utilisons Gtk.Grid). Une bonne méthode consiste à dessiner la boîte « fenêtre principale » et d'y placer chaque composant graphique nécessaire. En regardant l'image de votre future application, vous pourrez plus facilement déceler les relations existantes entre les éléments graphiques. Par exemple, Gtk.Grid place vos éléments graphiques en fonction des autres, donc la position du premier sur la grille conditionne le placement des autres.</p>
+  </section>
+  <section id="asynchronous">
+    <title>Appels asynchrones</title>
+    <p>Avec beaucoup de langages de programmation, toutes les opérations sont exécutées de manière synchrone : quand vous exécutez une action, le programme attend qu'elle soit terminée avant de continuer. Cependant, cette procédure est mal adaptée aux interfaces utilisateurs graphiques, car l'application devient inactive pendant ce temps. La méthode asynchrone (async) est donc beaucoup mieux adaptée dans notre cas, car elle ne bloque pas votre interface pour d'autres actions. Elle rend ainsi votre application plus flexible et mieux armée pour affronter des appels plus longs que prévus, ou qui parfois restent bloqués pour une raison ou une autre. Vous pouvez par exemple utiliser cette méthode pour des accès entrée/sortie de fichiers systèmes et des calculs lents en arrière-plan.</p>
+    <p>Dans cet exemple, il nous faut obtenir des données de geonames.org. Pendant ce temps, nous voulons que le reste du programme continue à tourner. Si nous utilisions pour cela une application synchrone et que nous n'arrivions pas à avoir une connexion internet fonctionnelle avec le site geonames.org, nous n'obtiendrions aucune donnée et donc nous n'atteindrions jamais la ligne où l'instruction main_quit() est exécutée. Il faudrait alors « tuer » l'application à partir du Terminal.</p>
+  </section>
+  <section id="main">
+    <title>Les différentes parties du programme</title>
+  </section>
+</page>

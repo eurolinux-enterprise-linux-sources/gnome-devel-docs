@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="messagedialog.js" xml:lang="el">
+  <info>
+  <title type="text">MessageDialog (JavaScript)</title>
+    <link type="guide" xref="beginner.js#windows"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="gmenu.js"/>
+    <link type="seealso" xref="label.js"/>
+    <revision version="0.2" date="2012-06-25" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα επισυναπτόμενο αναδυόμενο μήνυμα σε ένα παράθυρο</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MessageDialog</title>
+  <media type="image" mime="image/png" src="media/messagedialog.png"/>
+  <p>Ένας MessageDialog είναι ένας αναγκαστικός διάλογος μηνύματος, που σημαίνει έναν αναδυόμενο στον οποίο πρέπει να απαντήσετε πριν να επιστρέψετε σε ότι κάνατε στο παράθυρο στο οποίο είναι προσαρτημένο. Αυτό μπορεί να προκαλέσει την έκρηξη του κόσμου (ή τουλάχιστον λέει ότι μπορεί). Για να κάνετε το αναδυόμενο να εμφανιστεί όταν εκτελείτε αυτό το δείγμα, πατήστε στο "Message" μέσα στο μενού της εφαρμογής του -- αυτό είναι το μενού που εμφανίζεται όταν πατάτε στο όνομα μιας εφαρμογής στην πάνω αριστερή γωνία της οθόνης, δίπλα στις ενέργειες.</p>
+  <note><p>Η διαφορά μεταξύ ενός MessageDialog και ενός <link xref="dialog.js">διαλόγου</link> είναι ότι ο διάλογος μπορεί να περιέχει οποιαδήποτε γραφικά στοιχεία και περιεχόμενο θέλετε να βάλετε μέσα, ενώ ένας MessageDialog είναι απλά ένας βολικός τρόπος να κάνετε τα αναδυόμενα να εμφανιστούν με ένα βασικό μήνυμα και κουμπιά.</p></note>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
+  </section>
+
+  <section id="applicationwindow">
+    <title>Δημιουργία του παραθύρου εφαρμογής</title>
+    <code mime="application/javascript">
+const MessageDialogExample = new Lang.Class ({
+    Name: 'MessageDialog Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jsmessagedialog',
+            flags: Gio.ApplicationFlags.FLAGS_NONE });
+
+        // Σύνδεση σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' αρχικοποιεί τα μενού και δομεί τη διεπαφή χρήστη
+    _onStartup: function () {
+        this._initMenus();
+        this._buildUI ();
+    },
+</code>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση MessageDialogExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <note><p>Πριν καλέσουμε _buildUI για δημιουργία του παραθύρου και των γραφικών στοιχείων μέσα του, χρειαζόμαστε να καλέσουμε _initMenus, που λέει στο GNOME να δημιουργήσει το μενού. Μπορούμε να βάλουμε τον ενεργό κώδικα για _initMenus μετά τον κώδικα για _buildUI, αφού δεν πειράζει η σειρά που τα βάλαμε όσο το _initMenus καλείται πρώτο στο _onStartup.</p></note>
+    <code mime="application/javascript">
+    // Δημιουργία της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function () {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Gtk.MessageDialog Example",
+            default_height: 200,
+            default_width: 400 });
+</code>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία ενός χαζού μηνύματος προειδοποίησης και προσθήκη του στο παράθυρο
+        this.warningLabel = new Gtk.Label ({
+            label: "This application goes boom! (Not really.)"});
+        this._window.add (this.warningLabel);
+</code>
+    <p>Για αυτό το παράδειγμα, όλο ότι έχουμε στο παράθυρο που εμφανίζεται το αναδυόμενο είναι μια χαζή προειδοποίηση <link xref="label.js">Label</link>.</p>
+  </section>
+
+  <section id="menu">
+    <title>Δημιουργία του μενού της εφαρμογής</title>
+    <code mime="application/javascript">
+    // Δημιουργία του μενού της εφαρμογής, συμπεριλαμβανομένου του κουμπιού που καλεί τον διάλογο
+    _initMenus: function() {
+        let menu = new Gio.Menu();
+        menu.append("Message",'app.message');
+        menu.append("Quit",'app.quit');
+        this.application.set_app_menu(menu);
+
+        // Αυτό αναδύει ένα μήνυμα διαλόγου όταν πατιέται "Message" στο μενού
+        let messageAction = new Gio.SimpleAction ({ name: 'message' });
+        messageAction.connect('activate', Lang.bind(this,
+            function() {
+                this._showMessageDialog();
+            }));
+        this.application.add_action(messageAction);
+
+        // Αυτό κλείνει το παράθυρο όταν πατιέται  "Quit" στο μενού
+        let quitAction = new Gio.SimpleAction ({ name: 'quit' });
+        quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._window.destroy();
+            }));
+        this.application.add_action(quitAction);
+    },
+</code>
+    <p>Εδώ, κατασκευάζουμε το <link xref="gmenu.js">GMenu</link> όπου θα βάλουμε το κουμπί "Message" που προκαλεί το αναδυόμενο MessageDialog. Το GMenu είναι το μενού που εμφανίζεται όταν πατάς το όνομα της εφαρμογής στην πάνω αριστερή γωνία της οθόνης, δίπλα στο μενού ενέργειες. Το μενού μας έχει μόνο δύο επιλογές: μήνυμα και κλείσιμο.</p>
+  </section>
+
+  <section id="messagedialog">
+    <title>Δημιουργία του MessageDialog</title>
+    <code mime="application/javascript">
+    _showMessageDialog: function () {
+
+        // Δημιουργία αναγκαστικού διαλόγου μηνύματος του οποίου το γονικό είναι στο παράθυρο
+        this._messageDialog = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            buttons: Gtk.ButtonsType.OK_CANCEL,
+            message_type: Gtk.MessageType.WARNING,
+            text: "This action will cause the universe to stop existing." });
+
+        this._messageDialog.connect ('response', Lang.bind(this, this._response_cb));
+        this._messageDialog.show();
+    },
+</code>
+    <p>Για να κάνετε τον MessageDialog μας ένα προσαρτημένο αναδυόμενο στο κύριο παράθυρο, ορίζουμε την αναγκαστική του ιδιότητα σε αληθή και το ορίζουμε να είναι "transient_for" _window. Μετά από αυτό, μπορούμε να ορίσουμε τι είδους κουμπιά έχει και τι είδους μήνυμα είναι (που καθορίζει τι εικονίδιο εμφανίζεται δίπλα στο μήνυμα) και να γραφτεί το κείμενο μέσα του, πριν τη σύνδεση του σήματος του "response" στη συνάρτηση επανάκλησης που το χειρίζεται.</p>
+    <note><p>Εδώ υπάρχουν μερικές πηγές για να κάνετε τα δικά σας MessageDialogs:</p>
+      <list>
+        <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkMessageDialog.html#GtkButtonsType">List of button types</link></p></item>
+        <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkMessageDialog.html#GtkMessageType">List of message types</link></p></item>
+      </list>
+    </note>
+
+    <code mime="application/javascript">
+    // Η συνάρτηση επανάκλησης (χειριστής σήματος aka) για το σήμα απάντησης
+    _response_cb: function (messagedialog, response_id) {
+
+        // Ένας απλός διακόπτης που αλλάζει την ετικέτα του κυρίως παραθύρου
+        switch (response_id) {
+            case Gtk.ResponseType.OK:
+                this.warningLabel.set_label ("*BOOM*\n");
+                break;
+            case Gtk.ResponseType.CANCEL:
+                this.warningLabel.set_label ("Good choice!\n");
+                break;
+            case Gtk.ResponseType.DELETE_EVENT:
+                this.warningLabel.set_label ("Dialog closed or cancelled.\n");
+                break;
+        }
+
+        this._messageDialog.destroy();
+
+    }
+
+});
+</code>
+    <p>Αυτή η συνάρτηση παίρνει δύο παραμέτρους, τον MessageDialog και την response_id, και οι δυο τους παρέχονται αυτόματα (δεν χρειάζεται να τις περάσετε αυτόματα σε αυτό για να δουλέψει). Εδώ χρησιμοποιούμε ένα απλό διακόπτη για αλλαγή του κειμένου της "warning label", ανάλογα με το ποια επιλογή διαλέγετε. Η DELETE_EVENT συμβαίνει εάν πατήσετε διαφυγή για να ακυρώσετε τον MessageDialog, αντί να πατήσετε εντάξει ή ακύρωση. Ό,τι και να επιλέξετε, το αναδυόμενο καταστρέφεται κατόπιν.</p>
+
+    <code mime="application/javascript">
+// Εκτέλεση της εφαρμογής
+let app = new MessageDialogExample ();
+app.application.run (ARGV);
+</code>
+    <p>Τελικά, δημιουργούμε ένα νέο στιγμιότυπο της ολοκληρωμένης κλάσης MessageDialogExample και εκτελούμε την εφαρμογή.</p>
+  </section>
+
+  <section id="complete">
+    <title>Δείγμα πλήρους κώδικα</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const MessageDialogExample = new Lang.Class ({
+    Name: 'MessageDialog Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jsmessagedialog',
+            flags: Gio.ApplicationFlags.FLAGS_NONE });
+
+        // Σύνδεση σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' αρχικοποιεί τα μενού και δομεί τη διεπαφή χρήστη 
+    _onStartup: function () {
+        this._initMenus();
+        this._buildUI ();
+    },
+
+
+
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function () {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Gtk.MessageDialog Example",
+            default_height: 200,
+            default_width: 400 });
+
+        // Δημιουργία ενός χαζού μηνύματος προειδοποίησης και προσθήκη του στο παράθυρο
+        this.warningLabel = new Gtk.Label ({
+            label: "This application goes boom! (Not really.)"});
+        this._window.add (this.warningLabel);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+
+
+    // Δόμηση του μενού της εφαρμογής, συμπεριλαμβανομένου του κουμπιού που καλεί τον διάλογο
+    _initMenus: function() {
+        let menu = new Gio.Menu();
+        menu.append("Message",'app.message');
+        menu.append("Quit",'app.quit');
+        this.application.set_app_menu(menu);
+
+        // Αυτό εμφανίζει έναν διάλογο μηνύματος όταν πατιέται "Message" στο μενού
+        let messageAction = new Gio.SimpleAction ({ name: 'message' });
+        messageAction.connect('activate', Lang.bind(this,
+            function() {
+                this._showMessageDialog();
+            }));
+        this.application.add_action(messageAction);
+
+        // Αυτό κλείνει το παράθυρο όταν πατιέται "Quit" στο μενού
+        let quitAction = new Gio.SimpleAction ({ name: 'quit' });
+        quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._window.destroy();
+            }));
+        this.application.add_action(quitAction);
+    },
+
+
+
+    _showMessageDialog: function () {
+
+        // Δημιουργία ενός αναγκαστικού μηνύματος διαλόγου του οποίου το γονικό είναι στο παράθυρο
+        this._messageDialog = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            buttons: Gtk.ButtonsType.OK_CANCEL,
+            message_type: Gtk.MessageType.WARNING,
+            text: "This action will cause the universe to stop existing." });
+
+        this._messageDialog.connect ('response', Lang.bind(this, this._response_cb));
+        this._messageDialog.show();
+    },
+
+
+
+    // Η συνάρτηση επανάκλησης  (χειριστής σήματος aka) για το σήμα απάντησης
+    _response_cb: function (messagedialog, response_id) {
+
+        // Ένας απλός διακόπτης που αλλάζει την ετικέτα του κυρίως παραθύρου
+        switch (response_id) {
+            case Gtk.ResponseType.OK:
+                this.warningLabel.set_label ("*BOOM*\n");
+                break;
+            case Gtk.ResponseType.CANCEL:
+                this.warningLabel.set_label ("Good choice!\n");
+                break;
+            case Gtk.ResponseType.DELETE_EVENT:
+                this.warningLabel.set_label ("Dialog closed or cancelled.\n");
+                break;
+        }
+
+        this._messageDialog.destroy();
+
+    }
+
+});
+
+// Εκτέλεση της εφαρμογής 
+let app = new MessageDialogExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Τεκμηρίωση σε βάθος</title>
+<p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gio/unstable/GMenu.html">GMenu</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.MessageDialog.html">Gtk.MessageDialog</link></p></item>
+</list>
+  </section>
+</page>

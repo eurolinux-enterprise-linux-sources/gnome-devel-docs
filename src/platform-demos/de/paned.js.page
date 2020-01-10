@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="paned.js" xml:lang="de">
+  <info>
+    <title type="text">Paned (JavaScript)</title>
+    <link type="guide" xref="beginner.js#layout"/>
+    <revision version="0.1" date="2013-06-25" status="review"/>
+
+    <credit type="author copyright">
+      <name>Meg Ford</name>
+      <email its:translate="no">megford@gnome.org</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>A widget with two adjustable panes</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2011, 2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Paned</title>
+  <media type="image" mime="image/png" src="media/paned.png"/>
+  <p>Two images in two adjustable panes, horizontally aligned.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code used to generate this example</title>
+    <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const PanedExample = new Lang.Class ({
+    Name: 'Paned Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application({ application_id: 'org.example.panedexample' });
+
+       // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function() {
+        this.window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+    // Build the application's UI
+    _buildUI: function() {
+        // Create the application window
+        this.window = new Gtk.ApplicationWindow  ({ application: this.application,
+                                                    window_position: Gtk.WindowPosition.CENTER,
+                                                    title: "Paned Window Example",
+                                                    default_width: 450,
+                                                    default_height: 350,
+                                                    border_width: 10 });
+
+        // a new widget with two adjustable panes,
+        // one on the left and one on the right
+        this.paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL);
+
+        // two images
+        this.image1 = new Gtk.Image();
+        this.image1.set_from_file("gnome-image.png");
+        this.image2 = new Gtk.Image();
+        this.image2.set_from_file("tux.png");
+
+        // add the first image to the left pane
+        this.paned.add1(this.image1);
+        // add the second image to the right pane
+        this.paned.add2(this.image2)
+
+        // add the panes to the window
+        this.window.add(this.paned)
+        this.window.show_all();
+    }
+});
+
+// Run the application
+let app = new PanedExample();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="references">
+    <title>API-Referenzen</title>
+    <p>In this sample we used the following:</p>
+    <list>
+      <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Paned.html">GtkPaned</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/gtk3-Standard-Enumerations.html#GtkOrientation">Standard-Aufzählungen</link></p></item>
+      <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Image.html">GtkImage</link></p></item>
+    </list>
+  </section>
+</page>

@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="photo-wall.c" xml:lang="ca">
+  <info>
+    <title type="text">Photo wall (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>Un visualitzador d'imatges fet amb Clutter</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-03-22" status="review"/>
+    <credit type="author">
+      <name>Chris Kühl</name>
+      <email its:translate="no">chrisk@openismus.com</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  </info>
+
+<title>Photo wall</title>
+
+<synopsis>
+  <p>En aquest exemple es construirà un visualitzador d'imatges senzill amb la Clutter. Aprendreu a:</p>
+  <list>
+    <item><p>Com dimensionar i posicionar els <code>ClutterActor</code></p></item>
+    <item><p>Com posar una imatge en un <code>ClutterActor</code></p></item>
+    <item><p>Com fer transicions senzilles utilitzant l'entorn de treball d'animacions de la Clutter</p></item>
+    <item><p>Com fer que els <code>ClutterActor</code> responguin a esdeveniments del ratolí</p></item>
+    <item><p>Com obtenir els noms dels fitxers d'un directori</p></item>
+  </list>
+</synopsis>
+
+<section id="intro">
+  <title>Introducció</title>
+  <p>
+    Clutter is a library for creating dynamic user interfaces using OpenGL for hardware acceleration. This example demonstrates a small, but central, part of the Clutter library to create a simple but attractive image viewing program.
+  </p>
+  <p>
+    To help us reach our goal we will be utilising a few other common pieces of GLib as well. Most importantly, we'll use one <code>GPtrArray</code>, a dynamic array of pointers, to hold the file path names. We will also use <code>GDir</code>, a utility for working with directories, to access our image directory and gather file paths.
+  </p>
+</section>
+
+<section id="anjuta">
+  <title>Creació d'un projecte a l'Anjuta</title>
+  <p>Abans de començar a programar, heu de crear un projecte nou a l'Anjuta. L'Anjuta crearà tots els fitxers necessaris per, més endavant, construir i executar el codi. És molt útil per així mantenir-ho tot junt.</p>
+  <steps>
+    <item>
+    <p>Inicieu l'Anjuta i feu clic a <guiseq><gui>Fitxer</gui><gui>Nou</gui><gui>Projecte</gui></guiseq> per obrir l'auxiliar de projectes.</p>
+    </item>
+    <item>
+    <p>Choose <gui>GTK+ (simple)</gui> from the <gui>C</gui> tab, click <gui>Continue</gui>, and fill out your details on the next few pages. Use <file>photo-wall</file> as project name and directory.</p>
+   	</item>
+    <item>
+    <p>Assegureu-vos que <gui>Utilitza el GtkBuilder per a la interfície d'usuari</gui> està desactivat ja que en aquest programa d'aprenentatge es crearà la interfície d'usuari manualment. Feu una ullada al programa d'aprenentatge <link xref="guitar-tuner.c">Afinació de guitarres</link> que utilitza el constructor d'interfícies (GtkBuilder).</p>
+    </item>
+    <item>
+    <p>Habiliteu <gui>Configura els paquets externs</gui>. A la llista de la pàgina següent seleccioneu <em>clutter-1.0</em> per incloure la biblioteca Clutter al projecte.</p>
+    </item>
+    <item>
+    <p>Feu clic a <gui>Aplica</gui> i es crearà el projecte. Obriu <file>src/main.c</file> des de les pestanyes <gui>Projecte</gui> o <gui>Fitxer</gui>. Hauríeu de veure una mica de codi que comença amb les línies:</p>
+    <code mime="text/x-csrc"><![CDATA[
+#include <config.h>
+#include <gtk/gtk.h>]]></code>
+    </item>
+  </steps>
+</section>
+
+<section id="look">
+  <title>Una mirada al Mur de Fotografies</title>
+  <p>El visualitzador d'imatges mostra un mur d'imatges a l'usuari.</p>
+  <media type="image" mime="image/png" src="media/photo-wall.png"/>
+  <p>Quan es fa clic a una imatge, aquesta s'anima per cobrir l'àrea de visualització. Quan es fa clic a la imatge que té el focus, aquesta retorna a la seva posició original amb una animació que dura exactament 500 miŀlisegons.</p>
+  <media type="image" mime="image/png" src="media/photo-wall-focused.png"/>
+</section>
+
+<section id="setup">
+  <title>Configuració inicial</title>
+  <p>El segment de codi que ve a continuació conté la majoria de definicions i variables que utilitzarem en les seccions següents. Podeu utilitzar-ho com a referència per a les seccions posteriors. Copieu aquest codi a l'inici de <file>src/main.c</file>:</p>
+<code mime="text/x-csrc" style="numbered"><![CDATA[
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <clutter/clutter.h>
+
+#define STAGE_WIDTH  800
+#define STAGE_HEIGHT 600
+
+#define THUMBNAIL_SIZE 200
+#define ROW_COUNT (STAGE_HEIGHT / THUMBNAIL_SIZE)
+#define COL_COUNT (STAGE_WIDTH  / THUMBNAIL_SIZE)
+#define THUMBNAIL_COUNT (ROW_COUNT * COL_COUNT)
+
+#define ANIMATION_DURATION_MS 500
+
+#define IMAGE_DIR_PATH "./berlin_images/"
+
+static GPtrArray *img_paths;
+
+static ClutterPoint unfocused_pos;
+]]>
+</code>
+</section>
+
+<section id="code">
+  <title>Primers passos en el codi</title>
+  <p>Es farà primer una ullada general a la funció <code>main()</code>. Després es mirarà la resta de seccions del codi en més profunditat. Canvieu el fitxer <file>src/main.c</file> perquè contingui aquesta funció <code>main()</code>. Podeu esborrar la funció <code>create_window()</code> perquè no fa falta per aquest exemple.</p>
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
+int
+main(int argc, char *argv[])
+{
+    ClutterColor stage_color = { 16, 16, 16, 255 };
+    ClutterActor *stage = NULL;
+
+    if (clutter_init (&argc, &argv) != CLUTTER_INIT_SUCCESS)
+        return 1;
+
+    stage = clutter_stage_new();
+    clutter_actor_set_size(stage, STAGE_WIDTH, STAGE_HEIGHT);
+    clutter_actor_set_background_color(stage, &stage_color);
+    clutter_stage_set_title(CLUTTER_STAGE (stage), "Photo Wall");
+    g_signal_connect(stage, "destroy", G_CALLBACK(clutter_main_quit), NULL);
+
+    load_image_path_names();
+
+    guint row = 0;
+    guint col = 0;
+    for(row=0; row < ROW_COUNT; ++row)
+    {
+        for(col=0; col < COL_COUNT; ++col)
+        {
+            const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col);
+            GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL);
+            ClutterContent *image = clutter_image_new ();
+            ClutterActor *actor = clutter_actor_new ();
+
+            if (pixbuf != NULL)
+            {
+                clutter_image_set_data(CLUTTER_IMAGE(image),
+                                       gdk_pixbuf_get_pixels(pixbuf),
+                                       gdk_pixbuf_get_has_alpha(pixbuf)
+                                           ? COGL_PIXEL_FORMAT_RGBA_8888
+                                           : COGL_PIXEL_FORMAT_RGB_888,
+                                       gdk_pixbuf_get_width(pixbuf),
+                                       gdk_pixbuf_get_height(pixbuf),
+                                       gdk_pixbuf_get_rowstride(pixbuf),
+                                       NULL);
+            }
+
+            clutter_actor_set_content(actor, image);
+            g_object_unref(image);
+            g_object_unref(pixbuf);
+
+            initialize_actor(actor, row, col);
+            clutter_actor_add_child(stage, actor);
+        }
+    }
+
+    /* Show the stage. */
+    clutter_actor_show(stage);
+
+    /* Start the clutter main loop. */
+    clutter_main();
+
+    g_ptr_array_unref(img_paths);
+
+    return 0;
+}]]></code>
+  <list>
+    <item><p>Línia 4: el <code>ClutterColor</code> es defineix establint els valors del vermell, el verd, el blau i de la transparència (alfa). El rang de valors és de 0 a 255. Per la transparència un valor de 255 és opac.</p></item>
+    <item><p>Línia 7: heu d'inicialitzar la Clutter. Si us en descuideu, obtindreu errors molt estranys. Tingueu-ho en compte.</p></item>
+    <item><p>Lines 10‒14: Here we create a new <code>ClutterStage</code> . We then set the size using the defines from the previous section and the address of the <code>ClutterColor</code> we just defined.</p>
+      <note><p>Un <code>ClutterStage</code> és el <code>ClutterActor</code> de més alt nivell on es posen d'altres <code>ClutterActor</code>.</p></note>
+</item>
+    <item><p>Line 16: Here we call our function for getting the image file paths. We'll look at this in a bit.</p></item>
+    <item><p>Lines 18‒49: This is where we set up the <code>ClutterActor</code>s, load the images and place them into their spot in the image wall. We will look at this in detail in the next section.</p></item>
+    <item><p>Line 52: Show the stage and <em>all its children</em>, meaning our images.</p></item>
+    <item><p>Line 55: Start the Clutter main loop.</p></item>
+  </list>
+</section>
+
+<section id="actors">
+  <title>Configuració dels actors d'imatges</title>
+ <note><p>A la Clutter un actor és l'element visual bàsic. Tot el que es veu és un actor.</p></note>
+<p>En aquesta secció, es farà una repassada amb més detall al bucle que s'utilitza per definir els <code>ClutterActor</code> que mostraran les imatges.</p>
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
+guint row = 0;
+guint col = 0;
+for(row=0; row < ROW_COUNT; ++row)
+{
+    for(col=0; col < COL_COUNT; ++col)
+    {
+        const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col);
+        GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL);
+        ClutterContent *image = clutter_image_new ();
+        ClutterActor *actor = clutter_actor_new ();
+
+        if (pixbuf != NULL)
+        {
+            clutter_image_set_data(CLUTTER_IMAGE(image),
+                                   gdk_pixbuf_get_pixels(pixbuf),
+                                   gdk_pixbuf_get_has_alpha(pixbuf)
+                                       ? COGL_PIXEL_FORMAT_RGBA_8888
+                                       : COGL_PIXEL_FORMAT_RGB_888,
+                                   gdk_pixbuf_get_width(pixbuf),
+                                   gdk_pixbuf_get_height(pixbuf),
+                                   gdk_pixbuf_get_rowstride(pixbuf),
+                                   NULL);
+        }
+
+        clutter_actor_set_content(actor, image);
+        g_object_unref(image);
+        g_object_unref(pixbuf);
+
+        initialize_actor(actor, row, col);
+        clutter_actor_add_child(stage, actor);
+    }
+}
+]]>
+</code>
+<list>
+  <item><p>Line 7: Here we want to get the path at the <var>n</var>th location in the <code>GPtrArray</code> that is holding our image path names. The <var>n</var>th position is calculated based on <code>row</code> and <code>col</code>.</p>
+  </item>
+  <item><p>Line 8‒23: This is where we actually create the <code>ClutterActor</code> and place the image into the actor. The first argument is the path which we access through our <code>GSList</code> node. The second argument is for error reporting but we are ignoring that to keep things short.</p>
+  </item>
+  <item><p>Line 47: This adds the <code>ClutterActor</code> to the stage, which is a container. It also assumes ownership of the <code>ClutterActor</code> which is something you'll want to look into as you get deeper into GNOME development. See the <link href="http://library.gnome.org/devel/gobject/stable/gobject-memory.html"><code>GObject</code> documentation</link> for the gory details.</p>
+  </item>
+</list>
+</section>
+
+<section id="load">
+  <title>Càrrega de les imatges</title>
+  <p>Abans de continuar amb la Clutter s'explica a continuació com es poden obtenir els noms dels fitxers del directori d'imatges de l'usuari.</p>
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
+static void
+load_image_path_names()
+{
+    /* Ensure we can access the directory. */
+    GError *error = NULL;
+    GDir *dir = g_dir_open(IMAGE_DIR_PATH, 0, &error);
+    if(error)
+    {
+        g_warning("g_dir_open() failed with error: %s\n", error->message);
+        g_clear_error(&error);
+        return;
+    }
+
+    img_paths = g_ptr_array_new_with_free_func (g_free);
+
+    const gchar *filename = g_dir_read_name(dir);
+    while(filename)
+    {
+        if(g_str_has_suffix(filename, ".jpg") || g_str_has_suffix(filename, ".png"))
+        {
+            gchar *path = g_build_filename(IMAGE_DIR_PATH, filename, NULL);
+            g_ptr_array_add (img_paths, path);
+        }
+        filename = g_dir_read_name(dir);
+    }
+}]]></code>
+  <list>
+    <item><p>Lines 5 and 12: This opens our directory or, if an error occurred, returns after printing an error message.</p></item>
+    <item><p>Lines 16‒25: The first line gets another file name from the <code>GDir</code> we opened earlier. If there was an image file (which we check by looking at its extension, ".png" or ".jpg") in the directory we proceed to prepend the image directory path to the filename and prepend that to the list we set up earlier. Lastly we attempt to get the next path name and reenter the loop if another file was found.</p></item>
+  </list>
+</section>
+
+<section id="actors2">
+  <title>Configuració dels actors</title>
+  <p>En aquesta secció es descriu com dimensionar i posicionar els <code>ClutterActor</code> i com preparar-los per la interacció amb l'usuari.</p>
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
+/* This function handles setting up and placing the rectangles. */
+static void
+initialize_actor(ClutterActor *actor, guint row, guint col)
+{
+    clutter_actor_set_size(actor, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+    clutter_actor_set_position(actor, col * THUMBNAIL_SIZE, row * THUMBNAIL_SIZE);
+    clutter_actor_set_reactive(actor, TRUE);
+
+    g_signal_connect(actor,
+                     "button-press-event",
+                     G_CALLBACK(actor_clicked_cb),
+                     NULL);
+}]]></code>
+  <list>
+    <item>
+      <p>Línia 7: establir un actor en mode reactiu significa que reaccionarà als esdeveniments, com ara el <code>button-press-event</code> de l'exemple que segueix. Pel mur de fotografies, tots els <code>ClutterActor</code> del mur s'han d'establir com a reactius inicialment.</p>
+    </item>
+    <item>
+      <p>Línia 9 a 12: es connecta el <code>button-press-event</code> a la crida de retorn <code>actor_clicked_cb</code>, que es detallarà tot més endavant.</p>
+    </item>
+  </list>
+  <p>En aquest moment ja s'ha obtingut un mur de fotografies a punt per visualitzar-se.</p>
+</section>
+
+<section id="click">
+  <title>Reacció als clics</title>
+  <p>
+
+  </p>
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
+static gboolean
+actor_clicked_cb(ClutterActor *actor,
+                 ClutterEvent *event,
+                 gpointer      user_data)
+{
+    /* Flag to keep track of our state. */
+    static gboolean is_focused = FALSE;
+    ClutterActorIter iter;
+    ClutterActor *child;
+
+    /* Reset the focus state on all the images */
+    clutter_actor_iter_init (&iter, clutter_actor_get_parent(actor));
+    while (clutter_actor_iter_next(&iter, &child))
+      clutter_actor_set_reactive(child, is_focused);
+
+    clutter_actor_save_easing_state(actor);
+    clutter_actor_set_easing_duration(actor, ANIMATION_DURATION_MS);
+
+    if(is_focused)
+    {
+        /* Restore the old location and size. */
+        clutter_actor_set_position(actor, unfocused_pos.x, unfocused_pos.y);
+        clutter_actor_set_size(actor, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+    }
+    else
+    {
+        /* Save the current location before animating. */
+        clutter_actor_get_position(actor, &unfocused_pos.x, &unfocused_pos.y);
+        /* Only the currently focused image should receive events. */
+        clutter_actor_set_reactive(actor, TRUE);
+
+        /* Put the focused image on top. */
+        clutter_actor_set_child_above_sibling(clutter_actor_get_parent(actor), actor, NULL);
+
+        clutter_actor_set_position(actor, (STAGE_WIDTH - STAGE_HEIGHT) / 2.0, 0);
+        clutter_actor_set_size(actor, STAGE_HEIGHT, STAGE_HEIGHT);
+    }
+
+    clutter_actor_restore_easing_state(actor);
+
+    /* Toggle our flag. */
+    is_focused = !is_focused;
+
+    return TRUE;
+}]]></code>
+  <list>
+    <item><p>Línies 1 a 4: assegureu-vos que la funció de crida de retorn coincideix amb la signatura de la senyal <code>button_clicked_event</code>. A l'exemple només es fa servir el primer argument, el <code>ClutterActor</code> al que es fa clic.</p>
+<note>
+  <p>Un breu resum sobre els arguments que no s'utilitzen en aquest exemple. El <code>ClutterEvent</code> és diferent depenent de quin esdeveniment es gestiona. Per exemple, un esdeveniment de tecla produeix un <code>ClutterKeyEvent</code> del qual podeu obtenir la tecla premuda a més d'altra informació. Pels esdeveniments de ratolí obteniu un <code>ClutterButtonEvent</code> del qual obtindreu els valors <code>x</code> i <code>y</code>. Vegeu la documentació de la Clutter per altres tipus de <code>ClutterEvent</code>.</p>
+  <p>
+    The <code>user_data</code> is what one uses to pass data into the function. A pointer to any data type can be passed in. If you need multiple data to be passed into the callback, you can place the data into a struct and pass its address in.
+  </p>
+</note></item>
+    <item><p>Línia 7: s'estableix un indicador estàtic per fer un seguiment de l'esta d'execució: en mode mur o en mode focus. A l'inici s'està en mode mur i per tan cap imatge té el focus. Així, s'estableix l'indicador a <code>FALSE</code>.</p></item>
+    <item><p>Line 12‒14: These set the image actors to receive events if they are focused.</p></item>
+    <item><p>Line 16‒17: Here we set the animation duration and save the current state.</p></item>
+    <item><p>Lines 21‒23: Reaching this code means that one image currently has focus and we want to return to wall mode. Setting a position on a <code>ClutterActor</code> begins an animation with the duration that we set in line 17.</p>
+    </item>
+    <item><p>Línia 24: si s'arriba a aquesta línia de codi és que ens l'aplicació està en l'estat de mur i s'ha de donar el focus a un <code>ClutterActor</code>. Es desa la posició inicial per poder tornar-hi més endavant.</p></item>
+    <item><p>Línia 25: s'estableix la propietat <code>reactive</code> del <code>ClutterActor</code> a <code>TRUE</code> permetent que reaccioni als esdeveniments. En el mode focus l'únic <code>ClutterActor</code> que ha de rebre esdeveniments és el <code>ClutterActor</code> que es visualitza. Fent-li clic tornarà a la seva posició inicial.</p></item>
+    <item><p>Lines 27‒36: This is where we save the current position of the image, set it to receive events and then make it appear above the other images and start animating it to fill the stage.</p></item>
+    <item><p>Line 39: Here we restore the easing state to what was set before we changed it in line 16.</p></item>
+    <item><p>Line 42: Here we toggle the <code>is_focused</code> flag to the current state.</p></item>
+<item><p>Com s'ha comentat més amunt, els <code>ClutterActor</code> amb el valor de <code>depth</code> més alt rebran els esdeveniments però poden passar-lo als <code>ClutterActor</code> de sota seu. Si retorna <code>TRUE</code> no es passarà l'esdeveniment als <code>ClutterActor</code> de sota, mentre que si es retorna <code>FALSE</code> es passarà.</p>
+ <note>
+   <p>Recordeu, però, que per rebre esdeveniments els <code>ClutterActor</code> s'han d'establir com a <code>reactive</code>.</p>
+ </note>
+</item>
+ </list>
+</section>
+
+<section id="run">
+  <title>Muntatge i execució de l'aplicació</title>
+  <p>Tot el codi hauria d'estar llest per funcionar. Només fan falta les imatges per carregar. Per defecte, les imatges es carreguen des del directori <file>berlin_images</file>. Si voleu, podeu canviar-lo a línia <code>#define IMAGE_DIR_PATH</code> que està al principi del fitxer perquè apunti al directori de fotos de l'usuari, o podeu crear un directori <file>berlin_images</file> fent clic a <guiseq><gui>Projecte</gui><gui>Directori nou...</gui></guiseq>. El directori <file>berlin_images</file> serà un subdirectori del directori <file>photo-wall</file>. Comproveu que poseu com a mínim dotze imatges en el directori.</p>
+  <p>Un cop ho hàgiu fet, feu clic a <guiseq><gui>Munta</gui><gui>Munta el projecte</gui></guiseq> per tornar-ho a muntar tot, llavors seleccioneu <guiseq><gui>Executa</gui><gui>Executa</gui></guiseq> per iniciar l'aplicació.</p>
+  <p>Si encara no ho heu fet, seleccioneu l'aplicació <file>Debug/src/photo-wall</file> en el diàleg que apareix. Per acabar, premeu <gui>Executa</gui> i ja podreu provar l'aplicació.</p>
+</section>
+
+<section id="impl">
+ <title>Implementació de referència</title>
+ <p>Si teniu algun problema amb el programa d'aprenentatge, compareu el codi amb el <link href="photo-wall/photo-wall.c">codi de referència</link>.</p>
+</section>
+
+</page>

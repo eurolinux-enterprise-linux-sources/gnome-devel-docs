@@ -1,0 +1,746 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:itst="http://itstool.org/extensions/"
+      type="topic"
+      id="keyboard-input">
+
+  <info>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <credit>
+      <name>Calum Benson</name>
+    </credit>
+    <credit>
+      <name>Adam Elman</name>
+    </credit>
+    <credit>
+      <name>Seth Nickell</name>
+    </credit>
+    <credit>
+      <name>Colin Robertson</name>
+    </credit>
+    <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
+    <desc>Keyboard navigation, access and shortcut keys.</desc>  
+  </info>
+
+<title>Keyboard input</title>
+
+<p>Keyboards are a common way to interact with user interfaces. They provide a convenient and effective means to use applications in a variety of situations, and can be faster and more efficient than other input devices. Keyboards are also vital for visually-impaired people or those with mobility impairments.</p>
+
+<p>You should ensure that all the functionality provided by your application can be accessed using a keyboard. Trying to use your application with only a keyboard is a great way to test this.</p>
+
+<p>Keyboard interaction has three aspects in GNOME and GTK+: navigation, access keys, and shortcut keys. <link xref="search">Search</link> is another, additional aspect.</p>
+
+<section id="keyboard-navigation">
+<title>Keyboard navigation</title>
+
+<p>Make sure that it is possible to move around and interact with every part of your user interface using the keyboard, by following these guidelines.</p>
+
+<list>
+<item><p>Follow the standard GNOME keys for navigation. <key>Tab</key> is the standard key for moving around an interface with GTK+ and GNOME.</p></item>
+<item><p>Use a logical keyboard navigation order. When navigating around a window with <key>Tab</key>, keyboard focus should move between controls in a predictable order. In Western locales, this is normally left to right and top to bottom.</p></item>
+<item><p>In addition to navigation using <key>Tab</key>, make an effort to allow movement using the arrow keys, both within user interface elements (such as lists, icon grids or sidebars), and between them.</p></item>
+</list>
+
+<note><p>If activating a control enables other controls, do not automatically give focus to the first dependent control when it is activated, but instead leave focus in place.</p></note>
+
+<section id="navigation-keys">
+<title>Standard navigation keys</title>
+
+<table>
+<thead>
+<tr>
+<td><p>Shortcut</p></td>
+<td><p>Function</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><key>Tab</key> and <keyseq><key>Shift</key><key>Tab</key></keyseq></p></td>
+<td><p>Moves keyboard focus to the next/previous control</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Ctrl</key><key>Tab</key></keyseq> and <keyseq><key>Shift</key><key>Ctrl</key><key>Tab</key></keyseq></p></td>
+<td><p>Moves keyboard focus out of the enclosing widget to the next/previous control, in those situations where Tab alone has another function</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Ctrl</key><key>Tab</key></keyseq> and <keyseq><key>Shift</key><key>Ctrl</key><key>Tab</key></keyseq></p></td>
+<td><p>Moves keyboard focus to the next/previous group of controls</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Ctrl</key><key>F1</key></keyseq></p></td>
+<td><p>Shows a tooltip for the the currently-focused window or control</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Shift</key><key>F1</key></keyseq></p></td>
+<td><p>Show context-sensitive help for the currently-focused window or control</p></td>
+</tr>
+<tr>
+<td><p><key>F6</key> and <keyseq><key>Shift</key><key>F6</key></keyseq></p></td>
+<td><p>Give focus to the next/previous pane in a GtkPaned window</p></td>
+</tr>
+<tr>
+<td><p><key>F8</key></p></td>
+<td><p>Give focus to the splitter bar in a paned window</p></td>
+</tr>
+<tr>
+<td><p><key>F10</key></p></td>
+<td><p>Give focus to the menu bar or open header bar menu</p></td>
+</tr>
+<tr>
+<td><p><key>Space</key></p></td>
+<td><p>Toggle the state of a focused check box, radio button, or toggle button</p></td>
+</tr>
+<tr>
+<td><p><key>Return</key></p></td>
+<td><p>Activate focused button, menu item, etc</p></td>
+</tr>
+<tr>
+<td><p><key>Return</key> and <key>End</key></p></td>
+<td><p>Select/move to the first item in a selected widget</p></td>
+</tr>
+<tr>
+<td><p><key>PageUp</key>, <keyseq><key>Ctrl</key><key>PageUp</key></keyseq>, <key>PageDown</key> and <keyseq><key>Ctrl</key><key>PageDown</key></keyseq></p></td>
+<td><p>Scroll the selected view by one page up/left/down/right</p></td>
+</tr>
+<tr>
+<td><p><key>Escape</key></p></td>
+<td><p>Close or exit the current context, if it is transient. This should be consistently used for menus, popovers or <link xref="dialogs#default-action-and-escape">dialogs</link>, or any other temporary mode or UI element.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section id="access-keys">
+<title>Access keys</title>
+
+<p>Access keys allow someone to operate labelled controls by using <key>Alt</key>. They are indicated by an underlined letter within each control label (this is displayed when <key>Alt</key> is held down).</p>
+
+<list>
+<item><p>Where possible, all labelled components should have an access key.</p></item>
+<item><p>Choose access keys that are easy to remember. Normally this means using the first letter of the label. If the label has more than one word, the first letter of one of its other words can also be used. Additionally, if another letter provides a better association (for example: “x” in “Extra Large”) , consider using that letter instead.</p></item>
+<item><p>Avoid assigning access keys to “thin” letters (such as lowercase i or l), or letters with descenders (such as lowercase g or y), unless it is unavoidable. The underline is sometimes not as clear with these characters.</p></item>
+<item><p>If the choice of access keys is difficult, assign access keys to the most frequently-used controls first. If the first letter is not available, choose an easy to remember consonant from the label, for example, “p” in “Replace”. Only assign vowels once no consonants are available.</p></item>
+<item><p>Be aware that access keys have to be translated together with the strings that they are taken from, so even if there are no conflicts in your native language, they may occur in translations.</p></item>
+</list>
+
+</section>
+
+<section id="shortcut-keys">
+<title>Shortcut keys</title>
+
+<p>Shortcut keys provide convenient access to common operations. They can be either single keys or combinations of several key presses (typically a modifier in combination with a regular key)</p>
+
+<list>
+<item><p>Do not assign system-level shortcut keys for use in your application. See below for details on these.</p></item>
+<item><p>Use the standard GNOME shortcut keys (see below) if your application supports those functions. This ensures consistency between GNOME applications and aids discoverability.</p></item>
+<item><p>Assign shortcut keys to the most commonly-used actions in your application. However, do not try to assign a keyboard shortcut to everything.</p></item>
+<item><p>Try to use <key>Ctrl</key> in combination with a letter for your own shortcuts. <keyseq><key>Shift</key><key>Ctrl</key></keyseq> and a letter is the recommended pattern for shortcuts that reverse or extend another function. For example, <keyseq><key>Ctrl</key><key>Z</key></keyseq> and <keyseq><key>Shift</key><key>Ctrl</key><key>Z</key></keyseq> for <gui>Undo</gui> and <gui>Redo</gui>.</p></item>
+<item><p>New shortcut keys should be as mnemonic as possible, as these will be easier to learn and remember. For example, <keyseq><key>Ctrl</key><key>E</key></keyseq> would be a good shortcut for a menu item called <gui>Edit Page</gui>.</p></item>
+<item><p>Shortcuts that can be easily used with one hand are preferable for common operations.</p></item>
+<item><p>Do not use <key>Alt</key> for shortcut keys, as this may conflict with access keys.</p></item>
+</list>
+
+</section>
+
+<section id="system-shortcuts">
+<title>System reserved shortcuts</title>
+
+<p>The following system shortcuts should not be overridden by applications.</p>
+
+<p>GNOME 3 makes exclusive use of <key>Super</key>, often known as the windows key, for system shortcuts.  <key>Super</key> should not be used by applications, therefore.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Function</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Legacy Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p>Activities Overview</p></td>
+<td><p><key>Super</key></p></td>
+<td><p>None</p></td>
+<td><p>Opens and closes the Activities Overview</p></td>
+</tr>
+<tr>
+<td><p>Applications View</p></td>
+<td><p><keyseq><key>Super</key><key>A</key></keyseq></p></td>
+<td><p>None</p></td>
+<td><p>Opens and closes the applications view of the Activities Overview</p></td>
+</tr>
+<tr>
+<td><p>Message Tray</p></td>
+<td><p><keyseq><key>Super</key><key>M</key></keyseq></p></td>
+<td><p>None</p></td>
+<td><p>Toggles the visibility of the Message Tray.</p></td>
+</tr>
+<tr>
+<td><p>Lock</p></td>
+<td><p><keyseq><key>Super</key><key>L</key></keyseq></p></td>
+<td><p>None</p></td>
+<td><p>Locks the system by blanking the screen and requiring a password to unlock, if one has been set.</p></td>
+</tr>
+<tr>
+<td><p>Switch application</p></td>
+<td><p><keyseq><key>Super</key><key>Tab</key></keyseq> and <keyseq><key>Shift</key><key>Super</key><key>Tab</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>Tab</key></keyseq> and <keyseq><key>Shift</key><key>Alt</key><key>Tab</key></keyseq></p></td>
+<td><p>Switches focus to the next/previous application</p></td>
+</tr>
+<tr>
+<td><p>Switch windows</p></td>
+<td><p><keyseq><key>Super</key><key>`</key></keyseq> and <keyseq><key>Shift</key><key>Super</key><key>`</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>F6</key></keyseq> and <keyseq><key>Shift</key><key>Alt</key><key>F6</key></keyseq></p></td>
+<td><p>Switch focus to the next or previous secondary window associated with the application</p></td>
+</tr>
+<tr>
+<td><p><gui>Maximize</gui></p></td>
+<td><p><keyseq><key>Super</key><key>↑</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>F10</key></keyseq></p></td>
+<td><p>Maximize the focused window</p></td>
+</tr>
+<tr>
+<td><p><gui>Restore</gui></p></td>
+<td><p><keyseq><key>Super</key><key>↓</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>F5</key></keyseq></p></td>
+<td><p>Restores the focused window to its previous state</p></td>
+</tr>
+<tr>
+<td><p><gui>Hide</gui></p></td>
+<td><p><keyseq><key>Super</key><key>H</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>F9</key></keyseq></p></td>
+<td><p>Hide the focused window</p></td>
+</tr>
+
+<tr>
+<td><p>Switch system area</p></td>
+<td><p>None</p></td>
+<td><p><keyseq><key>Ctrl</key><key>Alt</key><key>Tab</key></keyseq> and <keyseq><key>Shift</key><key>Ctrl</key><key>Alt</key><key>Tab</key></keyseq></p></td>
+<td><p>Switches focus to the primary areas of the system: windows, top bar, message tray</p></td>
+</tr>
+<tr>
+<td><p>Power Off</p></td>
+<td><p>None</p></td>
+<td><p><keyseq><key>Ctrl</key><key>Alt</key><key>Delete</key></keyseq></p></td>
+<td><p>Prompts the user to power off the system. This shortcut is typically disabled by default.</p></td>
+</tr>
+<tr>
+<td><p>Window menu</p></td>
+<td><p><keyseq><key>Alt</key><key>Space</key></keyseq></p></td>
+<td><p>None</p></td>
+<td><p>Opens the window menu for the current window</p></td>
+</tr>
+<tr>
+<td><p><gui>Close</gui></p></td>
+<td><p>None</p></td>
+<td><p><keyseq><key>Alt</key><key>F4</key></keyseq></p></td>
+<td><p>Closes the focused window</p></td>
+</tr>
+<tr>
+<td><p><gui>Move</gui></p></td>
+<td><p>None</p></td>
+<td><p><keyseq><key>Alt</key><key>F7</key></keyseq></p></td>
+<td><p>Move the focused window</p></td>
+</tr>
+<tr>
+<td><p><gui>Resize</gui></p></td>
+<td><p>None</p></td>
+<td><p><keyseq><key>Alt</key><key>F8</key></keyseq></p></td>
+<td><p>Resize the focused window</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>In addition, the shortcuts for Unicode character entry should also be avoided. This includes <keyseq><key>Shift</key><key>Ctrl</key><key>A</key></keyseq> through to <keyseq><key>Shift</key><key>Ctrl</key><key>F</key></keyseq>, or <keyseq><key>Shift</key><key>Ctrl</key><key>0</key></keyseq> through to <keyseq><key>Shift</key><key>Ctrl</key><key>9</key></keyseq>.</p>
+
+</section>
+
+<section id="application-shortcuts">
+<title>Standard application shortcuts</title>
+
+<p>This section details common application keyboard shortcuts. With the exception of application shortcuts, these shortcuts only need to be followed when the corresponding action is included in your application. Standard shortcuts can be assigned to other actions if the standard action is not available.</p>
+
+<p>This section also provides guidance on standard menu items in a <link xref="menu-bars">menu bar</link>, should one be used.</p>
+
+<section id="application">
+<title>Application</title>
+
+<p>Standard application keyboard shortcuts and menu items. These application shortcuts should not be reassigned to other actions, even when the corresponding action is not provided by your application.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Label</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Help</gui></p></td>
+<td><p><key>F1</key></p></td>
+<td><p>Opens the default help browser on the contents page for the application.</p></td>
+</tr>
+<tr>
+<td><p><gui>About</gui></p></td>
+<td><p>None</p></td>
+<td><p>Opens the About dialog for the application. Use the standard GNOME 3 dialog for this.</p></td>
+</tr>
+<tr>
+<td><p><gui>Quit</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>Q</key></keyseq></p></td>
+<td><p>Closes the application, including all application windows.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="file">
+<title>File</title>
+
+<p>Standard file keyboard shortcuts and menu items.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Label</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>New</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>N</key></keyseq></p></td>
+<td><p>Creates a new content item, often (but not always) in a new primary window or tab. If your application can create a number of different types of document, you can make the <gui>New</gui> item a submenu, containing a menu item for each type. Label these items <gui>New</gui> document type, make the first entry in the submenu the most commonly used document type, and give it the <keyseq><key>Ctrl</key><key>N</key></keyseq> shortcut.</p></td>
+</tr>
+<tr>
+<td><p><gui>Open…</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>O</key></keyseq></p></td>
+<td><p>Opens an existing content item, often by presenting the user with a standard <gui>Open File</gui> dialog. If the chosen file is already open in the application, raise that window instead of opening a new one.</p></td>
+</tr>
+<tr>
+<td><p><gui>Open Recent</gui></p></td>
+<td><p>None</p></td>
+<td><p>A submenu which contains a list of no more than six recently used files, ordered according to most recently used.</p></td>
+</tr>
+<tr>
+<td><p><gui>Save</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>S</key></keyseq></p></td>
+<td><p>Saves the current content item. If the document already has a filename associated with it, save the document immediately without any further interaction from the user. If there are any additional options involved in saving a file, prompt for these first time the document is saved, but subsequently use the same values each time until the user changes them. If the document has no current filename or is read-only, selecting this item should be the same as selecting <gui>Save As</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Save As…</gui></p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>S</key></keyseq></p></td>
+<td><p>Saves the content item with a new filename. Present the user with the standard <gui>Save As</gui> dialog, and save the file with the chosen file name.</p></td>
+</tr>
+<tr>
+<td><p><gui>Save a Copy…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Prompts the user to enter a filename, with which a copy of the document is then saved. Do not alter either the view or the filename of the original document. All subsequent changes are still made to the original document until the user specifies otherwise, for example by choosing the <gui>Save As</gui> command.</p>
+<p>Like the <gui>Save As</gui> dialog, the <gui>Save a Copy</gui> dialog may present different ways to save the data. For example, an image may be saved in a native format or as a PNG.</p></td>
+</tr>
+<tr>
+<td><p><gui>Page Setup</gui></p></td>
+<td><p>None</p></td>
+<td><p>Allows the user to control print-related settings. Present the user with a dialog allowing the user to set such options as portrait or landscape format, margins, and so on.</p></td>
+</tr>
+<tr>
+<td><p><gui>Print Preview</gui></p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>P</key></keyseq></p></td>
+<td><p>Shows the user what the printed document will look like. Present a new window containing an accurate representation of the appearance of the document as it would be printed.</p></td>
+</tr>
+<tr>
+<td><p><gui>Print…</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>P</key></keyseq></p></td>
+<td><p>Prints the current document. Present the user with a dialog allowing them to set options like the page range to be printed, the printer to be used, and so on. The dialog must contain a button labelled <gui>Print</gui> that starts printing and closes the dialog.</p></td>
+</tr>
+<tr>
+<td><p><gui>Send To…</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>M</key></keyseq></p></td>
+<td><p>Provides the user a means to attach or send the current document as an email or email attachment, depending on its format. You may provide more than one <gui>Send</gui> item depending on which options are available. If there are more than two such items, move them into a submenu. For example, if only <gui>Send by Email</gui> and <gui>Send by Bluetooth</gui> are available, leave them on the top-level menu If there is a third option, such as <gui>Send by FTP</gui>, place all the options in a Send submenu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Properties…</gui></p></td>
+<td><p><keyseq><key>Alt</key><key>Return</key></keyseq></p></td>
+<td><p>Opens the document’s <gui>Properties</gui> window. This may contain editable information, such as the document author’s name, or read-only information, such as the number of words in the document, or a combination of both. The <keyseq><key>Alt</key><key>Return</key></keyseq> shortcut should not be provided where <key>Return</key> is most frequently used to insert a new line.</p></td>
+</tr>
+<tr>
+<td><p><gui>Close</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>W</key></keyseq></p></td>
+<td><p>Closes the current tab or window. If the window uses tabs and there is only one open, the shortcut should close the window.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="edit">
+<title itst:context="menu">Edit</title>
+
+<p>Standard edit keyboard shortcuts and menu items.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Label</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Undo <em>action</em></gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>Z</key></keyseq></p></td>
+<td><p>Reverts the effect of the previous action.</p></td>
+</tr>
+<tr>
+<td><p><gui>Redo <em>action</em></gui></p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>Z</key></keyseq></p></td>
+<td><p>Performs the next action in the undo history list, after the user has moved backwards through the list with the <gui>Undo</gui> command.</p></td>
+</tr>
+<tr>
+<td><p><gui>Cut</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>X</key></keyseq></p></td>
+<td><p>Removes the selected content and places it onto the clipboard. Visually, remove the content from the document in the same manner as <gui>Delete</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Copy</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>C</key></keyseq></p></td>
+<td><p>Copies the selected content onto the clipboard.</p></td>
+</tr>
+<tr>
+<td><p><gui>Paste</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>V</key></keyseq></p></td>
+<td><p>Inserts the contents of the clipboard into the content item. When editing text, if there is no current selection, use the caret as the insertion point. If there is a current selection, replace it with the clipboard contents.</p></td>
+</tr>
+<tr>
+<td><p><gui>Paste Special…</gui></p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>V</key></keyseq></p></td>
+<td><p>Inserts a non-default representation of the clipboard contents. Open a dialog presenting a list of the available formats from which the user can select. For example, if the clipboard contains a PNG file copied from a file manager, the image may be embedded in the document, or a link to the file inserted so that changes to the image on disk are always reflected in the document.</p></td>
+</tr>
+<tr>
+<td><p><gui>Duplicate</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>U</key></keyseq></p></td>
+<td><p>Creates a duplicate copy of the selected object.</p></td>
+</tr>
+<tr>
+<td><p><gui>Delete</gui></p></td>
+<td><p><key>Delete</key></p></td>
+<td><p>Removes the selected content without placing it on the clipboard.</p></td>
+</tr>
+<tr>
+<td><p><gui>Select All</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>A</key></keyseq></p></td>
+<td><p>Selects all content in the current document.</p></td>
+</tr>
+<tr>
+<td><p><gui>Deselect All</gui></p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>A</key></keyseq></p></td>
+<td><p>Deselects all content in the current document. Only provide this item in situations when no other method of undoing selection is possible or apparent to the user. For example, in complex graphics applications where selection and deselection is not usually possible simply by using the cursor keys. Note: Do not provide <gui>Deselect All</gui> in text entry fields, as <keyseq><key>Shift</key><key>Ctrl</key><key>hex</key></keyseq> digit is used to enter Unicode characters so its shortcut will not work.</p></td>
+</tr>
+<tr>
+<td><p><gui>Find…</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>F</key></keyseq></p></td>
+<td><p>Displays a user interface for allowing the user to search for specific content in the current content item or page.</p></td>
+</tr>
+<tr>
+<td><p><gui>Find Next</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>G</key></keyseq></p></td>
+<td><p>Selects the next instance of the last Find term in the current document.</p></td>
+</tr>
+<tr>
+<td><p><gui>Find Previous</gui></p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>G</key></keyseq></p></td>
+<td><p>Selects the previous instance of the last <gui>Find</gui> term in the current document.</p></td>
+</tr>
+<tr>
+<td><p><gui>Replace…</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>H</key></keyseq></p></td>
+<td><p>Displays a user interface allowing the user to find specific content and replace each occurrence.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="view">
+<title>View</title>
+
+<p>View keyboard shortcuts and menu items.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Label</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Icons</gui></p></td>
+<td><p>None</p></td>
+<td><p>Shows content as a grid of icons. This is a radio button menu item.</p></td>
+</tr>
+<tr>
+<td><p><gui>List</gui></p></td>
+<td><p>None</p></td>
+<td><p>Shows content as a list. This is a radio button menu item.</p></td>
+</tr>
+<tr>
+<td><p><gui>Sort By…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Specifies the criteria by which content should be sorted. Can open a preference dialog, popover, or sub-menu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Filter…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Allows content to be filtered, by opening a popover, drop down, or dialog.</p></td>
+</tr>
+<tr>
+<td><p><gui>Zoom In</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>+</key></keyseq></p></td>
+<td><p>Zooms in, making content appear larger.</p></td>
+</tr>
+<tr>
+<td><p><gui>Zoom Out</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>-</key></keyseq></p></td>
+<td><p>Zooms out, making content appear smaller.</p></td>
+</tr>
+<tr>
+<td><p><gui>Normal Size</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>0</key></keyseq></p></td>
+<td><p>Resets the zoom level back to the default value.</p></td>
+</tr>
+<tr>
+<td><p><gui>Best Fit</gui></p></td>
+<td><p>None</p></td>
+<td><p>Makes the document fill the window.</p></td>
+</tr>
+<tr>
+<td><p><gui>Reload</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>R</key></keyseq></p></td>
+<td><p>Redraws the current view of the document, checking the data source for changes first. For example, checks the web server for updates to the page before redrawing it.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="format">
+<title>Format</title>
+
+<p>Standard format keyboard shortcuts and menu items.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Label</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Style…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Sets the style attributes of the selected text or objects either individually or to a named, predefined style.</p></td>
+</tr>
+<tr>
+<td><p><gui>Font…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Sets the font properties of the selected text or objects.</p></td>
+</tr>
+<tr>
+<td><p><gui>Paragraph…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Sets the properties of the selected paragraph.</p></td>
+</tr>
+<tr>
+<td><p><gui>Bold</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>B</key></keyseq></p></td>
+<td><p>Toggles the boldness of the current text selection. If some of the selection is currently bold and some is not, this command should bolden the selected text.</p></td>
+</tr>
+<tr>
+<td><p><gui>Italic</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>I</key></keyseq></p></td>
+<td><p>Toggles the italicisation of the current text selection on or off. If some of the selection is currently italicized and some is not, this command should italicise the selected text.</p></td>
+</tr>
+<tr>
+<td><p><gui>Underline</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>U</key></keyseq></p></td>
+<td><p>Toggles underlining of the current text selection. If some of the selection is currently underlined and some is not, this command should underline the selected text.
+</p></td>
+</tr>
+<tr>
+<td><p><gui>Cells…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Sets the properties of the selected table cells.</p></td>
+</tr>
+<tr>
+<td><p><gui>List…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Sets the properties of the selected list, or turns the selected paragraphs into a list if they are not already formatted as such.</p></td>
+</tr>
+<tr>
+<td><p><gui>Layer…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Sets the properties of all or selected layers of a multi-layered document.</p></td>
+</tr>
+<tr>
+<td><p><gui>Page…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Sets the properties of all or selected pages of the document.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="bookmarks">
+<title>Bookmarks</title>
+
+<p>Standard bookmark keyboard shortcuts and menu items.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Label</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Add Bookmark</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>D</key></keyseq></p></td>
+<td><p>Adds a bookmark for the current location. Do not pop up a dialog asking for a title or location for the bookmark, instead choose sensible defaults (such as the document’s title or filename as the bookmark name) and allow the user to change them later using the <gui>Edit Bookmarks</gui> feature.</p></td>
+</tr>
+<tr>
+<td><p><gui>Edit Bookmarks</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>B</key></keyseq></p></td>
+<td><p>Allows the user to edit their bookmarks.</p></td>
+</tr>
+<tr>
+<td><p>Bookmark List</p></td>
+<td><p>None</p></td>
+<td><p>Displays the user’s bookmarks.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="go">
+<title>Go</title>
+
+<p>Standard navigation keyboard shortcuts and <gui>Go</gui> menu items.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Label</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Back</gui></p></td>
+<td><p><keyseq><key>Alt</key><key>Left</key></keyseq></p></td>
+<td><p>Navigates to the previous location.</p></td>
+</tr>
+<tr>
+<td><p><gui>Forward</gui></p></td>
+<td><p><keyseq><key>Alt</key><key>Right</key></keyseq></p></td>
+<td><p>Navigates to the next location in the navigation history.</p></td>
+</tr>
+<tr>
+<td><p><gui>Up</gui></p></td>
+<td><p><keyseq><key>Alt</key><key>Up</key></keyseq></p></td>
+<td><p>Navigates to the parent content item, document, page or section.</p></td>
+</tr>
+<tr>
+<td><p><gui>Home</gui></p></td>
+<td><p><keyseq><key>Alt</key><key>Home</key></keyseq></p></td>
+<td><p>Navigates to a starting page defined by the user or the application.</p></td>
+</tr>
+<tr>
+<td><p><gui>Location…</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>L</key></keyseq></p></td>
+<td><p>Allows the user to specify a URI to navigate to.</p></td>
+</tr>
+<tr>
+<td><p><gui>Previous Page</gui></p></td>
+<td><p><key>PageUp</key></p></td>
+<td><p>Navigates to the previous page in the document.</p></td>
+</tr>
+<tr>
+<td><p><gui>Next Page</gui></p></td>
+<td><p><key>PageDown</key></p></td>
+<td><p>Navigates to the next page in the document.</p></td>
+</tr>
+<tr>
+<td><p><gui>Go to Page…</gui></p></td>
+<td><p>None</p></td>
+<td><p>Allows the user to specify a page number to be navigated to. Text-based applications may also include a <gui>Go to Line…</gui> menu item, which allows the user to jump to a specified line number.</p></td>
+</tr>
+<tr>
+<td><p><gui>First Page</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>Home</key></keyseq></p></td>
+<td><p>Navigates to the first page in the document.</p></td>
+</tr>
+<tr>
+<td><p><gui>Last Page</gui></p></td>
+<td><p><keyseq><key>Ctrl</key><key>End</key></keyseq></p></td>
+<td><p>Navigates to the last page in the document.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="windows">
+<title>Windows</title>
+
+<p>Standard <gui>Windows</gui> menu items.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Label</p></td>
+<td><p>Shortcut</p></td>
+<td><p>Description</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Save All</gui></p></td>
+<td><p>None</p></td>
+<td><p>Saves all open documents. If any documents have no current filename, prompt for a filename for each one in turn using the standard <gui>Save</gui> dialog.</p></td>
+</tr>
+<tr>
+<td><p><gui>Close All</gui></p></td>
+<td><p>None</p></td>
+<td><p>Closes all open documents. If there are any unsaved changes in any documents, post a confirmation alert for each one in turn.</p></td>
+</tr>
+<tr>
+<td><p>List of windows</p></td>
+<td><p>None</p></td>
+<td><p>Each menu item raises the corresponding window to the top of the window stack.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+</page>

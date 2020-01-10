@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.js" xml:lang="el">
+  <info>
+  <title type="text">Κουμπί αυξομείωσης (SpinButton) (JavaScript)</title>
+    <link type="guide" xref="beginner.js#entry"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="grid.js"/>
+    <link type="seealso" xref="label.js"/>
+    <revision version="0.1" date="2012-06-24" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα πεδίο καταχώρισης αριθμού που έχει τα κουμπιά + και -</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>SpinButton</title>
+  <media type="image" mime="image/png" src="media/spinbuttonkittens.png"/>
+  <p>Ένα κουμπί περιστροφής (SpinButton) δεν σχετίζεται με έναν <link xref="spinner.js">Μετρητή (Spinner)</link>. Είναι ένα πεδίο εισαγωγής κειμένου που δέχεται μόνο αριθμούς και οι οποίοι έχουν κουμπιά συν και πλην για να σας επιτρέψουν την αλλαγή της τιμής χωρίς να πρέπει να πληκτρολογήσετε κάτι.</p>
+  <p>Χρησιμοποιείται άριστα όταν είναι φανερό ότι μόνο ένας αριθμός μπορεί να μπει σε αυτό. Σε αυτό το παράδειγμα, δύο SpinButtons χρησιμοποιούνται για τον αριθμό από γατάκια και τον αριθμό των κονσερβών τόννου που τους δίνονται.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Δημιουργία του παραθύρου εφαρμογής</title>
+    <code mime="application/javascript">
+const SpinButtonExample = new Lang.Class({
+    Name: 'SpinButton Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsspinbutton'
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση SpinButtonExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <code mime="application/javascript">
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Kitten Feeder"});
+</code>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+  </section>
+
+  <section id="spinbutton">
+    <title>Δημιουργία των κουμπιών περιστροφής (SpinButtons)</title>
+    <code mime="application/javascript">
+        // Δημιουργία του πρώτου κουμπιού περιστροφής χρησιμοποιώντας μια συνάρτηση
+        this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
+        this._kittens.connect ("value-changed", Lang.bind (this, this._newValue));
+</code>
+
+    <p>Μπορούμε να χρησιμοποιήσουμε τη συνάρτηση new_with_range για τη δημιουργία ενός νέου SpinButton γρήγορα. Η πρώτη του παράμετρος είναι η αρχική τιμή του SpinButton, η δεύτερη του είναι η μέγιστη τιμή και η τρίτη του είναι πόσο θα αυξηθεί όταν πατιούνται τα κουμπιά συν και πλην.</p>
+    <p>Αφού δημιουργήσουμε το πρώτο κουμπί περιστροφής (SpinButton), συνδέουμε το σήμα της αλλαγμένης τιμής σε μια συνάρτηση που χειρίζεται τι συμβαίνει όταν ο αριθμός μέσα στα SpinButton αλλάζει.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία μιας ρύθμισης για χρήση με το δεύτερο κουμπί περιστροφής
+        this._adjustment = new Gtk.Adjustment ({
+            value: 1,
+            lower: 0,
+            upper: 9001,
+            step_increment: 1,
+            page_increment: 10 });
+
+        // Δημιουργία του δεύτερου κουμπιού περιστροφής
+        this._tuna = new Gtk.SpinButton ({ adjustment: this._adjustment });
+        this._tuna.connect ("value-changed", Lang.bind (this, this._newValue));
+
+        // this._tuna.set_digits (1);
+        // this._tuna.set_wrap (true);
+</code>
+
+    <p>Εάν θέλετε περισσότερο λεπτομερή έλεγχο σε ένα κουμπί περιστροφής (SpinButton), ή θέλετε να δημιουργήσετε μια ομάδα κουμπιών περιστροφής που όλα χρησιμοποιούν τις ίδιες παραμέτρους, μπορείτε να δημιουργήσετε ένα αντικείμενο που λέγεται <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Adjustment</link>. Έπειτα μπορείτε να χρησιμοποιήσετε αυτό το αντικείμενο ως μια νέα ιδιότητα ρύθμισης του κουμπιού περιστροφής και ορίζει όλες τις τιμές μονομιάς. Κατόπιν, μπορείτε να αλλάξετε όλα τα κουμπιά περιστροφής που χρησιμοποιούν αυτήν τη ρύθμιση αλλάζοντας τις ιδιότητες του αντικειμένου ρύθμισης.</p>
+    <p>Οι σχολιασμένες γραμμές εδώ εμφανίζουν πράγματα που μπορείτε να κάνετε για προσαρμογή του κουμπιού περιστροφής σας σας. Μπορείτε να ορίσετε τον αριθμό των ψηφίων μετά την δεκαδική υποδιαστολή, για παράδειγμα, ή να του πείτε να αναδιπλώσει τον αριθμό εάν ξεπεράσει το άνω ή κάτω όριο που ορίσατε.</p>
+    <note><p>Για χάρη των γατιών, παρακαλώ μην χρησιμοποιήσετε set_digits που επιτρέπει δεκαδικό αριθμό γατιών.</p></note>
+  </section>
+
+  <section id="UI">
+    <title>Δημιουργία της υπόλοιπης διεπαφής χρήστη</title>
+
+    <code mime="application/javascript">
+        // Δημιουργία των ετικετών κειμένου που πάνε με τα κουμπιά περιστροφής
+        this._startLabel = new Gtk.Label ({ label: "There are " });
+        this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
+        this._tunaLabel = new Gtk.Label ({ label: " can(s) of tuna."});
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
+        this._lastLabel = new Gtk.Label ({
+            label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
+</code>
+    <p>Δημιουργούμε κάθε <link xref="label.js">ετικέτα</link> ξεχωριστά και έπειτα τις συνδέουμε μαζί με τα κουμπιά περιστροφής. Η τελευταία ετικέτα χρειάζεται να εμφανίσει τον αριθμό των κονσερβών τόννου ανά γατί, έτσι έχει μια μεταβλητή στη μέση, που αντιστοιχεί σε μια εξίσωση που χρησιμοποιεί τις συναρτήσεις get_value των SpinButtons για την εύρεση του ορισμού τους. Η μέθοδος στρογγύλευσης της μαθηματικής συνάρτησης του JavaScript χρησιμοποιείται για στρογγύλευση του αριθμού των κονσερβών ανά γατί στον πλησιέστερο κάτω ακέραιο αριθμό.</p>
+
+    <code mime="application/javascript">
+        // Δημιουργία ενός πλέγματος για τοποθέτηση μέσα του των κουμπιών περιστροφής και των ετικετών τους
+        this._spinGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_bottom: 20 });
+
+        // Προσάρτηση όλων στο πλέγμα
+        this._spinGrid.attach (this._startLabel, 0, 0, 1, 1);
+        this._spinGrid.attach (this._kittens, 1, 0, 1, 1);
+        this._spinGrid.attach (this._kittenLabel, 2, 0, 1, 1);
+        this._spinGrid.attach (this._tuna, 3, 0, 1, 1);
+        this._spinGrid.attach (this._tunaLabel, 4, 0, 1, 1);
+
+        // Δημιουργία ενός κύριου πλέγματος για να το κρατήσει και της τελευταίας ετικέτας
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Προσάρτηση του μικρότερου πλέγματος και της τελευταίας ετικέτας στο κύριο πλέγμα
+        this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
+        this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
+</code>
+
+    <p>Εδώ χρησιμοποιούμε <link xref="grid.js">πλέγμα</link> γραφικών στοιχείων για να κρατάμε το καθετί οργανωμένο. Ένα πλέγμα κρατά τις ετικέτες και τα κουμπιά περιστροφής σε σειρά, ενώ το επόμενο βάζει αυτό το πλέγμα στην κορυφή και την τελική ετικέτα στο τέλος.</p>
+    <p>Δεν υπάρχει εσφαλμένος τρόπος οργάνωσης των πραγμάτων στα πλέγματα, εφόσον σας αρέσει όπως προκύπτει. Σε αυτήν την περίπτωση, το κορυφαίο πλέγμα έχει ένα περιθώριο στο τέλος για να κρατηθεί σε ομοιόμορφη απόσταση από την ετικέτα τέλους και η ετικέτα τέλους είναι μέσα σε ένα ξεχωριστό πλέγμα έτσι ώστε να κεντραριστεί σχετικά με τις ετικέτες και τα κουμπιά περιστροφής στην κορυφή.</p>
+
+    <code mime="application/javascript">
+        // Προσθήκη του κύριου πλέγματος στο παράθυρο
+        this._window.add (this._mainGrid);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+</code>
+    <p>Τελικά, προσθέτουμε το μεγαλύτερο πλέγμα στο παράθυρο, έπειτα λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και όλα τα γραφικά στοιχεία μέσα του.</p>
+    </section>
+
+    <section id="spinbutton-handler">
+    <title>Η συνάρτηση που χειρίζεται τις αριθμητικές τιμές των κουμπιών περιστροφής ρυθμίστηκε</title>
+
+    <code mime="application/javascript">
+    _newValue: function () {
+
+        // Ενημέρωση της ετικέτας που εμφανίζει πόσα κουτιά υπάρχουν ανά γατάκι 
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()))
+        this._lastLabel.set_label ("That's " + this.perKitten + " can(s) of tuna per kitten.");
+
+    }
+
+});
+</code>
+    <p>Εδώ ενημερώνουμε τη μεταβλητή perKitten (ανά γατί) με βάση τις νέες τιμές των κουμπιών περιστροφής και χρησιμοποιούμε την ιδιότητα set_label για ανανέωση της προβολής _lastLabel. Αφού και τα δύο κουμπιά περιστροφής έχουν το σήμα τους αλλαγμένης τιμής συνδεμένο σε αυτή τη συνάρτηση, κάθε φορά οποιοδήποτε από τους αριθμούς αλλάζει αυτή τη συνάρτηση θα ενημερώσει την ετικέτα.</p>
+
+    <code mime="application/javascript">
+// Εκτέλεση της εφαρμογής
+let app = new SpinButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>Τελικά, δημιουργούμε ένα νέο παράδειγμα της ολοκληρωμένης κλάσης παράδειγμα κουμπιού περιστροφής (SpinButtonExample) και εκτελούμε την εφαρμογή.</p>
+  </section>
+
+  <section id="complete">
+    <title>Δείγμα πλήρους κώδικα</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const SpinButtonExample = new Lang.Class({
+    Name: 'SpinButton Example',
+
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsspinbutton'
+        });
+
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
+
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    _buildUI: function() {
+
+        // Δημιουργία του παραθύρου της εφαρμογής
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Kitten Feeder"});
+
+        // Δημιουργία του πρώτου κουμπιού περιστροφής  χρησιμοποιώντας μια συνάρτηση
+        this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
+        this._kittens.connect ("value-changed", Lang.bind (this, this._newValue));
+
+        // Δημιουργία μιας ρύθμισης για χρήση με το δεύτερο κουμπί περιστροφής
+        this._adjustment = new Gtk.Adjustment ({
+            value: 1,
+            lower: 0,
+            upper: 9001,
+            step_increment: 1,
+            page_increment: 10 });
+
+        // Δημιουργία του δεύτερου κουμπιού περιστροφής
+        this._tuna = new Gtk.SpinButton ({ adjustment: this._adjustment });
+        this._tuna.connect ("value-changed", Lang.bind (this, this._newValue));
+
+        // this._tuna.set_digits (1);
+        // this._tuna.set_wrap (true);
+
+        // Δημιουργία των ετικετών κειμένου που πηγαίνουν με τα κουμπιά περιστροφής
+        this._startLabel = new Gtk.Label ({ label: "There are " });
+        this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
+        this._tunaLabel = new Gtk.Label ({ label: " can(s) of tuna."});
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
+        this._lastLabel = new Gtk.Label ({
+            label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
+
+        // Δημιουργία ενός πλέγματος για τοποθέτηση μέσα του των κουμπιών αυξομείωσης και των ετικετών τους
+        this._spinGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_bottom: 20 });
+
+        // Προσάρτηση όλων στο πλέγμα
+        this._spinGrid.attach (this._startLabel, 0, 0, 1, 1);
+        this._spinGrid.attach (this._kittens, 1, 0, 1, 1);
+        this._spinGrid.attach (this._kittenLabel, 2, 0, 1, 1);
+        this._spinGrid.attach (this._tuna, 3, 0, 1, 1);
+        this._spinGrid.attach (this._tunaLabel, 4, 0, 1, 1);
+
+        // Δημιουργία κύριου πλέγματος για να κρατήσει αυτό και την τελευταία ετικέτα
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Προσάρτηση του μικρότερου πλέγματος και της τελευταίας ετικέτας στο κύριο πλέγμα
+        this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
+        this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
+
+        // Προσθήκη του κύριου πλέγματος στο παράθυρο
+        this._window.add (this._mainGrid);
+
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        this._window.show_all();
+    },
+
+
+
+    _newValue: function () {
+
+        // Ενημέρωση της ετικέτας που εμφανίζει πόσα κουτιά υπάρχουν ανά γατάκι
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()))
+        this._lastLabel.set_label ("That's " + this.perKitten + " can(s) of tuna per kitten.");
+
+    }
+
+});
+
+// Εκτέλεση της εφαρμογής
+let app = new SpinButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Τεκμηρίωση σε βάθος</title>
+<list>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Gtk.Adjustment</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.SpinButton.html">Gtk.SpinButton</link></p></item>
+</list>
+  </section>
+</page>

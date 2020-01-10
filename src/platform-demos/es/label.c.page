@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="label.c" xml:lang="es">
+  <info>
+    <title type="text">Label (C)</title>
+    <link type="guide" xref="c#display-widgets"/>
+    <link type="seealso" xref="switch.c"/>
+    <revision version="0.2" date="2012-06-22" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un widget que muestra un texto</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Etiqueta</title>
+<table>
+  <tr>
+    <td>
+      <media type="image" mime="image/png" src="media/label.png"/>
+      <p>Una etiqueta sencilla</p>
+    </td>
+  </tr>
+</table>
+
+<code mime="text/x-csrc" style="numbered">#include &lt;gtk/gtk.h&gt;
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *label;
+
+  /*Create a window with a title and a default size*/
+  window = gtk_application_window_new (app);
+  gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (app));
+  gtk_window_set_title (GTK_WINDOW (window), "Welcome to GNOME");
+  gtk_window_set_default_size (GTK_WINDOW (window), 200,100);
+   
+  /*Create a label and set its alignment. Setting the line wrap to TRUE makes 
+  the label break lines if the text exceeds the widget's size. When set to 
+  FALSE the text gets cut off by the edge of the widget*/
+  label = gtk_label_new ("Hello GNOME!");
+  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_CENTER);
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+
+  gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (label));
+
+  gtk_widget_show_all (GTK_WIDGET (window));
+}
+
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example",G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+  return status;
+}
+</code>
+<p>En este ejemplo se usa lo siguiente:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkWindow.html">GtkWindow</link></p></item>
+ <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkLabel.html">GtkLabel</link></p></item>
+</list>
+</page>

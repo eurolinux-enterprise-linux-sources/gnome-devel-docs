@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherGeonames.js" xml:lang="fr">
+  <info>
+    <link type="guide" xref="weatherApp.js#main"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Bibliothèque locale geoNames</title>
+  <synopsis>
+    <p>Dans cette partie du guide nous allons construire la bibliothèque locale geoNames en utilisant des appels asynchrones. Dans cet exemple, les informations météorologiques sont récupérés sur geonames.org et l'application utilise les <link href="http://fr.wikipedia.org/wiki/Liste_des_codes_OACI_des_a%C3%A9roports">codes OACI</link> pour localiser les requêtes météo. Pour écrire et lancer tous les exemples de code vous avez besoin d'un éditeur pour saisir le code, de l'application Terminal et d'un ordinateur sur lequel GNOME 3 ou supérieur est installé. Dans ce guide, nous illustrerons les éléments suivants :</p>
+
+    <list>
+      <item><p> <link xref="#geonamesimports">Local library for getting the weather</link></p></item>
+      <item><p> <link xref="#geonamesfunction">Creating function geoNames</link></p></item>
+      <item><p> <link xref="#geonamesmethods">Methods for geoNames</link></p></item>
+      <item><p> <link xref="#geonames.js">geonames.js </link></p></item>
+    </list>
+  </synopsis>
+
+  <section id="geonamesimports">
+  <title>Bibliothèque locale pour obtenir la météo</title>
+  <p>Pour cela, nous avons besoin d'un nouveau fichier qui sera notre bibliothèque locale.</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+const Soup = imports.gi.Soup;
+const _httpSession = new Soup.SessionAsync();
+Soup.Session.prototype.add_feature.call(_httpSession, new Soup.ProxyResolverDefault());
+]]></code>
+  <p>Dès les premières lignes, nous importons et initialisons les bibliothèques dont nous avons besoin dans cette bibliothèque locale. « Soup » prend en charge toutes les requêtes que nous devons faire via http.</p>
+  </section>
+
+  <section id="geonamesfunction">
+  <title>Création de la fonction GeoNames</title>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+function GeoNames(station) {
+  this.station = station;
+}
+
+GeoNames.prototype = {
+
+}
+]]></code>
+  <p>Ici, nous créons la fonction GeoNames qui prend en charge l'obtention de la météo pour nous. Le JavaScript nous permet de créer des fonctions qui, au départ contiennent peu de code et de les étendre ensuite. Cela se fait à l'intérieur des accolades {} de GeoNames.prototype.</p>
+  </section>
+
+  <section id="geonamesmethods">
+  <title>Méthodes pour GeoNames</title>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+getWeather: function(callback) {
+    var request = Soup.Message.new('GET', 'http://api.geonames.org/weatherIcaoJSON?ICAO=' + this.station + '&username=demo');
+    _httpSession.queue_message(request, function(_httpSession, message) {
+      if (message.status_code !== 200) {
+        callback(message.status_code, null);
+        return;
+      }
+      var weatherJSON = request.response_body.data;
+      var weather = JSON.parse(weatherJSON);
+      callback(null, weather);
+      });
+},
+
+getIcon: function(weather){
+    switch (weather.weatherObservation.weatherCondition){
+    case "drizzle":
+    case "light showers rain":
+    case "light rain":
+      return "weather-showers-scattered.svg";
+    case "rain":
+      return "weather-showers.svg";
+    case "light snow":
+    case "snow grains":
+      return "weather-snow.svg";
+    }
+    switch (weather.weatherObservation.clouds){
+      case "few clouds":
+      case "scattered clouds":
+        return "weather-few-clouds.svg";
+      case "clear sky":
+        return "weather-clear.svg"
+      case "broken clouds":
+      case "overcast":
+        return "weather-overcast.svg";
+    }
+    return "weather-fog.svg";
+}
+]]></code>
+  <p>La première méthode de GeoNames est getWeather et la seconde getIcon. Dans getWeather, une requête http est effectuée avec « soup », nous prenons en charge les erreurs puis analysons (parse) les informations à partir de la requête vers une forme utilisable. Dans getIcon, nous comparons tout simplement les résultats obtenus avec getWeather à l'aide de l'instruction switch afin d'obtenir l'icône correspondant à la météo actuelle. Notre bibliothèque locale est prête et nous pouvons maintenant l'utiliser.</p>
+  </section>
+
+
+  <section id="geonames.js">
+  <title>geonames.js</title>
+  <p>Voici le code complet pour notre bibliothèque locale. Le fichier principal du programme l'appelle de manière asynchrone.</p>
+  <code mime="application/javascript" style="numbered"><![CDATA[
+const Soup = imports.gi.Soup;
+const _httpSession = new Soup.SessionAsync();
+Soup.Session.prototype.add_feature.call(_httpSession, new Soup.ProxyResolverDefault());
+
+function GeoNames(station) {
+  this.station = station;
+}
+
+GeoNames.prototype = {
+  getWeather: function(callback) {
+    var request = Soup.Message.new('GET', 'http://api.geonames.org/weatherIcaoJSON?ICAO=' + this.station + '&username=demo');
+    _httpSession.queue_message(request, function(_httpSession, message) {
+      if (message.status_code !== 200) {
+        callback(message.status_code, null);
+        return;
+      }
+      var weatherJSON = request.response_body.data;
+      var weather = JSON.parse(weatherJSON);
+      callback(null, weather);
+      });
+    },
+
+  getIcon: function(weather){
+    switch (weather.weatherObservation.weatherCondition){
+    case "drizzle":
+    case "light showers rain":
+    case "light rain":
+      return "weather-showers-scattered.svg";
+    case "rain":
+      return "weather-showers.svg";
+    case "light snow":
+    case "snow grains":
+      return "weather-snow.svg";
+    }
+    switch (weather.weatherObservation.clouds){
+      case "few clouds":
+      case "scattered clouds":
+        return "weather-few-clouds.svg";
+      case "clear sky":
+        return "weather-clear.svg"
+      case "broken clouds":
+      case "overcast":
+        return "weather-overcast.svg";
+    }
+    return "weather-fog.svg";
+    }
+}
+}  ]]></code>
+  </section>
+
+</page>

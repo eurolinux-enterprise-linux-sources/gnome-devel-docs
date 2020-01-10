@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-help-appmenu" xml:lang="pt-BR">
+
+  <info>
+    <link type="seealso" xref="dev-help"/>
+    <revision version="0.1" date="2013-06-19" status="review"/>
+
+    <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="editor">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Enrico Nicoletto</mal:name>
+      <mal:email>liverig@gmail.com</mal:email>
+      <mal:years>2009</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Add <gui>Help</gui> to the application menu</title>
+
+  <links type="series" style="floatend">
+    <title>Set up help</title>
+  </links>
+
+  <p>Most GNOME applications should have an application menu. The
+  <gui style="menuitem">Help</gui> menu item should go above the
+  <gui style="menuitem">About</gui> menu item.</p>
+
+  <example>
+  <note>
+    <p>This example, based on
+    <app href="https://git.gnome.org/browse/cheese/tree/src/cheese-main.vala">Cheese</app>,
+    assumes that your application is written in Vala. It will be slightly
+    different for other programming languages.</p>
+  </note>
+
+  <p>Add the <gui style="menuitem">Help</gui> item to the list of actions:</p>
+  <code>
+   private const GLib.ActionEntry action_entries[] = {
+        <input>{ "help", on_help },</input>
+        { "about", on_about },
+        { "quit", on_quit }
+    };
+
+   add_action_entries (action_entries, my_Gtk_Application);
+</code>
+
+  <p>Add the <gui style="menuitem">Help</gui> menu item to the application
+  menu:</p>
+
+<code>
+  var menu = new GLib.Menu ();
+  var section = new GLib.Menu ();
+
+  <input>var item = new GLib.MenuItem (_("_Help"), "app.help");
+  item.set_attribute ("accel", "s", "F1");
+  section.append_item (item);</input>
+</code>
+
+  <p>View the help with <app>Yelp</app> when the
+  <gui style="menuitem">Help</gui> menu item is clicked:</p>
+
+<code>
+  private void on_help ()
+  {
+    var screen = main_window.get_screen ();
+    try
+    {
+      Gtk.show_uri (screen, <input>"help:cheese"</input>, Gtk.get_current_event_time ());
+    }
+    catch (Error err)
+    {
+      message ("Error opening help: %s", err.message);
+    }
+  }
+</code>
+
+  <p>To link to a section on the <file>index.page</file>, use
+  <code>"help:<input>applicationname</input>/index#<input>sectionid</input>"</code>.</p>
+
+  </example>
+</page>

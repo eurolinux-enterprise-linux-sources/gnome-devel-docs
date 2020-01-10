@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="comboboxtext.js" xml:lang="el">
+  <info>
+  <title type="text">ComboBoxText (JavaScript)</title>
+    <link type="guide" xref="beginner.js#menu-combo-toolbar"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="messagedialog.js"/>
+    <revision version="0.1" date="2012-07-06" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα πτυσσόμενο μενού μόνο για κείμενο</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ComboBoxText</title>
+  <media type="image" mime="image/png" src="media/combobox.png"/>
+  <p>Ένα σύνθετο πλαίσιο (ComboBox) είναι ένα πτυσσόμενο μενού. Η διαφορά μεταξύ ενός <link xref="combobox.js">ComboBox</link> και ενός κειμένου σύνθετου πλαισίου (ComboBoxText) είναι ότι ένα κείμενο σύνθετου πλαισίου έχει μόνο επιλογές βασικού κειμένου, ενώ ένα πλήρες σύνθετο πλαίσιο χρησιμοποιεί μια αποθήκη λιστών ή αποθήκη δένδρου (που είναι βασικά υπολογιστικά φύλλα) για την εμφάνιση πραγμάτων όπως επιλογές διακλάδωσης ή εικόνες που πηγαίνουν δίπλα σε κάθε επιλογή.</p>
+  <note><p>Εκτός και χρειάζεστε τα πρόσθετα γνωρίσματα ενός πλήρους σύνθετου πλαισίου (ComboBox), ή είναι άνετη η εργασία με αποθήκες λιστών (ListStores) και αποθήκες δένδρου (TreeStores), μπορεί να το βρείτε πολύ απλούστερο να χρησιμοποιήσετε ένα κείμενο σύνθετου πλαισίου (ComboBoxText) όποτε είναι δυνατό.</p></note>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
+  </section>
+
+  <section id="applicationwindow">
+    <title>Δημιουργία του παραθύρου εφαρμογής</title>
+    <code mime="application/javascript">
+const ComboBoxTextExample = new Lang.Class ({
+    Name: 'ComboBoxText Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jscomboboxtext'});
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+</code>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση MessageDialogExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <code mime="application/javascript">
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Welcome to GNOME",
+            default_width: 200,
+            border_width: 10 });
+</code>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+  </section>
+
+  <section id="comboboxtext">
+    <title>Δημιουργία των ComboBoxText</title>
+    <code mime="application/javascript">
+        // Create the combobox
+        this._comboBoxText = new Gtk.ComboBoxText();
+
+        // Populate the combobox
+        let distros = ["Select distribution", "Fedora", "Mint", "Suse"];
+        for (let i = 0; i &lt; distros.length; i++)
+            this._comboBoxText.append_text (distros[i]);
+        this._comboBoxText.set_active (0);
+
+        // Connect the combobox's 'changed' signal to our callback function
+        this._comboBoxText.connect ('changed', Lang.bind (this, this._onComboChanged));
+</code>
+    <p>Μετά τη δημιουργία του ComboBoxText, χρησιμοποιούμε τη μέθοδό του <file>append_text</file> για να προσθέσουμε συμβολοσειρές κειμένου σε αυτό. Όπως οι καταχωρίσεις σε έναν πίνακα, έχει καθεμιά έναν αριθμό για ταυτότητα, αρχίζοντας με 0. Για απλοποίηση, μπορείτε πράγματι να δημιουργήσετε έναν πίνακα για τις καταχωρίσεις ComboBoxText, έπειτα να χρησιμοποιήσετε έναν βρόχο for για να τα προσαρτήσετε σε σειρά, όπως κάναμε εδώ.</p>
+    <p>Μετά το γέμισμα του ComboBoxText, ορίζουμε την πρώτη του καταχώριση να είναι ενεργή, έτσι ώστε θα δούμε τη γραμμή "Select distribution" πριν την πατήσουμε. Έπειτα συνδέουμε το σήμα του <file>changed</file> στη συνάρτηση _onComboChanged, έτσι ώστε να καλείται όποτε κάνετε μια νέα επιλογή από το πτυσσόμενο μενού.</p>
+    <note><p>Εάν θα θέλατε να προσθέσετε μια καταχώριση σε ένα ComboBoxText, μπορείτε να χρησιμοποιήσετε τη μέθοδο <file>insert_text</file>. Εάν προτιμάτε να χρησιμοποιήσετε μια συμβολοσειρά κειμένου ως μια ταυτότητα για κάθε καταχώριση αντί να βασίζεστε σε αριθμούς μόνο, μπορείτε να χρησιμοποιήσετε τις μεθόδους <file>append</file> και <file>insert</file>. Δείτε τους συνδέσμους στο τέλος αυτού του μαθήματος για τις λεπτομέρειες χρήσης τους.</p></note>
+
+    <code mime="application/javascript">
+        // Add the combobox to the window
+        this._window.add (this._comboBoxText);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+</code>
+    <p>Τελικά, προσθέτουμε το ComboBoxText στο παράθυρο, έπειτα λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και το γραφικό στοιχείο μέσα του.</p>
+  </section>
+
+  <section id="function">
+    <title>Η συνάρτηση που χειρίζεται την επιλογή σας</title>
+    <code mime="application/javascript">
+    _onComboChanged: function () {
+
+        // The responses we'll use for our messagedialog
+        let responses = ["",
+            "Fedora is a community distro sponsored by Red Hat.",
+            "Mint is a popular distro based on Ubuntu.",
+            "SUSE is a name shared by two separate distros."];
+</code>
+    <p>Πρόκειται να δημιουργήσουμε ένα αναδυόμενο <link xref="messagedialog.js">MessageDialog</link>, που σας εμφανίζει ένα μήνυμα με βάση ποια διανομή επιλέγετε. Πρώτα, δημιουργούμε τον πίνακα των απαντήσεων για χρήση. Αφού η πρώτη συμβολοσειρά στο ComboBoxText μας είναι μόνο το μήνυμα "Select distribution", κάνουμε την πρώτη συμβολοσειρά στον πίνακά μας κενή.</p>
+
+    <code mime="application/javascript">
+        // Which combobox item is active?
+        let activeItem = this._comboBoxText.get_active();
+
+        // No messagedialog if you chose "Select distribution"
+        if (activeItem != 0) {
+            this._popUp = new Gtk.MessageDialog ({
+                transient_for: this._window,
+                modal: true,
+                buttons: Gtk.ButtonsType.OK,
+                message_type: Gtk.MessageType.INFO,
+                text: responses[activeItem]});
+
+            // Connect the OK button to a handler function
+            this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
+
+            // Show the messagedialog
+            this._popUp.show();
+        }
+
+    },
+</code>
+    <p>Πριν την προβολή ενός MessageDialog, δοκιμάζουμε πρώτα για να βεβαιωθούμε ότι δεν επιλέξατε το μήνυμα "Select distribution". Μετά από αυτό, ορίζουμε το κείμενο του να είναι στην καταχώριση στον πίνακα που αντιστοιχεί στην ενεργή καταχώριση στο ComboBoxText μας. Το κάνουμε χρησιμοποιώντας τη μέθοδο <file>get_active</file>, που επιστρέφει τον αριθμό ταυτότητας της επιλογής σας.</p>
+    <note><p>Άλλες μέθοδοι που μπορείτε να χρησιμοποιήσετε περιλαμβάνουν το <file>get_active_id,</file> που επιστρέφει την ταυτότητα του κειμένου που αποδόθηκε από το <file>append,</file> και <file>get_active_text</file>, τα οποία επιστρέφουν το πλήρες κείμενο της επιλεγμένης συμβολοσειράς.</p></note>
+    <p>Μετά τη δημιουργία του MessageDialog, συνδέουμε το σήμα της απάντησής του στη συνάρτηση _onDialogResponse, έπειτα του λέμε να εμφανίσει τον εαυτόν του.</p>
+
+    <code mime="application/javascript">
+    _onDialogResponse: function () {
+
+        this._popUp.destroy ();
+
+    }
+
+});
+</code>
+    <p>Αφού το μόνο κουμπί που ο MessageDialog έχει είναι ένα κουμπί εντάξει, δεν χρειαζόμαστε να ελέγξουμε το response_id του για να δούμε ποιο κουμπί πατήθηκε. Αυτό που κάνουμε εδώ είναι η καταστροφή του αναδυόμενου.</p>
+
+    <code mime="application/javascript">
+// Run the application
+let app = new ComboBoxTextExample ();
+app.application.run (ARGV);
+</code>
+    <p>Τελικά, δημιουργούμε ένα νέο στιγμιότυπο της ολοκληρωμένης κλάσης ComboBoxTextExample και εκτελούμε την εφαρμογή.</p>
+  </section>
+
+  <section id="complete">
+    <title>Δείγμα πλήρους κώδικα</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+
+const ComboBoxTextExample = new Lang.Class ({
+    Name: 'ComboBoxText Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jscomboboxtext'});
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+
+
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Welcome to GNOME",
+            default_width: 200,
+            border_width: 10 });
+
+        // Create the combobox
+        this._comboBoxText = new Gtk.ComboBoxText();
+
+        // Populate the combobox
+        let distros = ["Select distribution", "Fedora", "Mint", "Suse"];
+        for (let i = 0; i &lt; distros.length; i++)
+            this._comboBoxText.append_text (distros[i]);
+        this._comboBoxText.set_active (0);
+
+        // Connect the combobox's 'changed' signal to our callback function
+        this._comboBoxText.connect ('changed', Lang.bind (this, this._onComboChanged));
+
+        // Add the combobox to the window
+        this._window.add (this._comboBoxText);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+
+
+
+    _onComboChanged: function () {
+
+        // The responses we'll use for our messagedialog
+        let responses = ["",
+            "Fedora is a community distro sponsored by Red Hat.",
+            "Mint is a popular distro based on Ubuntu.",
+            "SUSE is a name shared by two separate distros."];
+
+        // Which combobox item is active?
+        let activeItem = this._comboBoxText.get_active();
+
+        // No messagedialog if you chose "Select distribution"
+        if (activeItem != 0) {
+            this._popUp = new Gtk.MessageDialog ({
+                transient_for: this._window,
+                modal: true,
+                buttons: Gtk.ButtonsType.OK,
+                message_type: Gtk.MessageType.INFO,
+                text: responses[activeItem]});
+
+            // Connect the OK button to a handler function
+            this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
+
+            // Show the messagedialog
+            this._popUp.show();
+        }
+
+    },
+
+
+
+    _onDialogResponse: function () {
+
+        this._popUp.destroy ();
+
+    }
+
+});
+
+// Run the application
+let app = new ComboBoxTextExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Τεκμηρίωση σε βάθος</title>
+<p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ComboBoxText.html">Gtk.ComboBoxText</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.MessageDialog.html">Gtk.MessageDialog</link></p></item>
+</list>
+  </section>
+</page>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="unit-testing" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#general-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Návrh softwaru tak, aby mohl být testován, a psaní jednotkových testů pro něj</desc>
+  </info>
+
+  <title>Jednotkové testy</title>
+
+  <synopsis>
+    <title>Shrnutí</title>
+
+    <p>Jednotkové testování by mělo být hlavním způsobem testování většiny napsaného kódu, protože jednotkové testy stačí napsat jednou, ale spouštět se mohou vícekrát  — ruční testy vymyslíte jednou, ale pak je musíte pokaždé ručně provést.</p>
+
+    <p>Vývoj jednotkových testů začíná návrhem architektury a API kódu, který má být testován: kód by měl být navržen tak, aby byl snadno testovatelný, protože jinak může být jeho testování velmi obtížné.</p>
+
+    <list>
+      <item><p>Pište jednotkové testy tak, aby byly co nejmenší možné, ale ne menší. (<link xref="#writing-unit-tests"/>)</p></item>
+      <item><p>Používejte k psaní testů nástroje pro pokrytí kódu, abyste kód pokryli co nejvíce. (<link xref="#writing-unit-tests"/>)</p></item>
+      <item><p>Všechny jednotkové testy spouštějte pod Vlagrindem, aby se kontrolovaly úniky a jiné problémy. (<link xref="#leak-checking"/>)</p></item>
+      <item><p>Používejte příslušné nástroje pro automatické generování jednotkových testů všude, kde je to možné. (<link xref="#test-generation"/>)</p></item>
+      <item><p>Kód navrhujte už od začátku tak, aby byl testovatelný. (<link xref="#writing-testable-code"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="writing-unit-tests">
+    <title>Psaní jednotkových testů</title>
+
+    <p>Jednotkové testy by měly být psány v souladu s pohledem na <link xref="tooling#gcov-and-lcov">informace o pokrytí kódu získané z běžících testů</link>. To obvykle znamená napsaní nějaké počáteční sady jednotkových testů, jejich spuštění pro získání údajů o pokrytí, následné přepracování a jejich rozšíření, aby se zvýšila úroveň pokrytí. Pokrytí lze zvýšit za prvé snahou o pokrytí všech funkcí (nebo aspoň částečné pokrytí) a potom také snahou o pokrytí všech řádků kódu. Tím, že pokryjete nejdříve funkce, můžete rychle najít problémy v API, které se brání účinnému testování. Ty mají typicky podobu interních funkcí, které nelze jednoduše volat z jednotkových testů. Celkově se dá říci, že byste se měli zaměřit na úroveň pokrytí nad 90 %. Neomezujte testy jen na pokrytí věcí, které se vztahují k požadavkům na projekt – testujte vše.</p>
+
+    <p>Obdobně jako <link xref="version-control">zařazení do gitu</link>, i jednotkový test by měl být „co nejmenší je možné, ale ne menší“ a testovat jen jedno konkrétní API nebo chování. Každý test musí být spustitelný samostatně, bez závislosti na stavu od ostatních testů. To je důležité, aby bylo možné ladit selhání jednotlivých testů samostatně, bez nutnosti procházet celou sérii dalších testů. Díky tomu lze také snadněji vysledovat selhání ke konkrétnímu API, namísto obecné hlášky „jednotkový test někde selhal“.</p>
+
+    <p>GLib má podporu pro jednotkové testování pomocí jejího <link href="https://developer.gnome.org/glib/stable/glib-Testing.html">frameworku GTest</link>, který umožňuje testy uspořádat do skupin a hierarchie. To znamená, že skupiny souvisejících testů se dají spouště také dohromady pro zdokonalené ladění. Stačí spustit testovací spustitelný soubor s argumentem <cmd>-p</cmd>: <cmd>./název-testovací-sady -p /cesta/k/testovací/skupině</cmd>.</p>
+  </section>
+
+  <section id="installed-tests">
+    <title>Nainstalované testy</title>
+
+    <p>Všechny jednotkové testy by měly být nainstalovány celosystémově s dodržením <link href="https://wiki.gnome.org/Initiatives/GnomeGoals/InstalledTests">standardů pro instalaci testů</link>.</p>
+
+    <p>Instalací jednotkových testů se zjednoduší průběžná začleňování, protože testy pro jeden projekt je možné spustit znovu po změnách v jiném projektu v průběžně začleňovaném prostředí, a tím testovat rozhraní mezi moduly. To je užitečné hlavně pro hodně provázané sady projektů, jako je tomu v GNOME.</p>
+
+    <p>Když chcete přidat podporu pro instalované testy, přidejte do <file>configure.ac</file> následující:</p>
+    <code># Installed tests
+AC_ARG_ENABLE([modular_tests],
+              AS_HELP_STRING([--disable-modular-tests],
+                             [Disable build of test programs (default: no)]),,
+              [enable_modular_tests=yes])
+AC_ARG_ENABLE([installed_tests],
+              AS_HELP_STRING([--enable-installed-tests],
+                             [Install test programs (default: no)]),,
+              [enable_installed_tests=no])
+AM_CONDITIONAL([BUILD_MODULAR_TESTS],
+               [test "$enable_modular_tests" = "yes" ||
+                test "$enable_installed_tests" = "yes"])
+AM_CONDITIONAL([BUILDOPT_INSTALL_TESTS],[test "$enable_installed_tests" = "yes"])</code>
+
+    <p>A potom do <file>tests/Makefile.am</file>:</p>
+    <code>insttestdir = $(libexecdir)/installed-tests/[project]
+
+all_test_programs = \
+	test-program1 \
+	test-program2 \
+	test-program3 \
+	$(NULL)
+if BUILD_MODULAR_TESTS
+TESTS = $(all_test_programs)
+noinst_PROGRAMS = $(TESTS)
+endif
+
+if BUILDOPT_INSTALL_TESTS
+insttest_PROGRAMS = $(all_test_programs)
+
+testmetadir = $(datadir)/installed-tests/[project]
+testmeta_DATA = $(all_test_programs:=.test)
+
+testdatadir = $(insttestdir)
+testdata_DATA = $(test_files)
+
+testdata_SCRIPTS = $(test_script_files)
+endif
+
+EXTRA_DIST = $(test_files)
+
+%.test: % Makefile
+	$(AM_V_GEN) (echo '[Test]' &gt; $@.tmp; \
+	echo 'Type=session' &gt;&gt; $@.tmp; \
+	echo 'Exec=$(insttestdir)/$&lt;' &gt;&gt; $@.tmp; \
+	mv $@.tmp $@)</code>
+  </section>
+
+  <section id="leak-checking">
+    <title>Kontrola úniků</title>
+
+    <p>Jakmile napíšete jednotkové testy pokrývající velkou část kódu, můžete je spouštět pod různými dynamickými analytickými nástroji, jako je <link xref="tooling#valgrind">Valgrind</link>, abyste zkontrolovali úniky, chyby vláken, problémy s alokací apod. napříč celým zdrojovým kódem. Čím vyšší je pokrytí kódu jednotkovými testy, tím je možné výsledky z Valgrindu brát jako důvěryhodnější. Více informací viz <link xref="tooling"/>, včetně návodu na integraci do sestavovacího systému.</p>
+
+    <p>Podstatné je, že jednotkové testy by neměly samy o sobě způsobovat uniky paměti nebo jiných prostředků a stejně tak způsobovat problémy s vlákny. Jakékoliv takové problémy by ve skutečnosti způsobovaly falešná pozitivní hlášení v analýzách reálného kódu projektu. (Falešná pozitivní hlášení, která musí být opravena opravou jednotkových testů.)</p>
+  </section>
+
+  <section id="test-generation">
+    <title>Generování testů</title>
+
+    <p>Některé formy kódu se dost často opakují a vyžadují hodně jednotkových testů, aby byly dobře pokryty. Na druhou stranu jsou ale vhodné pro <link href="http://en.wikipedia.org/wiki/Test_data_generation">generování testovacích dat</link> a na to existují nástroje, které pro kód automaticky vygenerují testovací vektory. Tím se výrazně sníží čas potřebný pro psaní jednotkových testů pro kód v této konkrétní oblasti.</p>
+
+    <section id="json">
+      <title>JSON</title>
+
+      <p>Jedním z příkladů domény, vůči níž se testuje generování dat, je jejich zpracování v případech, kdy se očekává dodržení striktního schématu dat. To je případ dokumentů XML a JSON. Pro JSON lze použít <link href="http://people.collabora.com/~pwith/walbottle/">Walbottle</link> pro vygenerování testovacích vektorů pro všechny typy platných i neplatných vstupů odpovídajících schématu.</p>
+
+      <p>Všechny typy dokumentů JSON by k tomu měly mít definováno <link href="http://json-schema.org/">schéma JSON</link>, které můžete předat do Walbottle, aby vygeneroval testovací vektory:</p>
+      <code mime="application/x-shellscript">
+json-schema-generate --valid-only schéma.json
+json-schema-generate --invalid-only schéma.json</code>
+
+      <p>Tyto testovací vektory je pak možné předat kódu právě testovanému v jeho jednotkových testech. Instance JSON vygenerované pomocí <cmd>--valid-only</cmd> by měly být přijaty, zatímco ty vygenerované pomocí <cmd>--invalid-only</cmd> odmítnuty.</p>
+    </section>
+  </section>
+
+  <section id="writing-testable-code">
+    <title>Psaní testovatelného kódu</title>
+
+    <p>Při psaní kódu by se mělo myslet na jeho testovatelnost už ve fázi návrhu, protože to zásadním způsobem ovlivňuje návrh API a architekturu. Zde je několik klíčových principů:</p>
+    <list>
+      <item><p>Nepoužívejte globální stavy. Unikátní objekty (singletony) jsou většinou špatný nápad, protože pro ně nelze vytvářet oddělené instance nebo je řídit v jednotkových testech.</p></item>
+      <item><p>Oddělte používání vnějších stavů, jako jsou databáze, sítě nebo souborové systémy. Jednotkové testy je pak mohou nahradit přístupem k vnějšímu stavu s falešným objektem. Společným přístupem k tomu je použít vnucování závislostí, které předají objekt obalující souborový systém kódu, který je právě testován. Například třída by neměla načítat globální databázi (z pevně daného místa v souborovém systému), protože jednotkové testy by pak potenciálně mohly přepsat běžící systémovou kopii databáze a nikdy by nemohly být spuštěny souběžně. Měly by být předáván objekt, který poskytne rozhraní k databázi. V produkčním systému to bude tenké obalení okolo databázového API, při testování by to pak mohl být pokusný objekt, který kontroluje požadavky, které mu jsou předávány a vrací pevně dané odpovědi pro různorodé testy.</p></item>
+      <item><p>Vystavte pomocné funkce, pokud mohou být obecně užitečné.</p></item>
+      <item><p>Rozdělte projekt do sady malých privátních knihoven, které pak propojíte dohromady minimálním množstvím spojovacího kódu, aby tak vznikl spustitelný celek. Každou pak můžete testovat odděleně.</p></item>
+    </list>
+  </section>
+
+  <section id="external-links">
+    <title>Externí odkazy</title>
+
+    <p>Tématem testovatelnosti softwaru se zabývají následující články:</p>
+    <list>
+      <item><p><link href="http://msdn.microsoft.com/en-us/magazine/dd263069.aspx">Design for testability</link></p></item>
+      <item><p><link href="http://en.wikipedia.org/wiki/Software_testability">Software testability</link></p></item>
+      <item><p><link href="https://cs.wikipedia.org/wiki/Vkládání_závislostí">Vkládání závislostí</link></p></item>
+      <item><p><link href="http://c2.com/cgi/wiki?SoftwareDesignForTesting">Software design for testing</link></p></item>
+    </list>
+  </section>
+</page>

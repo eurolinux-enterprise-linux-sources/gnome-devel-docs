@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-gdk" xml:lang="el">
+
+  <info>
+    <link type="guide" xref="tech" group="gdk"/>
+    <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email its:translate="no">shaunm@gnome.org</email>
+      <years>2011–2012</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Χαμηλού επιπέδου αφαίρεση για το σύστημα παραθύρων</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2010-2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012-2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Τζένη Πετούμενου</mal:name>
+      <mal:email>epetoumenou@gmail.com</mal:email>
+      <mal:years>2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μάριος Ζηντίλης</mal:name>
+      <mal:email>m.zindilis@dmajor.org</mal:email>
+      <mal:years>2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκυδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gnome.org</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>GDK</title>
+
+  <p>Η GDK είναι η βιβλιοθήκη χαμηλού επιπέδου που χρησιμοποιεί η <link xref="tech-gtk">GTK+</link> για να αλληλεπιδράσει με το σύστημα παραθύρων για γραφικά και τις συσκευές εισόδου. Αν και σπάνια θα χρησιμοποιήσετε την GDK απευθείας στον κώδικα της εφαρμογής σας, περιέχει όλη την απαιτούμενη λειτουργικότητα για τη δημιουργία χαμηλού επιπέδου παραθύρων στην οθόνη και για να αλληλεπιδράσει με τον χρήστη με ποικίλες συσκευές εισόδου. Η GDK δρα ως μια αφαίρεση πάνω σε ποικίλα συστήματα παραθύρων, έτσι ώστε η GTK+ να μπορεί να είναι φορητή σε όλα τα παράθυρα: το σύστημα παραθύρων Χ (X11), Microsoft Windows, Mac OS X Quartz.</p>
+
+<p>Η GDK ενεργοποιεί τη πρόσβαση συμβάντων από πληκτρολόγια, ποντίκια και άλλες συσκευές εισόδου. Υλοποιήσεις των γραφικών συστατικών σε GTK+ χρησιμοποιούν αυτήν τη λειτουργικότητα και μεταφράζουν τα συμβάντα σε σήματα υψηλότερου επίπεδου που μπορούν με τη σειρά τους να χρησιμοποιηθούν από κώδικα εφαρμογής. Για παράδειγμα, ένα γραφικό συστατικό <code>GtkButton</code> θα εντοπίσει συμβάντα <code>GDK_BUTTON_PRESS</code> και <code>GTK_BUTTON_RELEASE</code>, που έρχονται από το ποντίκι και τα μεταφράζουν κατάλληλα ατο σήμα <code>GtkButton::clicked</code>, όταν ο χρήστης πατά και ελευθερώνει το κουμπί στη δεξιά θέση.</p>
+
+<p>Η GDK σας παρέχει χαμηλού επιπέδου ρουτίνες για πρόσβαση σε μεταφορά και απόθεση και δεδομένα προχείρου από το σύστημα. Όταν υλοποιείτε προσαρμοσμένα στοιχεία ελέγχου, μπορείτε να χρειαστείτε να προσπελάσετε αυτά τα γνωρίσματα για κατάλληλη υλοποίηση της συμπεριφοράς αλληλεπίδρασης χρήστη.</p>
+
+<p>Η GDK παρέχει και άλλες λειτουργίες που απαιτούνται για την υλοποίηση ενός ολοκληρωμένου πακέτου γραφικών, όπως η GTK+. Καθώς η GDK λειτουργεί ως αφαιρετική πλατφόρμα, επιτρέποντας στη GTK+ να λειτουργεί σε πολλαπλά περιβάλλοντα, παρέχει μια API για όλες τις λειτουργίες συστήματος που απαιτεί η GTK+. Αυτό περιλαμβάνει πληροφορίες για τις πολλαπλές οθόνες, την ανάλυση και το βάθος των χρωμάτων, τα χρωματολόγια και τους δρομείς.</p>
+
+  <p>Χρησιμοποιήστε τη GDK όποτε χρειάζεστε πρόσβαση χαμηλού επιπέδου στο υποκείμενο σύστημα παραθύρων, συμπεριλαμβανομένης της πρόσβασης χαμηλού επιπέδου στα συμβάντα, στα παράθυρα και στο πρόχειρο. Χρησιμοποιώντας την GDK για αυτές τις εργασίες διασφαλίζει ότι ο κώδικάς σας είναι φορητός και ενσωματώνεται με τον υπόλοιπο κώδικα GTK+. Οι απλές σχεδιαστικές ρουτίνες σε GDK πρέπει γενικά να μην χρησιμοποιούνται· αυτά είναι απομεινάρια από όταν η GDK συσκεύαζε απλά τη στοιχειώδη σχεδίαση του συστήματος παραθύρων. Αντίθετα, θα πρέπει να χρησιμοποιήσετε την εκτεταμένη λειτουργικότητα που παρέχεται από την <link xref="tech-cairo">Cairo</link> για να σχεδιάσετε υψηλής ποιότητας 2Δ γραφικά.</p>
+
+<list style="compact">
+  <item><p><link href="https://developer.gnome.org/gdk3/stable/">Εγχειρίδιο αναφοράς του GDK</link></p></item>
+</list>
+</page>

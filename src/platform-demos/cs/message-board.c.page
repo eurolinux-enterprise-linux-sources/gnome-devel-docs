@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="message-board.c" xml:lang="cs">
+
+  <info>
+    <title type="text">Vývěska (C)</title>
+    <link type="guide" xref="c#examples"/>
+
+    <desc>Jednoduchý program používající WebKitGTK+ a DOM.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2010-12-06" status="draft"/>
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email its:translate="no">shaunm@gnome.org</email>
+      <years>2010</years>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  </info>
+
+<title>Vývěska</title>
+
+<synopsis>
+  <p>V této lekci se seznámíme s následujícími věcmi:</p>
+  <list style="compact">
+    <item><p>Jak zobrazit webovou stránku pomocí jádra WebKit.</p></item>
+    <item><p>Jak pracovat s obsahem webové stránky pomocí funkcí DOM jádra WebKit.</p></item>
+  </list>
+  <p>Tato lekce předpokládá, že máte znalosti programování v jazyce C a základní povědomí o GTK+, včetně toho, jak vytvořit a umístit widgety a jak připojit funkce zpětného volání k signálům. Viz <link xref="image-viewer.c"/> ohledně výuky základů GTK+.</p>
+</synopsis>
+
+<media type="video" mime="video/ogg" src="media/message-board.ogv"/>
+
+<links type="section"/>
+
+<section id="create">
+  <title>Vytvoření projektu ve studiu Anjuta</title>
+
+  <p>Součástí platformy GNOME je WebKitGTK+ vycházející z mocné základní konstrukce WebKit pro HTML. WebKit je používán napříč celým GNOME, ne jen pro zobrazení webových stránek z Internetu, ale také k vytváření vizuálně bohatého uživatelského rozhraní, které lze jednoduše stylovat pomocí CSS.</p>
+
+  <p>V této lekci vytvoříme jednoduchou vývěsku pomocí knihovny WebKit. Vývěska bude umožňovat vkládat text a přidávat jej do seznamu zpráv v HTML. Než začneme, potřebujeme vytvořit projekt v IDE Anjuta.</p>
+
+  <steps>
+    <item><p>Ve studiu Anjuta klikněte na <guiseq><gui>Soubor</gui> <gui>Nový</gui> <gui>Projekt</gui></guiseq>, aby se otevřel průvodce novým projektem.</p></item>
+    <item><p>Vyberte <gui>GTK+ (jednoduchý)</gui> na kartě <gui>C</gui> a klikněte na <gui>Pokračovat</gui>.</p></item>
+    <item><p>Na stránce <gui>Základní informace</gui> vyplňte své údaje. Jako název projektu použijte <input>message-board</input>. Klikněte na <gui>Pokračovat</gui>.</p></item>
+    <item><p>Vypněte volbu <gui>Použít GtkBuilder k tvorbě uživatelského rozhraní</gui>, protože jej chceme v této lekci vytvořit ručně.</p>
+    </item>
+    <item><p>Potřebujete vývojářskému studiu Anjuta říct, že ve svém projektu používáte WebKitGTK+. Na stránce <gui>Volby projektu</gui> vyberte <gui>Konfigurovat externí balíčky</gui>. Klikněte na <gui>Pokračovat</gui> a na stránce <gui>Konfigurace externích balíčků</gui> zaškrtněte <gui>webkitgtk-3.0</gui>.</p></item>
+  </steps>
+
+  <p>Po té, co projdete průvodcem nového projektu, otevřete <file>src/main.c</file> na kartě <gui>Projekt</gui> nebo <gui>Soubor</gui>. Anjuta jej vyplní nějakým základním kódem GTK+ ze šablony. Protože vytváříte projekt s knihovnou WebKit, potřebujete nejdříve vložit příslušné hlavičkové soubory. Za řádek, který vkládá <code>gtk/gtk.h</code> přidejte následující řádek:</p>
+
+  <code>#include &lt;webkit/webkit.h&gt;</code>
+
+  <p>Ověřte, že vše, co máte doposud hotovo, funguje. Klikněte na <guiseq><gui>Sestavit</gui> <gui>Sestavit projekt</gui></guiseq> nebo jen zmáčkněte <keyseq><key>Shift</key> <key>F7</key></keyseq>. Při prvním sestavení budete dotázáni na některé volby konfigurace. Stačí přijmout výchozí hodnoty a kliknout na <gui>Spustit</gui>.</p>
+
+  <p>Nyní byste měli být schopni program spustit. Klikněte na <guiseq><gui>Spustit</gui> <gui>Spustit</gui></guiseq> nebo jen zmáčkněte <key>F3</key>. Měli byste spatřit prázdné okno.</p>
+</section>
+
+<section id="webview">
+  <title>Rozvržení vašeho okna a webového zobrazení</title>
+
+  <p>Nyní, když můžete zobrazit okno, je načase začít pracovat s knihovnou WebKit. V této lekci vytvoříte textové vstupní pole a webové zobrazení a obojí zabalíte do okna. Najděte funkci <code>create_window</code> a nahraďte ji následujícím:</p>
+
+<code style="numbered" mime="text/C">
+static GtkWidget*
+create_window (void)
+{
+    GtkWidget *window, *box, *scroll, *view, *entry;
+
+    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_default_size (GTK_WINDOW (window), 400, 400);
+    gtk_window_set_title (GTK_WINDOW (window), "Message Board");
+    g_signal_connect (window, "delete-event", G_CALLBACK (gtk_main_quit), NULL);
+
+    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+    gtk_container_set_border_width (GTK_CONTAINER (box), 6);
+    gtk_container_add (GTK_CONTAINER (window), box);
+
+    entry = gtk_entry_new ();
+    gtk_box_pack_start (GTK_BOX (box), entry, FALSE, FALSE, 0);
+
+    scroll = gtk_scrolled_window_new (NULL, NULL);
+    g_object_set (scroll, "shadow-type", GTK_SHADOW_IN, NULL);
+    gtk_box_pack_start (GTK_BOX (box), scroll, TRUE, TRUE, 0);
+
+    view = webkit_web_view_new ();
+    gtk_container_add (GTK_CONTAINER (scroll), view);
+    webkit_web_view_load_string (WEBKIT_WEB_VIEW (view),
+                                 "&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;",
+                                 "text/html",
+                                 "UTF-8",
+                                 NULL);
+
+    gtk_widget_show_all (GTK_WIDGET (box));
+    return window;
+}
+</code>
+
+  <p>Nejprve vytvoříte objekt <code>GtkWindow</code> a nastavíte jeho název do záhlaví a výchozí velikost. Rovněž napojíte funkci <code>gtk_main_quit</code> na signál <code>"delete-event"</code>. Tento signál je vyslán, když je okno zavřeno. Funkce <code>gtk_main_quit</code> je součástí GTK a ukončí aplikaci.</p>
+
+  <p>Pak vytvoříte svislý box a přidáte jej do okna. Okno může obsahovat jen jediný synovský widget, takže potřebujete box, abyste mohli přidat víc widgetů. Druhým argumentem u funkce <code>gtk_box_new</code> se nastaví velikost odsazení (v pixelech) mezi jednotlivými potomky a následující řádek vloží 6pixelový okraj okolo toho všeho.</p>
+
+  <p>Následně vytvoříte objekt <code>GtkEntry</code> a zabalíte jej do boxu. Třetí argument u <code>gtk_box_pack_start</code> určují, že vstupní pole by nemělo zabírat žádné místo navíc, které je v boxu dostupné. Čtvrtý argument je velikost odsazení okolo vstupního pole. V tomto případě jej nastavte na nulu, protože o odsazení se postará box.</p>
+
+  <p>Než přidáte webové zobrazení, musíte vytvořit okno s posuvníky, do kterého jej pak vložíte. Okno s posuvníky umístí v případě potřeby doprava a dolů posuvníky a zabrání vašemu webovému zobrazení, aby zaplnilo celou obrazovku. Tentokrát funkci <code>gtk_box_pack_start</code> předejte <code>TRUE</code> a <code>TRUE</code>, aby umožnila oknu s posuvníky (a tím webovému zobrazení) použít dodatečné místo dostupné v boxu.</p>
+
+  <p>Nakonec vytvoříte <code>WebKitWebView</code> a přidáte jej do okna s posuvníky. Potom načtěte úplně základní stránku v HTML do webového zobrazení zavoláním <code>webkit_web_view_load_string</code> s následujícími parametry:</p>
+
+  <terms>
+    <item>
+      <title><code>WEBKIT_WEB_VIEW (view)</code></title>
+      <p>Vlastní zobrazení. Protože <code>view</code> je typováno jako <code>GtkWidget*</code>, musíte požít <code>WEBKIT_WEB_VIEW</code>, aby se objekt bezpečně přetypoval.</p>
+    </item>
+    <item>
+      <title><code>"&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;"</code></title>
+      <p>Nejjednodušší soubor HTML, který byste mohli napsat.</p>
+    </item>
+    <item>
+      <title><code>"text/html"</code></title>
+      <p>Typ MIME obsahu, který poskytujete. V tomto případě používáte prosté HTML.</p>
+    </item>
+    <item>
+      <title><code>"UTF-8"</code></title>
+      <p>Kódování znaků v obsahu, který poskytujete. I když použijete jen znaky ASCII, je dobrým pravidlem zadat UTF-8. UTF-8 je totiž používáno jako výchozí kódování napříč celou platformou GNOME.</p>
+    </item>
+    <item>
+      <title><code>NULL</code></title>
+      <p>Základní adresa URI. V tomto příkladu ji nepotřebujeme, ale možná budete chtít zadat URI <sys>file:</sys>, kdybyste přidali obrázky nebo jinou funkčnost, ve které chcete použít relativní odkazy URI.</p>
+    </item>
+  </terms>
+
+  <note style="sidebar">
+    <p>Pokaždé, když přidáte widget, musíte pro něj zavolat <code>gtk_widget_show</code>, aby byl viditelný. Když zavoláte <code>gtk_widget_show_all</code> pro kontejnerový widget, jako je <code>GtkBox</code>, zobrazí GTK+ automaticky všechny widgety uvnitř kontejneru do libovolné hloubky. Občas nemusíte chtít <code>gtk_widget_show_all</code> volat, třeba když chcete dynamicky skrývat a zobrazovat některé widgety v reakci na události.</p>
+  </note>
+
+  <p>Nakonec musíme v boxu zavolat <code>gtk_widget_show_all</code>, jinak nebude žádný vytvořený widget viditelný. (Okno je zobrazeno ve funkci <code>main</code> pomocí <code>gtk_widget_show</code>.)</p>
+
+  <p>Sestavte a spusťte vývěsku znovu. Měli byste vidět okno s textovým vstupním polem a webové zobrazení. Zatím to nic nedělá, protože vstupní pole a webové zobrazení o sobě navzájem nic neví.</p>
+</section>
+
+<section id="signals">
+  <title>Zaháčkování signálů</title>
+
+  <p>Nyní chcete vývěsku naučit něco <em>udělat</em>, když zadáte text do textového vstupního pole. To se provede tak, že se napojí funkce zpětného volání na signál <code>"activate"</code> objektu <code>entry</code>. GTK+ vyšle signále <code>"activate"</code>, kdykoliv uživatel ve vstupním poli zmáčkne <key>Enter</key>. Následující kód přidejte do <code>create_window</code> kamkoliv za definici <code>entry</code> a <code>view</code>:</p>
+
+<code>
+g_signal_connect (entry, "activate", G_CALLBACK (entry_activate_cb), view);
+</code>
+
+  <p>Potom můžete totiž definovat <code>entry_activate_cb</code>. Nadefinujte jej následovně kdekoliv nad <code>create_window</code>:</p>
+
+<code style="numbered">
+static void
+entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
+{
+    WebKitDOMDocument *document;
+    WebKitDOMElement *body, *div;
+
+    document = webkit_web_view_get_dom_document (view);
+    body = webkit_dom_document_query_selector (document, "body", NULL);
+    div = webkit_dom_document_create_element (document, "div", NULL);
+    webkit_dom_node_set_text_content (WEBKIT_DOM_NODE (div),
+                                      gtk_entry_get_text (entry),
+                                      NULL);
+    webkit_dom_node_append_child (WEBKIT_DOM_NODE (body),
+                                  WEBKIT_DOM_NODE (div),
+                                  NULL);
+    gtk_entry_set_text (entry, "");
+}
+</code>
+
+  <p>První věc, kterou uděláte, je, že získáte objekt <code>WebKitDOMDocument</code>, který představuje dokument HTML zobrazený ve widgetu <code>view</code>. Třídy a metody DOM v knihovně WebKit umožňují procházet a upravovat dokument HTML a fungují velmi podobně jako API k DOM, které můžete znát z jazyka JavaScript.</p>
+
+  <p>Jakmile máme dokument, chceme se dostat k prvku <code>body</code>, protože do něj můžeme přidat prvky <code>div</code>. Funkce <code>webkit_dom_document_query_selector</code> umožňuje najít prvek v dokumentu pomocí selektorů CSS. Tím si ušetříte psaní jednotvárných smyček pro procházení dokumentu.</p>
+
+  <p>V dalším kroku vytvoříme nový prvek <code>div</code>, ve kterém bude zpráva. Každý prvek, který vytvoříte, musí být připojen do dokumentu, takže funkce, která prvky vytváří, přebírá jako první argument <code>WebKitDOMDocument</code>. Pak nastavíte textový obsah prvku na obsah z textového vstupního pole. Protože <code>gtk_entry_get_text</code> vrací <code>const gchar*</code>, nemusíte výsledek uvolňovat z paměti.</p>
+
+  <p>Nakonec přidáme nový prvek <code>div</code> do těla a vymažeme textové vstupní pole, takže můžete napsat něco dalšího. Sestavte a spusťte program znovu a otestujte si jej.</p>
+</section>
+
+
+<section id="css">
+  <title>Vytvoření hezčího vzhledu pomocí CSS</title>
+
+  <p>V tuto chvíli je program plně funkční, ale ne moc hezký. Můžeme ostylovat zobrazení zpráv pomocí CSS, podobně jako to můžete udělat s kteroukoliv stránkou v HTML. Existuje mnoho způsobů, jak připojit stylopis do stránky: Mohli byste jej přidat do počátečního dokumentu HTML. Mohli byste jej vložit pomocí atributu <code>style</code> v prvku <code>div</code>. Mohli byste jej i sestrojit pomoci API k DOM.</p>
+
+  <p>V této lekci připojíme CSS pomocí vlastnosti <code>user-stylesheet-uri</code> objektu <code>WebKitWebSetting</code> připojeného do vašeho webového zobrazení. Ve složitějších aplikacích byste asi chtěli soubor HTML ukládat a načítat. Udržením stylopisu mimo HTML znamená, že může měnit styl přímo ve své aplikaci, bez zásahu do uživatelských souborů. Normálně by vám stačilo nainstalovat soubor se stylopisem spolu s vaší aplikací, ale aby pro potřeby této ukázky zůstalo vše uchováno v jednom souboru, použijeme trik nazvaný datová URI. Nejprve nadefinujeme CSS jako statický řetězec poblíž začátku vašeho souboru.</p>
+
+<code>
+static const guchar CSS[] =
+"body { margin: 0; padding: 0; }\n"
+"div { "
+" -webkit-border-radius: 2px;"
+" background: -webkit-gradient(linear, 0% 100%, 0% 0%,"
+" from(#f1f1f1), to(white));"
+" border: solid 1px #c6c6c6;"
+" -webkit-box-shadow: 0px 0px 2px #c6c6c6;"
+" margin: 12px; padding: 6px;"
+"}";
+</code>
+
+  <p>Vše, co máme v tomto příkladu, jsou prvky <code>div</code> uvnitř prvku <code>body</code>. Kdybyste vytvořili složitější HTML, mohli byste použít cokoliv by CSS bylo potřeba. Jestli jste s CSS obeznámeni, můžete si opravdu zkusit nějaké změny, aby se vám vzhled víc líbil.</p>
+
+  <p>Aby se použilo CSS, nastavte <code>user-stylesheet-uri</code> ve funkci <code>create_window</code> kdekoliv za definicí <code>view</code>.</p>
+
+<code>
+tmp = g_base64_encode (CSS, strlen((gchar *) CSS));
+css = g_strconcat ("data:text/css;charset=utf-8;base64,",
+                   tmp, NULL);
+g_object_set (webkit_web_view_get_settings (WEBKIT_WEB_VIEW (view)),
+              "user-stylesheet-uri", css, NULL);
+g_free (css);
+g_free (tmp);
+</code>
+
+  <p>Rovněž zajistěte přidání deklarací proměnných pro <code>tmp</code> a <code>css</code> na začátku <code>create_window</code>.</p>
+
+<code>
+gchar *tmp, *css;
+</code>
+
+ <p>Datová URI začíná <sys>data:</sys> a některými informacemi o typu obsahu a kódování dat. Skutečná data následují za čárkou, v tomto případě zakódovaná v Base64. Narozdíl od jiných schémat URI, jako je <sys>http:</sys>, <sys>ftp:</sys> a <sys>file:</sys>, schéma URI <sys>data:</sys> nespecifikuje, kde najít soubor k načtení. Místo toho poskytuje rovnou celý obsah souboru.</p>
+
+ <p>Předchozí kód nejprve zakóduje vaši definici CSS v Base64 a pak ji zkombinuje s pevným řetězcem, aby vytvořil datovou URI. Funkce <code>g_strconcat</code> může přebírat libovolný počet řetězcových argumentů a spojit je dohromady, proto jí musíte jako poslední argument předat <code>NULL</code>, aby věděla kdy přestat. A až stylopis správně nastavíte, nezapomeňte uvolnit tyto dočasné řetězce z paměti.</p>
+
+ <p>Sestavte a spusťte program znovu. Měl by fungovat úplně stejně jako na konci předchozí části, vyjma toho, že zprávy jsou hezky ostylované pomocí okrajů a pozadí s jemným přechodem.</p>
+</section>
+
+<section id="more">
+  <title>Jak se naučit více</title>
+
+  <p>V této lekci jsme si ukázali, jak vytvořit základní aplikaci pomocí knihoven GTK+ a WebKit, včetně zobrazení dokumentu a manipulace s jeho obsahem. Pro vytvoření reálné aplikace byste nejspíše museli udělat něco navíc. Zkuste si přidat vlastní funkčnost. Zde je pár nápadů:</p>
+
+  <list>
+    <item><p>Pokud máte CSS rádi, zkuste si změnit styl zobrazených zpráv. S CSS se snadno začíná, ale i roste k mocnějšímu využití. Na Internetu je k dispozici nepřeberné množství výukových materiálů k CSS a téměř vše, co můžete udělat na webu, můžete udělat i v této aplikaci.</p></item>
+
+    <item><p>V současné stavu přijdete o všechny své zprávy, když vývěsku zavřete. Zkuste obsah v HTML ukládat po každém příspěvku a načítat jej z uloženého souboru (když existuje) při spuštění.</p></item>
+
+    <item><p>Až budete mít své zprávy uchované po dlouhou dobu, možná vás začne zajímat, kdy vlastně byly zveřejněny. Přidejte ke každé zprávě při jejím zveřejnění časové razítko. Možná budete potřebovat vytvořit další synovský prvek <code>div</code> s jinou třídou, abyste to mohli ostylovat pomocí CSS.</p>
+    </item>
+
+    <item><p>Tento program uchovává zprávy navždy. Popřemýšlejte o způsobu, jak by uživatel mohl zprávy mazat. Třeba můžete chtít, aby zprávy samy mizely, když jsou příliš staré nebo když množství zpráv před nimi dosáhne určitého počtu. Nebo můžete ke každé zprávě přidat odkaz na její smazání. Mohli byste také přepsat kontextovou nabídku, která se objeví po kliknutí pravým tlačítkem. Tyto funkce znamenají hlubší prozkoumání API k DOM knihovny WebKit.</p></item>
+  </list>
+</section>
+</page>

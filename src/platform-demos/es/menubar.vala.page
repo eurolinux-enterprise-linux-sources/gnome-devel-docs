@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.vala" xml:lang="es">
+  <info>
+  <title type="text">MenuBar (Vala)</title>
+  <link type="guide" xref="beginner.vala#menu-combo-toolbar"/>
+  <link type="seealso" xref="aboutdialog.vala"/>
+  <link type="seealso" xref="gmenu.vala"/>
+    <revision version="0.1" date="2012-05-25" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un widget que contiene widgets «GtkMenuItem»</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MenuBar</title>
+  <media type="image" mime="image/png" src="media/menubar.png"/>
+  <p>Una barra de menú usando XML y GtkBuilder.</p>
+
+  <links type="section"/>
+
+  <section id="xml"> <title>Crear una barra de menú usando XML</title>
+   <p>Para crear la barra de menú usando XML:</p>
+   <steps>
+     <item><p>Cree <file>menubar.ui</file> usando su editor de texto favorito.</p></item>
+     <item><p>Añada la siguiente línea en la parte superior del archivo:</p>
+           <code mime="application/xml">
+&lt;?xml version="1.0"? encoding="UTF-8"?&gt;</code>
+     </item>
+    <item><p>Se quiere crear la interfaz que contendrá la barra de menú y sus submenús. Su barra de menú contendrá los submenús <gui>File</gui>, <gui>Edit</gui>, <gui>Choices</gui> y <gui>Help</gui>. Se le añade el siguiente código XML al archivo:</p>
+    <code mime="application/xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+     </item>
+     <item><p>Ahora se creará el archivo «.vala» y se usará «GtkBuilder» para importar el <file>menubar.ui</file> que acaba de crear.</p></item>
+   </steps>
+   </section>
+   <section id="basis"> <title>Añadir la barra de menú a la ventana usando «GtkBuilder»</title>
+<code mime="text/x-csharp">public class MyWindow : Gtk.ApplicationWindow {
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "MenuBar Example");
+		this.set_default_size (200, 200);
+	}
+}
+
+class MyApplication: Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+	protected override void startup () {
+		base.startup ();
+
+		/* Setup menubar. */
+		/* Get the UI file. */
+		var builder = new Gtk.Builder ();
+		try {
+			builder.add_from_file ("menubar_basis.ui");
+		/* Handle the exception. */
+		} catch (Error e) {
+			error ("Unable to load file: %s", e.message);
+		}
+
+		/* Get the menubar from the builder. */
+		this.menubar = builder.get_object ("menubar") as MenuModel;
+	}
+}
+
+/* main creates and runs the application. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>Ahora, compile el archivo vala y ejecútelo. La aplicación debería verse como la imagen en la parte superior de esta página.</p>
+</section>
+
+
+
+<section id="xml2"> <title>Añadir elementos a los menús</title>
+<p>Se empieza añadiendo 2 elementos al menú <gui>File</gui>: <gui>New</gui> y <gui>Quit</gui>. Esto se hace añadiéndole una <code>section</code> al submenú <code>File</code> con estos elementos. El <file>menubar.ui</file> debe verse así (líneas 6 a 13 inclusive conforman la sección nueva):</p>
+      <code mime="application/xml" style="numbered">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name ="label"&gt;Quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;</code>
+
+<p>De esta misma manera, ahora puede añadir elementos <code>Copy</code> y <code>Paste</code> al submenú <code>Edit</code>, y un elemento <code>About</code> al submenú <code>Help</code>. No añadiremos elementos al <link xref="menubar.vala#choices">submenú Choices</link> hasta más adelante en el tutorial.</p>
+
+<note style="tip"><p>No necesita recompilar el programa vala si sólo ha hecho cambios al archivo UI. Simplemente ejecute su aplicación anteriormente compilada y se reflejarán los cambios en la IU.</p></note>
+</section>
+
+<section id="actions"><title>Configurar las acciones</title>
+<p>Este es un proceso de tres pasos.</p>
+<steps>
+  <item><p>Primero se crea la matriz «ActionEntry» en la clase «MyApplication». Un «ActionEntry» consiste de:</p>
+  <list>
+    <item><p>el «nombre de la acción» (obligatorio)</p></item>
+    <item><p>la función de retorno de llamada que conectar a la señal «activate» de la acción (si corresponde)</p></item>
+    <item><p>el tipo de parámetro que debe pasarse a la función «activate» para la acción (si corresponde)</p></item>
+    <item><p>el estado inicial de la acción (si corresponde)</p></item>
+    <item><p>el retorno de llamada que conectar a la señal «change-state» (si corresponde)</p></item>
+  </list>
+   <code mime="text/x-csharp">
+const ActionEntry[] actions = {
+    { "new", new_cb }, // {"action name", callback_function}
+    { "quit", quit_cb }
+};</code>
+
+  </item>
+  <item><p>Segundo, se crean las funciones de retorno de llamada a las que se conectan las acciones.</p>
+  <code mime="text/x-csharp">
+void new_cb (SimpleAction action, Variant? parameter) {
+    print ("You clicked \"New\"\n");
+    //new MyWindow (this).show ();
+}
+
+void quit_cb (SimpleAction action, Variant? parameter) {
+    print ("You clicked \"Quit\"\n");
+    this.quit ();
+}</code>
+ </item>
+  <item><p>Y por último, se conectan los elementos del menú a las acciones en el archivo XML añadiendo el atributo «action»:</p>
+    <code mime="application/xml">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+&lt;/item&gt;
+&lt;item&gt;
+  &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+&lt;/item&gt;</code>
+ </item>
+</steps>
+</section>
+
+
+<section id="choices"><title>Submenú «choices» y elementos con estado</title>
+  <media type="image" mime="image/png" src="media/menubar_choices.png"/>
+  <p>Las líneas 30 a 80 inclusive del <link xref="menubar.vala#xml-code"/> demuestran el código XML usado para crear la IU del menú <gui>Choices</gui>.</p>
+</section>
+
+<section id="win-app"><title>Acciones: ¿aplicación o ventana?</title>
+  <p>Anteriormente, se crearon las acciones «new» y «open» como parte de la clase «MyApplication». Las acciones que controlan la aplicación en sí, como «quit» deben crearse de manera similar.</p>
+
+  <p>Algunas acciones, como «copy» y «paste» trabajan con la ventana, no con la aplicación. Las acciones de ventanas deben crearse como parte de la clase de la ventana.</p>
+
+  <p>Los archivos de ejemplo completos contienen tanto acciones de aplicación como de ventana. Las acciones de ventana son las que generalmente también se incluyen en el <link xref="gmenu.vala">menú de la aplicación</link>. No es buena práctica incluir acciones de ventana en el menú de la aplicación. Con motivo de demostración, los archivos completos de ejemplo a continuación incluyen XML en el archivo UI que crea el menú de la aplicación incluyendo elementos «New» y «Open», vinculados a las mismas acciones que los elementos de la barra de menú del mismo nombre.</p>
+
+
+</section>
+
+  <section id="xml-code"><title>Archivo de IU XML completo de este ejemplo</title>
+<code mime="application/xml" style="numbered">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Copy&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.copy&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Paste&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.paste&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+      &lt;submenu&gt;
+        &lt;attribute name="label"&gt;Shapes&lt;/attribute&gt;
+          &lt;section&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Line&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;line&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Triangle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;triangle&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Square&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;square&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Polygon&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;polygon&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Circle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;circle&lt;/attribute&gt;
+            &lt;/item&gt;
+          &lt;/section&gt;
+      &lt;/submenu&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;On&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;on&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Off&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;off&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Awesome&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.awesome&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;About&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.about&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+  &lt;menu id="appmenu"&gt;
+    &lt;section&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+      &lt;/item&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+      &lt;/item&gt;
+    &lt;/section&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+  </section>
+  <section id="vala-code"><title>Archivo de vala completo para este ejemplo</title>
+<code mime="text/x-csharp" style="numbered">public class MyWindow : Gtk.ApplicationWindow {
+
+	/* Callback functions for the window actions. */
+	void copy_cb (SimpleAction action, Variant? parameter) {
+		print ("\"Copy\" activated\n");
+	}
+
+	void paste_cb (SimpleAction action, Variant? parameter) {
+		print ("\"Paste\" activated\n");
+	}
+
+	void shape_cb (SimpleAction action, Variant? parameter) {
+		print ("shape is set to %s\n", parameter.get_string(null));
+		action.set_state (parameter);
+	}
+
+	/* Create the window actions. */
+	const ActionEntry[] actions = {
+		/*{ "action name", cb to connect to "activate" signal, parameter type,
+		     initial state, cb to connect to "change-state" signal } */
+		{ "copy", copy_cb },
+		{ "paste", paste_cb },
+		{ "shape", shape_cb, "s", "'line'"}
+	};
+
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "MenuBar Example");
+		this.set_default_size (200, 200);
+
+		/* Setup window actions. */
+		this.add_action_entries (actions, this);
+	}
+}
+
+class MyApplication: Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+
+	/* Callback functions for the application actions. */
+	void new_cb (SimpleAction action, Variant? parameter) {
+		//new MyWindow (this).show ();
+		print ("You clicked \"New\"\n");
+	}
+
+	void quit_cb (SimpleAction action, Variant? parameter) {
+		print ("You clicked \"Quit\"\n");
+		this.quit ();
+	}
+
+	void awesome_cb (SimpleAction action, Variant? parameter) {
+		var active = action.get_state ().get_boolean ();
+		action.set_state (new Variant.boolean (!active));
+		if (active)
+			print ("You unchecked \"Awesome\"\n");
+		else
+			print ("You checked \"Awesome\"\n");
+	}
+
+	void state_cb (SimpleAction action, Variant? parameter) {
+		print ("state is set to %s\n", parameter.get_string(null));
+		action.set_state (parameter);
+	}
+
+	/* Create the application actions. */
+	const ActionEntry[] actions = {
+		{ "new", new_cb },
+		{ "quit", quit_cb },
+		{ "awesome", awesome_cb, null, "false" },
+		{ "state", state_cb, "s", "'off'" }
+	};
+
+	protected override void startup () {
+		base.startup ();
+
+		/* Setup application actions. */
+		this.add_action_entries (actions, this);
+
+		/* Setup menubar and app_menu. */
+		/* Get the UI file. */
+		var builder = new Gtk.Builder ();
+		try {
+			builder.add_from_file ("menubar.ui");
+		} catch (Error e) {
+			error ("Unable to load file: %s", e.message);
+		}
+
+		/* Get the menubar from the builder. */
+		this.menubar = builder.get_object ("menubar") as MenuModel;
+
+		/* Get the app_menu from the builder. */
+		this.app_menu = builder.get_object ("appmenu") as MenuModel;
+	}
+}
+
+/* main creates and runs the application. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+  </section>
+
+  <section id="mnemonics"><title>Mnemónicos</title>
+    <p>Las etiquetas pueden contener atajos. Los atajos son caracteres subrayados en la etiqueta, usados para navegar con el teclado. Se crean poniendo un guión bajo antes del carácter de atajo. Por ejemplo «_Archivo» en lugar de solo «Archivo» en el atributo «label» del «menubar.ui».</p>
+   <p>Los atajos son visibles cuando pulsa la tecla <key>Alt</key>. Presionar <keyseq><key>Alt</key><key>A</key></keyseq> abrirá el menú <gui>Archivo</gui>.</p>
+  </section>
+
+  <section id="accelerators"><title>Aceleradores</title>
+    <p>Los aceleradores pueden añadirse explícitamente en las definiciones de la IU. Por ejemplo, es común poder cerrar una aplicación presionando <keyseq><key>Ctrl</key><key>Q</key></keyseq> o guardar un archivo presionando <keyseq><key>Ctrl</key><key>S</key></keyseq>. Para añadir un acelerador a la definición de IU, simplemente añádale un atributo «accel» al elemento.</p>
+<p><code mime="application/xml">&lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;</code> creará la secuencia <keyseq><key>Ctrl</key><key>Q</key></keyseq> cuando se añada al elemento de la etiqueta <code>Quit</code>. Aquí, «Primary» se refiere a la tecla <key>Ctrl</key> en una PC o <key>⌘</key> en una Mac.</p>
+
+  <code mime="application/xml">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;_Quit&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+  &lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;
+&lt;/item&gt;</code>
+  </section>
+
+  <section id="translatable"><title>Cadenas traducibles</title>
+   <p>Dado que las aplicaciones de GNOME se traducen a <link href="http://l10n.gnome.org/languages/">muchos idiomas</link>, es importante que las cadenas en su aplicación puedan traducirse. Para hacer una etiqueta traducible, simplemente añada <code>translatable="yes"</code>:</p>
+   <p><code mime="application/xml">&lt;attribute name="label" translatable="yes"&gt;Quit&lt;/attribute&gt;</code></p>
+  </section>
+  <section id="documentation"><title>Documentación de la API relevante</title>
+<p>En este ejemplo se usa lo siguiente:</p>
+<list>
+  <item><p><link href="http://valadoc.org/gio-2.0/GLib.ActionEntry.html">Glib.ActionEntry</link></p></item>
+  <item><p><link href="http://valadoc.org/gio-2.0/Gtk.Builder.html">Gtk.Builder</link></p></item>
+</list>
+</section>
+
+
+<section id="exercises"><title>Ejercicios</title>
+  <xi:include href="exercises/menubar.vala.exercises"><xi:fallback/></xi:include>
+</section>
+</page>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scrolledwindow.py" xml:lang="fr">
+  <info>
+    <title type="text">ScrolledWindow (Python)</title>
+    <link type="guide" xref="beginner.py#scrolling"/>
+    <link type="next" xref="paned.py"/>
+    <revision version="0.1" date="2012-05-26" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ajoute des barres de défilement à son élément graphique enfant</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ScrolledWindow</title>
+  <media type="image" mime="image/png" src="media/scrolledwindow.png"/>
+  <p>Une image dans une fenêtre avec barres de défilement.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code utilisé pour générer cet exemple</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(
+            self, title="ScrolledWindow Example", application=app)
+        self.set_default_size(200, 200)
+
+        # the scrolledwindow
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_border_width(10)
+        # there is always the scrollbar (otherwise: AUTOMATIC - only if needed
+        # - or NEVER)
+        scrolled_window.set_policy(
+            Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS)
+
+        # an image - slightly larger than the window...
+        image = Gtk.Image()
+        image.set_from_file("gnome-image.png")
+
+        # add the image to the scrolledwindow
+        scrolled_window.add_with_viewport(image)
+
+        # add the scrolledwindow to the window
+        self.add(scrolled_window)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+  <section id="methods">
+    <title>Méthodes utiles pour un élément graphique ScrolledWindow</title>
+    <list>
+      <item><p>La méthode <code>set_policy(hscrollbar_policy, vscrollbar_policy)</code>, où chaque argument est l'un des <code>Gtk.Policy.AUTOMATIC, Gtk.Policy.ALWAYS, Gtk.Policy.NEVER</code>, définit laquelle des barres de défilement verticale ou horizontale doit s'afficher. <code>AUTOMATIC</code> les affiche seulement si nécessaire, <code>ALWAYS</code> et <code>NEVER</code> les affichent respectivement toujours ou jamais.</p></item>
+      <item><p>La méthode <code>add_with_viewport(widget)</code> est utilisé pour ajouter l'élément graphique Gtk.Widget <code>widget</code>, sans possibilité de défilement à l'intérieur de la fenêtre.</p></item>
+      <item><p>La méthode <code>set_placement(window_placement)</code> organise le cadrage du contenu de la fenêtre en fonction de ses barres de défilement. Les options possibles des arguments sont : <code>Gtk.CornerType.TOP_LEFT</code> (par défaut, les barres de défilement sont en bas et à droite de la fenêtre), <code>Gtk.CornerType.TOP_RIGHT, Gtk.CornerType.BOTTOM_LEFT, Gtk.CornerType.BOTTOM_RIGHT</code>.</p></item>
+      <item><p>Les méthodes <code>set_hadjustment(ajustement)</code> et <code>set_vadjustment(ajustement)</code> définissent l'<code>ajustement</code> Gtk.Adjustment. C'est la représentation d'une valeur avec une limite inférieure et supérieure, des incréments d'étape et de page, d'une taille de page et est construite sous la forme <code>Gtk.Adjustment(valeur, inferieure, superieure, step_increment, page_increment, page_size)</code> où les champs sont du type <code>float</code>. (Notez que <code>step_increment</code> n'est pas utilisé dans notre exemple et qu'il peut être défini à <code>0</code>).</p></item>
+    </list>
+  </section>
+  <section id="references">
+    <title>Références API</title>
+    <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkScrolledWindow.html">GtkScrolledWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">Standard Enumerations</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkImage.html">GtkImage</link></p></item>
+    </list>
+  </section>
+</page>

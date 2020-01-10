@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="tooltip.py" xml:lang="pt-BR">
+  <info>
+  <title type="text">Tooltip (Python)</title>
+    <link type="guide" xref="beginner.py#misc"/>
+    <link type="seealso" xref="toolbar.py"/>
+    <link type="next" xref="toolbar_builder.py"/>
+    <revision version="0.1" date="2012-08-20" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Add tips to your widgets</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Tooltip</title>
+  <media type="image" mime="image/png" src="media/tooltip.png"/>
+  <p>A toolbar with a tooltip (with an image) for a button.</p>
+  <note><p>This example builds on the <link xref="toolbar.py">Toolbar</link> example.</p></note>
+
+  <links type="section"/>
+    
+  <section id="code">
+  <title>Code used to generate this example</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(
+            self, title="Toolbar with Tooltips Example", application=app)
+        self.set_default_size(400, 200)
+
+        grid = Gtk.Grid()
+
+        toolbar = self.create_toolbar()
+        toolbar.set_hexpand(True)
+        toolbar.show()
+
+        grid.attach(toolbar, 0, 0, 1, 1)
+
+        self.add(grid)
+
+        undo_action = Gio.SimpleAction.new("undo", None)
+        undo_action.connect("activate", self.undo_callback)
+        self.add_action(undo_action)
+
+        fullscreen_action = Gio.SimpleAction.new("fullscreen", None)
+        fullscreen_action.connect("activate", self.fullscreen_callback)
+        self.add_action(fullscreen_action)
+
+    def create_toolbar(self):
+        toolbar = Gtk.Toolbar()
+        toolbar.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR)
+
+        # button for the "new" action
+        new_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW)
+        # with a tooltip with a given text
+        new_button.set_tooltip_text("Create a new file")
+        new_button.set_is_important(True)
+        toolbar.insert(new_button, 0)
+        new_button.show()
+        new_button.set_action_name("app.new")
+
+        # button for the "open" action
+        open_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_OPEN)
+        # with a tooltip with a given text in the Pango markup language
+        open_button.set_tooltip_markup("Open an &lt;i&gt;existing&lt;/i&gt; file")
+        open_button.set_is_important(True)
+        toolbar.insert(open_button, 1)
+        open_button.show()
+        open_button.set_action_name("app.open")
+
+        # button for the "undo" action
+        undo_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_UNDO)
+        # with a tooltip with an image
+        # set True the property "has-tooltip"
+        undo_button.set_property("has-tooltip", True)
+        # connect to the callback function that for the tooltip
+        # with the signal "query-tooltip"
+        undo_button.connect("query-tooltip", self.undo_tooltip_callback)
+        undo_button.set_is_important(True)
+        toolbar.insert(undo_button, 2)
+        undo_button.show()
+        undo_button.set_action_name("win.undo")
+
+        # button for the "fullscreen/leave fullscreen" action
+        self.fullscreen_button = Gtk.ToolButton.new_from_stock(
+            Gtk.STOCK_FULLSCREEN)
+        self.fullscreen_button.set_is_important(True)
+        toolbar.insert(self.fullscreen_button, 3)
+        self.fullscreen_button.set_action_name("win.fullscreen")
+
+        return toolbar
+
+    # the callback function for the tooltip of the "undo" button
+    def undo_tooltip_callback(self, widget, x, y, keyboard_mode, tooltip):
+        # set the text for the tooltip
+        tooltip.set_text("Undo your last action")
+        # set an icon fot the tooltip
+        tooltip.set_icon_from_stock("gtk-undo", Gtk.IconSize.MENU)
+        # show the tooltip
+        return True
+
+    def undo_callback(self, action, parameter):
+        print("You clicked \"Undo\".")
+
+    def fullscreen_callback(self, action, parameter):
+        is_fullscreen = self.get_window().get_state(
+        ) &amp; Gdk.WindowState.FULLSCREEN != 0
+        if not is_fullscreen:
+            self.fullscreen_button.set_stock_id(Gtk.STOCK_LEAVE_FULLSCREEN)
+            self.fullscreen()
+        else:
+            self.fullscreen_button.set_stock_id(Gtk.STOCK_FULLSCREEN)
+            self.unfullscreen()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        new_action = Gio.SimpleAction.new("new", None)
+        new_action.connect("activate", self.new_callback)
+        app.add_action(new_action)
+
+        open_action = Gio.SimpleAction.new("open", None)
+        open_action.connect("activate", self.open_callback)
+        app.add_action(open_action)
+
+    def new_callback(self, action, parameter):
+        print("You clicked \"New\".")
+
+    def open_callback(self, action, parameter):
+        print("You clicked \"Open\".")
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+  <title>Useful methods for a Tooltip widget</title>
+
+    <p><code>set_tooltip_text(text)</code> and <code>set_tooltip_markup(text)</code> can be used to add a tooltip of plain text (or text in the Pango Markup Language) to a widget.</p>
+    <p>For more complex tooltips, for instance for a tooltip with an image:</p>
+    <steps>
+      <item><p>Set the <code>"has-tooltip"</code> property of the widget to <code>True</code>; this will make GTK+ monitor the widget for motion and related events which are needed to determine when and where to show a tooltip.</p></item>
+      <item><p>Connect to the <code>"query-tooltip"</code> signal. This signal will be emitted when a tooltip is supposed to be shown. One of the arguments passed to the signal handler is a GtkTooltip object. This is the object that we are about to display as a tooltip, and can be manipulated in your callback using functions like <code>set_icon()</code>. There are functions for setting the tooltip's markup (<code>set_markup(text)</code>), setting an image from a stock icon (<code>set_icon_from_stock(stock_id, size)</code>), or even putting in a custom widget (<code>set_custom(widget)</code>).</p></item>
+      <item><p>Return <code>True</code> from your query-tooltip handler. This causes the tooltip to be show. If you return <code>False</code>, it will not be shown.</p></item>
+    </steps>
+
+    <p>In the probably rare case where you want to have even more control over the tooltip that is about to be shown, you can set your own GtkWindow which will be used as tooltip window. This works as follows:</p>
+    <steps>
+      <item><p>Set <code>"has-tooltip"</code> and connect to <code>"query-tooltip"</code> as before.</p></item>
+      <item><p>Use <code>set_tooltip_window()</code> on the widget to set a GtkWindow created by you as tooltip window.</p></item>
+      <item><p>In the <code>"query-tooltip"</code> callback you can access your window using <code>get_tooltip_window()</code> and manipulate as you wish. The semantics of the return value are exactly as before, return <code>True</code> to show the window, <code>False</code> to not show it.</p></item>
+    </steps>
+
+  </section>
+  
+  <section id="references">
+  <title>API References</title>
+    <p>In this sample we used the following:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkTooltip.html">GtkTooltip</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkToolbar.html">GtkToolbar</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkWidget.html">GtkWidget</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/stable/gtk3-Stock-Items.html">Stock Items</link></p></item>
+    </list>
+  </section>
+</page>

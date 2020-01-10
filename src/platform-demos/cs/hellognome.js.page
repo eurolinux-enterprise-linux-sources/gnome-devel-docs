@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="hellognome.js" xml:lang="cs">
+  <info>
+    <link type="guide" xref="beginner.js#tutorials"/>
+    <revision version="0.1" date="2012-07-17" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Vaše první aplikace pro GNOME!</desc>
+  </info>
+
+  <title>1. Ahoj GNOME!</title>
+  <synopsis>
+    <p>V této lekci si ukážeme, jak napsat vaši první aplikaci pro GNOME v jazyce JavaScript. Použijeme jej k psaní pro GNOME stejným způsobem, jako byste použili pro web. Poté se dozvíte, jako použít nativní widgety k napsaní aplikace, která už bude vypadat jako správná aplikace GNOME.</p>
+    <note style="warning"><p>Máte v počítači nainstalováno GNOME a textový editor <link xref="set-up-gedit.js">gedit</link> pro psaní kódu? To jsou věci, které pro začátek potřebujeme.</p></note>
+  </synopsis>
+
+  <links type="section"/>
+
+  <section id="webapp">
+    <title>Začněme s webovou stránkou</title>
+
+    <p>Zde je nějaký základní kód používající HTML, CSS a JavaScript. Přijde vám to povědomé?</p>
+    <code mime="application/javascript" style="numbered">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Hello, GNOME!&lt;/title&gt;
+
+        &lt;!-- Použije JavaScript k zobrazení uvítání, když se klikne na tlačítko --&gt;
+        &lt;script type="application/javascript"&gt;
+        function greeting () {
+            document.getElementById ("greeting").innerHTML = ("O hai!");
+        }
+        &lt;/script&gt;
+
+        &lt;!-- Velmi základní styl CSS používající písmo z GNOME --&gt;
+        &lt;style type="text/css"&gt;
+            body {
+                font-face: Cantarell, sans-serif;
+                text-align: center; }
+        &lt;/style&gt;
+
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;br /&gt; &lt;br /&gt;
+        &lt;button type="button" onclick="greeting()"&gt;Hello, GNOME!&lt;/button&gt;
+
+        &lt;!-- Prázdný prvek H1, bude vyplněn po kliknutí na tlačítko --&gt;
+        &lt;h1 id="greeting"&gt;&lt;/h1&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code>
+
+    <p>Pojďme jej uložit do <file>hellognome.html</file> a podívat se, jak to bude vypadat, když jej spustíme!</p>
+
+    <media type="image" mime="image/png" src="media/hellognomewebapp.png"/>
+
+    <p>Kód uvedený výše <em>můžete</em> spustit otevřením <file>hellognome.html</file> ve webovém prohlížeči. My se ale chystáme vytvořit aplikaci pro GNOME, která spustí naši webovou aplikaci uvnitř sebe tak, jak tom můžete vidět na snímku obrazovky. Budete moci měnit velikost okna a maximalizovat jej, kliknout na <gui>×</gui> v rohu, aby se zavřelo, prostě vše tak, jak to očekáváte od aplikace GNOME. Rozdíl je v tom, že ta naše spustí uvnitř sebe naši webovou aplikaci.</p>
+    <p>A co je na tom nejlepší? Hodláme pokračovat v použití jazyka JavaScript k napsání všech zbývajících částí naší aplikace, aby pracovala v GNOME. Pojďme se podívat na kód, ať víte jak na to!</p>
+  </section>
+
+  <section id="window">
+    <title>Vytvoření okna GNOME, které pojme naši webovou aplikaci</title>
+
+    <p>Nejprve musíme GNOME říct, že tato aplikace je v jazyce JavaScript, k čemuž použijeme gjs. Gjs je v GNOME způsob, jak přeměnit váš kód v jazyce JavaScript na instrukce, kterým rozumí, takže tento řádek musí být vždy na začátku vaší aplikace.</p>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+</code>
+    <p>Dále potřebujeme říci GNOME, které knihovny chceme importovat.</p>
+    <code mime="application/javascript">
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+const Webkit = imports.gi.WebKit;
+</code>
+    <p>Podobně, jako přidání knihoven, jako je jQuery, která umožňuje v jazyce JavaScript provádět nové věci, každá z těchto knihoven nám poskytne schopnosti pro naši aplikaci GNOME:</p>
+    <steps>
+      <item><p><file>Gtk</file> a <file>Lang</file> jsou základní části kterékoliv aplikace GNOME, které vám umožňují vytvořit okna a widgety a spojit je dohromady.</p></item>
+      <item><p><file>GLib</file> je pomocná knihovna, díky kterém můžeme dělat takové věci, jako říci GNOME, kde je soubor <file>hellognome.html</file>, který jsme vytvořili.</p></item>
+      <item><p><file>Webkit</file> je webové vykreslovací jádro, které použijeme v podstatě k vytvoření okna prohlížeče, ve kterém otevřeme náš soubor HTML.</p></item>
+    </steps>
+
+    <p>Nyní vytvoříme vlastní aplikaci:</p>
+    <code mime="application/javascript">
+const HelloGNOME = new Lang.Class ({
+    Name: 'Hello GNOME',
+</code>
+    <p>Pokud jste již dříve pracovali s objektově orientovaným jazykem JavaScript, přijde vám to známe. Máte pravdu, celá naše aplikace je třída nazvaná HelloGNOME. A jak můžete vidět, udáme ji vlastnost, která říká, jak se nazývá.</p>
+
+    <code mime="application/javascript">
+    // Vytvoří vlastní aplikaci
+    _init: function () {
+        this.application = new Gtk.Application ();
+
+        // Napojí signály "activate" a "startup" k funkcím zpětného volání
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Funkce zpětného volání pro signál "activate" zobrazující okno při aktivaci
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup: function () {
+        this._buildUI ();
+    },
+</code>
+    <p>Zde je nějaký kód, který více méně zkopírujte do každé aplikace v jazyce JavaScript, kterou budete tvořit. Vytvoří novou aplikaci a napojí její signály <code>"activate"</code> a <code>"startup"</code> na funkce, které zajistí, že okno zobrazí sebe samo a sestaví své uživatelské rozhraní.</p>
+    <p>Co to znamená? V aplikacích GNOME vše posílá signály pokaždé, když se něco zajímavého stane. Například tlačítko může poslat signál <code>"clicked"</code>, když je na něj kliknuto. Našim úkolem je napojit signály na funkce, které je zpracují a provedou něco, co chceme, aby se stalo. To uděláme použitím metody <code>connect</code> u každého objektu. Tato metoda má dva argumenty: Signál, který chceme obsluhovat, a funkci <code>Lang.bind</code>, což je funkce, po které chceme, aby signál obsluhovala.</p>
+    <p>V tomto případě chceme, aby <code>_onActivate</code> obsluhovala signál <code>"activate"</code> a <code>_onStartup</code> signál <code>"startup"</code>. Funkce <code>_onActivate</code> akorát řekne oknu, aby se zobrazilo. Takže v podstatě, kdykoliv zmáčknete <keyseq><key>Alt</key> <key>Tab</key></keyseq>, aplikace se objeví tak, jak očekáváte. Funkce <code>_onStartup</code> volá funkci <code>_buildUI</code>, která vytvoří naše uživatelské rozhraní a je následující částí, na kterou se podíváme.</p>
+    <note style="tip"><p>Když si kód uvedený výše zkopírujete a vložíte pro svoji vlastní aplikaci, přidělte ji pokaždé jedinečný název.</p></note>
+  </section>
+
+  <section id="ui">
+    <title>Návrh uživatelského rozhraní našeho okna</title>
+    <p>Ve funkci <code>_buildUI</code> se chystáme postupně říci GNOME o našem okně a věcech uvnitř něj. Nakonec vše spojíme dohromady a zobrazíme.</p>
+
+    <code mime="application/javascript">
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI: function () {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            title: "Welcome to GNOME",
+            default_height: 200,
+            default_width: 400,
+            window_position: Gtk.WindowPosition.CENTER });
+</code>
+
+    <p>První objekt, který vytvoříme, je <code>ApplicationWindow</code>. To potřebuje název do záhlaví a jeho vlastnost <code>application</code> musí být aplikace, kterou jsem vytvořili v předchozím. Mimo to, existují různé způsoby, jak si přizpůsobit jeho vzhled, v čemž jde více do podrobností stránka věnovaná widgetu <link xref="GtkApplicationWindow.js">ApplicationWindow</link>. Jak můžete vidět zde, dáli jsme mu výchozí výšku a šířku (měřenou v pixelech) a řekli GNOME, že chceme, aby se naše okno objevilo uprostřed obrazovky.</p>
+    <code mime="application/javascript">
+        // Vytvoří webové zobrazení pro zobrazení webové aplikace
+        this._webView = new Webkit.WebView ();
+
+        // Vloží webovou aplikaci do webového zobrazení
+        this._webView.load_uri (GLib.filename_to_uri (GLib.get_current_dir() +
+            "/hellognome.html", null));
+</code>
+    <p>Pamatujete, jak jsme na začátku správně importovali Webkit? Zde vytváříme novu instanci třídy <code>Webkit</code> nazvanou <code>WebView</code>, což je více méně okno webového prohlížeče, které můžete vložit dovnitř své aplikace. Po té mu předáme adresu URI, kterou chceme načíst při spuštění aplikace.</p>
+    <p><em>Mohli</em> bychom mu prostě předat webovou URI, jako je <link href="http://gnome.org">http://gnome.org</link>. Místo toho zde použijeme pár pomocných funkcí z GLib, abychom widgetu <code>WebView</code> řekli, kde náš soubor <file>hellognome.html</file> je. <code>GLib.get_current_dir</code> vrací složku, ve které naše aplikace běží a <code>GLib.filename_to_uri</code> vrací cestu k našemu souboru a jeho název v podobě adresy URI, které rozumí funkce <code>load_uri</code> widgetu <code>WebView</code>. (Druhý parametr funkce <code>filename_to_uri</code> by měl být <code>null</code>, ledaže víte, k čemu slouží a máte důvod jej změnit.)</p>
+    <code mime="application/javascript">
+        // Vloží webové zobrazení do okna
+        this._window.add (this._webView);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    },
+
+});
+</code>
+    <p>Každé okno může obsahovat jeden a právě jeden widget. Normálně bychom použili kontejnerový widget, jako je <link xref="grid.js">Grid</link>, abychom do něj vložili více widgetů a následně použili funkci <code>add</code> okna k jeho vložení do okna. V tomto případě ale potřebujeme jen jediný widget <code>WebView</code>, takže jej můžeme přidat do okna přímo. Po té, jako poslední část funkce <code>_buildUI</code>, která vytváří naše okno, řekneme oknu, aby zobrazilo sebe a svůj obsah.</p>
+    <code mime="application/javascript">
+// Spustí aplikaci
+let app = new HelloGNOME ();
+app.application.run (ARGV);
+</code>
+    <p>Nakonec vytvoříme novou instanci naší třídy HelloGNOME a řekneme GNOME, aby ji spustil.</p>
+  </section>
+
+  <section id="run">
+    <title>Spuštění vaší aplikace pro GNOME</title>
+
+    <p>Nyní máme vytvořenou vaši první aplikace pro GNOME a je čas ji otestovat! Nepotřebujete ji kompilovat ani pro ni instalovat nějaký speciální software. GNOME má gjs vestavěné, aby fungoval GNOME Shell. Takže akorát uložte <file>hellognome.html</file> a skutečnou aplikaci <file>hellognome.js</file> do složky, ke které se dostanete v terminálu. (Obvykle do vaší domovské složky, která má název podle vašeho uživatelského jména.) Pak otevřete terminál, přejděte do ní a napište:</p>
+    <screen> <output style="prompt">$ </output>gjs hellognome.js </screen>
+    <p>Měli byste vidět víceméně to stejné, co na snímku obrazovky výše, s tlačítkem, které po kliknutí zobrazí krátkou zprávu.</p>
+
+    <note style="tip">
+        <p>Můžete použít terminálový příkaz</p>
+        <screen> <output style="prompt">$ </output>cd <var>(název složky)</var> </screen>
+        <p>k pohybu mezi složkami v terminálu, abyste se dostali do složky, kde máte soubory uložené. Existuje i rozšíření pro Nautilus, což je správce souborů v GNOME, které umožňuje kliknout pravým tlačítkem v kterékoliv složce a otevřít v ní terminálové okno. Podívejte se po tomto rozšíření v aplikaci, kterou používáte k instalaci nového softwaru (jako je „Přidat/Odebrat programy“ nebo „Centrum softwaru“).</p>
+    </note>
+  </section>
+
+  <section id="whatsnext">
+    <title>A co dál?</title>
+
+    <p><link xref="02_welcome_to_the_grid.js">Pokračujte na následující lekci</link>, ve které se dozvíte, jak místo webového zobrazení s kódem HTML vytvořit „nativní“ aplikaci pro GNOME, která bude vypadat jako ostatní aplikace a zapadat do prostředí. Nebo se podívejte na některé <link xref="beginner.js#samples">ukázky kódu</link>, pokud byste chtěli vidět kód pro jednotlivé widgety Gtk.</p>
+    <p>A konečně, jestli jen chcete vytvářet aplikace pro GNOME pomocí knihoven jazyka JavaScript navržených pro web, můžete zde skončit se čtením a jít na to. Podívejte se do <link xref="beginner.js#tutorials">dalších lekcí</link>, pokud byste pro vaši aplikaci rádi vytvořili soubor .desktop, díky němuž se vaše aplikace objeví mezi dalšími aplikacemi v nabídce pracovní plochy <gui>Činnosti</gui>.</p>
+  </section>
+
+  <section id="complete">
+    <title>Úplný kód ukázky</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+const Webkit = imports.gi.WebKit;
+
+const HelloGNOME = new Lang.Class ({
+    Name: 'Hello GNOME',
+
+    // Vytvoří vlastní aplikaci
+    _init: function () {
+        this.application = new Gtk.Application ();
+
+        // Napojí signály "activate" a "startup" k funkcím zpětného volání
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Funkce zpětného volání pro signál "activate" zobrazující okno při aktivaci
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI: function () {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            title: "Welcome to GNOME",
+            default_height: 200,
+            default_width: 400,
+            window_position: Gtk.WindowPosition.CENTER });
+
+        // Vytvoří webové zobrazení pro zobrazení webové aplikace
+        this._webView = new Webkit.WebView ();
+
+        // Vloží webovou aplikaci do webového zobrazení
+        this._webView.load_uri (GLib.filename_to_uri (GLib.get_current_dir() +
+            "/hellognome.html", null));
+
+        // Vloží webové zobrazení do okna
+        this._window.add (this._webView);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    },
+
+});
+
+// Spustí aplikaci
+let app = new HelloGNOME ();
+app.application.run (ARGV);
+</code>
+  </section>
+</page>

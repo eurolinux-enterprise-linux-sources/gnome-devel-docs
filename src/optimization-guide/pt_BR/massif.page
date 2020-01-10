@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="massif" xml:lang="pt-BR">
+    <info>
+      <link type="guide" xref="index#massif"/>
+    
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Enrico Nicoletto</mal:name>
+      <mal:email>liverig@gmail.com</mal:email>
+      <mal:years>2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+      <title>Utilizando <app>Massif</app> para perfilar utilização de memória em software do GNOME</title>
+
+    <p>Este artigo descreve como utilizar o perfilador (profiler) de heap <app>Massif</app> com aplicativos do GNOME. Nós descrevemos como invocar, interpretar e agir sobre a saída do <app>Massif</app>. O jogo <app>Swell Foop</app> é utilizado como exemplo.</p>
+   <section id="optimization-massif-TBL-intro">
+        <title>Introdução</title>
+        <p><app>Massif</app> é um membro da suíte de ferramentas de perfilação de memória <link href="http://valgrind.org/">valgrind</link>. Seu propósito é fornecer uma visão detalhada da utilização de memória dinâmica durante o tempo de vida do programa. Especificamente, ele grava a utilização de heap e de stack (pilha) da memória.</p>
+        <p>O heap é a região da memória que é alocada com funções como malloc. Ele cresce por demanda e geralmente é a maior região de memória em um programa. A pilha (stack) é onde são armazenados todos os dados locais para as funções. Isto inclui as variáveis "automáticas" em C e os endereços de retorno para as sub-rotinas. A pilha é tipicamente bem menor e muito mais ativa que o heap. Nós não vamos considerar explicitamente como pilha já que o <app>Massif</app> o trata como se fosse apenas outra parte do heap. <app>Massif</app> também fornece informações sobre quanta memória é utilizada para gerenciar o heap.</p>
+        <p>O <app>Massif</app> produz dois arquivos de saída: um resumo gráfico em um arquivo postscript e uma discriminação detalhada em um arquivo de texto.</p>
+    </section>
+    <section id="optimization-massif-TBL-using-massif">
+        <title>Utilizando o <app>Massif</app> com o GNOME</title>
+        <p><app>Massif</app> possui muitas poucas opções e para muitos programas elas não são necessárias. Entretanto para aplicativos GNOME, onde a alocação de memória pode estar enterrada nas profundezas do glib ou GTK, os descendentes do Massif precisam ser aumentados a medida que o número de níveis da pilha de chamadas abaixam. Isto é alcançado usando o parâmetro --depth. Por padrão, este valor é 3; aumentando ele para 5 irá garantir que a pilha de chamadas atinja o seu código. Mais um ou dois níveis podem ser convenientes para fornecer algum contexto ao seu código. Uma vez que o nível de detalhamento se torna rapidamente sobrecarregado, é melhor iniciar com o parâmetro de menor profundidade (depth) e apenas aumentá-lo quando se torna aparente que isto não é suficiente.</p>
+        <p>Também é útil avisar o <app>Massif</app> quais funções alocam memória no glib. Isto remove uma camada desnecessária de chamadas de função dos relatórios e oferece a você uma ideia mais clara de qual código está alocando memória. As funções de alocação do glib são: g_malloc, g_malloc0, g_realloc, g_try_malloc e g_mem_chunk_alloc. Você utiliza a opção --alloc-fn para contar ao Masiff sobre elas.</p>
+        <p>A partir de agora, sua linha de comando deve parecer como algo assim:</p>
+        <code>
+valgrind --tool=massif --depth=5  --alloc-fn=g_malloc --alloc-fn=g_realloc --alloc-fn=g_try_malloc \
+         --alloc-fn=g_malloc0 --alloc-fn=g_mem_chunk_alloc swell-foop
+        </code>
+        <p><app>Swell Foop</app> é o programa que estaremos utilizando como exemplo. Esteja avisado de quê, uma vez que valgrind emula a CPU, ele irá rodar <em>muito</em> lentamente. Você precisará também de muita memória.</p>
+    </section>
+    <section id="optimization-massif-TBL-interpreting-results">
+        <title>Interpretando os resultados</title>
+        <p>A saída gráfica do <app>Massif</app> é amplamente auto-explicativa. Cada faixa representa a memória alocada para uma função em relação ao tempo. Uma vez que você identifique quais faixas estão usando a maior parte da memória, geralmente a mais espessa ao topo, você terá de consultar o arquivo de texto para os detalhes.</p>
+        <p>O arquivo de texto é organizado em hierarquia de seções, ao topo há uma lista dos piores usuários de memória dispostos em espaço-tempo decrescente. Abaixo disso há mais seções, cada qual decompondo os resultados em detalhes mais sutis a medida que você prossegue para a porção inferior da pilha de chamadas. Para esclarecer isto, nós utilizaremos a saída do comando supra-citado.</p>
+        <figure>
+            <title>Saída do <app>Massif</app> para a versão não otimizada do programa <app>Swell Foop</app>.</title>
+            <media type="image" src="figures/massif-before.png"/>
+         </figure>
+        <p>
+            The image above shows a typical postscript output from
+            <app>Massif</app>. This is the result you would get from
+            playing a single game of <app>Swell Foop</app> (version
+            2.8.0) and then quitting. The postscript file will have a
+            name like <file>massif.12345.ps</file> and the text file
+            will be called <file>massif.12345.txt</file>. The number
+            in the middle is the process ID of the program that was
+            examined. If you actually try this example you will find
+            two versions of each file, with slightly different
+            numbers, this is because <app>Swell Foop</app> starts a
+            second process and <app>Massif</app>
+            follows that too. We will ignore this second process, it
+            consumes very little memory.</p>
+        <p>Ao topo do gráfico, nós vemos uma ampla faixa amarela rotulada gdk_pixbuf_new. Ela parece ser uma candidata ideal para otimização, mas nós iremos precisar utilizar o arquivo de texto para descobrir o que está chamando gdk_pixbuf_new. O topo do arquivo de texto irá se parecer como algo assim:</p>
+        <code>
+Comando: ./swell-foop
+
+== 0 ===========================
+Heap allocation functions accounted for 90.4% of measured spacetime
+
+Called from:
+  28.8% : 0x6BF83A: gdk_pixbuf_new (in /usr/lib/libgdk_pixbuf-2.0.so.0.400.9)
+
+    6.1% : 0x5A32A5: g_strdup (in /usr/lib/libglib-2.0.so.0.400.6)
+
+    5.9% : 0x510B3C: (within /usr/lib/libfreetype.so.6.3.7)
+
+    3.5% : 0x2A4A6B: __gconv_open (in /lib/tls/libc-2.3.3.so)
+        </code>
+        <p>A linha com o sinal de '=' indica a que distância abaixo do rastreamento da pilha estamos, neste caso estamos ao topo. Após isto, são listados os usuários de memória mais pesados em ordem decrescente em relação ao tempo. O espaço-tempo é o produto da quantidade de memória utilizada e por quanto tempo ela foi utilizada. Isto corresponde a área das faixas no gráfico. Esta parte do arquivo nos conta o que já sabíamos: a maior parte do espaço-tempo é dedicado ao gdk_pixbuf_new. Para descobrir o que chamou o gdk_pixbuf_new nós precisamos pesquisar, logo abaixo, o arquivo de texto:</p>
+        <code>
+== 4 ===========================
+Context accounted for 28.8% of measured spacetime
+  0x6BF83A: gdk_pixbuf_new (in /usr/lib/libgdk_pixbuf-2.0.so.0.400.9)
+  0x3A998998: (within /usr/lib/gtk-2.0/2.4.0/loaders/libpixbufloader-png.so)
+  0x6C2760: (within /usr/lib/libgdk_pixbuf-2.0.so.0.400.9)
+  0x6C285E: gdk_pixbuf_new_from_file (in /usr/lib/libgdk_pixbuf-2.0.so.0.400.9)
+
+Called from:
+  27.8% : 0x804C1A3: load_scenario (swell-foop.c:463)
+
+    0.9% : 0x3E8095E: (within /usr/lib/libgnomeui-2.so.0.792.0)
+
+  and 1 other insignificant place
+        </code>
+        <p>A primeira linha nos conta que agora estamos quatro níveis dentro da pilha. Abaixo há uma listagem das chamadas de função que partem daqui até o gdk_pixbuf_new. Finalmente há uma lista de funções que estão no próximo nível inferior e chamam estas funções. Também existem, obviamente, entradas para os níveis 1, 2 e 3, mas este é o primeiro nível a alcançar logo abaixo, através do código GDK, o código do <app>Swell Foop</app>. A partir desta listagem, nós podemos ver instantaneamente que o problema do código é o load_scenario.</p>
+        <p>Agora que sabemos qual parte do nosso código está utilizando todo o espaço-tempo, nós podemos olhar para ele e descobrir o porquê. Verifica-se que o load_scenario está carregando um pixbuf a partir do arquivo e então nunca liberando aquela memória. Tendo sido identificado o código problemático, nós podemos começar a consertá-lo.</p>
+    </section>
+    <section id="optimization-massif-TBL-acting-on-results">
+        <title>Atuando sobre os resultados</title>
+        <p>Reduzir o consumo de espaço-tempo é bom, porém há duas formas de reduzi-lo e elas não são iguais. Você pode tanto reduzir a quantidade de memória alocada ou reduzir o montante de tempo que é alocado para isto. Por um momento, considere um modelo de sistema com apenas dois processos em execução. Ambos os processos utilizam quase toda a memória RAM física e se eles se sobrepõem completamente, então o sistema irá utilizar a memória de troca (swap) e tudo vai ficar lento. Obviamente, se nós reduzimos a utilização de memória de cada processo por um fator de dois, então eles podem coexistir pacificamente sem a necessidade de utilizar a memória de troca (swap). Se ao invés disso, nós reduzimos o tempo o qual a memória é alocada por um fator de dois, então os dois programas podem coexistir, mas apenas enquanto seus períodos de alta utilização de memória não sobreporem-se. Logo, é melhor reduzir o montante de memória alocada.</p>
+        <p>
+            Unfortunately, the choice of optimization is also
+	    constrained by the needs of the program. The size of the
+	    pixbuf data in <app>Swell Foop</app> is determined by the
+	    size of the game's graphics and cannot be easily
+	    reduced. However, the amount of time it spends loaded into
+	    memory can be drastically reduced. The image below shows the <app>Massif</app> analysis of <app>Swell Foop</app> after being altered to dispose of the pixbufs once the images have been loaded into the X server.
+        </p>
+        <figure>
+            <title>Saída do <app>Massif</app> para o programa <app>Swell Foop</app> otimizado.</title>
+           <media type="image" src="figures/massif-after.png"/>
+            </figure>
+        <p>A utilização de espaço-tempo do gdk_pixbuf_new é agora uma faixa fina que apenas sofre picos de forma leve (é a décima-sexta faixa para baixo e sombreada de magenta). Como bônus, o pico de utilização de memória caiu 200 kB, já que o pico ocorre antes de outra memória ser alocada. Se dois processos como este são executados juntos, as chances do pico de utilização de memória coincidirem, e por isso o risco de usar memória de troca (swap), seriam bastante baixos.</p>
+        <p>Nós podemos fazer melhor ? Uma verificação rápida na saída de texto do <app>Massif</app> revela: g_strdup como o novo maior ofensor.</p>
+        <code>
+Comando: ./swell-foop
+
+== 0 ===========================
+Heap allocation functions accounted for 87.6% of measured spacetime
+
+Called from:
+    7.7% : 0x5A32A5: g_strdup (in /usr/lib/libglib-2.0.so.0.400.6)
+
+    7.6% : 0x43BC9F: (within /usr/lib/libgdk-x11-2.0.so.0.400.9)
+
+    6.9% : 0x510B3C: (within /usr/lib/libfreetype.so.6.3.7)
+
+    5.2% : 0x2A4A6B: __gconv_open (in /lib/tls/libc-2.3.3.so)
+        </code>
+        <p>Se olhamos mais de perto, observamos que ele é chamado de muitos, muitos, lugares.</p>
+        <code>
+== 1 ===========================
+Context accounted for  7.7% of measured spacetime
+  0x5A32A5: g_strdup (in /usr/lib/libglib-2.0.so.0.400.6)
+
+Called from:
+    1.8% : 0x8BF606: gtk_icon_source_copy (in /usr/lib/libgtk-x11-2.0.so.0.400.9)
+
+    1.1% : 0x67AF6B: g_param_spec_internal (in /usr/lib/libgobject-2.0.so.0.400.6)
+
+    0.9% : 0x91FCFC: (within /usr/lib/libgtk-x11-2.0.so.0.400.9)
+
+    0.8% : 0x57EEBF: g_quark_from_string (in /usr/lib/libglib-2.0.so.0.400.6)
+
+  and 155 other insignificant places
+        </code>
+        <p>Agora nós nos deparamos com retornos cada vez menores para os nossos esforços de otimização. O gráfico sugere outra possível abordagem: Tanto as faixas "outros" e "gerenciamento de heap" são bem grandes. Isto nos diz que há um monte de pequenas alocações sendo feitas a partir de uma variedade de lugares. Eliminá-las será difícil porém se elas puderem ser agrupadas, então as alocações individuais poderão ser maiores e a elevada faixa "gerenciamento de heap" poderá ser reduzida.</p>
+    </section>
+    <section id="optimization-massif-TBL-caveats">
+        <title>Advertências</title>
+        <p>Existem um par de coisas as quais devemos ficar atentos: Primeiramente, espaço-tempo é apenas informado como uma porcentagem, você deve compará-lo ao tamanho total do programa, para decidir se vale a pena você ir atrás de quantidade de memória. O gráfico, com seu eixo vertical em kilobytes, é bom para isto.</p>
+        <p>Em segundo lugar, o <app>Massif</app> apenas leva em consideração a memória utilizada pelo seu próprio programa. Recursos como pixmaps são armazenados no servidor X e não são considerados pelo <app>Massif</app>. No exemplo do <app>Swell Foop</app> nós realmente só mudamos o consumo de memória do lado do cliente do pixbufs para o lado do servidor pixmaps. Apesar de termos trapaceado, ocorreram ganhos de performance. Manter os dados de imagem no servidor X, faz com que as rotinas dos gráficos fiquem mais rápidas e remove uma grande quantidade de comunicações entre processos (ipcs). Ademais, os pixamps serão armazenados em um formato gráfico nativo que geralmente é mais compacto que o formato RGBA de 32-bits utilizado pelo gdk_pixbuf. Para medir o efeito de pixmaps, e outros recursos X, utilize o programa <link href="http://www.freedesktop.org/Software/xrestop">xrestop</link>.</p>
+    </section>
+</page>

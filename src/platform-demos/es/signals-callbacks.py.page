@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="signals-callbacks.py" xml:lang="es">
+
+<info>
+  <title type="text">Señales y retornos de llamada (Python)</title>
+  <link type="guide" xref="beginner.py#theory"/>
+  <link type="next" xref="button.py"/>
+  <revision version="0.1" date="2012-06-16" status="draft"/>
+
+  <desc>Una explicación de señales y retornos de llamada en GTK+.</desc>
+  <credit type="author copyright">
+    <name>Sebastian Pölsterl</name>
+    <email its:translate="no">sebp@k-d-w.org</email>
+    <years>2011</years>
+  </credit>
+  <credit type="editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012</years>
+  </credit>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Señales y retornos de llamada</title>
+
+<links type="section"/>
+
+<section id="overview">
+<title>Visión general</title>
+
+<p>Al igual que la mayoría de los kits de herramientas de IGU, GTK+ usa un modelo de programación dirigida por eventos. Cuando el usuario no hace nada, GTK+ se queda en el bucle principal y espera la entrada. Si el usuario realiza alguna acción (como una pulsación del ratón), entonces el bucle principal «despierta» y le envía un evento a GTK+.</p>
+
+<p>Cuando los widgets reciben un evento, frecuentemente emiten una o más señales. Las señales le notifican a su programa que «algo interesante sucedió» invocando funciones que les ha conectado. Estas funciones se conocen comúnmente como retornos de llamada. Cuando sus retornos de llamada se invoquen, típicamente realizaría alguna acción. Después de que un retorno de llamada termina, GTK+ retorna al bucle principal y espera más entrada del usuario.</p>
+
+<p>Un ejemplo genérico es: <code>id_de_manejador = widget.connect("evento", retorno_de_llamada, datos)</code>. <code>widget</code> es una instancia de un widget que creó anteriormente. A continuación, el <code>evento</code> en el que está interesado. Cada widget tiene sus propios eventos particulares que pueden ocurrir. Por ejemplo, si tiene un «Gtk.Button» generalmente querrá conectar el evento «clicked»: esto significa que cuando el botón se pulsa, la señal se envía. Otro ejemplo es la señal <code>notify::property</code>: cada vez que una <link xref="properties.py">propiedad</link> se modifica en un «GObject», en lugar de sólo emitir la señal <code>notify</code>, GObject asocia como un detalle a la emisión de la señal el nombre de la propiedad modificada. Esto permite clientes que quieran notificarse de cambios de una sola propiedad para filtrar la mayoría de los eventos antes de recibirlos. Tercero, el argumento «retorno_de_llamada» es el nombre de la función de retorno de llamada, que contiene el código que se ejecuta cuando se emiten las señales del tipo especificado. Finalmente, el argumento opcional «datos» incluye cualquier dato que debe pasarse cuando se emita la señal.</p>
+
+<p>La función devuelve un número (el <code>id_de_manejador</code>) que identifica este par «señal-retorno de llamada» particular. Este número se requiere para desconectar una señal para que la función de retorno de llamada no se llame durante emisiones de la señal a la que se ha conectado futuras o en progreso, como en <code>widget.disconnect(id_de_manejador)</code>.</p>
+
+</section>
+
+<section id="references">
+
+<title>Referencias</title>
+<p><link href="http://developer.gnome.org/gobject/stable/signal.html">Señales</link> en la documentación de GObject</p>
+<p><link href="http://python-gtk-3-tutorial.readthedocs.org/en/latest/basics.html">Conceptos básicos: bucle principal y señales</link> en el tutorial de GTK+ en Python 3</p>
+</section>
+
+
+</page>

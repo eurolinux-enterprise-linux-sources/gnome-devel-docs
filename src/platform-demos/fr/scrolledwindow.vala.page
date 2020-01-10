@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scrolledwindow.vala" xml:lang="fr">
+  <info>
+  <title type="text">ScrolledWindow (Vala)</title>
+    <link type="guide" xref="beginner.vala#scrolling"/>
+    <link type="seealso" xref="image.vala"/>
+    <revision version="0.1" date="2012-06-08" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ajoute des barres de défilement à son élément graphique enfant</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ScrolledWindow</title>
+  <media type="image" mime="image/png" src="media/scrolledwindow.png"/>
+  <p>Une image dans une fenêtre avec barres de défilement.</p>
+
+<code mime="text/x-csharp" style="numbered">/* This is the application. */
+public class MyApplication : Gtk.Application {
+	/* Override the 'activate' signal of GLib.Application. */
+	protected override void activate () {
+		/* Create the window of this application. */
+		var window = new Gtk.ApplicationWindow (this);
+		window.title = "ScrolledWindow Example";
+		window.set_default_size (200, 200);
+
+		var scrolled_window = new Gtk.ScrolledWindow (null, null);
+		scrolled_window.set_border_width (10);
+		scrolled_window.add_with_viewport (new Gtk.Image.from_file ("gnome-image.png"));
+		scrolled_window.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
+
+		window.add (scrolled_window);
+		window.show_all ();
+	}
+}
+
+/* main creates and runs the application. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.ScrolledWindow.html">Gtk.ScrolledWindow</link></p></item>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.PolicyType.html">Gtk.PolicyType</link></p></item>
+</list>
+</page>

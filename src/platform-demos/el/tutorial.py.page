@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="tutorial.py" xml:lang="el">
+
+<info>
+  <title type="text">Μάθημα για αρχάριους (Python)</title>
+  <link type="guide" xref="py#tutorial"/>
+  <revision pkgversion="3.8" date="2013-02-25" status="draft"/>
+
+  <desc>Ένα μάθημα για αρχάριους που θέλουν να μάθουν πώς να προγραμματίσουν διεπαφές χρήστη (GUI) χρησιμοποιώντας GTK+ σε Python.</desc>
+  <credit type="author copyright">
+    <name>Tiffany Antopolski</name>
+    <email its:translate="no">tiffany.antopolski@gmail.com</email>
+    <years>2012</years>
+  </credit>
+  <credit type="author copyright">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012, 2013</years>
+  </credit>
+  <credit type="editor author">
+    <name>Jim Campbell</name>
+    <email its:translate="no">jwcampbell@gmail.com</email>
+    <years>2013</years>
+  </credit>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Μάθημα για αρχάριους</title>
+
+<synopsis>
+ <p>Παρακολουθώντας αυτά τα μαθήματα θα μάθετε τα βασικά του προγραμματισμού GUI χρησιμοποιώντας GTK+ σε Python.</p>
+
+ <p>Εάν δεν έχετε προγραμματίσει ποτέ πριν, η δεν είστε εξοικειωμένος με τις έννοιες του αντικειμενοστραφούς προγραμματισμού, ίσως χρειαστείτε να μάθετε λίγα βασικά πρώτα. Το βιβλίο <link href="http://learnpythonthehardway.org/book/">Μάθετε Python με το δύσκολο τρόπο</link> ή το <link href="http://docs.python.org/tutorial/index.html">Μάθημα Python</link> ίσως είναι ένας καλύτερος τρόπος για να ξεκινήσετε. Μπορεί επίσης να ενδιαφερόσαστε για το <link href="http://python-gtk-3-tutorial.readthedocs.org/en/latest/index.html">Μάθημα Python GTK+ 3</link>. Μόλις κατανοήσετε τα βασικά, μπορείτε να επιστρέψετε και να εξετάσετε αυτά τα μαθήματα.</p>
+</synopsis>
+
+<links type="section"/>
+
+<section id="to-run">
+<title>Εκτέλεση των δειγμάτων κώδικα</title>
+
+  <p>Για να εκτελέσετε τα δείγματα κώδικα στο μάθημα:</p>
+  <steps>
+    <item><p>Πληκτρολογήστε ή αντιγράψτε και επικολλήστε τον κώδικα σε ένα αρχείο και αποθηκεύστε το αρχείο με ένα όνομα όπως <var>filename</var>.py</p></item>
+    <item><p>Για να εκτελέσετε τον κώδικα, πληκτρολογήστε στον τερματικό:</p>
+          <screen>python <var>filename</var>.py</screen>
+    </item>
+  </steps>
+  <p>Μετά την εκτέλεση του κώδικα, θα δείτε είτε το γραφικό στοιχείο στην οθόνη σας, ή (εάν έχετε πληκτρολογήσει λαθεμένα μέρος του κώδικα) θα δείτε ένα μήνυμα σφάλματος που θα σας βοηθήσει να ταυτοποιήσετε το πρόβλημα.</p>
+</section>
+
+<section id="widgets">
+<title>Μια διαδρομή μέσα από γραφικά στοιχεία (με λίγη θεωρία)</title>
+<p>Το μάθημα θα σας οδηγήσει μέσα από αυξανόμενης συνθετότητας παραδείγματα και θεωρία προγραμματισμού, αλλά μπορείτε επίσης να πάτε απλά αμέσως στο μάθημα που είναι πιο χρήσιμο σε εσάς.</p>
+<steps>
+  <title>Μάθημα</title>
+  <item><steps>
+    <title>Βασικά παράθυρα</title>
+    <item><p><link xref="window.py"/></p></item>
+    <item><p><link xref="GtkApplicationWindow.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Εικόνες και ετικέτες</title>
+    <item><p><link xref="image.py"/></p></item>
+    <item><p><link xref="strings.py"/></p></item>
+    <item><p><link xref="label.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Εισαγωγή στις ιδιότητες</title>
+    <item><p><link xref="properties.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Πλέγμα, διαχωριστικό και κύλιση</title>
+    <item><p><link xref="grid.py"/></p></item>
+    <item><p><link xref="separator.py"/></p></item>
+    <item><p><link xref="scrolledwindow.py"/></p></item>
+    <item><p><link xref="paned.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Σήματα, επανακλήσεις και κουμπιά</title>   
+    <item><p><link xref="signals-callbacks.py"/></p></item>
+    <item><p><link xref="button.py"/></p></item>
+    <item><p><link xref="linkbutton.py"/></p></item>
+    <item><p><link xref="checkbutton.py"/></p></item>
+    <item><p><link xref="togglebutton.py"/></p></item>
+    <item><p><link xref="switch.py"/></p></item>
+    <item><p><link xref="radiobutton.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>ButtonBox</title>
+    <item><p><link xref="buttonbox.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Γραφικά στοιχεία άλλης εμφάνισης</title>
+    <item><p><link xref="statusbar.py"/></p></item>
+    <item><p><link xref="spinner.py"/></p></item>
+    <item><p><link xref="progressbar.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Εισαγωγή γραφικών στοιχείων</title>
+    <item><p><link xref="spinbutton.py"/></p></item>
+    <item><p><link xref="entry.py"/></p></item>
+    <item><p><link xref="scale.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Ένα γραφικό στοιχείο που γράφει και εμφανίζει κείμενο</title>
+    <item><p><link xref="textview.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Διάλογοι</title>
+    <item><p><link xref="dialog.py"/></p></item>
+    <item><p><link xref="aboutdialog.py"/></p></item>
+    <item><p><link xref="messagedialog.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Μενού, εργαλειοθήκες και συμβουλές οθόνης (επίσης: χρησιμοποιώντας Glade και GtkBuilder)</title>
+    <item><p><link xref="gmenu.py"/></p></item>
+    <item><p><link xref="menubutton.py"/></p></item>
+    <item><p><link xref="toolbar.py"/></p></item>
+    <item><p><link xref="tooltip.py"/></p></item>
+    <item><p><link xref="toolbar_builder.py"/></p></item>
+    <item><p><link xref="menubar.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Επιλογείς</title>
+    <item><p><link xref="colorbutton.py"/></p></item>
+    <item><p><link xref="fontchooserwidget.py"/></p></item>
+    <item><p><link xref="filechooserdialog.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>TreeViews και ComboBoxes (χρησιμοποιώντας τη σχεδίαση M/V/C)</title>
+    <item><p><link xref="combobox.py"/></p></item>
+    <item><p><link xref="treeview_simple_liststore.py"/></p></item>
+    <item><p><link xref="treeview_treestore.py"/></p></item>
+    <item><p><link xref="model-view-controller.py"/></p></item>
+    <item><p><link xref="combobox_multicolumn.py"/></p></item>
+    <item><p><link xref="treeview_advanced_liststore.py"/></p></item>
+    <item><p><link xref="treeview_cellrenderertoggle.py"/></p></item>
+  </steps></item>
+  <item><steps>
+    <title>Προσαρμοσμένο γραφικό στοιχείο</title>
+    <item><p><link xref="widget_drawing.py"/></p></item>
+  </steps></item>
+</steps>
+</section>
+
+</page>

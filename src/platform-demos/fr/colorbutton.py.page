@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="colorbutton.py" xml:lang="fr">
+  <info>
+    <title type="text">ColorButton (Python)</title>
+    <link type="guide" xref="beginner.py#color-selectors"/>
+    <link type="next" xref="fontchooserwidget.py"/>
+    <revision version="0.1" date="2012-06-03" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un bouton pour ouvrir une boîte de dialogue de sélection de couleur</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ColorButton</title>
+  <media type="image" mime="image/png" src="media/colorbutton.png"/>
+  <p>Ce ColorButton ouvre une boîte de dialogue pour sélectionner une couleur et affiche dans le terminal les valeurs RVB de la couleur sélectionnée.</p>
+
+  <links type="sections"/>
+  
+  <section id="code">
+  <title>Code utilisé pour générer cet exemple</title>
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gdk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="ColorButton", application=app)
+        self.set_default_size(150, 50)
+        self.set_border_width(10)
+
+        # a colorbutton (which opens a dialogue window in
+        # which we choose a color)
+        self.button = Gtk.ColorButton()
+        # with a default color (blue, in this instance)
+        color = Gdk.RGBA()
+        color.red = 0.0
+        color.green = 0.0
+        color.blue = 1.0
+        color.alpha = 0.5
+        self.button.set_rgba(color)
+
+        # choosing a color in the dialogue window emits a signal
+        self.button.connect("color-set", self.on_color_chosen)
+
+        # a label
+        label = Gtk.Label()
+        label.set_text("Click to choose a color")
+
+        # a grid to attach button and label
+        grid = Gtk.Grid()
+        grid.attach(self.button, 0, 0, 2, 1)
+        grid.attach(label, 0, 1, 2, 1)
+        self.add(grid)
+
+    # if a new color is chosen, we print it as rgb(r,g,b) in the terminal
+    def on_color_chosen(self, user_data):
+        print("You chose the color: " + self.button.get_rgba().to_string())
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+  <title>Méthode utiles pour un composant graphique ColorButton</title>
+  <p><code>set_color(color)</code>, where the <code>color</code> is defined as in the example, sets the color of the ColorButton, which by default is black. <code>get_color()</code> returns the color.</p>
+    <p>In line 23 the <code>"color-set"</code> signal is connected to the callback function <code>on_color_chosen()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
+  </section>
+  
+  <section id="references">
+  <title>Références API</title>
+  <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkColorButton.html">GtkColorButton</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkColorChooser.html">GtkColorChooser</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gdk3/stable/gdk3-RGBA-Colors.html">RGBA Colors</link></p></item>
+  </list>
+  </section>
+</page>

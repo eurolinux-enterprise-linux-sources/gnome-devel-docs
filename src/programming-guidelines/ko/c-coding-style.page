@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="c-coding-style" xml:lang="ko">
+
+  <info>
+    <link type="guide" xref="index#general-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Federico Mena-Quintero</name>
+      <email its:translate="no">federico@gnome.org</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>GTK+ 팀</name>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>그놈의 C 코드 작성 지침</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>C 코드 작성 방식</title>
+
+  <p>이 문서는 그놈에서 C 프로그램을 작성하는데 알맞은 코드 작성 방식을 알려줍니다. 코드 작성 방식은 취향의 문제를 상당히 많이 안고 있는데, 그놈에서는 일관성, 가독성, 보존성을 촉진하는 코드 작성 방식을 선호합니다.</p>
+
+  <p>바람직한 코드 작성 방식, 그놈에서 용납하지 않은 나쁜 방식의 예제를 보여드리겠습니다. 그놈 코드 작성 방식에 맞는 패치를 제출하십시오. 프로젝트의 장기적인 보존성을 유지하도록 과제를 끝내야 한다는 이야기입니다. 그놈 코드 작성 방식으로 패치를 작성하면 코드 검토를 쉽게 할 수 있습니다!</p>
+
+  <note>
+    <p>이 문서는 C 코드 작성을 다룹니다. 다른 언어에 대해서는 그놈 프로그래밍 지침의 <link xref="index">주 페이지</link>를 참고하십시오.</p>
+  </note>
+
+  <p>이 지침서는 GTK CODING-STYLE 문서, 리눅스 커널 코드 작성 방식, GNU 코드 작성 방식 표준에 상당 부분 영향을 받습니다. 이들 방식에 약간의 차이점이 있지만, 각 프로젝트의 일부를 수정할 때, 요구사항, 문화, 그놈 버전은 차이가 없습니다.</p>
+
+  <section id="most-important-rule">
+    <title>가장 중요한 단일 규칙</title>
+
+    <p>코드를 작성할 때 가장 중요한 단일 규칙은 <em>코드를 감싸는 요소를 확인하고 따라해보기</em> 입니다.</p>
+
+    <p>메인테이너라면 코드를 전적으로 분명히 다른 방식으로 작성한 패치를 받으면 실망합니다. 이는 얼룩 하나없는 집에 진흙발로 누군가가 들어가는 것처럼 무례한 행위입니다.</p>
+
+    <p>그러니까 이 문서에서 뭘 추천하든지, 이미 작성한 코드가 있고 코드를 뜯어고친(patch)다면, 맘에 들지 않더라도 현재 방식을 일관되게 유지하십시오.</p>
+  </section>
+
+  <section id="line-width">
+    <title>행 길이</title>
+
+    <p>행 길이는 80개 문자 길이와 120개 문자 길이를 활용합니다. 이 정도 길이면 대부분의 모니터에서 적당한 글꼴 크기를 잡았을 때 알맞게 나타납니다. 행 길이가 길어지면 코드를 살펴보기 어려워지며 코드를 다시 배치해야 합니다. 들여쓰기 단계가 너무 많이 들어가면 어쨌든 코드를 고쳐야 합니다.</p>
+  </section>
+
+  <section id="indentation">
+    <title>들여쓰기</title>
+
+    <p>보통 그놈 코드를 작성할 때 활용하는 들여쓰기 방식은 두가지가 있습니다.</p>
+
+    <list type="ordered">
+      <item>
+	<p>리눅스 커널 방식. 들여쓰기 할 때 8칸 탭을 사용하며 K&amp;R 중괄호 배치 방식을 활용합니다:</p>
+
+	<code style="valid">
+for (i = 0; i &lt; num_elements; i++) {
+	foo[i] = foo[i] + 42;
+
+	if (foo[i] &lt; 35) {
+		printf ("Foo!");
+		foo[i]--;
+	} else {
+		printf ("Bar!");
+		foo[i]++;
+	}
+}</code>
+      </item>
+
+      <item>
+	<p>GNU 방식. 각 레벨에 2칸 들여쓰기를 하고 중괄호는 한 줄에 하나씩 넣으며, 중괄호도 들여쓰기합니다.</p>
+
+	<code style="valid">
+for (i = 0; i &lt; num_elements; i++)
+  {
+    foo[i] = foo[i] + 42;
+
+    if (foo[i] &lt; 35)
+      {
+        printf ("Foo!");
+        foo[i]--;
+      }
+    else
+      {
+        printf ("Bar!");
+        foo[i]++;
+      }
+  }</code>
+      </item>
+    </list>
+
+
+    <p>각 방식에 장점과 단점이 있습니다. 코드를 감싸는데 있어 <em>일관성</em>을 지니고 있어야 하는게 가장 중요합니다. 예를 들자면, 그놈 위젯 도구 모음 GTK+ 라이브러리는 GNU 코드 방식으로 작성했지만, 그놈 파일 관리자는 리눅스 커널 코드 방식으로 작성했습니다. 두가지 방식 모두 완벽하게 알아보기 쉽고 일관성이 있습니다.</p>
+
+    <p>아마도 원하지 않는 들여쓰기 방식을 배우거나 코드 일부를 작업할 때 드는 첫 느낌은 속이 메슥거리는 느낌일지도 모르겠습니다. 전체 코드 들여쓰기를 다시하고 싶다든지, 패치에 일관성 없는 코드 작성 방식을 활용하려는 욕구는 참아야합니다. 첫번째 규칙을 되새겨보자면 <em>일관성</em>을 지키고 코드 개별 부분에 있어서도 존중하면, 어떤 들여쓰기 방식이 올바른지 시시비비 따지지 않을 수록 제출한 패치를 반영할 확률이 높습니다.</p>
+  </section>
+
+  <section id="tab-characters">
+    <title>탭 문자</title>
+
+    <p><em>편집기에서 탭 길이를 바꾸지 마십시오</em> 8칸으로 두십시오. 탭 길이를 바꾸면, 여러분이 작성하지 않은 코드의 정렬 상태가 완전히 엉망이 됩니다.</p>
+
+    <p>대신, 편집 중인 코드에 적당한 <em>들여쓰기 길이</em>를 설정하십시오. 리눅스 커널 작성 방식이 아닌 다른 방식으로 작성한다면, 편집기에서 사용하는 모든 탭 길이를 8칸으로 자동으로 변환하게 하여 공백문자 길이 혼동을 의도대로 없앨 수 있습니다.</p>
+  </section>
+
+  <section id="braces">
+    <title>중괄호</title>
+
+    <p>중괄호는 단일 구문 블록에서는 사용하면 안됩니다:</p>
+
+<code style="valid">
+/* valid */
+if (condition)
+	single_statement ();
+else
+	another_single_statement (arg1);</code>
+
+	<p>“단일 구문 블록 제외” 규칙은 다음 네가지 예외에 대해서만 해당합니다:</p>
+
+	<list type="ordered">
+          <item>
+            <p>GNU 방식에서는 if-else 구문 각 부분에 중괄호가 있다면, 들여쓰기를 맞추어야 합니다:</p>
+
+<code style="valid">
+/* valid GNU style */
+if (condition)
+  {
+    foo ();
+    bar ();
+  }
+else
+  {
+    baz ();
+  }</code>
+
+<code style="invalid">
+/* invalid */
+if (condition)
+  {
+    foo ();
+    bar ();
+  }
+else
+  baz ();</code>
+          </item>
+
+	  <item>
+	    <p>함수에 여러 매개변수를 넣는 식으로 단일 구문이 여러 줄을 차지하고, <code>else</code> 또는 <code>else if</code>가 따라온다면:</p>
+
+<code style="valid">
+/* valid Linux kernel style */
+if (condition) {
+	a_single_statement_with_many_arguments (some_lengthy_argument,
+						another_lengthy_argument,
+						and_another_one,
+						plus_one);
+} else
+	another_single_statement (arg1, arg2);
+
+/* valid GNU style */
+if (condition)
+  {
+    a_single_statement_with_many_arguments (some_lengthy_argument,
+                                            another_lengthy_argument,
+                                            and_another_one,
+                                            plus_one);
+  }
+else
+  {
+    another_single_statement (arg1, arg2);
+  }</code>
+          </item>
+
+          <item>
+            <p>조건문이 여러 줄에 있다면:</p>
+
+<code style="valid">
+/* valid Linux kernel style */
+if (condition1 ||
+    (condition2 &amp;&amp; condition3) ||
+    condition4 ||
+    (condition5 &amp;&amp; (condition6 || condition7))) {
+	a_single_statement ();
+}
+
+/* valid GNU style */
+if (condition1 ||
+    (condition2 &amp;&amp; condition3) ||
+    condition4 ||
+    (condition5 &amp;&amp; (condition6 || condition7)))
+  {
+    a_single_statement ();
+  }</code>
+
+            <p>이런 긴 조건문은 보통 이해하기 어렵습니다. 적절한 이름을 가진 부울린 변수로 상태 값을 설정하는 것이 바람직한 습관입니다. 긴 조건문을 함수로 옮기는 다른 방식도 있습니다.</p>
+          </item>
+
+          <item>
+            <p>중첩 <code>if</code> 문의 경우에는, 블록을 최대한 가장 바깥 <code>if</code> 블록에 넣어야합니다:</p>
+
+<code style="valid">
+/* valid Linux kernel style */
+if (condition) {
+	if (another_condition)
+		single_statement ();
+	else
+		another_single_statement ();
+}
+
+/* valid GNU style */
+if (condition)
+  {
+    if (another_condition)
+      single_statement ();
+    else
+      another_single_statement ();
+  }</code>
+
+<code style="invalid">
+/* invalid */
+if (condition)
+	if (another_condition)
+		single_statement ();
+	else if (yet_another_condition)
+		another_single_statement ();</code>
+          </item>
+        </list>
+
+        <p>보통, 새 블록은 다음과 같이 새 들여쓰기 단계에 넣어야합니다:</p>
+
+        <code style="valid">
+int retval = 0;
+
+statement_1 ();
+statement_2 ();
+
+{
+	int var1 = 42;
+	gboolean res = FALSE;
+
+	res = statement_3 (var1);
+
+	retval = res ? -1 : 1;
+}</code>
+
+        <p>함수 정의 중괄호를 새 줄에 넣되 들여쓰기 단계를 더 들어가지 않습니다:</p>
+
+        <code style="valid">
+/* valid Linux kernel style*/
+static void
+my_function (int argument)
+{
+	do_my_things ();
+}
+
+/* valid GNU style*/
+static void
+my_function (int argument)
+{
+  do_my_things ();
+}</code>
+
+<code style="invalid">
+/* invalid */
+static void
+my_function (int argument) {
+	do_my_things ();
+}
+
+/* invalid */
+static void
+my_function (int argument)
+  {
+    do_my_things ();
+  }</code>
+  </section>
+
+  <section id="conditions">
+    <title>조건문</title>
+
+    <p>부울린 값에 대해서는 동일 여부를 확인하지 마십시오. 비교 구문이 함축되어 있기 때문에 결과 코드는 영문 대화체처럼 보일 수 있습니다. 다른 이유가 있다면 ‘true’ 값을 사용하든 <code>TRUE</code> 매크로를 사용하든 동일하니 필요하지 않습니다. 예를 들면:</p>
+
+    <code style="invalid">
+/* invalid */
+if (found == TRUE)
+	do_foo ();
+
+/* invalid */
+if (found == FALSE)
+	do_bar ();</code>
+
+    <code style="valid">
+/* valid */
+if (found)
+	do_foo ();
+
+/* valid */
+if (!found)
+	do_bar ();</code>
+
+    <p>C언어에서는 0 값을 다양한 용도로 활용합니다. 숫자 값으로, 문자열 마지막 값으로, 널 포인더 값으로, 부울린의 <code>FALSE</code> 값으로 활용합니다. 코드를 더 알아보기 쉽게 하려면, 0을 사용하는 개별 방식을 강조하도록 코드를 작성해야합니다. 따라서 비교 구문을 살펴볼 때 변수 형식을 알려줄 수 있습니다. 부울린 값에 대해서는 이미 자체 표현식이 있기 때문에 함축 비교문을 있는 그대로 두는게 낫습니다. 다른 변수 형식에 대해서는 비논리적인 수식이 될테니, 비교 수식을 분명하게 작성하는 것이 좋습니다:</p>
+
+    <code style="valid">
+/* valid */
+if (some_pointer == NULL)
+	do_blah ();
+
+/* valid */
+if (number == 0)
+	do_foo ();
+
+/* valid */
+if (str != NULL &amp;&amp; *str != '\0')
+	do_bar ();</code>
+
+    <code style="invalid">
+/* invalid */
+if (!some_pointer)
+	do_blah ();
+
+/* invalid */
+if (!number)
+	do_foo ();
+
+/* invalid */
+if (str &amp;&amp; *str)
+	do_bar ();</code>
+  </section>
+
+  <section id="functions">
+    <title>함수</title>
+
+    <p>함수는 반환 값과 함수 이름 사이에 개행 문자를 넣어 줄을 나누어서 선언해야합니다:</p>
+
+    <code style="valid">
+void
+my_function (void)
+{
+  …
+}</code>
+
+    <p>인자는 한 줄에 하나씩 나누어 넣어야 하며, 포인터를 취하는 매개변수 이름은 오른쪽으로 보내야합니다:</p>
+
+    <code style="valid">
+void
+my_function (some_type_t      type,
+             another_type_t  *a_pointer,
+             double_ptr_t   **double_pointer,
+             final_type_t     another_type)
+{
+  …
+}</code>
+
+    <p>이맥스를 사용한다면 자동 정렬할 때 <code>M-x align</code> 명령을 사용할 수 있습니다. 함수 프로토타입 주변에 커서를 둔 후 명령을 실행하십시오.</p>
+
+    <p>행 길이 제한을 깨지 않는 함수에 대해 실행하는 경우 정렬을 유지합니다:</p>
+
+    <code style="valid">
+align_function_arguments (first_argument,
+                          second_argument,
+                          third_argument);</code>
+  </section>
+
+  <section id="whitespace">
+    <title>공백 문자</title>
+
+    <p>여는 괄호를 입력하기 전에 공백을 입력하되, 여는 괄호 다음에는 입력하지 마십시오:</p>
+
+    <code style="valid">
+/* valid */
+if (condition)
+	do_my_things ();
+
+/* valid */
+switch (condition) {
+}</code>
+
+<code style="invalid">
+/* invalid */
+if(condition)
+	do_my_things();
+
+/* invalid */
+if ( condition )
+	do_my_things ( );</code>
+
+    <p>구조체를 선언할 때 구조체의 논리 섹션을 나누려면 개행 문자를 사용하십시오:</p>
+
+    <code style="valid">
+struct _GtkWrapBoxPrivate
+{
+	GtkOrientation        orientation;
+	GtkWrapAllocationMode mode;
+
+	GtkWrapBoxSpreading   horizontal_spreading;
+	GtkWrapBoxSpreading   vertical_spreading;
+
+	guint16               vertical_spacing;
+	guint16               horizontal_spacing;
+
+	guint16               minimum_line_children;
+	guint16               natural_line_children;
+
+	GList                *children;
+};</code>
+
+    <p>단일 행에 맞춘다는 이유 하나만으로 공백 문자와 줄 바꿈을 빼먹지 마십시오:</p>
+
+    <code style="invalid">
+/* invalid */
+if (condition) foo (); else bar ();</code>
+
+    <p>어떤 행에든 패치 또는 커밋을 따로 만드는 공백 문자를 뒤에 붙이지 마십시오. 파일 시작 부분 또는 끝 부분에 빈 줄을 넣지 마십시오.</p>
+
+    <p>다음은 행의 마지막 부분에 있는 공백 문자를 없애는 간단한 이맥스용 함수입니다:</p>
+
+    <code>
+(defun clean-line-ends ()
+  (interactive)
+  (if (not buffer-read-only)
+      (save-excursion
+	(goto-char (point-min))
+	(let ((count 0))
+	  (while (re-search-forward "[ 	]+$" nil t)
+	    (setq count (+ count 1))
+	    (replace-match "" t t))
+	  (message "Cleaned %d lines" count)))))</code>
+  </section>
+
+  <section id="switch">
+    <title><code>switch</code> 조건문</title>
+
+    <p><code>switch</code> 구문에서는 새 들여쓰기 단계에 블록을 열고, 각 <code>case</code> 구문은 중괄호와 동일한 들여쓰기 단계에서 시작해야 하며, case 블록은 새 들여쓰기 단계에서 시작해야합니다:</p>
+
+    <code style="valid">
+/* valid Linux kernel style */
+switch (condition) {
+case FOO:
+	do_foo ();
+	break;
+
+case BAR:
+	do_bar ();
+	break;
+}
+
+/* valid GNU style */
+switch (condition)
+  {
+  case FOO:
+    do_foo ();
+    break;
+
+  case BAR:
+    do_bar ();
+    break;
+  }</code>
+
+<code style="invalid">
+/* invalid */
+switch (condition) {
+  case FOO: do_foo (); break;
+  case BAR: do_bar (); break;
+}
+
+/* invalid */
+switch (condition)
+  {
+  case FOO: do_foo ();
+    break;
+  case BAR: do_bar ();
+    break;
+  }
+
+/* invalid */
+switch (condition)
+  {
+    case FOO:
+    do_foo ();
+    break;
+    case BAR:
+    do_bar ();
+    break;
+  }</code>
+
+    <p>꼭 여러 case를 줄바꿈 해야 하는건 아니지만 권장할만합니다:</p>
+
+    <code style="valid">
+switch (condition) {
+case FOO:
+	do_foo ();
+	break;
+
+case BAR:
+	do_bar ();
+	break;
+
+default:
+	do_default ();
+}</code>
+
+    <p><code>default</code> case의 <code>break</code> 구문은 필수가 아닙니다.</p>
+
+    <p>서수 형식에 따라 switch 구문을 처리한다면, <code>case</code> 구문은 모든 서수 형식의 구성 값에 대해 마감 처리해야합니다. 처리하고 싶지 않은 구성 값은 <code>case</code> 구문의 별칭을 <code>default</code>로 지정하면 됩니다:</p>
+
+    <code style="valid">
+switch (enumerated_condition) {
+case HANDLED_1:
+	do_foo ();
+	break;
+
+case HANDLED_2:
+	do_bar ();
+	break;
+
+case IGNORED_1:
+case IGNORED_2:
+default:
+	do_default ();
+}</code>
+
+    <p>대부분의 서수 형식 구성 값을 처리하지 않을 경우, <code>switch</code> 대신 <code>if</code> 구문을 사용해보십시오.</p>
+
+    <p><code>case</code> 블록에 새 변수를 선언해야 한다면, 내부 블록에도 동일한 규칙을 적용합니다(상단 참고). <code>break</code> 구문은 내부 블록의 바깥에 넣어야합니다:</p>
+
+    <code style="valid">
+/* valid GNU style */
+switch (condition)
+  {
+  case FOO:
+    {
+      int foo;
+
+      foo = do_foo ();
+    }
+    break;
+
+  …
+  }</code>
+  </section>
+
+  <section id="header-files">
+    <title>헤더 파일</title>
+
+    <p>헤더 파일의 유일한 주요 규칙은 함수 정의를 세 부분으로 수직 정렬해야 한다는 점 뿐입니다:</p>
+
+    <code style="valid">
+return_type          function_name           (type   argument,
+                                              type   argument,
+                                              type   argument);</code>
+
+    <p>각 열의 최대 폭은 가장 긴 내용을 지닌 열의 길이를 따릅니다:</p>
+
+    <code style="valid">
+void         gtk_type_set_property (GtkType      *type,
+                                    const gchar  *value,
+                                    GError      **error);
+const gchar *gtk_type_get_property (GtkType      *type);</code>
+
+    <p>다음 탭의 컬럼에 맞춰 정렬할 수도 있습니다:</p>
+
+    <code style="valid">
+void          gtk_type_set_prop           (GtkType *type,
+                                           gfloat   value);
+gfloat        gtk_type_get_prop           (GtkType *type);
+gint          gtk_type_update_foobar      (GtkType *type);</code>
+
+    <p>이전과 마찬가지로 이맥스에서 <code>M-x align</code> 명령을 실행하여 자동으로 정렬할 수 있습니다.</p>
+
+    <p>공개용 라이브러리를 만든다면, 작은 헤더 파일을 모두 포함하는 단일 공용 헤더 파일로 내보내보십시오. 프로그램에서 사용하는 단일 포함 요소를 활용하기 보다는 공용 헤더를 직접 포함하지 않습니다. GTK+에서는 프로그램에 직접 넣지 않는 다음 헤더 파일을 활용합니다:</p>
+
+    <code style="valid">
+#if !defined (__GTK_H_INSIDE__) &amp;&amp; !defined (GTK_COMPILATION)
+#error "Only &lt;gtk/gtk.h&gt; can be included directly."
+#endif</code>
+
+    <p>라이브러리에 대해서는, 모든 헤더(내부용) 포함 방지와 C++ 사용 방지를 넣어야합니다. C++에서 일반 C 헤더를 넣어야 할 때` <code>extern "C"</code> 매직 코드로 처리할 수 있습니다:</p>
+
+    <code style="valid">
+#ifndef MYLIB_FOO_H_
+#define MYLIB_FOO_H_
+
+#include &lt;gtk/gtk.h&gt;
+
+G_BEGIN_DECLS
+
+…
+
+G_END_DECLS
+
+#endif /* MYLIB_FOO_H_ */</code>
+  </section>
+
+  <section id="gobject">
+    <title>GObject 클래스</title>
+
+    <p>GObject 클래스 정의 및 구현체에는 추가 코드 작성 방식 언급이 필요하며, 항상 <link xref="namespacing#gobject">올바른 이름 영역에 있</link>어야합니다.</p>
+
+    <p>typedef 선언부는 파일의 시작 부분에 있어야합니다:</p>
+
+    <code style="valid">
+typedef struct _GtkBoxedStruct       GtkBoxedStruct;
+typedef struct _GtkMoreBoxedStruct   GtkMoreBoxedStruct;</code>
+
+    <p>다음 코드에는 서수 형식이 있습니다:</p>
+
+    <code style="valid">
+typedef enum
+{
+  GTK_SIZE_REQUEST_WIDTH_FOR_HEIGHT,
+  GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH
+} GtkSizeRequestMode;</code>
+
+    <p>그리고 콜백 함수 형식은 다음과 같습니다:</p>
+
+    <code style="valid">
+typedef void (* GtkCallback) (GtkWidget *widget,
+                              gpointer   user_data);</code>
+
+    <p>인스턴스 구조체는  <code>G_DECLARE_FINAL_TYPE</code> 또는 <code>G_DECLARE_DERIVABLE_TYPE</code>으로 선언해야합니다:</p>
+
+    <code style="valid">
+#define GTK_TYPE_FOO (gtk_foo_get_type ())
+G_DECLARE_FINAL_TYPE (GtkFoo, gtk_foo, GTK, FOO, GtkWidget)</code>
+
+    <p>final 형식으로, 비공개 데이터는 C 파일에 정의하는 객체 구조체에 넣을 수 있습니다:</p>
+
+    <code style="valid">
+struct _GtkFoo
+{
+  GObject   parent_instance;
+
+  guint     private_data;
+  gpointer  more_private_data;
+};</code>
+
+    <p>상속 가능한 형식으로, 비공개 데이터는 <code>G_DEFINE_TYPE_WITH_PRIVATE()</code> 매크로를 활용하여 설정하고 <code>_get_instance_private()</code> 함수로 접근하는 C 파일의 비공개 구조체에 넣어야합니다:</p>
+
+    <code style="valid">
+#define GTK_TYPE_FOO gtk_foo_get_type ()
+G_DECLARE_DERIVABLE_TYPE (GtkFoo, gtk_foo, GTK, FOO, GtkWidget)
+
+struct _GtkFooClass
+{
+  GtkWidgetClass parent_class;
+
+  void (* handle_frob)  (GtkFrobber *frobber,
+                         guint       n_frobs);
+
+  gpointer padding[12];
+};</code>
+
+    <p>항상 <code>G_DEFINE_TYPE()</code>, <code>G_DEFINE_TYPE_WITH_PRIVATE()</code>, <code>G_DEFINE_TYPE_WITH_CODE()</code> 매크로를 사용하든지, <code>G_DEFINE_ABSTRACT_TYPE()</code>, <code>G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE()</code>, <code>G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</code> 추상 변형 매크로를 활용하십시오. 인터페이스 및 박싱 형식을 정의할 때 동일한 매크로를 활용하십시오.</p>
+
+    <p>인터페이스 형식은 캐스팅 목적으로 모조 typedef를 두어야합니다:</p>
+
+    <code style="valid">
+typedef struct _GtkFooable          GtkFooable;</code>
+
+    <p>인터페이스 구조체에는 모조 typedef 뒤에 붙인 ‘Interface’를 넣어야합니다:</p>
+
+    <code style="valid">
+typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
+
+    <p>인터페이스에는 다음 매크로를 넣어야합니다:</p>
+
+    <table>
+      <thead>
+	<tr>
+	  <td><p>매크로</p></td>
+	  <td><p>확장 대상</p></td>
+	</tr>
+      </thead>
+      <tbody>
+	<tr>
+	  <td><p><code>GTK_TYPE_<var>iface_name</var></code></p></td>
+	  <td><p><code><var>iface_name</var>_get_type</code></p></td>
+	</tr>
+	<tr>
+	  <td><p><code>GTK_<var>iface_name</var></code></p></td>
+	  <td><p><code>G_TYPE_CHECK_INSTANCE_CAST</code></p></td>
+	</tr>
+	<tr>
+	  <td><p><code>GTK_IS_<var>iface_name</var></code></p></td>
+          <td><p><code>G_TYPE_CHECK_INSTANCE_TYPE</code></p></td>
+	</tr>
+	<tr>
+	  <td><p><code>GTK_<var>iface_name</var>_GET_IFACE</code></p></td>
+          <td><p><code>G_TYPE_INSTANCE_GET_INTERFACE</code></p></td>
+	</tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <section id="memory-allocation">
+    <title>메모리 할당</title>
+
+    <p>힙에 데이터를 동적으로 할당하려면 <code>g_new()</code> 함수를 활용하십시오.</p>
+
+    <p>공개 구조체 형식은 0 값으로 처리한 다음에 항상 각 구성 변수 값을 분명하게 반환하거나 <code>g_new0()</code> 함수를 활용하여 반환해야합니다.</p>
+
+    <p>자세한 내용은 <link xref="memory-management"/> 링크를 참고하십시오.</p>
+  </section>
+
+  <section id="macros">
+    <title>매크로</title>
+
+    <p>반드시 필요한게 아니라면 자체 매크로는 피하십시오. 블록 뒷 부분 또는 필요한 함수 몇 군데에서 <code>#undef</code> 처리를 잊지 마십시오.</p>
+
+    <p>인라인 함수는 보통 자체 매크로 용도로 안성맞춤입니다.</p>
+
+    <p>공개 매크로는 상수를 처리하지 않는 한 사용하지 말아야합니다.</p>
+  </section>
+
+  <section id="public-api">
+    <title>공용 API</title>
+
+    <p>일부 플랫폼에서 이상항 동작이 일어날 수 있으므로 공용 API 처럼 변수를 내보내는 일은 피하십시오. 대신 getter 함수와 setter 함수를 만드는게 좋습니다. 또한 일반적인 글로벌 변수 사용에 주의하십시오.</p>
+  </section>
+
+  <section id="private-api">
+    <title>비공개 API</title>
+
+    <p>하나 이상의 소스 파일에서 필요한 비공개 함수 앞에 밑줄 문자(‘_’)를 붙이시고 자체 헤더 파일에 선언하십시오. 예를 들자면 <code>_mylib_internal_foo()</code> 처럼 작명하십시오.</p>
+
+    <p>밑줄 문자를 앞에 붙인 함수는 공개하지 않습니다.</p>
+
+    <p>소스 파일에서만 사용할 비공개 변수는 static으로 선언해야합니다.</p>
+  </section>
+</page>

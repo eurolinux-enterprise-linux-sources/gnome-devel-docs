@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="button.py" xml:lang="el">
+  <info>
+    <title type="text">Κουμπί (Python)</title>
+    <link type="guide" xref="beginner.py#buttons"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="linkbutton.py"/>
+    <revision version="0.2" date="2012-05-05" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα κουμπί γραφικού στοιχείου που εκπέμπει σήμα όταν πατηθεί</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Κουμπί</title>
+
+  <media type="image" mime="image/png" src="media/button.png"/>
+  <p>Ένα γραφικό στοιχείο κουμπιού συνδεμένο με μια απλή συνάρτηση επανάκλησης.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GNOME Button", application=app)
+        self.set_default_size(250, 50)
+
+        # a button
+        button = Gtk.Button()
+        # with a label
+        button.set_label("Click me")
+        # connect the signal "clicked" emitted by the button
+        # to the callback function do_clicked
+        button.connect("clicked", self.do_clicked)
+        # add the button to the window
+        self.add(button)
+
+    # callback function connected to the signal "clicked" of the button
+    def do_clicked(self, button):
+        print("You clicked me!")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+  
+  <section id="methods">
+    <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο κουμπιού</title>
+    <p>Στη γραμμή 16 το σήμα <code>"clicked"</code> από το κουμπί συνδέεται με τη συνάρτηση επανάκλησης <code>do_clicked()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
+    <list>
+      <item><p>Ο <code>set_relief(Gtk.ReliefStyle.NONE)</code> ορίζει σε κανένα τον τύπο αναγλύφου των άκρων του Gtk.Button - καθώς αντιτίθεται στο <code>Gtk.ReliefStyle.NORMAL</code>.</p></item>
+      <item><p>Εάν η ετικέτα του κουμπιού είναι ένα <link href="http://developer.gnome.org/gtk3/unstable/gtk3-Stock-Items.html">εικονίδιο παρακαταθήκης</link>, ο <code>set_use_stock(True)</code> ορίζει την ετικέτα ως το όνομα του αντίστοιχου εικονιδίου παρακαταθήκης.</p></item>
+      <item><p>Για ορισμό μιας εικόνας (π.χ. μια εικόνα παρακαταθήκης) για το κουμπί <code>button</code>:</p>
+        <code>
+image = Gtk.Image()
+image.set_from_stock(Gtk.STOCK_ABOUT, Gtk.IconSize.BUTTON)
+button.set_image(image)</code>
+      <p>Θα πρέπει να μην ορίσετε μια ετικέτα για το κουμπί μετά από αυτό, αλλιώς θα εμφανίσει την ετικέτα και όχι την εικόνα.</p></item>
+      <item><p>Εάν χρησιμοποιήσουμε <code>set_focus_on_click(False)</code> το κουμπί δεν θα εστιάσει όταν πατηθεί από το ποντίκι. Αυτό μπορεί να είναι χρήσιμο σε θέσεις όπως εργαλειοθήκες, έτσι ώστε η εστίαση του πληκτρολογίου να μην αφαιρεθεί από την κύρια περιοχή της εφαρμογής.</p></item>
+    </list>
+  </section>
+  
+  <section id="references">
+    <title>Αναφορές API</title>
+    <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkButton.html">GtkButton</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+    </list>
+  </section>
+</page>

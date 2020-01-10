@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.py" xml:lang="es">
+  <info>
+    <title type="text">Statusbar (Python)</title>
+    <link type="guide" xref="beginner.py#display-widgets"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="spinner.py"/>    
+    <revision version="0.2" date="2012-06-12" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Enviar mensajes de menor importancia al usuario</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Statusbar</title>
+  <media type="image" mime="image/png" src="media/statusbar.png"/>
+  <p>Esta barra de estado indica si ha pulsado el botón o si ha pulsado una tecla (y qué tecla ha pulsado).</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Código usado para generar este ejemplo</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gdk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="StatusBar Example", application=app)
+        self.set_default_size(200, 100)
+
+        # a label
+        label = Gtk.Label(label="Press any key or ")
+
+        # a button
+        button = Gtk.Button(label="click me.")
+        # connected to a callback
+        button.connect("clicked", self.button_clicked_cb)
+
+        # the statusbar
+        self.statusbar = Gtk.Statusbar()
+        # its context_id - not shown in the UI but needed to uniquely identify
+        # the source of a message
+        self.context_id = self.statusbar.get_context_id("example")
+        # we push a message onto the statusbar's stack
+        self.statusbar.push(
+            self.context_id, "Waiting for you to do something...")
+
+        # a grid to attach the widgets
+        grid = Gtk.Grid()
+        grid.set_column_spacing(5)
+        grid.set_column_homogeneous(True)
+        grid.set_row_homogeneous(True)
+        grid.attach(label, 0, 0, 1, 1)
+        grid.attach_next_to(button, label, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach(self.statusbar, 0, 1, 2, 1)
+
+        # add the grid to the window
+        self.add(grid)
+
+    # callback function for the button clicked
+    # if the button is clicked the event is signaled to the statusbar
+    # onto which we push a new status
+    def button_clicked_cb(self, button):
+        self.statusbar.push(self.context_id, "You clicked the button.")
+
+    # event handler
+    def do_key_press_event(self, event):
+    # any signal from the keyboard is signaled to the statusbar
+    # onto which we push a new status with the symbolic name
+    # of the key pressed
+        self.statusbar.push(self.context_id, Gdk.keyval_name(event.keyval) +
+                            " key was pressed.")
+        # stop the signal emission
+        return True
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  <note><p><code>Gdk.keyval_name(event.keyval)</code> convierte el valor de la tecla <code>event.keyval</code> en un nombre simbólico. Los nombres y los valores de teclas correspondientes pueden encontrarse <link href="http://git.gnome.org/browse/gtk+/tree/gdk/gdkkeysyms.h">aquí</link>, pero por ejemplo <code>GDK_KEY_BackSpace</code> se convierte en la cadena <code>"BackSpace"</code>.</p></note>
+  </section>
+
+  <section id="methods">
+  <title>Métodos útiles para un widget «Statusbar»</title>
+    <p>En la línea 17, la señal <code>«clicked»</code> se conecta a la función de retorno de llamada <code>button_clicked_cb()</code> usando <code><var>widget</var>.connect(<var>señal</var>, <var>función de retorno de llamada</var>)</code>. Consulte la <link xref="signals-callbacks.py"/> para una explicación más detallada.</p>
+  <list>
+    <item><p><code>pop(id_del_contexto)</code> elimina el primer mensaje en la pila de la barra de estado con el <code>id_del_contexto</code> dado.</p></item>
+    <item><p><code>remove_all(id_del_contexto)</code> elimina todos los mensajes en la pila de la barra de estado con el <code>id_del_contexto</code> dado.</p></item>
+    <item><p><code>remove(id_del_contexto, id_del_mensaje)</code> elimina el mensaje con el <code>id_del_mensaje</code> dado en la pila de la barra de estado con el <code>id_del_contexto</code> dado. <code>push(id_del_contexto, "el mensaje")</code> devuelve el <code>id_del_mensaje</code> cuando se muestra el mensaje en la barra de estado.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Referencias de la API</title>
+  <p>En este ejemplo se usa lo siguiente:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkStatusbar.html">GtkStatusbar</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gdk/stable/gdk-Keyboard-Handling.html">Gdk: valores de teclas</link></p></item>
+  </list>
+  </section>
+</page>

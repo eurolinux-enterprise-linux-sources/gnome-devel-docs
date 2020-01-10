@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="textview.py" xml:lang="fr">
+  <info>
+    <title type="text">TextView (Python)</title>
+    <link type="guide" xref="beginner.py#multiline"/>
+    <link type="seealso" xref="strings.py"/>
+    <link type="seealso" xref="scrolledwindow.py"/>
+    <link type="next" xref="dialog.py"/>
+    <revision version="0.2" date="2012-06-19" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Sebastian Pölsterl</name>
+      <email its:translate="no">sebp@k-d-w.org</email>
+      <years>2011</years>
+    </credit>
+
+    <credit type="author copyright editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>L'élément graphique qui affiche un GtkTextBuffer</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>TextView</title>
+
+  <note style="sidebar"><p>Ceci est un exemple de Gtk.TextView.</p>
+  <p>En appuyant sur « Entrée », nous créons une nouvelle ligne.</p>
+  <p>Mais il peut également y avoir un retour à la ligne si nous écrivons une longue phrase (la césure se fait entre deux mots).</p>
+  <p>Si nous avons un loooooooooooooooooooooooooooooooooooong</p>
+  <p>(long comme ça)</p>
+  <p>mot, une barre de défilement horizontale apparaît.</p></note>
+
+  <media type="image" mime="image/png" src="media/textview.png"/>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Code utilisé pour générer cet exemple</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="TextView Example", application=app)
+        self.set_default_size(300, 450)
+
+        # a scrollbar for the child widget (that is going to be the textview)
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_border_width(5)
+        # we scroll only if needed
+        scrolled_window.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+
+        # a text buffer (stores text)
+        buffer1 = Gtk.TextBuffer()
+
+        # a textview (displays the buffer)
+        textview = Gtk.TextView(buffer=buffer1)
+        # wrap the text, if needed, breaking lines in between words
+        textview.set_wrap_mode(Gtk.WrapMode.WORD)
+
+        # textview is scrolled
+        scrolled_window.add(textview)
+
+        self.add(scrolled_window)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+  <title>Méthodes utiles pour un élément graphique TextView</title>
+  <p>Un <code>Gtk.TextView</code> affiche le texte stocké dans le tampon d'un <code>Gtk.TextBuffer</code>. Cependant, la plupart des manipulations de texte se font avec des itérateurs représentés par un <code>Gtk.TextIter</code> - une position entre deux caractères dans le tampon du texte. Les itérateurs ne restent pas valides indéfiniment ; à chaque fois que le tampon se trouve modifié d'une façon qui affecte son contenu, tous les itérateurs en cours deviennent non valides. À cause de cela, les itérateurs ne peuvent pas être utilisés pour préserver les positions en cas de modifications du tampon. Pour préserver une position, nous utilisons donc un marqueur <code>Gtk.TextMark</code>, qui peut être rendu visible avec <code>visible(True)</code>. Un tampon de texte contient deux marqueurs intégrés : un marqueur « insert » (la position du curseur) et un marqueur « selection_bound » (limite de sélection).</p>
+  <p>Méthodes pour un élément graphique TextView :</p>
+  <list>
+    <item><p>L'élément graphique TextView est modifiable par défaut. Si vous préférez le contraire, utilisez <code>set_editable(False)</code>. Si le tampon ne contient pas de texte modifiable, c'est une bonne idée d'utiliser <code>set_cursor_visible(False)</code> aussi.</p></item>
+    <item><p>La justification du texte est définie par <code>set_justification(Gtk.Justification.JUSTIFICATION)</code> où <code>JUSTIFICATION</code> est l'une des valeurs <code>LEFT, RIGHT, CENTER, FILL</code>.</p></item>
+    <item><p>La césure du texte est définie par <code>set_wrap_mode(Gtk.WrapMode.WRAP)</code> où <code>WRAP</code> est une des valeurs <code>NONE</code> (la zone de texte s'élargit), <code>CHAR</code> (fait la césure n'importe où le curseur peut apparaître), <code>WORD</code> (fait la césure entre deux mots), <code>WORD_CHAR</code> (fait la césure entre deux mots, mais si cela ne suffit pas, la fait entre deux caractères).</p></item>
+  </list>
+  <p>Méthodes pour un élément graphique TextBuffer :</p>
+  <list>
+    <item><p>La méthode <code>get_insert()</code> retourne le marqueur <code>Gtk.TextMark</code> qui représente le curseur, c'est-à-dire le point d'insertion.</p></item>
+    <item><p>La méthode <code>get_selection_bound()</code> renvoie le marqueur <code>Gtk.TextMark</code> qui représente les limites de la sélection.</p></item>
+    <item><p>La méthode <code>set_text("du texte", longueur)</code> où <code>longueur</code> est un nombre entier positif ou <code>-1</code> définit le contenu du tampon comme étant les <code>longueur</code> premiers caractères du texte <code>du texte</code>. Si <code>longueur</code> est omis ou égal à <code>-1</code>, tout le texte est inséré. Le contenu du tampon, s'il existe, est détruit.</p></item>
+    <item><p>La méthode <code>insert(iter, "du texte", longueur)</code>, où <code>iter</code> est un itérateur et <code>longueur</code> est un nombre entier positif ou <code>-1</code>, insère dans le tampon à l'endroit de <code>iter</code> les <code>longueur</code> premiers caractères du texte <code>du texte</code>. Si <code>longueur</code> est omis ou égal à <code>-1</code>, tout le texte est inséré.</p></item>
+    <item><p>La méthode <code>insert_at_cursor("du texte", longueur)</code> effectue la même action que <code>insert(iter, "du texte", length)</code>, avec le curseur actuel comme <code>iter</code>.</p></item>
+    <item><p>La méthode <code>create_mark("nom_marqueur", iter, left_gravity)</code>, où <code>iter</code> est un <code>Gtk.TextIter</code> et <code>left_gravity</code> une valeur booléenne, crée un marqueur <code>Gtk.TextMark</code> à l'emplacement de l'<code>iter</code>. Si la valeur de <code>"nom_marqueur"</code> est <code>None</code>, le marqueur est anonyme ; sinon, le marqueur peut être récupéré par son nom avec <code>get_mark()</code>. Si un marqueur possède la propriété left_gravity et que le texte est inséré à son emplacement actuel, alors le marqueur est déplacé à gauche du texte qui vient d'être inséré. Si la valeur <code>left_gravity</code> est omise, alors la valeur <code>False</code> est utilisée par défaut.</p></item>
+    <item><p>Pour indiquer qu'un morceau de texte du tampon doit être formatée spécifiquement, vous devez définir une étiquette contenant cette information de formatage et ensuite l'appliquer à la portion de texte en utilisant <code>create_tag("nom etiquette", propriété)</code> et <code>apply_tag(tag, start_iter, end_iter)</code>, par exemple comme ceci :</p>
+      <code>
+etiquette = textbuffer.create_tag("fond_orange", background="orange")
+textbuffer.apply_tag(etiquette, start_iter, end_iter)</code>
+     <p>Voici quelques styles les plus usuels appliqués à du texte :</p>
+      <list>
+        <item><p>Couleur d'arrière-plan (propriété « background »)</p></item>
+        <item><p>Couleur de premier plan (propriété « foreground »)</p></item>
+        <item><p>Souligné (propriété « underline »)</p></item>
+        <item><p>Gras (propriété « weight »)</p></item>
+        <item><p>Italique (propriété « style »)</p></item>
+        <item><p>Barré (propriété « strikethrough »)</p></item>
+        <item><p>Justifié (propriété « justification »)</p></item>
+        <item><p>Taille (propriétés « size » et « size-points »)</p></item>
+        <item><p>Césure (propriété « wrap-mode »)</p></item>
+      </list>
+    <p>Vous pouvez aussi supprimer par la suite certaines étiquettes en particulier avec <code>remove_tag()</code>, ou supprimer toutes celles d'une région donnée avec <code>remove_all_tags()</code>.</p></item>
+  </list>
+  <p>Méthodes pour un élément graphique TextIter</p>
+  <list>
+    <item><p>La méthode <code>forward_search(needle, flags, limit)</code> effectue une recherche en avant de <code>needle</code> (cible). La recherche ne s'effectue pas au delà de l'itérateur <code>Gtk.TextIter</code>. Les <code>flags</code> (drapeaux) peuvent être définis comme l'un des éléments suivants, ou comme n'importe quelle combinaison de l'un d'eux, en les concaténant avec l'opérateur binaire OR <code>|</code> : <code>0</code> (la correspondance doit être exacte) ; <code>Gtk.TextSearchFlags.VISIBLE_ONLY</code> (la correspondance peut contenir du texte invisible intercalé dans la sélection) ; <code>Gtk.TextSearchFlags.TEXT_ONLY</code> (la correspondance peut contenir des pixbufs ou des éléments graphiques enfants mélangés dans la sélection) ; <code>Gtk.TextSearchFlags.CASE_INSENSITIVE</code> (la correspondance n'est pas sensible à la casse). La méthode renvoie un tuple contenant un <code>Gtk.TextIter</code> qui pointe vers le début et vers le premier caractère après la correspondance ; s'il n'y a pas de correspondance, elle renvoie la valeur <code>None</code>.</p></item>
+    <item><p>La méthode <code>backward_search(needle, flags, limit)</code> effectue les même actions que <code>forward_search()</code>, mais en arrière.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Références API</title>
+  <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextView.html">GtkTextView</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextBuffer.html">GtkTextBuffer</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTextTag.html">GtkTextTag</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkScrolledWindow.html">GtkScrolledWindow</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">Standard Enumerations</link></p></item>
+  </list>
+  </section>
+</page>

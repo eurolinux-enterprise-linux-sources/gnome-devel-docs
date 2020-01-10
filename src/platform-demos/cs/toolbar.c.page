@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar.c" xml:lang="cs">
+  <info>
+    <title type="text">Toolbar (C)</title>
+    <link type="guide" xref="c#menu-combo-toolbar"/>
+    <link type="seealso" xref="menubar.c"/>
+    <link type="seealso" xref="grid.c"/>
+    <revision version="0.1" date="2012-08-19" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Lišta s tlačítky</desc>
+  </info>
+
+  <title>Toolbar</title>
+
+  <media type="image" mime="image/png" src="media/toolbar.png"/>
+  <p>Nástrojová lišta může obsahovat text nebo standardní ikony. V tomto příkladu používáme standardní ikony. Tento příklad obsahuje funkci pro zobrazení na celou obrazovku.</p>
+  <p>Tento příklad používá <code>SimpleAction</code> (jednoduchá akce), pro okno i pro aplikaci. Akci pro aplikaci lze snadno přidat do aplikační nabídky.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+/* Deklaruje tato dvě nástrojová tlačítka, protože obě budou použita jak
+ * ve zpětném volání akce „celá obrazovka“, tak v aktivační funkci
+ */
+GtkToolItem *fullscreen_button;
+GtkToolItem *leavefullscreen_button;
+
+
+
+/* Funkce zpětného volání pro akci „zpět“ */
+static void
+undo_callback (GSimpleAction *simple,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+  g_print ("You clicked \"Undo\".\n");
+}
+
+
+
+/* Funkce zpětného volání pro akci „celá obrazovka“ */
+static void
+fullscreen_callback (GSimpleAction *simple,
+                     GVariant      *parameter,
+                     gpointer       user_data)
+{
+  GdkWindow *window = gtk_widget_get_window (GTK_WIDGET (user_data));
+
+  GdkWindowState current_state = gdk_window_get_state (window);
+
+  /* Jestliže je okno právě v režimu celé obrazovky */
+  if ( (current_state &amp; GDK_WINDOW_STATE_FULLSCREEN) != 0)
+    {
+      /* Minimalizuje okno a změní tlačítko na „celá obrazovka“ */
+      gdk_window_unfullscreen (window);
+      gtk_widget_hide (GTK_WIDGET(leavefullscreen_button));
+      gtk_widget_show (GTK_WIDGET(fullscreen_button));
+    }
+  else
+    {
+      /* Maximalizuje okno a znění tlačítko na „opustit celou obrazovku“ */
+      gdk_window_fullscreen (window);
+      gtk_widget_hide (GTK_WIDGET (fullscreen_button));
+      gtk_widget_show (GTK_WIDGET (leavefullscreen_button));
+    }
+}
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  /* Inicializace proměnných */
+  GtkWidget *window;
+  GtkWidget *grid;
+  GtkWidget *toolbar;
+
+  GtkToolItem *new_button;
+  GtkToolItem *open_button;
+  GtkToolItem *undo_button;
+
+  GtkStyleContext *style_context;
+
+  GSimpleAction *undo_action;
+  GSimpleAction *fullscreen_action;
+  GSimpleAction *leavefullscreen_action;
+
+  /* Vytvoří okno s název pro záhlaví a výchozí velikostí */
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "Toolbar Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 400, 200);
+
+  /* Zde začínáme vytvářet nástrojovou lištu */
+  toolbar = gtk_toolbar_new ();
+  /* Nastavíme nástrojovou lištu jako hlavní pro aplikaci */
+  style_context = gtk_widget_get_style_context (toolbar);
+  gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+
+  /* Vytvoříme tlačítko pro akci "new", se standardním obrázkem */
+  new_button = gtk_tool_button_new_from_stock (GTK_STOCK_NEW);
+  /* Zapne zobrazování popisku tlačítka "new" */
+  gtk_tool_item_set_is_important (new_button, TRUE);
+  /* Vloží tlačítko na požadovanou pozici na nástrojové liště */
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), new_button, 0);
+  /* Zobrazí tlačítko */
+  gtk_widget_show (GTK_WIDGET (new_button));
+  /* Nastaví název akce pro akci "new". Použijeme "app.new",
+   * aby bylo poznak, že akce ovládá aplikaci
+   */
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (new_button), "app.new");
+
+  /* Zopakuje stejné kroky pro akci "open" */
+  open_button = gtk_tool_button_new_from_stock (GTK_STOCK_OPEN);
+  gtk_tool_item_set_is_important (open_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), open_button, 1);
+  gtk_widget_show (GTK_WIDGET (open_button));
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (open_button), "app.open");
+
+  /* Zopakuje stejné kroky pro akci "undo" */
+  undo_button = gtk_tool_button_new_from_stock (GTK_STOCK_UNDO);
+  gtk_tool_item_set_is_important (undo_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), undo_button, 2);
+  gtk_widget_show (GTK_WIDGET (undo_button));
+  /* V tomto případě použijeme "win.undo", aby se poznalo, že
+   * akce ovládá jen okno
+   */
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (undo_button), "win.undo");
+
+  /* Zopakuje stejné kroky pro akci "fullscreen" */
+  fullscreen_button = gtk_tool_button_new_from_stock (GTK_STOCK_FULLSCREEN);
+  gtk_tool_item_set_is_important (fullscreen_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), fullscreen_button, 3);
+  gtk_widget_show (GTK_WIDGET (fullscreen_button));
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (fullscreen_button),
+                                  "win.fullscreen");
+
+  /* Zopakuje stejné kroky pro akci "leavefullscreen" */
+  leavefullscreen_button = gtk_tool_button_new_from_stock (GTK_STOCK_LEAVE_FULLSCREEN);
+  gtk_tool_item_set_is_important (leavefullscreen_button, TRUE);
+  gtk_toolbar_insert (GTK_TOOLBAR (toolbar), leavefullscreen_button, 3);
+  /* Jediný rozdíl zde je, že se tlačítko "leavefullscreen" nezobrazí,
+   * protože až později nahradí tlačítko "fullscreen".
+   */
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (leavefullscreen_button),
+                                  "win.leavefullscreen");
+
+  /* Jakmile vytvoříme základ nástrojové lišty, ujistíme se,
+   * že je ve vodorovném směru dostatek místa
+   */
+  gtk_widget_set_hexpand (toolbar, TRUE);
+  gtk_widget_show (toolbar);
+
+  /* Připojíme nástrojovou lištu do mřížky a tu přidáme do hlavního okna */
+  grid = gtk_grid_new ();
+  gtk_grid_attach (GTK_GRID (grid), toolbar, 0, 0, 1, 1);
+  gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (grid));
+  gtk_widget_show (GTK_WIDGET (grid));
+
+  /* Použijeme názvy akcí k vytvoření akcí, které ovládají okno, a
+   * napojíme je na příslušné funkce zpětného volání
+   */
+  undo_action = g_simple_action_new ("undo", NULL);
+  g_signal_connect (undo_action, "activate", G_CALLBACK (undo_callback),
+                    GTK_WINDOW (window));
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (undo_action));
+
+  fullscreen_action = g_simple_action_new ("fullscreen", NULL);
+  g_signal_connect (fullscreen_action, "activate", G_CALLBACK (fullscreen_callback),
+                    GTK_WINDOW (window));
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (fullscreen_action));
+
+  leavefullscreen_action = g_simple_action_new ("leavefullscreen", NULL);
+  g_signal_connect (leavefullscreen_action, "activate", G_CALLBACK (fullscreen_callback),
+                    GTK_WINDOW (window));
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (leavefullscreen_action));
+
+  gtk_widget_show (window);
+}
+
+
+
+/* Funkce zpětného volání pro akci "new" */
+static void
+new_callback (GSimpleAction *simple,
+              GVariant      *parameter,
+              gpointer       user_data)
+{
+  g_print ("You clicked \"New\".\n");
+}
+
+
+
+/* Funkce zpětného volání pro akci "open" */
+static void
+open_callback (GSimpleAction *simple,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+  g_print ("You clicked \"Open\".\n");
+}
+
+
+
+/* V této funkci vytvoříme akce, které ovládají aplikaci a napojíme
+ * jejich signály na příslušnou funkci zpětného volání
+ */
+static void
+startup (GApplication *app,
+         gpointer      user_data)
+{
+  GSimpleAction *new_action;
+  GSimpleAction *open_action;
+
+  new_action = g_simple_action_new ("new", NULL);
+  g_signal_connect (new_action, "activate", G_CALLBACK (new_callback), app);
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (new_action));
+
+  open_action = g_simple_action_new ("open", NULL);
+  g_signal_connect (open_action, "activate", G_CALLBACK (open_callback), app);
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (open_action));
+}
+
+
+
+/* Spouštěcí funkce pro aplikaci */
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect (app, "startup", G_CALLBACK (startup), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkToolbar.html">GtkToolbar</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkToolButton.html">GtkToolbutton</link></p></item>
+</list>
+</page>

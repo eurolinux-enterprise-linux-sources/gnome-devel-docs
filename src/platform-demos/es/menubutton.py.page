@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubutton.py" xml:lang="es">
+  <info>
+  <title type="text">MenuButton</title>
+    <link type="guide" xref="beginner.py#buttons"/>
+    <link type="next" xref="toolbar.py"/>
+    <revision version="0.1" date="2012-08-19" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un widget que muestra un menú cuando se pulsa</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MenuButton</title>
+  <media type="image" mime="image/png" src="media/menubutton.png"/>
+  <p>El widget «GtkMenuButton» se usa para mostrar un menú cuando se pulsa. Este menú puede proporcionarse como un «GtkMenu», o un «GMenuModel» abstracto. El widget «GtkMenuButton» puede contener cualquier widget hijo válido. Esto es casi cualquier «GtkWidget» estándar. El hijo más comúnmente usado es el «GtkArrow» proporcionado.</p>
+
+  <note><p>Necesita ejecutar GNOME 3.6 para que el «MenuButton» funcione.</p></note>
+
+  <links type="section"/>
+    
+  <section id="code">
+  <title>Código usado para generar este ejemplo</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Menubutton Example", application=app)
+        self.set_default_size(600, 400)
+
+        grid = Gtk.Grid()
+
+        # a menubutton
+        menubutton = Gtk.MenuButton()
+        menubutton.set_size_request(80, 35)
+
+        grid.attach(menubutton, 0, 0, 1, 1)
+
+        # a menu with two actions
+        menumodel = Gio.Menu()
+        menumodel.append("New", "app.new")
+        menumodel.append("About", "win.about")
+
+        # a submenu with one action for the menu
+        submenu = Gio.Menu()
+        submenu.append("Quit", "app.quit")
+        menumodel.append_submenu("Other", submenu)
+
+        # the menu is set as the menu of the menubutton
+        menubutton.set_menu_model(menumodel)
+
+        # the action related to the window (about)
+        about_action = Gio.SimpleAction.new("about", None)
+        about_action.connect("activate", self.about_callback)
+        self.add_action(about_action)
+
+        self.add(grid)
+
+    # callback for "about"
+    def about_callback(self, action, parameter):
+        print("You clicked \"About\"")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        #  the actions related to the application
+        new_action = Gio.SimpleAction.new("new", None)
+        new_action.connect("activate", self.new_callback)
+        self.add_action(new_action)
+
+        quit_action = Gio.SimpleAction.new("quit", None)
+        quit_action.connect("activate", self.quit_callback)
+        self.add_action(quit_action)
+
+    # callback functions for the actions related to the application
+    def new_callback(self, action, parameter):
+        print("You clicked \"New\"")
+
+    def quit_callback(self, action, parameter):
+        print("You clicked \"Quit\"")
+        self.quit()
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+  <title>Métodos útiles para un widget «MenuButton»</title>
+      <p>En la línea 33 la señal <code>«activate»</code> de la acción <code>about_action</code> se conecta a la función de retorno de llamada <code>about_callback()</code> usando <code><var>action</var>.connect(<var>señal</var>, <var>función de retorno de llamada</var>)</code>. Consulte la <link xref="signals-callbacks.py"/> para obtener una explicación más detallada.</p>
+
+    <p>La posición del menú está determinada por la propiedad «direction» del botón de menú y las propiedades «halign» o «valign» del menú. Por ejemplo, cuando «direction» es <code>Gtk.ArrowType.DOWN</code> (otra opción: <code>UP</code>) y la alineación horizontal es <code>Gtk.Align.START</code> (otras opciones: <code>CENTER</code> y <code>END</code>), el menú se posiciona bajo el botón, con su borde inicial (dependiendo de la dirección del texto) alineado con el borde inicial del botón. Si no hay suficiente espacio bajo el botón, el menú, en cambio, se abre sobre él. Si la alineación mueve parte del menú fuera de la pantalla, se «empuja hacia adentro».</p>
+    
+    <p>En el caso de alineación vertical, las direcciones de «ArrowType» posibles son <code>LEFT</code> y <code>RIGHT</code>, y la alineación vertical es, nuevamente, <code>START</code>, <code>CENTER</code> o <code>END</code>.</p>
+    
+    <p><code>set_align_widget(alineación)</code> y <code>set_direction(dirección)</code> pueden usarse para establecer estas propiedades.</p>
+  </section>
+  
+  <section id="references">
+  <title>Referencias de la API</title>
+    <p>En este ejemplo se usa lo siguiente:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkMenuButton.html">MenuButton</link></p></item>
+    </list>
+  </section>
+</page>

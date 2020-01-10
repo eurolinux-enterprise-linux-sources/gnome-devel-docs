@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="messagedialog.c" xml:lang="el">
+  <info>
+    <title type="text">MessageDialog (C)</title>
+    <link type="guide" xref="c#windows"/>
+    <link type="seealso" xref="dialog.c"/>
+    <revision version="0.2" date="2012-08-07" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Ένα παράθυρο μηνύματος</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MessageDialog</title>
+
+  <media type="image" mime="image/png" src="media/messagedialog.png"/>
+  <p>Ένας αποκλειστικός διάλογος μηνύματος που μπορεί να προκαλέσει την έκρηξη του κόσμου.</p>
+  <note><p>Για να ελέγξουμε την εφαρμογή μόλις αρχίσει να εκτελείται, μπορείτε να πατήσετε στην καρτέλα "Message Dialog" που εμφανίζεται στην κορυφή της γραμμής μενού στην οθόνη.</p></note>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+
+
+/* Η συνάρτηση επανάκλησης στην οποία αντιδρά το σήμα "response" από τον χρήστη
+ * στο παράθυρο μηνύματος διαλόγου.
+ * Αυτή η συνάρτηση χρησιμοποιείται για αλληλεπίδραση με τον χρήστη στο τερματικό.
+ */
+static void
+on_response (GtkDialog *dialog,
+             gint       response_id,
+             gpointer   user_data)
+{
+  /* Αν το κουμπί πατηθεί δίνει απάντηση ΕΝΤΑΞΕΙ (response_id being -5) */
+  if (response_id == GTK_RESPONSE_OK) 
+     g_print ("*boom*\n");
+
+  /* Αν το κουμπί πατηθεί δίνει απάντηση ΑΚΥΡΩΣΗ (response_id being -6) */
+  else if (response_id == GTK_RESPONSE_CANCEL)
+     g_print ("good choice\n");
+
+  /* Αν ο διάλογος μηνύματος καταστραφεί (για παράδειγμα πατώντας διαφυγή) */
+  else if (response_id == GTK_RESPONSE_DELETE_EVENT)
+     g_print ("dialog closed or cancelled\n");
+
+  /* Καταστροφή του διαλόγου αφού έχει λάβει χώρα μια από τις παραπάνω ενέργειες */
+  gtk_widget_destroy (GTK_WIDGET (dialog));
+
+}
+
+
+
+/* Η συνάρτηση επανάκλησης για το σήμα απάντησης "activate" που σχετίζεται με την απλή ενέργεια
+ * message_action.
+ * Αυτή η συνάρτηση χρησιμοποιείται για την πρόκληση ανάδυσης του παραθύρου του διαλόγου μηνύματος.
+ */
+static void
+message_cb (GSimpleAction *simple,
+            GVariant      *parameter,
+            gpointer       user_data)
+{
+   /* Η γονική μεταβλητή σε αυτήν την περίπτωση αναπαριστά το παράθυρο */
+   GtkWidget *message_dialog;
+   GtkWindow *parent = user_data;
+   
+   /* Δημιουργία ενός νέου διαλόγου μηνύματος και ορισμός των παραμέτρων ως εξής:
+    * Σημαίες διαλόγων - ο κατσκευασμένος διάλογος γίνεται αναγκαστικός 
+    * (οι αναγκαστικοί διάλογοι αποτρέπουν την αλληλεπίδραση με άλλα παράθυρα στην εφαρμογή)
+    * Τύπος μηνύματος - όχι μοιραίο μήνυμα προειδοποίησης
+    * Τύπος κουμπιών - χρήση των κουμπιών εντάξει και ακύρωση
+    * message_format - κείμενο που θέλετε να δει ο χρήστης στο παράθυρο 
+    */
+   message_dialog = gtk_message_dialog_new (parent, GTK_DIALOG_MODAL, 
+                                            GTK_MESSAGE_WARNING, 
+                                            GTK_BUTTONS_OK_CANCEL, 
+                                            "Αυτή η ενέργεια θα προκαλέσει το καθολικό να πάψει να υπάρχει.");
+
+   gtk_widget_show_all (message_dialog);
+
+   g_signal_connect (GTK_DIALOG (message_dialog), "response", 
+                    G_CALLBACK (on_response), NULL);
+
+}
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *label;
+
+  GSimpleAction *message_action;
+
+  /* Δημιουργία παραθύρου με τίτλο και προεπιλεγμένο μέγεθος  */
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "GMenu Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 400, 200);
+
+  /* Δημιουργία ετικέτας και προσθήκη της στο παράθυρο */
+  label = gtk_label_new ("This application goes boom!");
+  gtk_container_add (GTK_CONTAINER (window), label);
+
+  /* Δημιουργία μιας νέας απλής ενέργειας, δίνοντας της έναν τύπο παραμέτρου NULL . Θα 
+   * είναι πάντα NULL για πράξεις που κλήθηκαν από ένα μενού. (π.χ. πατώντας ένα κουμπί "ok" 
+   * ή "cancel")
+   */
+  message_action = g_simple_action_new ("message", NULL); 
+
+  /*Σύνδεση του σήματος "activate" στην κατάλληλη συνάρτηση επανάκλησης */
+  g_signal_connect (message_action, "activate", G_CALLBACK (message_cb), 
+                    GTK_WINDOW (window));
+
+  /* Προσθέτει την message_action στην συνολική απεικόνιση της ενέργειας. Μια απεικόνιση ενέργειας  είναι μια 
+   * διεπαφή που περιέχει έναν αριθμό από επώνυμα στιγμιότυπα GAction 
+   * (όπως message_action) 
+   */
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (message_action));
+
+  gtk_widget_show_all (window);
+}
+
+
+
+/* Η συνάρτηση επανάκλησης για το σήμα απάντησης "activate" από την ενέργεια "quit" 
+ * στην ακριβώς παρακάτω συνάρτηση.
+ */ 
+static void
+quit_cb (GSimpleAction *simple,
+         GVariant      *parameter,
+         gpointer       user_data)
+{
+  GApplication *application = user_data;
+
+  g_application_quit (application);
+}
+
+
+
+/* Η συνάρτηση έναρξης για το μενού που δημιουργήσαμε σε αυτό το παράδειγμα */
+static void
+startup (GApplication *app,
+         gpointer      user_data)
+{
+  GMenu *menu;
+  GSimpleAction *quit_action;
+
+  /* Αρχικοποίηση του GMenu και προσθήκη ενός στοιχείου μενού με ετικέτα "Message" και ενέργεια 
+   * "win.message". Επίσης προσθήκη ενός άλλου στοιχείου μενού με ετικέτα "Quit" και ενέργεια 
+   * "app.quit" 
+   */
+  menu = g_menu_new ();
+  g_menu_append (menu, "Message", "win.message");
+  g_menu_append (menu, "Quit", "app.quit");
+
+  /* Δημιουργία μιας απλής ενέργειας για την εφαρμογή. (Σε αυτήν την περίπτωση 
+   * είναι η ενέργεια "quit" .
+   */
+  quit_action = g_simple_action_new ("quit", NULL);
+
+  /* Επιβεβαίωση ότι το μενού που μόλις δημιουργήσαμε ορίστηκε για τη συνολική εφαρμογή */
+  gtk_application_set_app_menu (GTK_APPLICATION (app), G_MENU_MODEL (menu));
+
+  g_signal_connect (quit_action, 
+                    "activate", 
+                    G_CALLBACK (quit_cb), 
+                    app);
+
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (quit_action));
+
+}
+
+
+
+/* Η συνάρτηση έναρξης για την εφαρμογή */
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect (app, "startup", G_CALLBACK (startup), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GApplication.html">GApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkMessageDialog.html">GtkMessageDialog</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html#g-simple-action-new">GSimpleAction</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GActionMap.html">GActionMap</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GMenu.html">GMenu</link></p></item>
+  
+</list>
+</page>

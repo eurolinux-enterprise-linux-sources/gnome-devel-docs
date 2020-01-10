@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="harmful" xml:lang="zh-CN">
+    <info>
+     <link type="guide" xref="index#harm"/>
+    </info>
+    <title>Disk Seeks Considered Harmful</title>
+    <p>磁盘寻道是您可能遇到的最昂贵的操作之一。从查看执行的数量，可能不能了解到，但这是真的。相应地，请避免如下次优的选择：</p>
+    <list type="unordered">
+        <item>
+            <p>在磁盘中到处存放很多小文件。</p>
+        </item>
+        <item>
+            <p>在磁盘中，到处打开、查看、读取很多小文件。</p>
+        </item>
+        <item>
+            <p>
+                Doing the above on files that are laid out at different times, so as to ensure that they are fragmented and cause even more seeking.
+            </p>
+        </item>
+        <item>
+            <p>
+                Doing the above on files that are in different directories, so as to ensure that they are in different cylinder groups and cause even more seeking.
+            </p>
+        </item>
+        <item>
+            <p>
+                Repeatedly doing the above when it only needs to be done once.
+            </p>
+        </item>
+    </list>
+    <p>
+        Ways in which you can optimize your code to be seek-friendly:
+    </p>
+    <list type="unordered">
+        <item>
+            <p>
+                Consolidate data into a single file.
+            </p>
+        </item>
+        <item>
+            <p>将数据保持在同一个目录中。</p>
+        </item>
+        <item>
+            <p>缓存数据以避免定期重读数据。</p>
+        </item>
+        <item>
+            <p>共享数据以便不必每个程序需要时都从硬盘读取。</p>
+        </item>
+        <item>
+            <p>考虑将所有的数据缓存在单个二进制文件中，并使文件正确对齐并可以将其 mmap。</p>
+        </item>
+    </list>
+    <p>
+        The trouble with disk seeks are compounded for reads, which is unfortunately what we are doing.  Remember, reads are generally synchronous while writes are asynchronous.  This only compounds the problem, serializing each read, and contributing to program latency.
+    </p>
+</page>

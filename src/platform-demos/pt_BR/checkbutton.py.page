@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="checkbutton.py" xml:lang="pt-BR">
+  <info>
+    <title type="text">CheckButton (Python)</title>
+    <link type="guide" xref="beginner.py#buttons"/>
+    <link type="next" xref="togglebutton.py"/>
+    <revision version="0.1" date="2012-05-09" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>A toggle button in a window</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Ferreira</mal:name>
+      <mal:email>rafael.f.f1@gmail.com</mal:email>
+      <mal:years>2013</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>CheckButton</title>
+  <media type="image" mime="image/png" src="media/checkbutton.png"/>
+  <p>This CheckButton toggles the title.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Code used to generate this example</title>
+
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="CheckButton Example", application=app)
+        self.set_default_size(300, 100)
+        self.set_border_width(10)
+
+        # a new checkbutton
+        button = Gtk.CheckButton()
+        #  with a label
+        button.set_label("Show Title")
+        # connect the signal "toggled" emitted by the checkbutton
+        # with the callback function toggled_cb
+        button.connect("toggled", self.toggled_cb)
+        # by default, the checkbutton is active
+        button.set_active(True)
+
+        # add the checkbutton to the window
+        self.add(button)
+
+    # callback function
+    def toggled_cb(self, button):
+        # if the togglebutton is active, set the title of the window
+        # as "Checkbutton Example"
+        if button.get_active():
+            self.set_title("CheckButton Example")
+        # else, set it as "" (empty string)
+        else:
+            self.set_title("")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+    <title>Useful methods for a CheckButton widget</title>
+    <p>In line 17 the <code>"toggled"</code> signal is connected to the callback function <code>toggled_cb()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
+
+  </section>
+
+  <section id="references">
+    <title>API References</title>
+    <p>In this sample we used the following:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplication.html">GtkApplication</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplicationWindow.html">GtkApplicationWindow</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkToggleButton.html">GtkToggleButton</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCheckButton.html">GtkCheckButton</link></p></item>
+    </list>
+  </section>
+</page>

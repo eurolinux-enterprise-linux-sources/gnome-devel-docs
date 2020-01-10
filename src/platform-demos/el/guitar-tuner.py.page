@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.py" xml:lang="el">
+
+  <info>
+    <title type="text">Συντονιστής κιθάρας (Python)</title>
+    <link type="guide" xref="py#examples"/>
+
+    <desc>Χρησιμοποιήστε GTK+ και GStreamer για να φτιάξετε ένα απλό πρόγραμμα συντονιστή κιθάρας για το GNOME. Αναδεικνύει πώς να χρησιμοποιήσετε τον σχεδιαστή διεπαφών.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="stub"/>
+    <credit type="author">
+      <name>Έργο τεκμηρίωσης GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Συντονιστής κιθάρας</title>
+
+<synopsis>
+  <p>Σε αυτόν τον οδηγό, θα φτιάξουμε ένα πρόγραμμα που παίζει μουσικούς τόνους και μπορεί να συντονίσει μια κιθάρα. Θα μάθετε να:</p>
+  <list>
+    <item><p>Ρυθμίζετε το κύριο έργο στο Anjuta</p></item>
+    <item><p>Δημιουργείτε απλό GUI με τον σχεδιαστή UI του Anjuta</p></item>
+    <item><p>Χρησιμοποιείτε το GStreamer για να παίζετε ήχους</p></item>
+  </list>
+  <p>Θα χρειαστείτε τα παρακάτω για να μπορέσετε να ακολουθήσετε αυτό το μάθημα:</p>
+  <list>
+    <item><p>Ένα εγκατεστημένο αντίγραφο του <link xref="getting-ready">Anjuta IDE</link></p></item>
+    <item><p>Βασική γνώση της γλώσσας προγραμματισμού Python</p></item>
+  </list>
+</synopsis>
+
+<media type="image" mime="image/png" src="media/guitar-tuner.png"/>
+
+<section id="anjuta">
+  <title>Δημιουργία έργου με το Anjuta</title>
+  <p>Πριν ξεκινήσετε να προγραμματίζετε, πρέπει να δημιουργήσετε ένα καινούργιο έργο στο Anjuta. Έτσι θα δημιουργηθούν όλα τα απαραίτητα αρχεία που χρειάζονται για την εκτέλεση του κώδικα αργότερα. Επίσης θα ήταν χρήσιμο να τα κρατάτε όλα μαζί.</p>
+  <steps>
+    <item>
+    <p>Ξεκινήστε το Anjuta και πατήστε <guiseq><gui>αρχείο</gui><gui>νέο</gui><gui>έργο</gui></guiseq> για να ανοίξετε τον οδηγό του έργου.</p>
+    </item>
+    <item>
+    <p>Επιλέξτε <gui>PyGTK (automake)</gui> από την καρτέλα <gui>Python</gui>, πατήστε <gui>συνέχεια</gui> και συμπληρώστε τις λεπτομέρειές σας στις επόμενες λίγες σελίδες. Χρησιμοποιήστε ως όνομα του έργου και του καταλόγου το <file>guitar-tuner</file>.</p>
+   	</item>
+    <item>
+    <p>Πατήστε <gui>Εφαρμογή</gui> και το έργο θα δημιουργηθεί. Ανοίξτε <file>src/guitar_tuner.py</file> από τις καρτέλες <gui>έργο</gui> ή <gui>αρχείο</gui>. Θα πρέπει να δείτε κάποιο κώδικα που ξεκινάει με τις γραμμές:</p>
+    <code mime="test/x-python">
+from gi.repository import Gtk, GdkPixbuf, Gdk
+import os, sys</code>
+    </item>
+  </steps>
+</section>
+
+<section id="run">
+  <title>Εκτέλεση του κώδικα για πρώτη φορά</title>
+  <p>Ο περισσότερος κώδικας στο αρχείο είναι πρότυπο κώδικα. Φορτώνει ένα (κενό) παράθυρο από το αρχείο περιγραφής της διεπαφής χρήστη και το εμφανίζει. Περισσότερες πληροφορίες υπάρχουν πιο κάτω· προσπεράστε αυτή τη λίστα αν καταλαβαίνετε τα βασικά:</p>
+
+  <list>
+  <item>
+    <p>Οι γραμμές <code>import</code> στην αρχή λένε στην Python να φορτώσει τις βιβλιοθήκες του συστήματος και της διεπαφής χρήστη που χρειάζονται.</p>
+   </item>
+   <item>
+    <p>Μια κλάση δηλώνεται ότι θα είναι η κύρια κλάση για το πρόγραμμά μας. Στην μέθοδο <code>__init__</code> το κύριο παράθυρο φορτώνεται από το αρχείο GtkBuilder (<file>src/guitar-tuner.ui</file>) και τα σήματα συνδέονται.</p>
+    <p>Συνδέοντας σήματα είστε σε θέση να καθορίζετε τι θα συμβεί όταν ένα κουμπί πατηθεί, ή όταν συμβεί κάποιο άλλο σήμα. Εδώ, καλείται η μέθοδος <code>destroy</code> όταν κλείνετε το παράθυρο (και τερματίζει την εφαρμογή).</p>
+   </item>
+   <item>
+    <p>Η συνάρτηση <code>main</code> εκτελείται προκαθορισμένα μόλις τρέξετε ένα πρόγραμμα σε Python. Δημιουργεί ένα στιγμιότυπο της κύριας κλάσης και ξεκινάει τον κύριο βρόχο για να εμφανίσει το παράθυρο.</p>
+   </item>
+  </list>
+
+  <p>Ο κώδικας είναι έτοιμος να χρησιμοποιηθεί, οπότε μπορείτε να τον εκτελέσετε πηγαίνοντας <guiseq><gui>Εκτέλεση</gui><gui>Εκτέλεση</gui></guiseq>.</p>
+</section>
+
+<section id="ui">
+  <title>Δημιουργία της διεπαφής χρήστη</title>
+  <p>Μια περιγραφή της διεπαφής χρήστη (UI) περιέχεται στο αρχείο GtkBuilder. Για να επεξεργαστείτε τη διεπαφή χρήστη, ανοίξτε το <file>src/guitar_tuner.ui</file>. Θα βρεθείτε στο σχεδιαστή διεπαφής. Το παράθυρο σχεδίασης είναι στο κέντρο· τα γραφικά στοιχεία και οι ιδιότητες τους είναι στα δεξιά και η παλέτα των διαθέσιμων γραφικών στοιχείων στα αριστερά.</p>
+  <p>Η διάταξη κάθε διεπαφής χρήστη σε Gtk+ οργανώνεται σε κουτιά και πίνακες. Ας χρησιμοποιήσουμε εδώ ένα κάθετο <gui>GtkButtonBox</gui> για να τοποθετήσουμε έξι <gui>GtkButtons</gui>, ένα για κάθε μία από τις χορδές της κιθάρας.</p>
+
+<media type="image" mime="image/png" src="media/guitar-tuner-glade.png"/>
+
+  <steps>
+   <item>
+   <p>Διαλέξτε ένα <gui>GtkButtonBox</gui> από το τμήμα <gui>Container</gui> στην <gui>Παλέτα</gui> στο δεξιά και προσθέστε το στο παράθυρο. Στο φάτνωμα <gui>Ιδιότητες</gui> καθορίστε τον αριθμό των στοιχείων σε 6 (για τις έξι χορδές της κιθάρας) και τον προσανατολισμό σε κάθετο.</p>
+   </item>
+   <item>
+    <p>Τώρα, διαλέξτε ένα <gui>GtkButton</gui> από την παλέτα και βάλτε το στο πρώτο μέρος του κουτιού.</p>
+   </item>
+   <item>
+    <p>Έχοντας το κουμπί ακόμα επιλεγμένο, αλλάξτε την <gui>Ετικέτα</gui> στην καρτέλα <gui>Γραφικά στοιχεία</gui> σε <gui>E</gui>. Αυτή θα είναι η χαμηλή χορδή Ε.</p>
+    </item>
+    <item>
+     <p>Πηγαίνετε στην καρτέλα <gui>Σήματα</gui> (μέσα στην καρτέλα <gui>Γραφικά στοιχεία</gui>) και βρείτε το σήμα <code>clicked</code> του κουμπιού. Μπορείτε να το χρησιμοποιήσετε για να συνδέσετε έναν χειριστή σημάτων που θα καλείται όταν πατηθεί το κουμπί από τον χρήστη. Για να το κάνετε αυτό, πατήστε πάνω στο σήμα και πληκτρολογήστε <code>on_button_clicked</code> στη στήλη <gui>χειριστής</gui> και πατήστε <key>Επιστροφή</key>.</p>
+    </item>
+    <item>
+    <p>Επαναλάβετε τα παραπάνω βήματα για τα υπόλοιπα κουμπιά, προσθέστε τις επόμενες 5 χορδές με τα ονόματα <em>A</em>, <em>D</em>, <em>G</em>, <em>B</em>, και <em>e</em>.</p>
+    </item>
+    <item>
+    <p>Αποθηκεύστε τη σχεδίαση UI (πατώντας <guiseq><gui>αρχείο</gui><gui>αποθήκευση</gui></guiseq>) και κρατήστε το ανοιχτό.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="signal">
+  <title>Εγγραφή του χειριστή σημάτων</title>
+  <p>Στον σχεδιαστή διεπαφών χρήστη, κάνατε όλα τα κουμπιά να καλούν την ίδια συνάρτηση, <gui>on_button_clicked</gui>, όταν πατηθούν. Πρέπει να προσθέσουμε αυτή την συνάρτηση στο πηγαίο κώδικα.</p>
+<p>Για να το κάνετε αυτό, ανοίξτε το <file>guitar_tuner.py</file>, έχοντας ανοιχτό και το αρχείο της διεπαφής χρήστη. Πηγαίνετε στην καρτέλα <gui>σήματα</gui> που είχατε χρησιμοποιήσει για να ορίσετε το όνομα του σήματος. Τώρα πάρτε την γραμμή όπου ορίσατε το σήμα <gui>clicked</gui> και σύρετε την στον πηγαίο κώδικα μέσα στην κλάση. Ο ακόλουθος κώδικας θα προστεθεί στον πηγαίο σας αρχείο:</p>
+<code mime="text/x-csrc">
+def on_button_clicked (self, button):
+</code>
+
+  <p>Ο χειριστής σημάτων έχει δυο παράμετρους: τον τυπικό δείκτη κλάσης της Python και το <code>Gtk.Button</code> που καλεί την συνάρτηση.</p>
+  <p>Για την ώρα, θα αφήσουμε το χειριστή σημάτων άδειο καθώς θα ασχοληθούμε με το γράψιμο του κώδικα που θα παράγει τους ήχους.</p>
+</section>
+
+<section id="gstreamer">
+  <title>Διοχετεύσεις GStreamer</title>
+  <p>Το Gtreamer είναι ο σκελετός πολυμέσων του GNOME — μπορείτε να το χρησιμοποιήσετε για να αναπαράγετε, ηχογραφήσετε, και να επεξεργαστείτε βίντεο, ήχο, ροές βίντεο και τα λοιπά. Εδώ, θα το χρησιμοποιήσουμε για να παράγουμε μονές-συχνότητες τόνων.</p>
+  <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείς μια <em>διοχέτευση</em> που περιέχει διάφορα επεξεργαζόμενα στοιχεία που πηγαίνουν από την <em>πηγή</em> στην <em>έξοδο</em>. Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή και μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι ένα γραφικό στοιχείο ή η κάρτα ήχου.</p>
+  <p>Ανάμεσα στην πηγή και στην έξοδο, μπορείτε να εφαρμόσετε διάφορα φίλτρα και οι μετατροπείς να χειριστούν εφέ, μετατροπές μορφών και λοιπά. Κάθε στοιχείο της διοχέτευσης έχει ιδιότητες που μπορούν να χρησιμοποιηθούν για να αλλάξουν τη συμπεριφορά τους.</p>
+  <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
+    <p>Ένα παράδειγμα διοχέτευσης GStreamer.</p>
+  </media>
+</section>
+
+<section id="pipeline">
+  <title>Ρύθμιση της διοχέτευσης</title>
+  <p>Σε αυτό το απλό παράδειγμα θα χρησιμοποιήσουμε μια πηγή παραγωγής τόνων, την <code>audiotestsrc</code> και θα στείλουμε την έξοδο στην προεπιλεγμένη συσκευή ήχου του συστήματος, <code>autoaudiosink</code>. Πρέπει μόνο να ρυθμίσουμε την συχνότητα της παραγωγής τόνου· αυτό είναι εφικτό μέσα από την ρύθμιση <code>freq</code> του <code>audiotestsrc</code>.</p>
+
+  <p>Αλλάξτε τη γραμμή import στο αρχείο <file>guitar_tuner.py</file>, μόνο στην αρχή σε :</p>
+  <code mime="test/x-python">from gi.repository import Gtk, Gst, GObject </code>
+  <p>Το <code>Gst</code> περιέχει τη βιβλιοθήκη GStreamer. Επίσης πρέπει να αρχικοποιήσετε σωστά το GStreamer το οποίο γίνεται στη μέθοδο <code>main()</code> με την προσθήκη αυτής γραμμής πάνω από την γραμμή <code>app = GUI()</code>:</p>
+  <code mime="test/x-python">Gst.init_check(sys.argv)</code>
+  <p>Μετά, αντιγράψτε την ακόλουθη συνάρτηση κάπου στην κλάση στο <file>guitar_tuner.py</file>:</p>
+  <code mime="test/x-python">
+def play_sound(self, frequency):
+	pipeline = Gst.Pipeline(name='note')
+	source = Gst.ElementFactory.make('audiotestsrc', 'src')
+	sink = Gst.ElementFactory.make('autoaudiosink', 'output')
+
+	source.set_property('freq', frequency)
+	pipeline.add(source)
+	pipeline.add(sink)
+	source.link(sink)
+	pipeline.set_state(Gst.State.PLAYING)
+
+	GObject.timeout_add(self.LENGTH, self.pipeline_stop, pipeline)</code>
+  <steps>
+    <item>
+    <p>Οι τρεις πρώτες γραμμές δημιουργούν τα στοιχεία πηγή, έξοδος και διοχέτευση (το οποίο θα χρησιμοποιηθεί σαν υποδοχέας για τα δυο άλλα στοιχεία). Δίνουμε το όνομα "note" στη διοχέτευση· ονομάζουμε την πηγή "source" και το ρυθμίζετε στην πηγή <code>audiotestsrc</code>· και ονομάζουμε την έξοδο "output" και την ρυθμίζετε στην έξοδο <code>autoaudiosink</code> (προεπιλεγμένη κάρτα ήχου).</p>
+    </item>
+    <item>
+    <p>Το κάλεσμα της <code>source.set_property</code> ορίζει την ιδιότητα <code>freq</code> του στοιχείου πηγή σε <code>frequency</code>, η οποία έχει περαστεί σαν παράμετρος στη συνάρτηση <code>play_sound</code>. Αυτή είναι η συχνότητα της νότας σε Hertz· πολλές χρήσιμες συχνότητες θα οριστούν αργότερα.</p>
+    </item>
+    <item>
+    <p>Οι επόμενες δύο γραμμές καλούν το <code>pipeline.add</code>, βάζοντας την πηγή και την έξοδο στη διοχέτευση. Η διοχέτευση μπορεί να περιέχει διάφορα στοιχεία του GStreamer. Γενικά, μπορείτε να προσθέσετε όσα στοιχεία θέλετε στη διοχέτευση καλώντας συνεχόμενα τη μέθοδο <code>add</code>.</p>
+    </item>
+    <item>
+    <p>Μετά η <code>pipeline.set_state</code> χρησιμοποιείται για να ξεκινήσει η αναπαραγωγή, αλλάζοντας την κατάσταση της διοχέτευσης σε αναπαραγωγή (<code>Gst.State.PLAYING</code>).</p>
+    </item>
+  </steps>
+
+</section>
+
+<section id="playback">
+  <title>Διακοπή αναπαραγωγής</title>
+  <p>Δεν θέλουμε να παίζουμε έναν ενοχλητικό ήχο για πάντα, οπότε το τελευταίο πράγμα που κάνει η <code>play_sound</code> είναι να καλεί το <code>GObject.timeout_add</code>. Αυτό ορίζει ένα χρονικό περιθώριο που θα σταματήσει τον ήχο· περιμένει για <code>LENGTH</code> χιλιοστά του δευτερολέπτου πριν καλέσει τη συνάρτηση <code>pipeline_stop</code>, και θα συνεχίσει να την καλεί μέχρι η <code>pipeline_stop</code> να επιστρέψει <code>False</code>.</p>
+  <p>Τώρα θα γράψουμε τη συνάρτηση <code>pipeline_stop</code>, η οποία καλείται από το <code>GObject.timeout_add</code>. Προσθέστε τον ακόλουθο κώδικα <em>πάνω</em> από τη συνάρτηση <code>play_sound</code>:</p>
+  <code mime="test/x-python">
+def pipeline_stop(self, pipeline):
+	pipeline.set_state(Gst.State.NULL)
+	return False
+</code>
+  <p>Πρέπει να ορίσετε τη σταθερά <code>LENGTH</code> μέσα στην κλάση, οπότε προσθέστε αυτόν τον κώδικα στην αρχή της κύριας κλάσης:</p>
+  <code mime="test/x-python">
+LENGTH = 500
+</code>
+  <p>Η κλήση στη <code>pipeline.set_state</code> σταματά την αναπαραγωγή της διοχέτευσης.</p>
+</section>
+
+<section id="tones">
+  <title>Ορισμός των τόνων</title>
+  <p>Θέλουμε να παίζουμε το σωστό ήχο όταν ο χρήστης πατάει ένα κουμπί. Πρώτα από όλα, χρειαζόμαστε να ξέρουμε τις συχνότητες για τις έξι χορδές της κιθάρας, οι οποίες είναι ορισμένες (στην αρχή της κύριας κλάσης) μέσα σε ένα λεξικό ώστε να μπορούμε εύκολα να τις απεικονίσουμε στα ονόματα των χορδών:</p>
+  <code mime="test/x-python">
+# Frequencies of the strings
+frequencies = {
+	'E': 329.63,
+	'A': 440,
+	'D': 587.33,
+	'G': 783.99,
+	'B': 987.77,
+	'e': 1318.5
+}
+</code>
+  <p>Για να δούμε τον χειριστή σημάτων που ορίσαμε πριν, <code>on_button_clicked</code>. Θα μπορούσαμε να είχαμε συνδέσει όλα τα κουμπιά σε διαφορετικό χειριστή σημάτων, αλλά αυτό θα οδηγούσε σε πολλές επαναλήψεις του κώδικα. Αντί αυτού, μπορούμε να χρησιμοποιήσουμε τις ετικέτες στα κουμπιά για να δούμε ποιο πατήθηκε:</p>
+  <code mime="test/x-python">
+def on_button_clicked(self, button):
+	label = button.get_child()
+	text = label.get_label()
+
+	self.play_sound (self.frequencies[text])
+</code>
+  <p>Το κουμπί που πατήθηκε περνάει σαν παράμετρος (<code>button</code>) στο <code>on_button_clicked</code>. Μπορούμε να πάρουμε την ετικέτα του κουμπιού χρησιμοποιώντας το <code>button.get_child</code>, και το κείμενο από την ετικέτα χρησιμοποιώντας το <code>label.get_label</code>.</p>
+  <p>Το κείμενο της ετικέτας χρησιμοποιείται σαν κλειδί για το λεξικό και καλείται η <code>play_sound</code> με την κατάλληλη συχνότητα από την νότα. Αυτό παίζει τον τόνο· ο συντονιστής κιθάρας είναι έτοιμος!</p>
+</section>
+
+<section id="run2">
+  <title>Τρέξτε την εφαρμογή</title>
+  <p>Το πρόγραμμα πρέπει να είναι έτοιμο τώρα. Για να ξεκινήσετε το πρόγραμμα πατήστε <guiseq><gui>Εκτέλεση</gui><gui>Εκτέλεση</gui></guiseq>. Απολαύστε το!</p>
+</section>
+
+<section id="impl">
+ <title>Υλοποίηση αναφοράς</title>
+ <p>Αν αντιμετωπίσετε προβλήματα με το μάθημα, συγκρίνετε τον κώδικά σας με αυτόν τον <link href="guitar-tuner/guitar-tuner.py">κώδικα αναφοράς</link>.</p>
+</section>
+
+<section id="next">
+  <title>Επόμενα βήματα</title>
+  <p>Εδώ είναι κάποιες ιδέες για το πώς μπορείτε να επεκτείνετε αυτή την απλή παρουσίαση:</p>
+  <list>
+   <item>
+   <p>Βάλτε το πρόγραμμα να περνάει αυτόματα μέσα από τις νότες.</p>
+   </item>
+   <item>
+   <p>Κάντε το πρόγραμμα να αναπαράγει ηχογραφήσεις από αληθινές χορδές κιθάρας που έχουν εισαχθεί.</p>
+   <p>Για να το κάνετε αυτό, πρέπει να ρυθμίσετε μια πιο περίπλοκη διοχέτευση GStreamer που θα σας επιτρέπει να φορτώνετε και να αναπαράγετε αρχεία ήχου. Θα πρέπει να διαλέξετε τα στοιχεία GStreamer <link href="http://gstreamer.freedesktop.org/documentation/plugins.html">decoder και demuxer</link> με βάση τον τύπο του αρχείου των ηχογραφημένων ήχων — για παράδειγμα το MP3 χρησιμοποιεί διαφορετικά στοιχεία από το Ogg Vorbis.</p>
+   <p>Ίσως χρειαστεί να συνδέσετε τα στοιχεία με πιο περίπλοκους τρόπους. Αυτό μπορεί να συμπεριλαμβάνει τη χρήση <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/chapter-intro-basics.html">Εννοιών GStreamer</link> που δεν καλύπτουμε σε αυτόν τον οδηγό, όπως και <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/section-intro-basics-pads.html">pad</link>. Ίσως βρείτε χρήσιμη και την εντολή <cmd>gst-inspect</cmd>.</p>
+   </item>
+   <item>
+   <p>Αυτόματη ανάλυση νότων που παίζει ο χρήστης.</p>
+   <p>Μπορείτε να συνδέσετε μικρόφωνο και να ηχογραφήσετε από αυτό χρησιμοποιώντας την <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-autoaudiosrc.html">πηγή εισόδου</link>. Ίσως κάποια μορφή της <link href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-plugin-spectrum.html">ανάλυσης φάσματος</link> θα σας βοηθούσε να καταλάβετε ποια νότα παίζει;</p>
+   </item>
+  </list>
+</section>
+
+</page>

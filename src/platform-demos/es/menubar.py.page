@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.py" xml:lang="es">
+  <info>
+  <title type="text">MenuBar (Python)</title>
+  <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
+  <link type="seealso" xref="gmenu.py"/>
+    <link type="next" xref="colorbutton.py"/>
+    <revision version="0.1" date="2012-08-01" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Un widget que contiene widgets «GtkMenuItem»</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Una barra de menú creada usando XML y GtkBuilder.</title>
+  <media type="image" mime="image/png" src="media/menubar.png"/>
+  <p>Una barra de menú usando XML y GtkBuilder.</p>
+
+  <links type="section"/>
+
+  <section id="xml"> <title>Crear una barra de menú usando XML</title>
+   <p>Para crear la barra de menú usando XML:</p>
+   <steps>
+     <item><p>Cree <file>menubar.ui</file> usando su editor de texto favorito.</p></item>
+     <item><p>Añada la siguiente línea en la parte superior del archivo:</p>
+           <code mime="application/xml">
+&lt;?xml version="1.0"? encoding="UTF-8"?&gt;</code>
+     </item>
+    <item><p>Se quiere crear la interfaz que contendrá la barra de menú y sus submenús. Su barra de menú contendrá los submenús <gui>File</gui>, <gui>Edit</gui>, <gui>Choices</gui> y <gui>Help</gui>. Se le añade el siguiente código XML al archivo:</p>
+    <code mime="application/xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+     </item>
+     <item><p>Ahora se crea el archivo .py y se usa «GtkBuilder» para importar el <file>menubar.ui</file> que acaba de crear.</p></item>
+   </steps>
+   </section>
+
+   <section id="basis"> <title>Añadir la barra de menú a la ventana usando «GtkBuilder»</title>
+<code mime="text/x-python">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="MenuBar Example", application=app)
+        self.set_default_size(200, 200)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        # a builder to add the UI designed with Glade to the grid:
+        builder = Gtk.Builder()
+        # get the file (if it is there)
+        try:
+            builder.add_from_file("menubar_basis.ui")
+        except:
+            print("file not found")
+            sys.exit()
+
+        # we use the method Gtk.Application.set_menubar(menubar) to add the menubar
+        # to the application (Note: NOT the window!)
+        self.set_menubar(builder.get_object("menubar"))
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+<p>Ahora ejecute la aplicación de Python. Se debería ver como la imagen en la parte superior de esta página.</p>
+</section>
+
+<section id="xml2"> <title>Añadir elementos a los menús</title>
+<p>Se empieza añadiendo 2 elementos al menú <gui>File</gui>: <gui>New</gui> y <gui>Quit</gui>. Esto se hace añadiéndole una <code>section</code> al submenú <code>File</code> con estos elementos. El <file>menubar.ui</file> debe verse así (líneas 6 a 13 inclusive conforman la sección nueva):</p>
+
+   <listing>
+      <title>menubar.ui</title>
+      <code mime="application/xml" style="numbered">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name ="label"&gt;Quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;</code>
+</listing>
+
+  <p>De esta misma manera puede añadirle un elemento <code>Copy</code> y uno <code>Paste</code> al submenú <code>Edit</code>, y un elemento <code>About</code> al submenú <code>Help</code>.</p>
+
+  </section>
+
+  <section id="actions">
+    <title>Configurar las acciones</title>
+
+    <p>Ahora se crean las acciones para «New» y «Quit», conectadas a una función de retorno de llamada en el archivo de Python; por ejemplo se crea «new» así:</p>
+    <code mime="text/x-python">
+new_action = Gio.SimpleAction.new("new", None)
+new_action.connect("activate", self.new_callback)</code>
+
+    <p>Y se crea la función de retorno de llamada de «new» como</p>
+    <code mime="text/x-python">
+def new_callback(self, action, parameter):
+    print "You clicked \"New\""</code>
+
+    <p>Ahora, en el archivo XML, se conectan los elementos del menú a las acciones en el archivo XML añadiendo el atributo «action»:</p>
+    <code mime="text/x-python">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+&lt;/item&gt;</code>
+
+    <p>Tenga en cuenta que para una acción relativa a la aplicación, se usa el prefijo <code>app.</code>; para acciones relativas a la ventana, se usa el prefijo <code>win.</code>.</p>
+
+    <p>Finalmente, en el archivo de Python, se añade la acción a la aplicación o a la ventana: por ejemplo <code>app.new</code> se añadirá a la aplicación en el método <code>do_startup(self)</code> así:</p>
+    <code mime="text/x-python">
+self.add_action(new_action)</code>
+
+    <p>Consulte la <link xref="signals-callbacks.py"/> para obtener una explicación más detallada sobre señales y retornos de llamada.</p> 
+
+  </section>
+
+  <section id="win-app"><title>Acciones: ¿aplicación o ventana?</title>
+    <p>Anteriormente, se crearon las acciones «new» y «open» como parte de la clase «MyApplication». Las acciones que controlan la aplicación en sí, como «quit» deben crearse de manera similar.</p>
+
+    <p>Algunas acciones, como «copy» y «paste» trabajan con la ventana, no con la aplicación. Las acciones de ventanas deben crearse como parte de la clase de la ventana.</p>
+
+    <p>Los archivos de ejemplo completos contienen tanto acciones de aplicación como de ventana. Estas últimas son generalmente también las incluidas en el <link xref="gmenu.py">menú de la aplicación</link>. No es una buena práctica incluir acciones de ventana en el menú de la aplicación. Con motivo de demostración, los archivos de ejemplo completos incluyen XML en el archivo de IU que crea el menú de la aplicación incluyendo elementos «New» y «Open», y estos están vinculados a las mismas acciones que los elementos de la barra de menú del mismo nombre.</p>
+  </section>
+
+  <section id="choices">
+    <title>Submenú «choices» y elementos con estado</title>
+    <media type="image" mime="image/png" src="media/menubar_choices.png"/>
+    <p>Las líneas 30 a 80 inclusive del <link xref="menubar.py#xml-code"/> demuestran el código XML usado para crear la IU del menú <gui>Choices</gui>.</p>
+
+    <p>Las acciones creadas hasta ahora <em>no tienen estado</em>, esto significa que no mantienen o dependen de un estado dado por la acción en sí. Las acciones que necesita crear para el submenú «Choices», por otro lado, <em>tienen estado</em>. Un ejemplo de creación de una acción con estado es:</p>
+    <code mime="text/x-python">
+shape_action = Gio.SimpleAction.new_stateful("shape", GLib.VariantType.new('s'), GLib.Variant.new_string('line'))</code>
+
+    <p>donde las variables del método son: nombre, tipo de parámetro (en este caso, una cadena: consulte <link href="http://developer.gnome.org/glib/unstable/glib-GVariantType.html">aquí</link> para una lista completa de significados de caracteres), estado inicial (en este caso, «line»; en el caso de un valor booleano <code>True</code> debería ser <code>Glib.Variant.new_boolean(True)</code>, y así sucesivamente, consulte <link href="http://developer.gnome.org/glib/unstable/glib-GVariant.html">aquí</link> para ver una lista completa).</p>
+
+    <p>Después de haber creado la «SimpleAction» con estado se conecta a su función de retorno de llamada y se añade a la ventana (o la aplicación, si es el caso), como antes:</p>
+
+    <code mime="text/x-python">
+shape_action.connect("activate", self.shape_callback)
+self.add_action(shape_action)</code>
+
+  </section>
+
+  <section id="xml-code">
+    <title>Archivo de IU XML completo de este ejemplo</title>
+    <code mime="application/xml" style="numbered">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Copy&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.copy&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Paste&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.paste&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+      &lt;submenu&gt;
+        &lt;attribute name="label"&gt;Shapes&lt;/attribute&gt;
+          &lt;section&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Line&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;line&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Triangle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;triangle&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Square&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;square&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Polygon&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;polygon&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Circle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;circle&lt;/attribute&gt;
+            &lt;/item&gt;
+          &lt;/section&gt;
+      &lt;/submenu&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;On&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;on&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Off&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;off&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Awesome&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.awesome&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;About&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.about&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+  &lt;menu id="appmenu"&gt;
+    &lt;section&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+      &lt;/item&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+      &lt;/item&gt;
+    &lt;/section&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+  </section>
+
+  <section id="python-code">
+    <title>Archivo de Python completo de este ejemplo</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import GLib
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="MenuBar Example", application=app)
+        self.set_default_size(200, 200)
+
+        # action without a state created (name, parameter type)
+        copy_action = Gio.SimpleAction.new("copy", None)
+        # connected with the callback function
+        copy_action.connect("activate", self.copy_callback)
+        # added to the window
+        self.add_action(copy_action)
+
+        # action without a state created (name, parameter type)
+        paste_action = Gio.SimpleAction.new("paste", None)
+        # connected with the callback function
+        paste_action.connect("activate", self.paste_callback)
+        # added to the window
+        self.add_action(paste_action)
+
+        # action with a state created (name, parameter type, initial state)
+        shape_action = Gio.SimpleAction.new_stateful(
+            "shape", GLib.VariantType.new('s'), GLib.Variant.new_string('line'))
+        # connected to the callback function
+        shape_action.connect("activate", self.shape_callback)
+        # added to the window
+        self.add_action(shape_action)
+
+        # action with a state created
+        about_action = Gio.SimpleAction.new("about", None)
+        # action connected to the callback function
+        about_action.connect("activate", self.about_callback)
+        # action added to the application
+        self.add_action(about_action)
+
+    # callback function for copy_action
+    def copy_callback(self, action, parameter):
+        print("\"Copy\" activated")
+
+    # callback function for paste_action
+    def paste_callback(self, action, parameter):
+        print("\"Paste\" activated")
+
+    # callback function for shape_action
+    def shape_callback(self, action, parameter):
+        print("Shape is set to", parameter.get_string())
+        # Note that we set the state of the action!
+        action.set_state(parameter)
+
+    # callback function for about (see the AboutDialog example)
+    def about_callback(self, action, parameter):
+        # a  Gtk.AboutDialog
+        aboutdialog = Gtk.AboutDialog()
+
+        # lists of authors and documenters (will be used later)
+        authors = ["GNOME Documentation Team"]
+        documenters = ["GNOME Documentation Team"]
+
+        # we fill in the aboutdialog
+        aboutdialog.set_program_name("MenuBar Example")
+        aboutdialog.set_copyright(
+            "Copyright \xc2\xa9 2012 GNOME Documentation Team")
+        aboutdialog.set_authors(authors)
+        aboutdialog.set_documenters(documenters)
+        aboutdialog.set_website("http://developer.gnome.org")
+        aboutdialog.set_website_label("GNOME Developer Website")
+
+        # to close the aboutdialog when "close" is clicked we connect the
+        # "response" signal to on_close
+        aboutdialog.connect("response", self.on_close)
+        # show the aboutdialog
+        aboutdialog.show()
+
+    # a callback function to destroy the aboutdialog
+    def on_close(self, action, parameter):
+        action.destroy()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        # FIRST THING TO DO: do_startup()
+        Gtk.Application.do_startup(self)
+
+        # action without a state created
+        new_action = Gio.SimpleAction.new("new", None)
+        # action connected to the callback function
+        new_action.connect("activate", self.new_callback)
+        # action added to the application
+        self.add_action(new_action)
+
+        # action without a state created
+        quit_action = Gio.SimpleAction.new("quit", None)
+        # action connected to the callback function
+        quit_action.connect("activate", self.quit_callback)
+        # action added to the application
+        self.add_action(quit_action)
+
+        # action with a state created
+        state_action = Gio.SimpleAction.new_stateful(
+            "state",  GLib.VariantType.new('s'), GLib.Variant.new_string('off'))
+        # action connected to the callback function
+        state_action.connect("activate", self.state_callback)
+        # action added to the application
+        self.add_action(state_action)
+
+        # action with a state created
+        awesome_action = Gio.SimpleAction.new_stateful(
+            "awesome", None, GLib.Variant.new_boolean(False))
+        # action connected to the callback function
+        awesome_action.connect("activate", self.awesome_callback)
+        # action added to the application
+        self.add_action(awesome_action)
+
+        # a builder to add the UI designed with Glade to the grid:
+        builder = Gtk.Builder()
+        # get the file (if it is there)
+        try:
+            builder.add_from_file("menubar.ui")
+        except:
+            print("file not found")
+            sys.exit()
+
+        # we use the method Gtk.Application.set_menubar(menubar) to add the menubar
+        # and the menu to the application (Note: NOT the window!)
+        self.set_menubar(builder.get_object("menubar"))
+        self.set_app_menu(builder.get_object("appmenu"))
+
+    # callback function for new
+    def new_callback(self, action, parameter):
+        print("You clicked \"New\"")
+
+    # callback function for quit
+    def quit_callback(self, action, parameter):
+        print("You clicked \"Quit\"")
+        sys.exit()
+
+    # callback function for state
+    def state_callback(self, action, parameter):
+        print("State is set to", parameter.get_string())
+        action.set_state(parameter)
+
+    # callback function for awesome
+    def awesome_callback(self, action, parameter):
+        action.set_state(GLib.Variant.new_boolean(not action.get_state()))
+        if action.get_state().get_boolean() is True:
+            print("You checked \"Awesome\"")
+        else:
+            print("You unchecked \"Awesome\"")
+
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="mnemonics-and-accelerators"><title>Atajos y aceleradores</title>
+    <p>Las etiquetas pueden contener atajos. Los atajos son caracteres subrayados en la etiqueta, usados para navegar con el teclado. Se crean poniendo un guión bajo antes del carácter de atajo. Por ejemplo «_Archivo» en lugar de solo «Archivo» en el atributo «label» del «menubar.ui».</p>
+   <p>Los atajos son visibles cuando pulsa la tecla <key>Alt</key>. Presionar <keyseq><key>Alt</key><key>A</key></keyseq> abrirá el menú <gui>Archivo</gui>.</p>
+
+    <p>Los aceleradores pueden añadirse explícitamente en las definiciones de la IU. Por ejemplo, es común poder cerrar una aplicación presionando <keyseq><key>Ctrl</key><key>Q</key></keyseq> o guardar un archivo presionando <keyseq><key>Ctrl</key><key>S</key></keyseq>. Para añadir un acelerador a la definición de IU, simplemente añádale un atributo «accel» al elemento.</p>
+<p><code mime="application/xml">&lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;</code> creará la secuencia <keyseq><key>Ctrl</key><key>Q</key></keyseq> cuando se añada al elemento de la etiqueta <code>Quit</code>. Aquí, «Primary» se refiere a la tecla <key>Ctrl</key> en una PC o <key>⌘</key> en una Mac.</p>
+
+  <code mime="application/xml">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;_Quit&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+  &lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;
+&lt;/item&gt;</code>
+  </section>
+
+  <section id="translatable"><title>Cadenas traducibles</title>
+   <p>Dado que las aplicaciones de GNOME se traducen a <link href="http://l10n.gnome.org/languages/">muchos idiomas</link>, es importante que las cadenas en su aplicación puedan traducirse. Para hacer una etiqueta traducible, simplemente añada <code>translatable="yes"</code>:</p>
+
+     <code mime="application/xml">&lt;attribute name="label" translatable="yes"&gt;Quit&lt;/attribute&gt;</code>
+
+  </section>
+  <section id="references">
+    <title>Referencias de la API</title>
+    <p>En este ejemplo se usa lo siguiente:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gio/unstable/GSimpleAction.html">GSimpleAction</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkBuilder.html">GtkBuilder</link></p></item>
+    </list>
+  </section>
+</page>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="hello-world" xml:lang="es">
+
+  <info>
+    <!-- The text title is used on the help.gnome.org -->
+    <title type="link">Hola mundo (C)</title>
+    <link type="guide" xref="c#examples"/>
+    <revision version="0.1" date="2013-06-17" status="review"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+    </credit>
+    <credit type="editor">
+      <name>Bastian Ilsø</name>
+      <email its:translate="no">bastianilso@gnome.org</email>
+    </credit>
+
+    <desc>Crear una pequeña aplicación «Hola, mundo» usando GTK+.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011 - 2016</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Nicolás Satragno</mal:name>
+      <mal:email>nsatragno@gmail.com</mal:email>
+      <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Hola mundo</title>
+
+  <note>
+    <p>Para obtener una explicación paso a paso sobre cómo crear un diálogo de GTK+ en C, consulte <link href="https://developer.gnome.org/gtk3/stable/gtk-getting-started.html">Primeros pasos con GTK+</link></p>
+  </note>
+
+  <p>Escribir un diálogo Hola mundo de GTK+ en C se puede hacer como se ve en siguiente código de ejemplo:</p>
+  <code mime="text/x-csrc" style="numbered">
+    #include &lt;gtk/gtk.h&gt;
+
+static void
+activate (GtkApplication* app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *label;
+
+  window = gtk_application_window_new (app);
+  label = gtk_label_new ("Hello GNOME!");
+  gtk_container_add (GTK_CONTAINER (window), label);
+  gtk_window_set_title (GTK_WINDOW (window), "Welcome to GNOME");
+  gtk_window_set_default_size (GTK_WINDOW (window), 200, 100);
+  gtk_widget_show_all (window);
+}
+
+int
+main (int    argc,
+      char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new (NULL, G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+
+  </code>
+
+  <p>GtkApplication inicializa GTK+. También conecta el botón <gui>x</gui> que se genera automáticamente junto con la ventana a la señal «destroy». Puede empezar a construir su primera ventana. PAra hacer esto, cree una variable llamada <var>window</var> y asígnela a gtk_application_window_new. El título de la ventana puede ser la cadena que quiera. Para asegurarse, es mejor usar la codificación UTF-8. El código anterior creará una ventana de diálogo similar a la que se ve a continuación:</p>
+
+  <media type="image" mime="image/png" src="media/hello-world.png"/>
+</page>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherAppMain.js" xml:lang="el">
+  <info>
+    <link type="guide" xref="weatherApp.js#main" group="#first"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
+      <mal:email>team@gnome.gr</mal:email>
+      <mal:years>2012-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2012, 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Μαρία Θουκιδίδου</mal:name>
+      <mal:email>marablack3@gmail.com</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Θάνος Τρυφωνίδης</mal:name>
+      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:years>2014, 2015</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Το κύριο αρχείο του προγράμματος</title>
+  <synopsis>
+    <p>Σε αυτό το τμήμα του οδηγού θα κατασκευάσουμε το κύριο αρχείο του προγράμματος της εφαρμογής καιρού. Για να γράψετε και να τρέξετε όλα τα παραδείγματα κώδικα οι ίδιοι, χρειαζόσαστε έναν επεξεργαστή για το γράψιμο του κώδικα, τερματικό και GNOME 3 ή μεταγενέστερο εγκατεστημένο στον υπολογιστή σας. Σε αυτό το τμήμα θα εξετάσουμε τα παρακάτω μέρη:</p>
+    <list>
+      <item><p><link xref="#script">Σενάριο για εκτέλεση της εφαρμογής</link></p></item>
+      <item><p><link xref="#imports">Βιβλιοθήκες για εισαγωγή</link></p></item>
+      <item><p><link xref="#mainwindow">Δημιουργία του κύριου παραθύρου για την εφαρμογή</link></p></item>
+      <item><p><link xref="#widgets">Προσθήκη πλέγματος και όλων των απαραίτητων γραφικών στοιχείων σε αυτό</link></p></item>
+      <item><p><link xref="#asynccall">Αίτηση των πληροφοριών καιρού ασύγχρονα</link></p></item>
+      <item><p><link xref="#connectingbuttons">Σύνδεση σημάτων σε κουμπί και καταχώριση</link>.</p></item>
+      <item><p><link xref="#weatherapp.js">weatherapp.js</link></p></item>
+    </list>
+  </synopsis>
+  <section id="script">
+    <title>Σενάριο για εκτέλεση της εφαρμογής</title>
+    <code mime="application/javascript" style="numbered">
+  #!/usr/bin/gjs</code>
+    <p>Αυτή η γραμμή λέει πώς θα εκτελεστεί το σενάριο. Πρέπει να είναι η πρώτη γραμμή του κώδικα και να είναι εκτελέσιμη. Για λήψη των δικαιωμάτων εκτέλεσης πηγαίνετε στον τερματικό και εκτελέστε στον σωστό φάκελο: chmod +x όνομα σεναρίου. Ή μπορείτε να χρησιμοποιήσετε τον διαχειριστή αρχείου γραφικών. Απλά πηγαίνετε στον σωστό φάκελο όπου είναι ο κώδικας σας δεξί κλικ στο αρχείο του κώδικα σας, επιλέξτε ιδιότητες, κλικ στην καρτέλα δικαιωμάτων και σημειώστε το πλαίσιο για να επιτραπεί η εκτέλεση του αρχείου ως πρόγραμμα</p>
+  </section>
+
+  <section id="imports">
+    <title>Βιβλιοθήκες για εισαγωγή</title>
+    <code mime="application/javascript" style="numbered">
+var Gtk = imports.gi.Gtk;
+const WeatherService = imports.geonames;</code>
+    <p>Για να έχουμε ένα αποτελεσματικό πρόγραμμα χρειαζόμαστε να εισάγουμε μια βιβλιοθήκη GObject αυτανάλυσης για χρήση. Για χρήση UI, χρειαζόμαστε Gtk. Το Gtk εισάγεται στην αρχή, έτσι το έχουμε για χρήση παντού. Εισάγουμε επίσης τη δικιά μας τοπική βιβλιοθήκη JavaScript geonames για να χρησιμοποιηθεί εδώ.</p>
+    </section>
+
+   <section id="mainwindow">
+    <title>Δημιουργία του κύριου παραθύρου για την εφαρμογή</title>
+    <code mime="application/javascript" style="numbered">
+// Αρχικοποίηση της gtk
+Gtk.init(null, 0);
+//Δημιουργία του παραθύρου σας, ονομασία του και σύνδεσή του x με τη συνάρτηση εξόδου. Να θυνάστε ότι το παράθυρο είναι μια δεδομένη λέξη
+var weatherwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+weatherwindow.title = "Todays weather";
+//Το παράθυρο δέχεται μόνο ένα γραφικό στοιχείο και έναν τίτλο. Παραπέρα δομή με παρόμοια Gtk.boxes
+weatherwindow.connect("destroy", function(){Gtk.main_quit()});
+
+weatherwindow.show_all();
+//και εκτέλεσή του
+Gtk.main();</code>
+  </section>
+  <section id="widgets">
+  <title>Προσθήκη πλέγματος και όλων των απαραίτητων γραφικών στοιχείων σε αυτό</title>
+  <code mime="application/javascript" style="numbered">
+var grid = new Gtk.Grid();
+weatherwindow.add(grid);
+
+//Αρχικοποιούμε εδώ το εικονίδιο, αλλά αποφασίζει το αρχείο αργότερα στο geonames.js.
+var weatherIcon = new Gtk.Image();
+
+//Ορισμός μερικών ετικετών στο παράθυρό σας
+var label1 = new Gtk.Label({label: ""});
+var label2 = new Gtk.Label({label: "Looking in the sky..."});
+var label3 = new Gtk.Label({label: ""});
+
+var entry = new Gtk.Entry();
+entry.set_width_chars(4);
+entry.set_max_length(4);
+var label4 = new Gtk.Label({label: "Enter ICAO station for weather: "});
+var button1 = new Gtk.Button({label: "search!"});
+
+grid.attach(label4, 2, 1, 1, 1);
+grid.attach_next_to(label1,label4,3,1,1);
+grid.attach_next_to(label2,label1,3,1,1);
+grid.attach_next_to(label3,label2,3,1,1);
+grid.attach_next_to(entry,label4,1,1,1);
+grid.attach_next_to(button1,entry,1,1,1);
+grid.attach_next_to(weatherIcon,label2,1,1,1)
+</code>
+    <p>Σε ενότητα αυτήν την ενότητα δημιουργούμε το πλέγμα που πρόκειται να χρησιμοποιήσουμε για τοποθέτηση των γραφικών στοιχείων. Όλα τα κουμπιά, ετικέτες και καταχωρίσεις αρχικοποιούνται και τοποθετούνται στο πλέγμα. Όπως φαίνεται από την τοποθέτηση των διαφορετικών γραφικών στοιχείων, δεν χρειάζεται να σχετίζονται μόνο με ένα γραφικό στοιχείο. Σε αυτό το σημείο μερικές από τις ετικέτες δεν έχουν περιεχόμενο. Το περιεχόμενο για αυτά τα γραφικά στοιχεία εφαρμόζεται αργότερα. Εάν τρέξετε την εφαρμογή σε αυτό το στάδιο, θα έχετε έτοιμο το UI, αλλά τα γραφικά στοιχεία δεν συνδέονται με τίποτα. Για αυτό χρειαζόμαστε πρώτα να κατασκευάσουμε την τοπική βιβλιοθήκη αναζήτησης καιρού και έπειτα να πάρουμε την πληροφορία που χρειαζόμαστε ασύγχρονα. Όταν έχουμε την τοπική μας βιβλιοθήκη έτοιμη, μπορούμε να το συνδέσουμε με τα απαραίτητα γραφικά στοιχεία.</p>
+  </section>
+
+     <section id="asynccall">
+  <title>Αίτηση των πληροφοριών καιρού ασύγχρονα</title>
+  <code mime="application/javascript" style="numbered">
+function getWeatherForStation() {
+  var station = entry.get_text();
+
+  var GeoNames = new WeatherService.GeoNames(station); //"EFHF";
+
+  GeoNames.getWeather(function(error, weather) {
+    //Αυτό εδώ δουλεύει λίγο σαν σήματα. Αυτός ο  κώδικας θα εκτελεστεί όταν έχουμε καιρό.
+    if (error) {
+      label2.set_text("Suggested ICAO station does not exist Try EFHF");
+    return; }
+    weatherIcon.file = GeoNames.getIcon(weather);
+
+    label1.set_text("Temperature is " + weather.weatherObservation.temperature + " degrees.");
+    if (weather.weatherObservation.weatherCondition !== "n/a"){
+      label2.set_text("Looks like there is " + weather.weatherObservation.weatherCondition + " in the sky.");
+      }
+    else {
+      label2.set_text("Looks like there is " + weather.weatherObservation.clouds + " in the sky.");
+    }
+    label3.set_text("Windspeed is " + weather.weatherObservation.windSpeed + " m/s")
+    // ...
+  });
+}
+</code>
+  <p>Αυτή η λειτουργία αφιερώνεται στην κλήση για τις πληροφορίες καιρού και ενημέρωση ετικετών και εικονιδίων ανάλογα. Στην αρχή της λειτουργίας παίρνουμε την είσοδο χρήστη για αναζήτηση. Έτσι εδώ για την πρώτη φορά χρησιμοποιούμε τη δική μας βιβλιοθήκη και τις αποδίδουμε τη μεταβλητή GeoNames. Ενώ εκχωρούμε την WeatherService της δίνουμε τον σταθμό. Το πρώτο πράγμα που κάνουμε με τα GeoNames είναι η αίτηση καιρού. Οτιδήποτε μετά τα GeoNamesgetWeather.getWeather (συνάρτηση (σφάλμα, καιρός) συμβαίνει μόνο εάν είτε πάρουμε ένα μήνυμα σφάλματος ή πληροφορίες καιρού. Εάν δεν έρθει κανένα, το υπόλοιπο του προγράμματος δουλεύει τόσο κανονικά, όσο το main_Quit δουλεύει.</p>
+  </section>
+
+  <section id="connectingbuttons">
+  <title>Σύνδεση σημάτων σε κουμπί και καταχώριση.</title>
+  <code mime="application/javascript" style="numbered">
+entry.connect("key_press_event", function(widget, event) {
+  if (entry.get_text().length === 4) {
+    // Enough is enough
+    getWeatherForStation();
+  }
+  return false;
+});
+
+button1.connect("clicked", function(){
+  getWeatherForStation();
+});</code>
+  <p>Και τελικά έχουμε τις συνδέσεις που κάνουν όλη την εφαρμογή να τρέχει όπως θα έπρεπε. Συνδέουμε και την καταχώριση και το κουμπί για να κάνουν το ίδιο πράγμα, παίρνοντας τον καιρό. Έτσι δεν πειράζει, εάν πατήσετε εάν πατήσετε εισαγωγή ή κλικ στο κουμπί αναζήτησης.</p>
+  </section>
+
+  <section id="weatherapp.js">
+  <title>Weatherapp.js</title>
+  <p>Το αρχείο Weatherapp.js μοιάζει με αυτό:</p>
+  <code mime="application/javascript" style="numbered">
+#!/usr/bin/gjs
+//Η προηγούμενη γραμμή αρχίζει με δίεση-θαυμαστικό που λέει π να εκτελεστεί το σενάριο.
+// Σημειώστε ότι το σενάριο πρέπει να είναι εκτελέσιμο (εκτέλεση σε τερματικό στον δεξιό φάκελο: chmod +x scriptname)
+
+var Gtk = imports.gi.Gtk;
+
+const WeatherService = imports.geonames;
+//Μεταφορά της δικής σας βιβλιοθήκης από τον ίδιο φάκελο (όπως ορίστηκε στο GJS_PATH). Αν χρησιμοποιείτε autotools .desktop θα φροντίσει για αυτό
+
+// Αρχικοποίηση της gtk
+Gtk.init(null, 0);
+//Δημιουργία του παραθύρου σας, ονομασία του, και σύνδεση του x με τη συνάρτηση εξόδου. Να θυμάστε ότι το παράθυρο είναι μια δεσμευμένη λέξη
+var weatherwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+weatherwindow.title = "Todays weather";
+//Το παράθυρο δέχεται μόνο ένα γραφικό στοιχείο και έναν τίτλο. Παραπέρα δομή όμοια μεGtk.boxes
+weatherwindow.connect("destroy", function(){Gtk.main_quit()});
+//We initialize the icon here, but deside the file later in geonames.js.
+
+var weatherIcon = new Gtk.Image();
+
+//Ορισμός μερικών ετικετών στο παράθυρό σας
+var label1 = new Gtk.Label({label: ""});
+var label2 = new Gtk.Label({label: "Looking in the sky..."});
+var label3 = new Gtk.Label({label: ""});
+
+var grid = new Gtk.Grid();
+weatherwindow.add(grid);
+
+var entry = new Gtk.Entry();
+entry.set_width_chars(4);
+entry.set_max_length(4);
+var label4 = new Gtk.Label({label: "Enter ICAO station for weather: "});
+var button1 = new Gtk.Button({label: "search!"});
+
+//Κάποιος καιρός
+
+entry.connect("key_press_event", function(widget, event) {
+  // FIXME: Λήψη καιρού με την εισαγωγή (πλήκτρο 13)
+  if (entry.get_text().length === 4) {
+    // Enough is enough
+    getWeatherForStation();
+  }
+  return false;
+});
+
+button1.connect("clicked", function(){
+  getWeatherForStation();
+});
+
+function getWeatherForStation() {
+  var station = entry.get_text();
+
+  var GeoNames = new WeatherService.GeoNames(station); //"EFHF";
+
+  GeoNames.getWeather(function(error, weather) {
+    //Αυτό εδώ δουλεύει λίγο σαν σήματα. Αυτός ο κώδικας θα εκτελεστεί όταν έχουμε καιρό.
+    if (error) {
+      label2.set_text("Suggested ICAO station does not exist Try EFHF");
+    return; }
+    weatherIcon.file = GeoNames.getIcon(weather);
+
+    label1.set_text("Temperature is " + weather.weatherObservation.temperature + " degrees.");
+    if (weather.weatherObservation.weatherCondition !== "n/a"){
+      label2.set_text("Looks like there is " + weather.weatherObservation.weatherCondition + " in the sky.");
+      }
+    else {
+      label2.set_text("Looks like there is " + weather.weatherObservation.clouds + " in the sky.");
+    }
+    label3.set_text("Windspeed is " + weather.weatherObservation.windSpeed + " m/s")
+    // ...
+  });
+}
+
+grid.attach(label4, 2, 1, 1, 1);
+grid.attach_next_to(label1,label4,3,1,1);
+grid.attach_next_to(label2,label1,3,1,1);
+grid.attach_next_to(label3,label2,3,1,1);
+grid.attach_next_to(entry,label4,1,1,1);
+grid.attach_next_to(button1,entry,1,1,1);
+grid.attach_next_to(weatherIcon,label2,1,1,1)
+weatherwindow.show_all();
+//και εκτέλεσή του
+Gtk.main();
+</code>
+  <p>Εκτέλεση μέχρι να έχετε όλα τα αρχεία autotools έτοιμα. :</p>
+
+  <screen> <output style="prompt">$ </output><input> GJS_PATH=`pwd` gjs weatherapp.js</input></screen>
+  <p>Χρησιμοποιήστε αυτήν την εντολή στο τερματικό ενώ αναπτύσσετε τα αρθρώματά σας. Όταν καλείτε το πρόγραμμά σας με αυτόν τον τρόπο, ξέρει πού θα βρει τις προσαρμοσμένες JSlibraries, σε αυτήν την περίπτωση το geonames.js.</p>
+
+  </section>
+</page>

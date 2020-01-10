@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.py" xml:lang="fr">
+  <info>
+    <title type="text">Entry (Python)</title>
+    <link type="guide" xref="beginner.py#entry"/>
+    <link type="seealso" xref="strings.py"/>
+    <link type="next" xref="scale.py"/>
+    <revision version="0.2" date="2012-06-23" status="draft"/>
+
+    <credit type="author copyright editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no"/>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Sebastian Pölsterl</name>
+      <email its:translate="no">sebp@k-d-w.org</email>
+      <years>2011</years>
+    </credit>
+    <desc>Un champ de saisie de texte sur une ligne</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Entrée</title>
+  <media type="image" mime="image/png" src="media/entry.png"/>
+  <p>Cette application vous accueille dans le terminal avec le nom que vous fournissez.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Code utilisé pour générer cet exemple</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="What is your name?", application=app)
+        self.set_default_size(300, 100)
+        self.set_border_width(10)
+
+        # a single line entry
+        name_box = Gtk.Entry()
+        # emits a signal when the Enter key is pressed, connected to the
+        # callback function cb_activate
+        name_box.connect("activate", self.cb_activate)
+
+        # add the Gtk.Entry to the window
+        self.add(name_box)
+
+    # the content of the entry is used to write in the terminal
+    def cb_activate(self, entry):
+        # retrieve the content of the widget
+        name = entry.get_text()
+        # print it in a nice form in the terminal
+        print("Hello " + name + "!")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Méthodes utiles pour un élément graphique Entrée</title>
+    <p>In line 14 the signal <code>"activate"</code> is connected to the callback function <code>cb_activate()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation. Some of the signals that a Gtk.Entry widget can emit are: <code>"activate"</code> (emitted when the user activates the Entry key); <code>"backspace"</code> (emitted when the user activates the Backspace or Shift-Backspace keys); <code>"copy-clipboard"</code> (Ctrl-c and Ctrl-Insert); <code>"paste-clipboard"</code> (Ctrl-v and Shift-Insert); <code>"delete-from-cursor"</code> (Delete, for deleting a character; Ctrl-Delete, for deleting a word); <code>"icon-press"</code> (emitted when the user clicks an activatable icon); <code>"icon-release"</code> (emitted on the button release from a mouse click over an activatable icon);  <code>"insert-at-cursor"</code> (emitted when the user initiates the insertion of a fixed string at the cursor); <code>"move-cursor"</code> (emitted when the user initiates a cursor movement); <code>"populate-popup"</code> (emitted before showing the context menu of the entry; it can be used to add items to it).</p>
+    <list>
+      <item><p>Les méthodes <code>get_buffer()</code> et <code>set_buffer(tampon)</code>, où <code>tampon</code> est un objet Gtk.EntryBuffer, peuvent être utilisées pour obtenir et définir le tampon de l'entrée.</p></item>
+      <item><p>Les fonctions <code>get_text()</code> et <code>set_text("some text")</code> peuvent être utilisées pour obtenir et définir le contenu de l'entrée.</p></item>
+      <item><p>La méthode <code>get_text_length()</code> parle d'elle-même.</p></item>
+      <item><p>La méthode <code>get_text_area()</code> obtient la position où le texte de l'entrée est dessiné.</p></item>
+      <item><p>Si nous définissons la méthode <code>set_visibility(False)</code>, les caractères de l'entrée sont affichés en tant que caractères invisibles. C'est la meilleur police disponible dans le type actuel, mais peut être modifié à l'aide de <code>set_invisible_char(ch)</code>, où <code>ch</code> est un caractère Unicode. Nous pouvons inverser cette denière fonction avec <code>unset_invisible_char()</code>.</p></item>
+      <item><p>La méthode <code>set_max_length(int)</code>, où <code>int</code> est un nombre entier, coupe chaque entrée plus longue que <code>int</code> afin d'obtenir la longueur maximum désirée.</p></item>
+      <item><p>Par défaut, si vous appuyez sur la touche Entrée, Gtk.Entry émet le signal <code>"activate"</code>. Si vous préférez activer l'élément graphique par défaut de la fenêtre (défini par la méthode <code>set_default(widget)</code> pour la fenêtre), utilisez alors <code>set_activates_default(True)</code>.</p></item>
+      <item><p>Pour définir un cadre autour de l'entrée, utilisez la méthode <code>set_has_frame(True)</code>.</p></item>
+      <item><p>La méthode <code>set_placeholder_text(« texte »)</code> définit le texte pour qu'il s'affiche dans l'entrée quand il est vide et inactif.</p></item>
+      <item><p>Les méthodes <code>set_overwrite_mode(True)</code> et <code>set_overwrite_mode(False)</code> parlent d'elles-mêmes.</p></item>
+      <item><p>La méthode <code>set_editable(False)</code> n'autorise pas l'utilisateur à modifier le texte dans l'élément graphique.</p></item>
+      <item><p><code>set_completion(completion)</code>, where <code>completion</code> is a <link href="http://developer.gnome.org/gtk3/unstable/GtkEntryCompletion.html"><code>Gtk.EntryCompletion</code></link>, sets completion - or disables it if <code>completion</code> is <code>None</code>.</p></item>
+      <item><p>Un élément graphique Entry peut afficher la progression ou les informations d'activité derrière le texte. La méthode <code>set_progress_fraction(fraction)</code>, où <code>fraction</code> est un nombre flottant <code>float</code> compris entre <code>0.0</code> et <code>1.0</code> inclus, sert à remplir la fraction définie de la barre de progression. La méthode <code>set_progress_pulse_step()</code> définit la fraction de la largeur totale de l'entrée qui va se remplir d'un bloc à chaque appel à <code>progress_pulse()</code>. Cette dernière fonction indique qu'une progression est en cours et passe l'indicateur de progression sur "activity mode", ce qui fait avancer ou reculer un bloc. Chaque appel à <code>progress_pulse()</code> fait un petit peu bouger le bloc (l'amplitude du mouvement par pulsation est définie par <code>set_progress_pulse_step()</code>), comme expliqué précédemment.</p></item>
+      <item><p>Un élément graphique Entry peut aussi afficher des icônes. Ces icônes sont activables d'un clic de souris, ou peuvent être définies comme étant la source d'un élément glissable et comporter des infobulles. Pour ajouter une icône de la collection, utilisez la méthode <code>set_icon_from_stock(icon_position, stock_id)</code>, ou bien l'une des méthodes suivantes : <code>set_icon_from_pixbuf(icon_position, pixbuf)</code> ; <code>set_icon_from_icon_name(icon_position, icon_name)</code>, où <code>icon_position</code> est l'une des deux positions <code>Gtk.EntryIconPosition.PRIMARY</code> (pour positionner l'icône au début de l'entrée) ou <code>Gtk.EntryIconPosition.SECONDARY</code> (pour positionner l'icône à la fin de l'entrée). Pour ajouter une infobulle à une icône, utiliser l'une des deux fonctions <code>set_icon_tooltip_text("tooltip text")</code> ou <code>set_icon_tooltip_markup("tooltip text in Pango markup language")</code>.</p></item>
+    </list>
+  </section>
+
+  <section id="references">
+    <title>Références API</title>
+    <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkEntry.html">GtkEntry</link></p></item>
+    </list>
+  </section>
+</page>

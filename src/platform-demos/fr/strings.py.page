@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="strings.py" xml:lang="fr">
+
+<info>
+  <title type="text">Strings (Python)</title>
+  <link type="guide" xref="beginner.py#theory"/>
+  <link type="next" xref="label.py"/>
+  <revision version="0.1" date="2012-06-16" status="draft"/>
+
+  <desc>Une explication sur l'utilisation des chaînes de caractères dans Python et GTK+.</desc>
+  <credit type="author copyright">
+    <name>Sebastian Pölsterl</name>
+    <email its:translate="no">sebp@k-d-w.org</email>
+    <years>2011</years>
+  </credit>
+  <credit type="editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012</years>
+  </credit>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Chaînes de caractères</title>
+
+<links type="section"/>
+
+<note style="warning"><p>GNOME strongly encourages the use of Python 3 for writing applications!</p></note>
+
+<section id="python-2">
+<title>Les chaînes de caractères dans Python 2</title>
+
+<p>Python 2 est livré avec deux types différents d'objets qui peuvent être utilisés pour représenter des chaînes : <code>str</code> et <code>unicode</code>. Les instances du type <code>unicode</code> sont utilisées pour exprimer des chaînes Unicode, alors que les exemples du type <code>str</code> sont des représentations d'octets (la chaîne codée). En interne, Python représente les chaînes Unicode par des entiers de 16 ou de 32 bits, en fonction du type de compilation de l'interpréteur Python.</p>
+
+<code><![CDATA[
+>>> unicode_string = u"Fu\u00dfb\u00e4lle"
+>>> print unicode_string]]>
+Fußbälle
+</code>
+
+<p>Les chaînes Unicode peuvent être converties en 8 bits avec <code>unicode.encode()</code>. Les chaînes Python en 8 bits contiennent une méthode <code>str.decode()</code> qui interprète la chaîne avec le codage qui lui est attribué (c'est donc l'inverse de <code>unicode.encode()</code>) :</p>
+
+<code><![CDATA[
+>>> type(unicode_string)
+<type 'unicode'>
+>>> unicode_string.encode("utf-8")
+'Fu\xc3\x9fb\xc3\xa4lle'
+>>> utf8_string = unicode_string.encode("utf-8")
+>>> type(utf8_string)
+<type 'str'>
+>>> unicode_string == utf8_string.decode("utf-8")
+True]]></code>
+
+<p>Malheureusement, Python 2.x vous permet de mélanger les types <code>unicode</code> et <code>str</code> s'il arrivait que la chaîne de 8 bits ne contienne que des octets de 7 bits (ASCII), mais retourne l'erreur <sys>UnicodeDecodeError</sys> si elle contient des valeurs qui ne sont pas ASCII.</p>
+
+</section>
+
+<section id="python-3">
+<title>Les chaînes dans Python 3</title>
+
+<p>Depuis la version 3.0 de Python, toutes les chaînes sont stockées en Unicode dans une représentation du type <code>str</code>. D'autre part, les chaînes codées sont stockées en données binaires sous forme d'octets. Conceptuellement, le type <code>str</code> représente du texte, alors que les octets représentent des données. Utilisez la méthode <code>encode()</code> pour passer de <code>str</code> à <code>bytes</code> et <code>decode()</code> pour passer de <code>bytes</code> à <code>str</code>.</p>
+
+<p>En plus, il n'est plus possible de mélanger des chaînes Unicode avec des chaînes codées, car cela retournerait une erreur <code>TypeError</code> :</p>
+
+<code><![CDATA[
+>>> text = "Fu\u00dfb\u00e4lle"
+>>> data = b" sind rund"
+>>> text + data
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: Can't convert 'bytes' object to str implicitly
+>>> text + data.decode("utf-8")
+'Fußbälle sind rund'
+>>> text.encode("utf-8") + data
+b'Fu\xc3\x9fb\xc3\xa4lle sind rund']]></code>
+
+</section>
+
+<section id="gtk">
+<title>Unicode dans GTK+</title>
+
+<p>GTK+ utilise des chaînes au format UTF-8 pour tout ce qui est texte. Cela signifie que, si vous appelez une méthode qui renvoie une chaîne, vous obtenez toujours une représentation du type <code>str</code>. Cela s'applique également aux méthodes qui considèrent une ou plusieurs chaînes comme paramètres, elles doivent aussi être codées en UTF-8. Cependant, pour plus de souplesse, PyGObject convertit automatiquement n'importe quelle représentation Unicode au format str si vous lui donnez comme argument :</p>
+
+<code><![CDATA[
+>>> from gi.repository import Gtk
+>>> label = Gtk.Label()
+>>> unicode_string = u"Fu\u00dfb\u00e4lle"
+>>> label.set_text(unicode_string)
+>>> txt = label.get_text()
+>>> type(txt)
+<type 'str'>]]></code>
+
+<p>Furthermore:</p>
+
+<code><![CDATA[
+>>> txt == unicode_string]]></code>
+
+<p>devrait renvoyer <code>False</code>, avec l'avertissement <code>__main__:1: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal</code> (<code>Gtk.Label.get_text()</code> renvoie toujours une représentation <code>str</code> ; en conséquence, <code>txt</code> et <code>unicode_string</code> sont inégaux).</p>
+
+<p>Cela est particulièrement important si vous voulez internationnaliser votre programme avec <link href="http://docs.python.org/library/gettext.html"><code>gettext</code></link>. Vous devez vous assurer que <code>gettext</code> va renvoyer des chaînes codées en UTF-8 pour toutes les langues.</p>
+
+<p>D'une manière générale, nous vous recommandons de ne pas du tout utiliser d'objets <code>unicode</code> dans les applications GTK+, mais seulement des objets <code>str</code> codés en UTF-8, car GTK+ n'intègre pas tous les objets <code>unicode</code>.</p>
+
+<p>String encoding is more consistent in Python 3.x because PyGObject will automatically encode/decode to/from UTF-8 if you pass a string to a method or a method returns a string. Strings, or text, will always be represented as instances of <code>str</code> only.</p>
+
+</section>
+
+<section id="references">
+<title>Références</title>
+
+<p><link href="http://python-gtk-3-tutorial.readthedocs.org/en/latest/unicode.html">How To Deal With Strings - The Python GTK+ 3 Tutorial</link></p>
+
+</section>
+
+</page>

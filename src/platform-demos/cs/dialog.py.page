@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="dialog.py" xml:lang="cs">
+  <info>
+    <title type="text">Dialog (Python)</title>
+    <link type="guide" xref="beginner.py#windows"/>
+    <link type="seealso" xref="signals-callbacks.py"/>
+    <link type="next" xref="aboutdialog.py"/>
+    <revision version="0.1" date="2012-06-11" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Vyskakovací okno</desc>
+  </info>
+
+  <title>Dialog</title>
+  <media type="image" mime="image/png" src="media/dialog.png"/>
+  <p>Dialogové okno reagující na signál napojený na funkci zpětného volání.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Kód použitý k vygenerování tohoto příkladu</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # Sestaví okno (rodičovské okno)
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="GNOME Button", application=app)
+        self.set_default_size(250, 50)
+
+        # Tlačítko v rodičovském okně
+        button = Gtk.Button("Click me")
+        # Napojí signál "clicked" tlačítka na funkci on_button_click()
+        button.connect("clicked", self.on_button_click)
+        # Přidá tlačítko do okna
+        self.add(button)
+
+    # Funkce zpětného volání pro signál "clicked" tlačítka v rodičovském
+    # okně
+    def on_button_click(self, widget):
+        # Vytvoří Gtk.Dialog
+        dialog = Gtk.Dialog()
+        dialog.set_title("A Gtk+ Dialog")
+        # Okno definované v konstruktoru (self) je rodičem dialogového okna
+        # Navíc, dialogové okno je nad rodičovským oknem
+        dialog.set_transient_for(self)
+        # Nastaví modal true: nelze pracovat s ostaními okny této aplikace
+        dialog.set_modal(True)
+        # Přidá tlačítko do dialogového okna
+        dialog.add_button(button_text="OK", response_id=Gtk.ResponseType.OK)
+        # Napojí signál "response" (bylo kliknuto na tlačítko) na funkci
+        # on_response()
+        dialog.connect("response", self.on_response)
+
+        # Získá oblast s obsahem dialogového okna, přidá do ní popisek
+        content_area = dialog.get_content_area()
+        label = Gtk.Label("This demonstrates a dialog with a label")
+        content_area.add(label)
+        # Zobrazí dialogové okno
+        dialog.show_all()
+
+    def on_response(self, widget, response_id):
+        print("response_id is", response_id)
+        # Zlikviduje widget (dialogové okno), když je zavolána funkce on_response()
+        # (což je, když bylo kliknuto na tlačítko v dialogovém okně)
+        widget.destroy()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+  <title>Užitečné metody pro widget Dialog</title>
+    <p>Na řádku 16 je signál <code>"clicked"</code> napojen na funkci zpětného volání <code>on_button_click()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce zpětného volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+  <list>
+    <item><p>Místo <code>set_modal(True)</code> bychom mohli mít <code>set_modal(False)</code> následované <code>set_destroy_with_parent(True)</code>, což by zlikvidovalo dialogové okno, když by se zavřelo hlavní okno.</p></item>
+    <item><p><code>add_button(button_text="The Answer", response_id=42)</code>, kde <code>42</code> je libovolné celé číslo, je alternativou k <code>add_button(button_text="text", response_id=Gtk.ResponseType.RESPONSE)</code>, kde <code>RESPONSE</code> by bylo jedno z <code>OK, CANCEL, CLOSE, YES, NO, APPLY, HELP</code>, což zase odpovídá celým číslům <code>-5, -6, …, -11</code>.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Odkazy k API</title>
+  <p>V této ukázce se používá následující:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkDialog.html">GtkDialog</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+  </list>
+  </section>
+</page>
