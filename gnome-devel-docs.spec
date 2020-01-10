@@ -1,7 +1,7 @@
 Summary: GNOME developer documentation
 Name: gnome-devel-docs
 Version: 3.8.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GFDL
 Group: System Environment/Libraries
 URL: http://library.gnome.org
@@ -49,6 +49,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %doc README AUTHORS NEWS COPYING
 
 %changelog
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 3.8.1-2
+- Mass rebuild 2013-12-27
+
 * Tue May 14 2013 Matthias Clasen <mclasen@redhat.com> - 3.8.1-1
 - Update to 3.8.1
 
