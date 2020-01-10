@@ -1,14 +1,14 @@
-Name: gnome-devel-docs
-Version: 3.22.1
-Release: 1%{?dist}
 Summary: GNOME developer documentation
-
+Name: gnome-devel-docs
+Version: 3.14.4
+Release: 1%{?dist}
 # accessibility-devel-guide and optimization-guide are under the GFDL, other
 # documents are under CC-BY-SA.
 License: GFDL and CC-BY-SA
+Group: System Environment/Libraries
 URL: https://developer.gnome.org
-Source0: https://download.gnome.org/sources/%{name}/3.22/%{name}-%{version}.tar.xz
-
+#VCS: git:git://git.gnome.org/gnome-devel-docs
+Source: https://download.gnome.org/sources/gnome-devel-docs/3.14/%{name}-%{version}.tar.xz
 BuildArch: noarch
 BuildRequires: docbook-utils
 BuildRequires: gettext
@@ -28,20 +28,15 @@ and the Platform Overview.
 make %{?_smp_mflags}
 
 %install
-%make_install
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %find_lang %{name} --all-name --with-gnome
 
 
 %files -f %{name}.lang
-%doc README AUTHORS NEWS
-%license COPYING COPYING.GFDL
+%doc README AUTHORS NEWS COPYING COPYING.GFDL
 
 %changelog
-* Wed Mar 15 2017 Kalev Lember <klember@redhat.com> - 3.22.1-1
-- Update to 3.22.1
-- Resolves: #1386888
-
 * Sun Jan 25 2015 David King <amigadave@amigadave.com> - 3.14.4-1
 - Update to 3.14.4
 - Resolves: #1174427

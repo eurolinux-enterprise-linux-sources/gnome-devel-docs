@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -52,28 +52,28 @@ const Lang = imports.lang;
 const Application = new Lang.Class ({
     Name: 'Application',
 
-    //create the application
+    //Δημιουργία της εφαρμογής
     _init: function () {
         this.application = new Gtk.Application ({
             application_id: 'org.example.myapp',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-       //connect to 'activate' and 'startup' signals to the callback functions
+       //Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
        this.application.connect('activate', Lang.bind(this, this._onActivate));
        this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    //create the UI (in this case it's just the ApplicationWindow
+    //Δημιουργία της διεπαφής χρήστη(σε αυτήν την περίπτωση είναι απλά το παράθυρο της εφαρμογής 
     _buildUI: function() {
         this._window = new Gtk.ApplicationWindow  ({ application: this.application,
                                                    window_position: Gtk.WindowPosition.CENTER,
                                                    title: "Welcome to GNOME" });
 
-        //uncommenting the line below will change the window size
+        //Αποσχολιάζοντας την παρακάτω γραμμή θα αλλάξει το μέγεθος του παραθύρου
         //this._window.set_default_size(600, 400);
 
-        //show the window and all child widgets (none in this case)
+        //Εμφάνιση του παραθύρου και όλων των θυγατικών γραφικών στοιχείων (κανένα σε αυτήν την περίπτωση)
         this._window.show_all();
     },
 
@@ -85,7 +85,7 @@ const Application = new Lang.Class ({
         print ("No AboutDialog here.  This is only a demonstration.");
     },
 
-    //create the menu items and connect the signals to the callback functions.
+    //Δημιουργία των στοιχείων μενού και σύνδεση των σημάτων με τις συναρτήσεις επανάκλησης.
     _initMenus: function() {
         let menu = new Gio.Menu();
         menu.append("New",'app.new');
@@ -115,12 +115,12 @@ const Application = new Lang.Class ({
          this.application.add_action(quitAction);
     },
 
-    //callback function for 'activate' signal
+    //Η συνάρτηση επανάκλησης για το σήμα 'activate'
     _onActivate: function() {
         this._window.present();
     },
 
-    //callback function for 'startup' signal
+    //Η συνάρτηση επανάκλησης για το σήμα 'startup'
     _onStartup: function() {
         //You must call _initMenus() before calling _buildUI().
         this._initMenus();
@@ -128,7 +128,7 @@ const Application = new Lang.Class ({
     }
 });
 
-//run the application
+//Εκτέλεση της εφαρμογής
 let app = new Application ();
 app.application.run (ARGV);
 </code>

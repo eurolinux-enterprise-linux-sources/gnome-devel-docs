@@ -17,7 +17,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -35,7 +35,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -57,28 +57,28 @@ const Lang = imports.lang;
 const ButtonBoxExample = new Lang.Class ({
     Name: 'ButtonBox Example',
 
-    // Create the application itthis
+    // Δημιουργία της εφαρμογής itthis
     _init: function () {
         this.application = new Gtk.Application({ application_id: 'org.example.jsbuttonbox' });
 
-        // Connect 'activate' and 'startup' signals to the callback functions
+        // Σύνδεση σημάτων 'activate' και 'startup'στις συναρτήσεις επανάκλησης
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents windows when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
     _onActivate: function() {
         this.window.present();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη γραφική διεπαφή
     _onStartup: function() {
         this._buildUI ();
     },
 
-    // Build the application's UI
+    // Κατασκευή της γραφικής διεπαφής της εφαρμογής
     _buildUI: function() {
-        // Create the application window
+        // Δημιουργία του παραθύρου εφαρμογής
         this.window = new Gtk.ApplicationWindow  ({ application: this.application,
                                                     window_position: Gtk.WindowPosition.CENTER,
                                                     title: "Calculator",
@@ -87,27 +87,27 @@ const ButtonBoxExample = new Lang.Class ({
                                                     border_width: 10 });
         this.entry = new Gtk.Entry();
         this.entry.set_text('0');
-        // text aligned on the right
+        // κείμενο στοιχισμένο στα δεξιά
         this.entry.set_alignment(1);
-        // the text in the entry cannot be modified by writing in it
-        this.entry.set_can_focus(false);
+        // Το κείμενο στην καταχώριση δεν μπορεί να τροποποιηθεί γράφοντας σε αυτό
+          this.entry.set_can_focus(false);
 
-        // a grid
+        // Πλέγμα
         this.grid = new Gtk.Grid();
         this.grid.set_row_spacing(5);
         
-        // to attach the entry
+        // Για προσκόλληση της καταχώρισης
         this.grid.attach(this.entry, 0, 0, 1, 1);
         
-        // the labels for the buttons
+        // Οι ετικέτες για τα κουμπιά
         this.buttons = [ 7, 8, 9, '/', 4, 5, 6, '*', 1, 2, 3, '-', 'C', 0, '=', '+' ];
         
-        // each row is a ButtonBox, attached to the grid            
+        // Κάθε γραμμή είναι ένα πλαίσιο κουμπιού, προσκολλημένο στο πλέγμα            
         for (i = 0; i &lt; 4; i++) {
             this.hbox = Gtk.ButtonBox.new(Gtk.Orientation.HORIZONTAL);
             this.hbox.set_spacing(5);
             this.grid.attach(this.hbox, 0, i + 1, 1, 1);
-            // each ButtonBox has 4 buttons, connected to the callback function
+            // Κάθε πλαίσιο κουμπιού έχει 4 κουμπιά, συνδεμένα με τη συνάρτηση επανάκλησης
             for (j= 0; j &lt; 4; j++) {
                 this.button = new Gtk.Button();
                 this.buttonLabel = (this.buttons[i * 4 + j].toString());
@@ -118,18 +118,18 @@ const ButtonBoxExample = new Lang.Class ({
             }
         }
             
-        // some variables for the calculations
+        // Μερικές μεταβλητές για τους υπολογισμούς
         this.firstNumber = 0;
         this.secondNumber = 0;
         this.counter = 0;
         this.operation = "";
 
-        // add the grid to the window
+        // προσθήκη του πλέγματος στο παράθυρο
         this.window.add(this.grid);
         this.window.show_all();
     },
 
-    // callback function for all the buttons
+    // Συνάρτηση επανάκλησης για όλα τα κουμπιά
     _buttonClicked: function(button) {
         this.button = button;
         // for the operations
@@ -165,14 +165,14 @@ const ButtonBoxExample = new Lang.Class ({
             this.operation = "division";
         }
 
-        // for =
+        // Για =
         else if (this.button.get_label() == '=') {
             this._doOperation();
             this.entry.set_text(this.firstNumber.toString());
             this.counter = 1;
         }
 
-        // for Cancel
+        // για ακύρωση
         else if (this.button.get_label() == 'C') {
             this.firstNumber = 0;
             this.secondNumber = 0;
@@ -181,7 +181,7 @@ const ButtonBoxExample = new Lang.Class ({
             this.operation = "";
         }
 
-        // for a digit button
+        // Για ένα ψηφιακό κουμπί
         else {
             this.newDigit = parseInt(this.button.get_label());
             if (this.entry.get_text() == "error")
@@ -225,7 +225,7 @@ const ButtonBoxExample = new Lang.Class ({
     }
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new ButtonBoxExample();
 app.application.run (ARGV);
 </code>

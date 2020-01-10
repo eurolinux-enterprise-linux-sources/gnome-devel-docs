@@ -20,36 +20,6 @@
     </credit>
 
     <desc>Une implémentation simple de GMenu</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
   <title>GMenu</title>
@@ -113,15 +83,15 @@ class MyApplication(Gtk.Application):
 
     # callback function for "new"
     def new_cb(self, action, parameter):
-        print("This does nothing. It is only a demonstration.")
+        print "This does nothing. It is only a demonstration."
 
     # callback function for "about"
     def about_cb(self, action, parameter):
-        print("No AboutDialog for you. This is only a demonstration.")
+        print "No AboutDialog for you. This is only a demonstration."
 
     # callback function for "quit"
     def quit_cb(self, action, parameter):
-        print("You have quit.")
+        print "You have quit."
         self.quit()
 
 app = MyApplication()
@@ -143,7 +113,7 @@ action = Gio.SimpleAction.new(« nom », parameter_type)</code>
       <p>où <code>« nom »</code> est le nom de l'action et <code>parameter_type</code> est le type de paramètre que l'action reçoit quand elle est activée. Ce peut être <code>None</code>, ou <code>GLib.VariantType.new('s')</code> si le paramètre est du type <code>str</code>, ou au lieu de <code>'s'</code>, un caractère tel que décrit <link href="http://developer.gnome.org/glib/unstable/glib-GVariantType.html">ici</link>.</p>
       <code>
 action = Gio.SimpleAction.new_stateful(« nom », parameter_type, initial_state)</code>
-      <p>where <code>initial_state</code> is defined as a GVariant - for instance <code>Glib.Variant.new_string('start')</code>; for a list of possibilities see <link href="http://developer.gnome.org/glib/unstable/glib-GVariant.html">here</link>.</p></item>
+      <p>où <code>initial_state</code> est défini comme étant une GVariant - par exemple <code>Glib.Variant.new_string('start')</code> ; voyez <link href="http://developer.gnome.org/glib/unstable/glib-GVariant.html">ici</link> pour accéder à une liste des possibilités.</p></item>
       <item><p>La méthode <code>set_enabled(True)</code> définit l'action à enabled ; une action doit être en position enabled pour pouvoir être activée ou pour voir son état modifié par des appels extérieurs. La fonction ne peut être appelée que par l'implémenteur de l'action. Les utilisateurs de l'action ne doivent pas tenter de modifier son drapeau enabled.</p></item>
       <item><p>La fonction <code>set_state(state)</code>, où <code>state</code> est une GVariant, définit l'état de l'action en mettant à jour la propriété « state » à la valeur donnée. Elle ne peut être appelée que par l'implémenteur de l'action ; par contre, les utilisateurs peuvent appeler <code>change_state(state)</code> (où <code>state</code> est une GVariant) pour demander le changement d'état.</p></item>
     </list>
@@ -159,7 +129,7 @@ menu.append_item(about)</code>
       </item>
       <item><p>Nous pouvons aussi ajouter une sous-section entière dans un menu avec <code>insert_section(position, label, section)</code>, <code>append_section(label, section)</code>, ou <code>prepend_section(label, section)</code>, où <code>label</code> est le titre de la sous-section.</p></item>
       <item><p>Pour ajouter un sous-menu qui va s'étendre et se contracter, utilisez l'une des méthodes <code>insert_submenu(position, label, section)</code>, <code>append_submenu(label, section)</code>, ou bien <code>prepend_submenu(label, section)</code>, où <code>label</code> est le titre du sous-menu.</p></item>
-      <item><p>To remove an item from the menu, use <code>remove(position)</code>.</p></item>
+      <item><p>To remove an item from the menu, use <code>remove(postion)</code>.</p></item>
       <item><p>Pour définir une étiquette pour le menu, utilisez la méthode <code>set_label(label)</code>.</p></item>
     </list>
 

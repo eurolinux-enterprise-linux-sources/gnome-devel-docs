@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -62,34 +62,34 @@ const Lang = imports.lang;
 const CheckButtonExample = new Lang.Class({
     Name: 'CheckButton Example',
 
-    // Create the application itself
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
     _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jscheckbutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-    // Connect 'activate' and 'startup' signals to the callback functions
+    // Σύνδεση σημάτων'activate' και 'startup' στις συναρτήσειs επανάκλησης
     this.application.connect('activate', Lang.bind(this, this._onActivate));
     this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents window when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
     _onActivate: function() {
         this._window.present();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
     _onStartup: function() {
         this._buildUI ();
     },
 </code>
     <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση CheckButtonExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
     <code mime="application/javascript">
-    // Build the application's UI
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
     _buildUI: function() {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -104,19 +104,19 @@ const CheckButtonExample = new Lang.Class({
   <section id="button">
     <title>Δημιουργία του πλήκτρου ελέγχου</title>
     <code mime="application/javascript">
-        // Create the check button
+        // Δημιουργία του κουμπιού ελέγχου
         this._button = new Gtk.CheckButton ({label: "Show Title"});
         this._window.add (this._button);
 
-        // Have the check button be checked by default
+        // Να ελέγχεται το κουμπί ελέγχου από προεπιλογή
         this._button.set_active (true);
 
-        // Connect the button to a function that does something when it's toggled
+        // Σύνδεση του κουμπιού σε μια συνάρτηση που κάνει κάτι όταν εναλλάσσεται
         this._button.connect ("toggled", Lang.bind (this, this._toggledCB));
 </code>
     <p>Αυτός ο κώδικας δημιουργεί το ίδιο το πλήκτρο ελέγχου. Η ετικέτα δίπλα στο πλήκτρο ελέγχου δημιουργείται δίνοντας στο πλήκτρο ελέγχου την ιδιότητα "label" και αποδίδοντας την τιμή μιας συμβολοσειράς σε αυτή. Επειδή αυτό το πλήκτρο ελέγχου εναλλάσσεται εάν ο τίτλος παραθύρου είναι ενεργός ή όχι και ο τίτλος παραθύρου θα είναι ενεργός στην εκκίνηση, θέλουμε το πλαίσιο να σημειωθεί από προεπιλογή. Όταν ο χρήστης σημειώνει ή ξεσημειώνει το πλαίσιο, καλούμε τη συνάρτηση _toggledCB.</p>
     <code mime="application/javascript">
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
     },
 </code>
@@ -128,7 +128,7 @@ const CheckButtonExample = new Lang.Class({
     <code mime="application/javascript">
     _toggledCB: function () {
 
-        // Make the window title appear or disappear when the checkbox is toggled
+        // Εμφάνιση του τίτλου του παραθύρου ή εξαφάνιση όταν το πλαίσιο ελέγχου εναλλάσσεται 
         if (this._button.get_active() == true)
             this._window.set_title ("CheckButton Example");
         else
@@ -140,7 +140,7 @@ const CheckButtonExample = new Lang.Class({
 </code>
     <p>Εάν το πλήκτρο ελέγχου εναλλάσσεται από ενεργό σε ανενεργό, θέλουμε ο τίτλος του παραθύρου να εξαφανιστεί. Εάν εναλλάσσεται από ανενεργό σε ενεργό, το θέλουμε να επανεμφανίζεται. Μπορούμε να πούμε με ποιο τρόπο εναλλάχτηκε δοκιμάζοντας να δούμε εάν είναι ενεργό (σημειωμένο) ή όχι κατόπιν. Μια απλή πρόταση if / else που καλεί τη μέθοδο get_active() του πλήκτρου ελέγχου θα δουλέψει για αυτό.</p>
     <code mime="application/javascript">
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new CheckButtonExample ();
 app.application.run (ARGV);
 </code>
@@ -158,34 +158,34 @@ const Lang = imports.lang;
 const CheckButtonExample = new Lang.Class({
     Name: 'CheckButton Example',
 
-    // Create the application itself
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
     _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jscheckbutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-    // Connect 'activate' and 'startup' signals to the callback functions
+    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
     this.application.connect('activate', Lang.bind(this, this._onActivate));
     this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents window when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
     _onActivate: function() {
         this._window.present();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
     _onStartup: function() {
         this._buildUI ();
     },
 
 
 
-    // Build the application's UI
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
     _buildUI: function() {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -194,17 +194,17 @@ const CheckButtonExample = new Lang.Class({
             border_width: 10,
             title: "CheckButton Example"});
 
-        // Create the check button
+        // Δημιουργία του κουμπιού ελέγχου
         this._button = new Gtk.CheckButton ({label: "Show Title"});
         this._window.add (this._button);
 
-        // Have the check button be checked by default
+        // Να ελέγχεται το κουμπί ελέγχου από προεπιλογή
         this._button.set_active (true);
 
-        // Connect the button to a function that does something when it's toggled
+        // Σύνδεση του κουμπιού με μια συνάρτηση που κάνει κάτι όταν εναλλάσσεται
         this._button.connect ("toggled", Lang.bind (this, this._toggledCB));
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
     },
 
@@ -212,7 +212,7 @@ const CheckButtonExample = new Lang.Class({
 
     _toggledCB: function () {
 
-        // Make the window title appear or disappear when the checkbox is toggled
+        // Εμφάνιση ή εξαφάνιση του τίτλου του παραθύρου όταν το πλαίσιο ελέγχου εναλλάσσεται
         if (this._button.get_active() == true)
             this._window.set_title ("CheckButton Example");
         else
@@ -222,7 +222,7 @@ const CheckButtonExample = new Lang.Class({
 
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new CheckButtonExample ();
 app.application.run (ARGV);
 </code>

@@ -61,13 +61,11 @@
       <personname>
         <firstname>Mario Blättermann</firstname>
       </personname>
-      <email>mario.blaettermann@gmail.com</email>
+      <email>mariobl@gnome.org</email>
     </othercredit>
     <copyright>
       
         <year>2009</year>
-      
-        <year>2016</year>
       
       <holder>Mario Blättermann</holder>
     </copyright>
@@ -126,7 +124,7 @@
 <para>Die in GNOME enthaltene Unterstützung für Barrierefreiheit drückt sich darin aus, dass Sie bei der Verwendung von GNOME-Repertoire-Widgets die Unterstützung für Hilfstechnologien praktisch »umsonst« erhalten, sofern die Widgets nicht auf unübliche Weise verwendet werden, was zu Konflikten in der eingebauten Unterstützung führen kann.</para>
 <para>Ein GTK+/GNOME-Widget ist barrierefrei, wenn dessen Benutzung den allgemeinen Richtlinien zur Barrierefreiheit  in diesem Dokument folgt, und es die verwendete ATK-Oberfläche seiner Rolle in der Benutzeroberfläche umsetzt. ATK-Umsetzungen werden für die Standard-GNOME-Toolkit-Widgets (d.h. nicht veraltete  GTK+- und GNOME-Widgets) bereit gestellt, und in vielen Fällen erben neue Widgets passende Unterstützung für Barrierefreiheit, welche sich trivial von existierenden GTK+- oder GNOME-Widgets ableiten.</para>
 <para>
-Though GNOME's built-in accessibility support provides significant functionality without any accessibility-specific code changes on the part of the application, applications can often improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application, via straightforward calls to ATK methods in the application. For instance, in most cases applications should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assistive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
+Though GNOME's built-in accessibility support provides significant functionality without any accessibility-specific code changes on the part of the application, applications can often improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application, via straightforward calls to ATK methods in the application. For instance, in most cases applications should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assisitive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
 </para>
 <para>Wenn Ihr Programm angepasste Widgets verwendet, müssen Sie eventuell ein wenig Arbeit leisten, um diese Widget-Eigenschaften Hilfstechnologien zugänglich zu machen. Lesen Sie auch <link linkend="gad-custom">Eigene Komponenten barrierefrei machen</link> und <link linkend="gad-api-examples">Beispiele, welche die Barrierefreiheit-API verwenden</link> für weitere Informationen.</para>
 <para>
@@ -409,7 +407,7 @@ Access the ATK top-level object with the following function call.
 </para>
 <programlisting>AtkObject *root_obj = atk_get_root();</programlisting>
 <para>
-This returns an <type>AtkObject</type> which contains all toplevel windows in the currently running program. The user could then navigate through the object hierarchy by accessing the root object's children, which corresponds to the toplevel windows.
+This returns an <type>AtkObject</type> which contains all toplevel windows in the currently running program. The user could then navigate through the object heirarchy by accessing the root object's children, which corresponds to the toplevel windows.
 </para>
 </listitem>
 </orderedlist>
@@ -524,7 +522,7 @@ All <type>GObject</type>s implement a <function>get_type()</function> function. 
 In this function, you specify which interfaces your object implements. If the following logic were included in this <function>get_type()</function> function, this object would implement the <type>ATK_TEXT</type> interface:
 </para>
 <example>
-<title>Beispiel für eine <function>get_type()</function>-Funktion</title>
+<title>Sample <function>get_type()</function> function</title>
 <programlisting>
 static const GInterfaceInfo atk_text_info = 
 { 
@@ -994,7 +992,7 @@ Provide an option to hide graphics that don't convey essential information. Grap
 <section>
 <title>Schriften und Text</title>
 <para>
-Even to a user with normal vision, textual output provides the majority of the information and feedback in most applications. It is therefore critical to choose and position text carefully on the screen, and leave the choice of font and size to the user, to ensure that people with vision impairments can also use your application effectively.
+Even to a user with normal vision, textual output provides the majority of the information and feedback in most applications. It is therefore critical to choose and position text carefully on the screen, and leave the choice of font and size to the user, to ensure that people with vision impaiments can also use your application effectively.
 </para>
 <itemizedlist>
 <listitem>
@@ -1220,7 +1218,7 @@ Make all animations optional. The animated information should be available in at
 Showing the keyboard focus position clearly at all times is important, both for users with vision impairments as well as "power-users" who prefer to use the keyboard rather than the mouse. There should never be any confusion as to which control on the desktop has focus at any given time. You ought to be able to leave your computer with the focus on any widget in your application, then go off and phone your girlfriend or walk the dog until you've forgotten which widget you left it on. When you return, you should be able to tell straight away exactly which widget it was.
 </para>
 <para>
-A visual focus indicator is an audio representation of the cursor position relative to the other objects on the desktop. This allows the user to move among objects interactively as the focus changes. The visual focus must be programmatically exposed to assistive technologies. Note that in most cases, this is handled automatically by the ATK, without requiring you to do any additional work. However, you will need to be aware of this requirement when writing your own custom widgets, for example.
+A visual focus indicator is an audio representation of the cursor position relative to the other objects on the desktop. This allows the user to move among objects interactively as the focus changes. The visual focus must be programatically exposed to assistive technologies. Note that in most cases, this is handled automatically by the ATK, without requiring you to do any additional work. However, you will need to be aware of this requirement when writing your own custom widgets, for example.
 </para>
 <itemizedlist>
 <listitem>
@@ -1674,7 +1672,8 @@ Identify any unique accessibility features.
 </thead>
 <tbody>
 <row><entry>MI.1</entry>
-<entry>Keine Operation ist abhängig von der Bedienung der <mousebutton>rechten</mousebutton> oder <mousebutton>mittleren</mousebutton> Maustaste.</entry>
+<entry>No operations depend on input from the <mousebutton>right</mousebutton> or <mousebutton>middle</mousebutton> mouse buttons.
+</entry>
 </row>
 <row><entry>MI.2</entry>
 <entry>Alle Mausaktionen können abgebrochen werden, bevor sie abgeschlossen werden.</entry>
@@ -2000,7 +1999,16 @@ Verify that the <guibutton>UI Grab</guibutton> button displays all the button ob
 <section>
 <title>Accerciser</title>
 <screenshot>
-<mediaobject><imageobject> <imagedata fileref="figures/at-arch.png" format="PNG"/> </imageobject> <textobject> <phrase> Accerciser und die GNOME-Barrierefreiheits-Architektur </phrase> </textobject></mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="figures/at-arch.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>
+Accerciser and the GNOME Accessibility Architecture
+</phrase>
+</textobject>
+</mediaobject>
 </screenshot>
 
 <para><application>Accerciser</application> ist ein in Python geschriebenes Programm zur Untersuchung der Barrierefreiheit für die GNOME-Arbeitsumgebung. Es benutzt AT-SPI zum Inspizieren und Steuern von Widgets. So können Sie überprüfen, ob eine Anwendung korrekte Informationen für Hilfstechnologie und automatisierte Testumgebungen bereitstellt. <application>Accerciser</application> verfügt über eine einfache Plugin-Schnittstelle, die Sie zur Erstellung eigener Ansichten auf Barrierefreiheitsinformationen nutzen können. Die vollständige Dokumentation finden Sie im <ulink url="http://library.gnome.org/devel/accerciser/stable">offiziellen Accerciser-Handbuch</ulink>. Für eine Demonstration von <application>Accerciser</application> und <application>PyATSPI</application> (Python-wrappered access and usage of AT-SPI) lesen Sie bitte <ulink url="http://live.gnome.org/Accessibility/PythonPoweredAccessibility">diesen Artikel</ulink>. Eine exzellente Beschreibung vom Autor selbst finden Sie im Artikel <ulink url="http://www.linuxjournal.com/article/9991">Make Your Application Accessible with Accerciser</ulink>.</para>

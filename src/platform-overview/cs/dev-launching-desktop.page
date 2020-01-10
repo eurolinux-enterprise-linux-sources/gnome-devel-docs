@@ -13,33 +13,31 @@
 
     <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
 
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Lucas Lommer</mal:name>
-      <mal:email>llommer@svn.gnome.org</mal:email>
-      <mal:years>2009.</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Marek Černocký</mal:name>
-      <mal:email>marek@manet.cz</mal:email>
-      <mal:years>2015.</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Instalace souboru .desktop</title>
+  <title>Install a desktop file</title>
 
   <links type="series" style="floatend">
-    <title>Spuštění vaší aplikace</title>
+    <title>Launch your application</title>
   </links>
 
-  <p>Napiště a nainstalujte soubor .desktop, aby uživatelé mohli vaši aplikaci najít a spustit.</p>
+  <p>Write and install a desktop file so that users can discover and launch
+  your application.</p>
   
-  <p>GNOME používá k popisu spouštěčů aplilací <link href="http://standards.freedesktop.org/desktop-entry-spec/latest/index.html">položky pracovní plochy podle freedesktop.org</link> a <link href="http://standards.freedesktop.org/menu-spec/latest/">specifikací nabídky pracovní plochy</link>. Instalace souboru .desktop je standardní způsob, jak zaregistrovat svou aplikaci v GNOME a dalších pracovních prostředích.</p>
+  <p>GNOME uses the
+  <link href="http://standards.freedesktop.org/desktop-entry-spec/latest/index.html">freedesktop.org
+  Desktop Entry</link> and
+  <link href="http://standards.freedesktop.org/menu-spec/latest/">Desktop
+  Menu specifications</link> to describe application launchers. Installing a
+  desktop file is the standard way to register your application with GNOME and
+  other desktops.</p>
   
-  <p>Soubor .desktop specifikuje spustitelný soubor vaší aplikace, její název a typ. Navíc může uvádět její ikonu, popis a některé další doplňující informace ohledně spuštění aplikace.</p>
+  <p>A desktop file lists your application binary, name and type, and can also
+  list an icon, description and several other pieces of information about
+  launching an application.</p>
 
-  <p>Pro hypotetickou aplikaci <app>My Application</app> by mohl soubor .desktop vypadat nějak takto:</p>
+  <p>For a hypothetical application <app>My Application</app>, a desktop file
+  would look as follows:</p>
   <example>
     <listing>
       <title><file>myapplication.desktop</file></title>
@@ -53,10 +51,24 @@ Categories=GTK;GNOME;Utility;</code>
     </listing>
   </example>
 
-  <p>Řádek <code>[Desktop Entry]</code> říká, že se jedná o soubor .desktop. Následují jednotlivé klíče, které popisují, jak spustit aplikaci. Klíč <code>Name</code> je název aplikace přívětivý pro člověka a zobrazuje se v uživatelském rozhraní. Klíč se sepustitelným souborem je <code>Exec</code> a může být uveden včetně celé cesty nebo jen jako název souboru a pak se vyhledává v cestách podle <code>PATH</code>. Posledním povinným klíčem je <code>Type</code>, který má pro aplikaci vždy hodnodu <code>Application</code>. Ostatní typy jsou uvedeny ve specifikaci souborů .desktop.</p>
+  <p>The <code>[Desktop Entry]</code> line indicates that this is a desktop
+  file. It is followed by keys, which describe the application launcher. The
+  <code>Name</code> key is the human-readable name of the application, to be
+  shown in the UI. The application binary is listed in the <code>Exec</code>
+  key, either the complete path or a binary that is looked up in the
+  <code>PATH</code>. The last required key is the <code>Type</code>, which for
+  applications is always <code>Application</code>. Alternative types are listed
+  in the desktop entry specification.</p>
 
-  <p>Ostatní pole v souboru .desktop jsou volitelná, ale doporučená. Aplikace by měla mít nainstalovanou ikonu a název ikony (bez přípony) uvést v klíči <code>Icon</code>. <code>Comment</code> je stručný popis aplikace. Při hledání aplikace může uživateli pomoci klíč <code>Categories</code> šířený se seznamem kategorií oddělených středníkem podle specifikace nabídky pracovní plochy.</p>
+  <p>Other fields in the desktop file are optional, but recommended.
+  Applications should install an icon, and list the name of the icon (excluding
+  the extension) in the <code>Icon</code> key. The <code>Comment</code> is a
+  brief description of the application. To help users when browsing
+  applications, the <code>Categories</code> key should be populated with a
+  list of categories, separated by a semicolon, from the Desktop Menu
+  Specification.</p>
 
-  <p>Ve specifikaci položky pracovní plochy je uvedeno a popsáno i několik dalších klíčů, které je možné do souboru .desktop přidat.</p>
+  <p>There are several other keys that can be added to desktop files, which are
+  listed and described in the Desktop Entry Specification.</p>
  
 </page>

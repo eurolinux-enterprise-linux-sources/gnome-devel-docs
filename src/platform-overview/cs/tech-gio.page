@@ -1,48 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-gio" xml:lang="cs">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="tech-gio" xml:lang="cs">
+<info>
+  <link type="guide" xref="tech" group="gio"/>
+  <desc>File and URI handling, asynchronous file operations, volume handling</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="review"/>
+</info>
 
-  <info>
-    <link type="guide" xref="tech" group="gio"/>
-    <revision pkgversion="3.0" date="2011-04-05" status="review"/>
+<title>GIO Files</title>
 
-    <credit type="author copyright">
-      <name>Shaun McCance</name>
-      <email its:translate="no">shaunm@gnome.org</email>
-      <years>2011</years>
-    </credit>
-    <credit type="copyright editor">
-      <name>Federico Mena Quintero</name>
-      <email its:translate="no">federico@gnome.org</email>
-      <years>2013</years>
-    </credit>
+<p>GIO provides APIs for asynchronously reading and writing files and
+other streams. Files are referenced by URIs (uniform resource locators), and backends can
+provide access to more than just local files. When running under the
+GNOME desktop, GIO uses GVFS to allow access to files over SFTP, FTP,
+WebDAV, SMB, and other popular protocols. This transparent network
+file access is free to all applications using GIO.</p>
 
-    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+<p>The GIO file APIs were designed to be used in event-driven graphical
+interfaces. The non-blocking, asynchronous design means your user interface
+doesn't hang while waiting for a file. There are also synchronous versions
+of the APIs available, which are sometimes more convenient for worker
+threads or processes.</p>
 
-    <desc>Práce se soubory a URI, asynchronní operace se soubory, práce se svazky</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Lucas Lommer</mal:name>
-      <mal:email>llommer@svn.gnome.org</mal:email>
-      <mal:years>2009.</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Marek Černocký</mal:name>
-      <mal:email>marek@manet.cz</mal:email>
-      <mal:years>2015.</mal:years>
-    </mal:credit>
-  </info>
-
-<title>Souborové GIO</title>
-
-<p>GIO poskytuje API pro asynchronní čtení a zápis souborů a dalších datových proudů. Odkaz na soubory je jednoznačně dán pomocí URI (Uniform Resource Identifier) a jádro knihovny díky tomu může nabídnou přístup nejen k místním souborům. Při běhu v pracovním prostředí GNOME používá GIO souborový systém GVFS pro přístup k souborům přes SFTP, FTP, WebDAV, SMB a další populární protokoly. Tento transparentní přístup k souborům přes síť je volně k dispozici všem aplikacím používajícím GIO.</p>
-
-<p>API knihovny GIO bylo navrženo, aby šlo používat v grafickém rozhraní řízeném událostmi. Neblokující asynchronní návrh znamená, že se uživatelské rozhraní nezasekne během čekání na soubor. Je k dispozici ale i synchronní verze API, která je vhodnější pro vlákna a procesy.</p>
-
-<p>GIO také poskytuje rutiny pro správu disků a svazků, dotazování na typ a ikonu souboru a vyhledávání aplikací, které umí otevřít daný typ souboru.</p>
+<p>GIO also provides routines for managing drives and volumes, querying
+file types and icons, and finding applications to open files.</p>
 
 <list style="compact">
-  <item><p><link href="http://developer.gnome.org/gio/stable/">Referenční příručka knihovny GIO</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/">GIO Reference Manual</link></p></item>
 </list>
 
 </page>

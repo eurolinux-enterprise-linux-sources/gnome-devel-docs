@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -43,10 +43,10 @@
   <p>Ένας διάλογος με το σήμα απάντησης συνδεμένο σε μια συνάρτηση επανάκλησης.</p>
 
       <code mime="text/x-csharp" style="numbered">
-/* A window in the application. */
+/* Ένα παράθυρο στην εφαρμογή. */
 public class MyWindow : Gtk.ApplicationWindow {
 
-	/* Constructor */
+	/*Κατασκευαστής*/
 	internal MyWindow (MyApplication app) {
 		Object (application: app, title: "GNOME Button");
 
@@ -55,17 +55,17 @@ public class MyWindow : Gtk.ApplicationWindow {
 
 		var button = new Gtk.Button.with_label ("Click Me");
 
-		/* Connect the button's "clicked" signal to
-		 * the signal handler (aka. this.callback function).
+		/* Σύνδεση του σήματος "clicked" του κουμπιού στον
+		 * χειριστή του σήματος (aka. this.callback function).
 		 */
 		button.clicked.connect (this.on_button_click);
 
-		/* Add the button to this window and show it. */
+		/* Προσθήκη του κουμπιού σε αυτό το παράθυρο και εμφάνισή του. */
 		this.add (button);
 		button.show ();
 	}
 
-	/* The signal handler for the buttons 'clicked' signal. */
+	/* Ο χειριστής σήματος για τα κουμπιά του σήματος  'clicked'.  */
 	void on_button_click (Gtk.Button button) {
 		var dialog = new Gtk.Dialog.with_buttons ("A Gtk+ Dialog", this,
                                                           Gtk.DialogFlags.MODAL,
@@ -73,50 +73,50 @@ public class MyWindow : Gtk.ApplicationWindow {
                                                           Gtk.ResponseType.OK, null);
 
 		var content_area = dialog.get_content_area ();
-		var label = new Gtk.Label ("This demonstrates a dialog with a label");
+		var label = new Gtk.Label ("Αυτό δείχνει έναν διάλογο με ετικέτα");
 
 		content_area.add (label);
 
-		/* Connect the 'response' signal of the dialog
-		 * the signal handler.  It is emitted when the dialog's
-		 * OK button is clicked.
+		/* Σύνδεση του σήματος 'response' του διαλόγου
+		 * του χειριστή σήματος.  Εκπέμπεται όταν πατιέται το κουμπί ΕΝΤΑΞΕΙ 
+		 * του διαλόγου.
 		 */
 		dialog.response.connect (on_response);
 
-		/* Show the dialog and all the widgets. */
+		/* Εμφάνιση του διαλόγου και όλων των γραφικών στοιχείων. */
 		dialog.show_all ();
 	}
 
-	/* Signal handler for the 'response' signal of the dialog. */
+	/* Ο χειριστής σήματος για το σήμα 'response' του διαλόγου. */
         void on_response (Gtk.Dialog dialog, int response_id) {
 
-                /* To see the int value of the ResponseType. This is only
-		 * for demonstration purposes.*/
+                /* Για να δείτε την ακέραιη τιμή του τύπου απάντησης. Αυτό είναι μόνο
+		 * για λόγους επίδειξης.*/
                 print ("response is %d\n", response_id);
 
-		/* This causes the dialog to be destroyed. */
+		/* Αυτό προκαλεί την καταστροφή του διαλόγου. */
                 dialog.destroy ();
         }
 
 }
 
-/* This is the application. */
+/* Αυτή είναι η εφαρμογή. */
 public class MyApplication : Gtk.Application {
 
-	/* The constructor of the application. */
+	/* Ο κατασκευαστής της εφαρμογής. */
 	internal MyApplication () {
 		Object (application_id: "org.example.MyApplication");
 	}
 
-	/* Override the 'activate' signal of GLib.Application. */
+	/* Αντικατάσταση του σήματος 'activate' της GLib.Application. */
 	protected override void activate () {
 
-		/* Create a window for the this application and show it. */
+		/* Δημιουργία παραθύρου για αυτήν την εφαρμογή και εμφάνισή του. */
 		new MyWindow (this).show ();
 	}
 }
 
-/* The main function creates and runs the application. */
+/* Η κύρια συνάρτηση δημιουργεί και εκτελεί την εφαρμογή. */
 public int main (string[] args) {
 	return new MyApplication ().run (args);
 }

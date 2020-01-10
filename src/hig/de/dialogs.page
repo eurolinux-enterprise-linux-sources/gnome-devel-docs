@@ -2,8 +2,7 @@
 <page xmlns="http://projectmallard.org/1.0/" type="topic" id="dialogs" xml:lang="de">
 
   <info>
-    <link type="guide" xref="patterns#primary"/>
-    <desc>Sekundäre Fenster, die über primären, übergeordneten Fenstern erscheinen</desc>  
+    <link type="guide" xref="patterns" group="dialogs"/>   
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
@@ -27,68 +26,62 @@
       <mal:email>christian.kirbach@gmail.com</mal:email>
       <mal:years>2014</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Mario Blättermann</mal:name>
-      <mal:email>mario.blaettermann@gmail.com</mal:email>
-      <mal:years>2016</mal:years>
-    </mal:credit>
   </info>
 
-<title>Dialogfenster</title>
+<title>Dialoge</title>
 
-<p>Dialoge sind sekundäre Fenster, die über einem primären, übergeordneten Fenster angezeigt werden. Sie stellen zusätzliche Informationen oder Bedienelemente dar, wie Einstellungen und Eigenschaften, oder zeigen Meldungen oder Fragen an.</p>
+<p>Dialogs are secondary windows that appear over a primary, parent window. They are used to present additional information or controls, including preferences and properties, or to present messages or questions.</p>
 
-<p>GTK+ liefert bereits eine Anzahl vorgefertigter Dialoge mit, die Sie verwenden können, wie beispielsweise zum Drucken oder zur Farbauswahl.</p>
+<p>GTK+ provides a number of stock dialogs that can be used, such as for printing or color selection.</p>
 
-<p>Es gibt drei grundlegende Typen von Dialogen.</p>
+<p>There are three basic types of dialogs.</p>
 
 <section id="when-to-use">
-<title>Anwendungsfälle</title>
+<title>When to use</title>
 
-<p>Dialoge sind ein häufig verwendetes Designmuster. Es gibt etablierte Konventionen für den Einsatz der verschiedenen Dialogtypen, die Sie verwenden können. Die Richtlinien zu jedem der Typen vermitteln weitere Informationen hierzu.</p>
+<p>Dialogs are a commonly recognized design pattern, and there are established conventions for the different types of dialogs that you might want to use. The guidelines on each type of dialog provides further information on this.</p>
 
-<p>Während Dialoge einerseits eine effektive Möglichkeit bieten, zusätzliche Bedienelemente oder Informationen bereitzustellen, können Sie beim Benutzer andererseits Unterbrechungen des Arbeitsablaufs verursachen. Stellen Sie sich deshalb immer die Frage, ob ein Dialog erforderlich ist, und versuchen Sie solche Situationen zu vermeiden.</p>
+<p>While dialogs can be an effective way to disclose additional controls or information, they can also be a source of interruption for the user. For this reason, always question whether a dialog is necessary, and work to avoid the situations in which they are required.</p>
 
-<p>Es gibt viele Wege, Dialoge zu vermeiden:</p>
+<p>There are many ways to avoid using dialogs:</p>
 
 <list>
-<item><p>Ordnen Sie neue Nachrichten, Kontakte und Ähnliches eingebettet an.</p></item>
-<item><p>Eingebettete Benachrichtigungen sind eine Alternative zu Meldungsdialogen.</p></item>
-<item><p><link xref="popovers">Einblenddialoge</link> können zusätzliche Bedienelemente oder Optionen auf eine weniger unterbrechende Weise anzeigen.</p></item>
+<item><p>Use inline composition for new messages, records or contacts.</p></item>
+<item><p>In-application notifications are an alternative to message dialogs.</p></item>
+<item><p><link xref="popovers">Popovers</link> can be a way to display additional controls or options in a less disruptive manner.</p></item>
 </list>
 
 </section>
 
 <section id="message-dialogs">
-<title>Meldungsdialoge</title>
+<title>Message Dialogs</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/message-dialog.svg"/>
 
-<p>Meldungsdialoge sind der einfachste Dialogtyp. Es werden Meldungen oder Fragen angezeigt sowie 1 bis 3 Knöpfe, über die der Benutzer antworten kann. Sie sind stets modal, was bedeutet, dass der Zugriff auf das übergeordnete Fenster durch sie verhindert wird. Meldungsdialoge sind eine gute Wahl, wenn es darum geht, dass dem Benutzer eine Meldung angezeigt und eine Antwort angefordert wird.</p>
+<p>Message dialogs are the simplest type of dialog. They present a message or question, along with 1-3 buttons with which to respond. They are always modal, meaning that they prevent access to their parent window. Message dialogs are an appropriate choice when it is essential that the user sees and responds to a message.</p>
 
 <section id="message-dialog-examples">
 <title>Beispiele</title>
 
-<p>Bestätigungsdialoge verwenden oft einen Meldungsdialog, um zu prüfen (oder bestätigen zu lassen), dass der Benutzer eine Aktion ausführen will. Sie enthalten zwei Knöpfe, einen zum tatsächlichen Ausführen und einen zum Abbrechen der Aktion.</p>
+<p>Confirmation dialogs use a message dialog to check - or confirm - that the user wants to carry out an action. They have two buttons: one to confirm that the action should be carried out and one to cancel the action.</p>
 
-<note style="tip"><p>Bestätigungsdialoge werden oft unabsichtlich oder automatisch »abgenickt«, wodurch Fehler nicht immer vermieden werden. Oft ist es besser, eine Routine zum Zurücknehmen von Aktionen anzubieten.</p></note>
+<note style="tip"><p>Confirmation dialogs will often be accidentally or automatically acknowledged, and will not always prevent mistakes from happening. It is often better to provide undo functionality instead.</p></note>
 
-<p>Fehlerdialoge zeigen dem Benutzer eine Fehlermeldung an. Sie enthalten oft einen einzelnen Knopf, mit dem der Benutzer bestätigt, dass er die Fehlermeldung gelesen hat und den Dialog schließen kann.</p>
+<p>Error dialogs present an error message to the user. They often include a single button that allows the user to acknowledge and close the dialog.</p>
 
-<note style="tip"><p>Fehlerdialoge sollten generell der letzte Ausweg sein. Sie sollten Ihre Anwendung so gestalten, dass keine Fehler auftreten und dafür sorgen, dass eine automatische Wiederherstellung möglich ist, wenn dennoch etwas schiefgeht.</p></note>
+<note style="tip"><p>Error dialogs should generally be a last resort. You should design your application so that errors do not occur, and to automatically recover if something does go wrong.</p></note>
 
 </section>
 </section>
 
 <section id="action-dialogs">
-<title>Aktionsdialoge</title>
+<title>Action Dialogs</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/action-dialog.svg"/>
 
-<p>Aktionsdialoge stellen Optionen und Informationen zu einer spezifischen Aktion bereit, bevor diese ausgeführt wird. Sie haben eine Überschrift (die typischerweise die Aktion beschreibt) und zwei primäre Knöpfe – einen zum Ausführen und einen zum Abbrechen der Aktion.</p>
+<p>Action dialogs present options and information about a specific action before it is carried out. They have a heading (which typically describes the action) and two primary buttons - one which allows the action to be carried out and one which cancels it.</p>
 
-<p>Gelegentlich ist es notwendig, dass der Benutzer Optionen auswählen soll, bevor eine Aktion ausgeführt wird. In diesen Fällen sollte der bestätigende Dialogknopf ausgegraut werden, bis die benötigten Optionen ausgewählt wurden.</p>
+<p>Sometimes, the user may be required to choose options before an action can be carried out. In these cases, the affirmative dialog button should be insensitive until the required options have been selected.</p>
 
 <section id="action-dialog-examples">
 <title>Beispiele</title>
@@ -99,7 +92,7 @@
 </section>
 
 <section id="presentation-dialogs">
-<title>Präsentationsdialoge</title>
+<title>Presentation Dialogs</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/presentation-dialog.svg"/>
 
@@ -115,7 +108,7 @@
 </section>
 
 <section id="instant-and-explicit-apply">
-<title>Unmittelbares und ausdrückliches Anwenden</title>
+<title>Instant and Explicit Apply</title>
 
 <p>Presentation dialogs are either instant or explicit apply. In instant apply dialogs, changes to settings or values are immediately updated. In contrast, explicit apply dialogs include a button for applying changes.</p>
 
@@ -127,7 +120,7 @@
 </section>
 
 <section id="primary-buttons">
-<title>Primäre Knöpfe</title>
+<title>Primary buttons</title>
 
 <p>Message and action dialogs include primary buttons which affect the whole window. The order of these buttons, as well as the labels used, are a key part of the dialog.</p>
 
@@ -141,7 +134,7 @@
 </section>
 
 <section id="labels">
-<title>Beschriftungen</title>
+<title>Labels</title>
 
 <p>Label the affirmative primary button with a specific imperative verb, for example: <gui>Save</gui>, <gui>Print</gui>, <gui>Remove</gui>. This is clearer than a generic label like <gui>OK</gui> or <gui>Done</gui>.</p>
 
@@ -163,26 +156,17 @@
 </section>
 
 <section id="general-guidelines">
-<title>Allgemeine Richtlinien</title>
+<title>General guidelines</title>
 
 <list>
 <item><p>Dialog windows should never pop up unexpectedly, and should only ever be displayed in immediate response to a deliberate user action.</p></item>
-<item><p>Dialogfenster sollten stets ein Elternfenster haben.</p></item>
-<item><p>Folgen Sie beim Entwurf von Fensterinhalten den <link xref="visual-layout">Layout-Richtlinien</link></p></item>
+<item><p>Dialogs should always have a parent window.</p></item>
+<item><p>Follow the <link xref="visual-layout">layout guidelines</link> when designing the content of windows.</p></item>
 <item><p>Use <link xref="view-switchers">view switchers</link> or <link xref="tabs">tabs</link> to break up controls and information.</p></item>
-<item><p>Vermeiden Sie die Stapelung von Dialogfenstern. Niemals sollten mehrere Dialogfenster gleichzeitig angezeigt werden.</p></item>
-<item><p>Setzen Sie beim Öffnen eines Dialoges den anfänglichen Tastaturfokus auf jenes Element, von dem Sie erwarten, dass die Benutzer es zuerst benötigen. Dieser Fokus ist insbesondere für jene Benutzer von Bedeutung, die beim Navigieren durch Ihre Anwendung auf die ausschließliche Verwendung der Tastatur angewiesen sind.</p></item>
+<item><p>Avoid stacking dialog windows on top of one another. Only one dialog window should be displayed at a time.</p></item>
+<item><p>When opening a dialog, provide initial keyboard focus to the component that you expect users to operate first. This focus is especially important for users who must use a keyboard to navigate your application.</p></item>
 </list>
 
-</section>
-
-<section id="api-reference">
-<title>API-Referenz</title>
-<list>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkAboutDialog.html">GtkAboutDialog</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkDialog.html">GtkDialog</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMessageDialog.html">GtkMessageDialog</link></p></item>
-</list>
 </section>
 
 </page>

@@ -18,7 +18,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -36,7 +36,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -63,32 +63,32 @@ const Lang = imports.lang;
 const ComboBoxTextExample = new Lang.Class ({
     Name: 'ComboBoxText Example',
 
-    // Create the application itself
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
     _init: function () {
         this.application = new Gtk.Application ({
             application_id: 'org.example.jscomboboxtext'});
 
-        // Connect 'activate' and 'startup' signals to the callback functions
+        // Σύνδεση των σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents windows when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα, όταν είναι ενεργή
     _onActivate: function () {
         this._window.present ();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
     _onStartup: function () {
         this._buildUI ();
     },
 </code>
     <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση MessageDialogExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
     <code mime="application/javascript">
-    // Build the application's UI
+   // Δόμηση της διεπαφής χρήστη της εφαρμογής
     _buildUI: function () {
 
-        // Create the application window
+        // Δημιουργία του παραθυύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow  ({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -102,16 +102,16 @@ const ComboBoxTextExample = new Lang.Class ({
   <section id="comboboxtext">
     <title>Δημιουργία των ComboBoxText</title>
     <code mime="application/javascript">
-        // Create the combobox
+               // Δημιουργία του σύνθετου πλαισίου
         this._comboBoxText = new Gtk.ComboBoxText();
 
-        // Populate the combobox
+        // Γέμισμα του σύνθετου πλαισίου
         let distros = ["Select distribution", "Fedora", "Mint", "Suse"];
         for (let i = 0; i &lt; distros.length; i++)
             this._comboBoxText.append_text (distros[i]);
         this._comboBoxText.set_active (0);
 
-        // Connect the combobox's 'changed' signal to our callback function
+        // Σύνδεση του σήματος του σύνθετου πλαισίου 'changed' με τη συνάρτηση επανάκλησής μας
         this._comboBoxText.connect ('changed', Lang.bind (this, this._onComboChanged));
 </code>
     <p>Μετά τη δημιουργία του ComboBoxText, χρησιμοποιούμε τη μέθοδό του <file>append_text</file> για να προσθέσουμε συμβολοσειρές κειμένου σε αυτό. Όπως οι καταχωρίσεις σε έναν πίνακα, έχει καθεμιά έναν αριθμό για ταυτότητα, αρχίζοντας με 0. Για απλοποίηση, μπορείτε πράγματι να δημιουργήσετε έναν πίνακα για τις καταχωρίσεις ComboBoxText, έπειτα να χρησιμοποιήσετε έναν βρόχο for για να τα προσαρτήσετε σε σειρά, όπως κάναμε εδώ.</p>
@@ -119,10 +119,10 @@ const ComboBoxTextExample = new Lang.Class ({
     <note><p>Εάν θα θέλατε να προσθέσετε μια καταχώριση σε ένα ComboBoxText, μπορείτε να χρησιμοποιήσετε τη μέθοδο <file>insert_text</file>. Εάν προτιμάτε να χρησιμοποιήσετε μια συμβολοσειρά κειμένου ως μια ταυτότητα για κάθε καταχώριση αντί να βασίζεστε σε αριθμούς μόνο, μπορείτε να χρησιμοποιήσετε τις μεθόδους <file>append</file> και <file>insert</file>. Δείτε τους συνδέσμους στο τέλος αυτού του μαθήματος για τις λεπτομέρειες χρήσης τους.</p></note>
 
     <code mime="application/javascript">
-        // Add the combobox to the window
+        // Προσθήκη του σύνθετου πλαισίου στο παράθυρο
         this._window.add (this._comboBoxText);
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
     },
 </code>
@@ -134,7 +134,7 @@ const ComboBoxTextExample = new Lang.Class ({
     <code mime="application/javascript">
     _onComboChanged: function () {
 
-        // The responses we'll use for our messagedialog
+        // Οι απαντήσεις που θα χρησιμοποιήσουμε για τον διάλογο του μηνύματός μας
         let responses = ["",
             "Fedora is a community distro sponsored by Red Hat.",
             "Mint is a popular distro based on Ubuntu.",
@@ -143,10 +143,10 @@ const ComboBoxTextExample = new Lang.Class ({
     <p>Πρόκειται να δημιουργήσουμε ένα αναδυόμενο <link xref="messagedialog.js">MessageDialog</link>, που σας εμφανίζει ένα μήνυμα με βάση ποια διανομή επιλέγετε. Πρώτα, δημιουργούμε τον πίνακα των απαντήσεων για χρήση. Αφού η πρώτη συμβολοσειρά στο ComboBoxText μας είναι μόνο το μήνυμα "Select distribution", κάνουμε την πρώτη συμβολοσειρά στον πίνακά μας κενή.</p>
 
     <code mime="application/javascript">
-        // Which combobox item is active?
+        // Ποιο στοιχείο του σύνθετου πλαισίου είναι ενεργό;
         let activeItem = this._comboBoxText.get_active();
 
-        // No messagedialog if you chose "Select distribution"
+        // Χωρίς διάλογο μηνύματος αν επιλέξετε "Select distribution"
         if (activeItem != 0) {
             this._popUp = new Gtk.MessageDialog ({
                 transient_for: this._window,
@@ -155,10 +155,10 @@ const ComboBoxTextExample = new Lang.Class ({
                 message_type: Gtk.MessageType.INFO,
                 text: responses[activeItem]});
 
-            // Connect the OK button to a handler function
+            // Σύνδεση του κουμπιού ΕΝΤΑΞΕΙ με συνάρτηση χειριστή
             this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
 
-            // Show the messagedialog
+            // Εμφάνιση του διαλόγου μηνύματος
             this._popUp.show();
         }
 
@@ -180,7 +180,7 @@ const ComboBoxTextExample = new Lang.Class ({
     <p>Αφού το μόνο κουμπί που ο MessageDialog έχει είναι ένα κουμπί εντάξει, δεν χρειαζόμαστε να ελέγξουμε το response_id του για να δούμε ποιο κουμπί πατήθηκε. Αυτό που κάνουμε εδώ είναι η καταστροφή του αναδυόμενου.</p>
 
     <code mime="application/javascript">
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new ComboBoxTextExample ();
 app.application.run (ARGV);
 </code>
@@ -197,32 +197,32 @@ const Lang = imports.lang;
 const ComboBoxTextExample = new Lang.Class ({
     Name: 'ComboBoxText Example',
 
-    // Create the application itself
+    // Δημιουργία της εφαρμογής αυτής καθεαυτής
     _init: function () {
         this.application = new Gtk.Application ({
             application_id: 'org.example.jscomboboxtext'});
 
-        // Connect 'activate' and 'startup' signals to the callback functions
+        // Σύνδεση των σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents windows when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
     _onActivate: function () {
         this._window.present ();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
     _onStartup: function () {
         this._buildUI ();
     },
 
 
 
-    // Build the application's UI
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
     _buildUI: function () {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow  ({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -230,22 +230,22 @@ const ComboBoxTextExample = new Lang.Class ({
             default_width: 200,
             border_width: 10 });
 
-        // Create the combobox
+        // Δημιουργία του σύνθετου πλαισίου
         this._comboBoxText = new Gtk.ComboBoxText();
 
-        // Populate the combobox
+        // Γέμισμα του σύνθετου πλαισίου
         let distros = ["Select distribution", "Fedora", "Mint", "Suse"];
         for (let i = 0; i &lt; distros.length; i++)
             this._comboBoxText.append_text (distros[i]);
         this._comboBoxText.set_active (0);
 
-        // Connect the combobox's 'changed' signal to our callback function
+        // Σύνδεση του σήματος του σύνθετου πλαισίου 'changed' στη συνάρτηση επανάκλησής μας
         this._comboBoxText.connect ('changed', Lang.bind (this, this._onComboChanged));
 
-        // Add the combobox to the window
+        // Προσθήκη του σύνθετου πλαισίου στο παράθυρο
         this._window.add (this._comboBoxText);
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
     },
 
@@ -253,16 +253,16 @@ const ComboBoxTextExample = new Lang.Class ({
 
     _onComboChanged: function () {
 
-        // The responses we'll use for our messagedialog
+        // Οι απαντήσεις που θα χρησιμοποιήσουμε για τον διάλογο του μηνύματός μας
         let responses = ["",
             "Fedora is a community distro sponsored by Red Hat.",
             "Mint is a popular distro based on Ubuntu.",
             "SUSE is a name shared by two separate distros."];
 
-        // Which combobox item is active?
+        // Ποιο στοιχείο του σύνθετου πλαισίου είναι ενεργό;
         let activeItem = this._comboBoxText.get_active();
 
-        // No messagedialog if you chose "Select distribution"
+        // Χωρίς διάλογο μηνύματος αν επιλέξετε "Select distribution"
         if (activeItem != 0) {
             this._popUp = new Gtk.MessageDialog ({
                 transient_for: this._window,
@@ -271,10 +271,10 @@ const ComboBoxTextExample = new Lang.Class ({
                 message_type: Gtk.MessageType.INFO,
                 text: responses[activeItem]});
 
-            // Connect the OK button to a handler function
+            // Σύνδεση του κουμπιού ΕΝΤΑΞΕΙ σε συνάρτηση χειριστή
             this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
 
-            // Show the messagedialog
+            // Εμφάνιση του διαλόγου μηνύματος
             this._popUp.show();
         }
 
@@ -290,7 +290,7 @@ const ComboBoxTextExample = new Lang.Class ({
 
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new ComboBoxTextExample ();
 app.application.run (ARGV);
 </code>

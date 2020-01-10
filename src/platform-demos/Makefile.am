@@ -302,6 +302,7 @@ HELP_FILES =				\
 	aboutdialog.py.page		\
 	aboutdialog.vala.page		\
 	audio-player.vala.page		\
+	beginner.c.page			\
 	beginner.js.page		\
 	beginner.py.page		\
 	beginner.vala.page		\
@@ -377,7 +378,6 @@ HELP_FILES =				\
 	label.js.page			\
 	label.py.page			\
 	label.vala.page			\
-	legal.xml			\
 	license.page			\
 	linkbutton.c.page		\
 	linkbutton.js.page		\
@@ -478,24 +478,6 @@ HELP_FILES =				\
 	window.c.page			\
 	window.js.page			\
 	window.py.page			\
-	window.vala.page		\
-	custom-gsource.c.page
+	window.vala.page
 
-HELP_LINGUAS = ca cs de el es fr gl pt_BR
-
-# Tooling to compile and run unit tests for example code.
-demo_sources += samples/example-custom-gsource.c
-EXTRA_DIST = C/samples/test-custom-gsource.c
-WARN_CFLAGS = -Wall -Wextra -Wno-unused-parameter
-
-if BUILD_TESTS
-C/samples/test-custom-gsource: C/samples/test-custom-gsource.c C/samples/example-custom-gsource.c
-	$(MKDIR_P) "$(dir $@)"
-	$(CC) -o $@ $(WARN_CFLAGS) $(GLIB_CFLAGS) $(GLIB_LIBS) $<
-
-check: C/samples/test-custom-gsource
-	C/samples/test-custom-gsource
-.PHONY: check
-
-CLEANFILES = C/samples/test-custom-gsource
-endif BUILD_TESTS
+HELP_LINGUAS = ca de el es fr gl pt_BR

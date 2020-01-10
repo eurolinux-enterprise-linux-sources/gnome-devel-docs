@@ -45,7 +45,7 @@
 <links type="section"/>
 
 <section id="create">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
 
   <p>The GNOME platform includes WebKitGTK+, built on top of the powerful
   WebKit HTML framework. WebKit is used throughout GNOME, not just to view
@@ -102,7 +102,7 @@
   them both into a window. Find the function <code>create_window</code> and
   replace it with the following:</p>
 
-<code style="numbered" mime="text/C">
+<code style="numbered" mime="text/C"><![CDATA[
 static GtkWidget*
 create_window (void)
 {
@@ -127,7 +127,7 @@ create_window (void)
     view = webkit_web_view_new ();
     gtk_container_add (GTK_CONTAINER (scroll), view);
     webkit_web_view_load_string (WEBKIT_WEB_VIEW (view),
-                                 "&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;",
+                                 "<html><body></body></html>",
                                  "text/html",
                                  "UTF-8",
                                  NULL);
@@ -135,7 +135,7 @@ create_window (void)
     gtk_widget_show_all (GTK_WIDGET (box));
     return window;
 }
-</code>
+]]></code>
 
   <p>You first create a <code>GtkWindow</code> object and set its title and
   default size. You also connect the <code>gtk_main_quit</code> function to the
@@ -225,14 +225,14 @@ create_window (void)
   <key>Enter</key> in the entry. Add the following into <code>create_window</code>,
   anywhere after both <code>entry</code> and <code>view</code> have been defined:</p>
 
-<code>
+<code><![CDATA[
 g_signal_connect (entry, "activate", G_CALLBACK (entry_activate_cb), view);
-</code>
+]]></code>
 
   <p>You then have to actually define <code>entry_activate_cb</code>. Define
   it as follows, anywhere above <code>create_window</code>:</p>
 
-<code style="numbered">
+<code style="numbered"><![CDATA[
 static void
 entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
 {
@@ -250,7 +250,7 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
                                   NULL);
     gtk_entry_set_text (entry, "");
 }
-</code>
+]]></code>
 
   <p>The first thing you do is get a <code>WebKitDOMDocument</code> object
   that represents the HTML document displayed in <code>view</code>. The DOM
@@ -296,7 +296,7 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
   just to keep everything in one file for this demo, we'll use a trick called a
   data URI. First, define the CSS as a static string near the top of your file.</p>
 
-<code>
+<code><![CDATA[
 static const guchar CSS[] =
 "body { margin: 0; padding: 0; }\n"
 "div { "
@@ -307,7 +307,7 @@ static const guchar CSS[] =
 " -webkit-box-shadow: 0px 0px 2px #c6c6c6;"
 " margin: 12px; padding: 6px;"
 "}";
-</code>
+]]></code>
 
   <p>All you have in this example are <code>div</code> elements inside a
   <code>body</code> element. If you created more complicated HTML, you could
@@ -318,7 +318,7 @@ static const guchar CSS[] =
   <code>create_window</code> function, anywhere after <code>view</code> has
   already been defined.</p>
 
-<code>
+<code><![CDATA[
 tmp = g_base64_encode (CSS, strlen((gchar *) CSS));
 css = g_strconcat ("data:text/css;charset=utf-8;base64,",
                    tmp, NULL);
@@ -326,7 +326,7 @@ g_object_set (webkit_web_view_get_settings (WEBKIT_WEB_VIEW (view)),
               "user-stylesheet-uri", css, NULL);
 g_free (css);
 g_free (tmp);
-</code>
+]]></code>
 
   <p>Also, make sure to add variable declarations for <code>tmp</code>
   and <code>css</code> to the top of <code>create_window</code>.</p>

@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,11 +34,11 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
-  <title>Κουμπί χρώματος (ColorButton)</title>
+  <title>Πλήκτρο χρώματος (ColorButton)</title>
   <media type="image" mime="image/png" src="media/colorbutton.png"/>
   <p>Αυτό το ColorButton ξεκινά τον διάλογο επιλογής χρωμάτων και τυπώνει στον τερματικό τις τιμές RGB του επιλεγμένου χρώματος.</p>
 
@@ -48,71 +48,71 @@
   <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
   <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-const Gdk = imports.gi.Gdk;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
+const Gdk = imports.gi.Gdk·
+const GObject = imports.gi.GObject·
+const Gtk = imports.gi.Gtk·
+const Lang = imports.lang·
 
 const ColorbuttonExample = new Lang.Class ({
     Name: 'Colorbutton Example',
 
-    // Create the application itself
+    // Δημιουργία αυτής καθεαυτής της εφαρμογής
     _init: function () {
-        this.application = new Gtk.Application ({ application_id: 'org.example.jscolorbutton' });
+        this.application = new Gtk.Application ({ application_id: 'org.example.jscolorbutton' })·
 
-        // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
+        // Σύνδεση σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
+        this.application.connect('activate', Lang.bind(this, this._onActivate))·
+        this.application.connect('startup', Lang.bind(this, this._onStartup))·
     },
 
-    // Callback function for 'activate' signal presents windows when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
     _onActivate: function() {
-        this.window.present();
+        this.window.present()·
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί την UI
     _onStartup: function () {
-        this._buildUI ();
+        this._buildUI ()·
     },
 
-    // Build the application's UI
+    // Δόμηση της γραφικής διεπαφής της εφαρμογής
     _buildUI: function () {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this.window = new Gtk.ApplicationWindow ({ application: this.application,
                                                    window_position: Gtk.WindowPosition.CENTER,
                                                    title: "ColorButton",
                                                    default_width: 150,
                                                    default_height: 50,
-                                                   border_width: 10 });
+                                                   border_width: 10 })·
 
-        this.button = new Gtk.ColorButton();
-        this.color = new Gdk.RGBA();
-        this.color.red = 0.0;
-        this.color.green = 0.0;
-        this.color.blue = 1.0;
-        this.color.alpha = 0.5;
-        this.button.set_rgba(this.color);
-        this.button.connect("color-set", Lang.bind(this, this.onColorChosen));
-        this.label = new Gtk.Label();
-        this.label.set_text("Click to choose a color");
+        this.button = new Gtk.ColorButton()·
+        this.color = new Gdk.RGBA()·
+        this.color.red = 0.0·
+        this.color.green = 0.0·
+        this.color.blue = 1.0·
+        this.color.alpha = 0.5·
+        this.button.set_rgba(this.color)·
+        this.button.connect("color-set", Lang.bind(this, this.onColorChosen))·
+        this.label = new Gtk.Label()·
+        this.label.set_text("Click to choose a color")·
 
-        let grid = new Gtk.Grid();
-        grid.attach(this.button, 0, 0, 2, 1);
-        grid.attach(this.label, 0, 1, 2, 1);
-        this.window.add(grid);
-        this.window.show_all();
+        let grid = new Gtk.Grid()·
+        grid.attach(this.button, 0, 0, 2, 1)·
+        grid.attach(this.label, 0, 1, 2, 1)·
+        this.window.add(grid)·
+        this.window.show_all()·
     },
 
     onColorChosen: function() {
-    let colorName = this.color.to_string();
-    this.label.set_text("You chose the color " + colorName);
+    let colorName = this.color.to_string()·
+    this.label.set_text("You chose the color " + colorName)·
     }
-});
+})·
 
-// Run the application
-let app = new ColorbuttonExample ();
-app.application.run (ARGV);
+// Εκτέλεση της εφαρμογής
+let app = new ColorbuttonExample ()·
+app.application.run (ARGV)·
 </code>
   </section>
 

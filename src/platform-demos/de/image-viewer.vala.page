@@ -57,7 +57,7 @@
 <media type="image" mime="image/png" src="media/image-viewer.png"/>
 
 <section id="anjuta">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
   <p>Before you start coding, you'll need to set up a new project in Anjuta.
   This will create all of the files you need to build and run the code later on.
   It's also useful for keeping everything together.</p>
@@ -78,7 +78,7 @@
       <p>Click <gui>Continue</gui> then <gui>Apply</gui> and the project will be created for you.
       Open <file>src/image_viewer.vala</file> from the <gui>Project</gui> or <gui>File</gui> tabs.
       You will see this code:</p>
-      <code mime="text/x-csharp">
+      <code mime="text/x-csharp"><![CDATA[
 using GLib;
 using Gtk;
 
@@ -107,7 +107,7 @@ public class Main : Object
 
 		return 0;
 	}
-}</code>
+}]]></code>
     </item>
   </steps>
 </section>
@@ -145,13 +145,13 @@ public class Main : Object
   Here we will use the simplest available container, a <link href="http://unstable.valadoc.org/gtk+-2.0/Gtk.Box.html"><code>Gtk.Box</code></link>.</p>
 
 <p>Add the following lines to the top of the <code>Main</code> class:</p>
-  <code mime="text/x-csharp">
+  <code mime="text/x-csharp"><![CDATA[
 private Window window;
 private Image image;
-</code>
+]]></code>
 
 <p>Now replace the current constructor with the one below:</p>
-<code mime="text/x-csharp">
+<code mime="text/x-csharp"><![CDATA[
 
 public Main () {
 
@@ -173,7 +173,7 @@ public Main () {
 	window.show_all ();
 	window.destroy.connect (main_quit);
 }
-</code>
+]]></code>
   <steps>
     <item>
       <p>The first two lines are the parts of the GUI that we will need to access from more than one method.
@@ -214,7 +214,7 @@ public Main () {
   <p>We will now define the signal handler for the <code>clicked</code> signal for the
 button we mentioned before.
   Add this code after the constructor:</p>
-  <code mime="text/x-csharp">
+  <code mime="text/x-csharp"><![CDATA[
 public void on_open_image (Button self) {
 	var filter = new FileFilter ();
 	var dialog = new FileChooserDialog ("Open image",
@@ -236,7 +236,7 @@ public void on_open_image (Button self) {
 	}
 	dialog.destroy ();
 }
-</code>
+]]></code>
   <p>This is a bit complicated, so let's break it down:</p>
   <note><p>A signal handler is a type of callback method that is called when a signal is emitted.  Here the terms are used interchangeably.</p></note>
   <list>
@@ -244,14 +244,14 @@ public void on_open_image (Button self) {
       <p>The first argument of the callback method is always the widget that sent the signal.
       Sometimes other arguments related to the signal come after that, but <em>clicked</em> doesn't have any.</p>
       <p>In this case the <code>button</code> sent the <code>clicked</code> signal, which is connected to the <code>on_open_image</code> callback method:</p>
-<code mime="text/x-csharp">
+<code mime="text/x-csharp"><![CDATA[
         button.clicked.connect (on_open_image);
-</code>
+]]></code>
 
   <p>The <code>on_open_image</code> method takes the button that emitted the signal as an argument:   </p>
- <code mime="text/x-csharp">
+ <code mime="text/x-csharp"><![CDATA[
         public void on_open_image (Button self)
-</code>
+]]></code>
     </item>
     <item>
       <p>The next interesting line is where the dialog for choosing the file is created.

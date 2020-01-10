@@ -2,52 +2,51 @@
 <page xmlns="http://projectmallard.org/1.0/" type="topic" id="selection-mode" xml:lang="ru">
 
   <info>
-    <link type="guide" xref="patterns#primary"/>
-    <desc>Pattern for selecting content items</desc>  
+    <link type="guide" xref="patterns" group="selection-mode"/>   
     <credit type="author">
-      <name>Алан Дэй (Allan Day)</name>
+      <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Режим выделения</title>
+<title>Selection mode</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/selection-mode.svg"/>
 
-<p>Режим выделения — это шаблон проектирования, с помощью которого можно выполнять некоторые действия над элементами содержимого. Он часто применяется вместе со списками и сетками.</p>
+<p>Selection mode is a design pattern for allow actions to be performed on items of content. It is typically used in conjunction with lists and grids.</p>
 
-<p>Когда режим выделения включён, элементы можно выделять с помощью флаговых кнопок, при этом в нижней части текущего вида появляется панель действий. Панель действий содержит различные действия, которые можно выполнять над выделенными элементами.</p>
+<p>When selection mode is active, check boxes allow items to be selected, and an action bar is shown at the bottom of the view. This contains the various actions that can be performed on selected content items.</p>
 
 <section id="when-to-use">
-<title>Когда использовать</title>
+<title>When to use</title>
 
-<p>Режим выделения используется когда:</p>
+<p>Selection mode is appropriate when:</p>
 
 <list>
-<item><p>необходимо выполнить действия одновременно над несколькими элементами;</p></item>
-<item><p>над элементами можно выполнить несколько действий;</p></item>
-<item><p>пользователю удобно выполнять действия над элементами, не открывая их.</p></item>
+<item><p>It is common to perform actions simultaneously on multiple content items.</p></item>
+<item><p>Multiple actions are available to be performed on content items.</p></item>
+<item><p>It is helpful for users to be able to perform actions on content items without opening them.</p></item>
 </list>
 
-<p>Если для пользователей больше подходит выполнение действий над одним элементом, попробуйте применить другой шаблон проектирования, например контекстное меню. Если над элементами можно выполнять только одно действие, можно использовать видоизменённую версию режима выделения (например, вместо того, чтобы выделять элементы, а потом инициировать действие, можно расположить кнопку действия прямо поверх элемента).</p>
+<p>If it is more typical for users to perform actions on single content items, you might want to consider another design pattern, such as a context menu. Likewise, if there is only one action that can be performed on content items, a variant of selection mode can be used (an overlaid button could allow the action to be performed on items directly, rather than requiring them to be selected first, for example).</p>
 
 </section>
 
 <section id="activating-selection-mode">
-<title>Включение режима выделения</title>
+<title>Activating selection mode</title>
 
-<p>Основной способ включения режима выделения — использовать кнопку режима выделения, которая находится в заголовочной панели (её легко найти по значку в виде галочки). Режим выделения включается также при выделение элементов с помощью растяжимой рамки, или при нажатии на элементы с удержанием клавиш Ctrl или Shift.</p>
+<p>The primary way of activating selection mode is through the selection mode button, which is located in the header bar and which is identified by a check mark icon. Selection mode can also be activated by rubber band selection, or by holding Ctrl or Shift and clicking/pressing content items.</p>
 
 </section>
 
 <section id="action-bar">
-<title>Панель действий</title>
+<title>The action bar</title>
 
 <list>
-<item><p>Элементы управления в панели действий должны быть неактивными, если не выбрано ни одного элемента. Иногда действия могут выполняться, только если выбрано больше одного элемента, в этом случае соответствующие элементы управления должны быть активными, только если выделено несколько элементов.</p></item>
-<item><p>В управляющих элементах в панели действий можно использовать значки или текстовые метки.</p></item>
-<item><p>Группы действий должны размещаться в любом конце панели. Разрушительные действия, например удаление, должны располагаться в стороне от прочих элементов управления.</p></item>
+<item><p>Controls in the action bar should be insensitive when no items have been selected. Sometimes actions may only be applied to multiple content items; in this case the relevant controls should only be sensitive when multiple items are selected.</p></item>
+<item><p>Controls in the action toolbar can have icons or text labels.</p></item>
+<item><p>Groups of actions can be distinguished by placing them at either end of the toolbar. Destructive actions, like delete, should be placed away from other controls.</p></item>
 </list>
 
 </section>

@@ -1,113 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="progress-bars" xml:lang="ru">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="progress-bars" xml:lang="ru">
 
   <info>
     <credit type="author">
-      <name>Алан Дэй (Allan Day)</name>
+      <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
     <credit>
-      <name>Калум Бенсон (Calum Benson)</name>
+      <name>Calum Benson</name>
     </credit>
     <credit>
-      <name>Адам Элман (Adam Elman)</name>
+      <name>Adam Elman</name>
     </credit>
     <credit>
-      <name>Сэт Никел (Seth Nickell)</name>
+      <name>Seth Nickell</name>
     </credit>
     <credit>
-      <name>Колин Робертсон (Colin Robertson)</name>
+      <name>Colin Robertson</name>
     </credit>
-
-    <link type="guide" xref="ui-elements"/>
-    <uix:thumb mime="image/svg" src="figures/ui-elements/progress-bars.svg"/>
-
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Индикаторы выполнения</title>
+<title>Progress bars</title>
 
-<p>Индикаторы выполнения используются для того, чтобы показать пользователю, что выполняется некоторое задание, а также степень выполнения этого задания.</p>
+<p>Progress bars indicate that a task is being carried out, along with how much progress has been made through the task.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/progress-bars.svg"/>
 
 <section id="when-to-use">
-<title>Когда использовать</title>
+<title>When to use</title>
 
-<p>Обычно индикаторы применяются, когда на выполнение операции требуется больше трёх секунд. В этом случае пользователь понимает, что никакой ошибки не возникло и ему нужно подождать.</p>
+<p>It is usually necessary to indicate that progress is taking place whenever an operation takes more than around three seconds. This ensures that users understand that they have to wait, and that an error has not occurred.</p>
 
-<p>Главный вопрос, который возникает при необходимости индикации выполнения,— что применить, индикатор выполнения или <link xref="progress-spinners">индикатор ожидания</link>. Индикатор выполнения показывает степень выполнения задачи, поэтому они полезны для индикации выполнения продолжительных задач. Применяйте индикаторы выполнения только в том случае, если задача занимает больше 30 секунд. Для менее продолжительных задач лучше применить <link xref="progress-spinners">индикатор ожидания</link>.</p>
+<p>When indicating progress, the primary choice is between a progress bar or a <link xref="progress-spinners">progress spinner</link>. Progress bars indicate how much of a task has been completed. They are therefore useful for tasks that take a long time. As a rule of thumb, only use a progress bar for tasks that take over 30 seconds. For tasks that have shorter periods, <link xref="progress-spinners">progress spinners</link> are often a better choice.</p>
 
 </section>
 
 <section id="types">
-<title>Типы индикаторов</title>
+<title>Types</title>
 
-<p>Существует три разновидности индикаторов выполнения:</p>
+<p>There are three types of progress bar:</p>
 
 <list>
-<item><p>Оставшееся время. Эти индикаторы показывают сколько времени осталось для завершения задачи.</p></item>
-<item><p>Типичное время. Эти индикаторы показывают оставшееся время, исходя из оценки необходимого времени.</p></item>
-<item><p>Неопределённый. Эти индикаторы применяются для задач, для которых нельзя определить необходимое для их выполнения время.</p></item>
+<item><p>Time-remaining: these indicate how much time remains in an operation.</p></item>
+<item><p>Typical-time: these indicate how much time remains, based on an estimate of the expected duration.</p></item>
+<item><p>Indeterminate: these only indicate that an operation is ongoing, not how long it will take.</p></item>
 </list>
 
-<p>Индикаторы выполнения должны быть по возможности точными. Применяйте индикаторы на основе времени с указанием типичного времени, если это возможно. Избегайте неопределённых индикаторов.</p>
+<p>Accuracy is preferable for progress bars. Where possible, use a time-remaining progress bar, followed by typical-time. Try to avoid using indeterminate progress bars.</p>
 
 </section>
 
 <section id="progress-text">
-<title>Текст</title>
+<title>Progress text</title>
 
-<p>Индикатор выполнения может содержать текстовое описание, которое говорит о том, какая часть задания уже выполнена. При составлении текста учитывайте следующие факторы:</p>
+<p>Each progress bar can include a text description. This text should provide an idea of how much of the task has been completed. When deciding on progress text:</p>
 
 <list>
-<item><p>представленный текст должен максимально удовлетворять интересы пользователя.</p></item>
-<item><p>Часто вместо процентов лучше предоставить какие-то определённые сведения. Например, <gui>Повёрнуто 13 из 19 изображений</gui> или <gui>Загружено 12.1 из 30 МБ</gui> лучше, чем <gui>Завершено 13%</gui>.</p></item>
-<item><p>For long-running tasks, it can be desirable to show an estimate of the time remaining in the progress bar text. If other relevant information isn't available, this can be shown on its own. Alternatively, it can appear alongside text about task progress; however, be careful not to overwhelm the user with too much information when doing this, and use <link xref="typography">typographic conventions</link> to differentiate the most useful information.</p></item>
-<item><p>Если оставшееся время известно лишь приблизительно, используйте слово «<gui>около</gui>» (<gui>about</gui>). Например: <gui>Осталось около 3 минут</gui> (<gui>About 3 minutes left</gui>).</p></item>
+<item><p>Always consider what is most relevant and interesting for the user.</p></item>
+<item><p>It is often better to provide specific information rather than a unitless percentage. For example, <gui>13 of 19 images rotated</gui> or <gui>12.1 of 30 MB downloaded</gui> rather than <gui>13% complete</gui>.</p></item>
+<item><p>For long-running tasks, it can be desirable to show an estimate of the time remaining in the progress bar text. If other relevant information isn't available, this can be shown on its own. Alternatively, it can appear alongside text about task progress; however, be careful not to overwhelm the user with too much information when doing this, and use <link xref="typography">typographic conventions</link> to differente the most useful information.</p></item>
+<item><p>If the time remaining is an estimate, use the word <gui>about</gui>. For example: <gui>About 3 minutes left</gui>.</p></item>
 </list>
 
 </section>
 
 <section id="task-stages">
-<title>Этапы выполнения задач</title>
+<title>Task stages</title>
 
-<p>Некоторые задачи выполняются в виде последовательности этапов, у каждого из которых есть собственные параметры по времени выполнения. Возможна такая ситуация, когда оставшееся время известно для части задачи, но для другой части оно неизвестно. В этих случаях:</p>
+<p>Some tasks can be made up of a sequential series of stages, each of which have different options for time estimation. It might be possible to estimate the time remaining for part of a task, but not another part, for example. In these situations:</p>
 
 <list>
-<item><p>Разбивайте задачу на этапы только в том случае, если это действительно необходимо для пользователя. В противном случае, объединять этапы не только не нужно, но и нежелательно.</p></item>
-<item><p>Если задача состоит из этапов для которых известно время, необходимое для их выполнения (хотя бы приблизительно), попробуйте создать простой индикатор с типичным временем выполнения.</p></item>
-<item><p>Если задача содержит этап с неопределённой степенью исполнения, для части задачи индикатор выполнения можно показать в виде неопределённого выполнения. Однако не следует показывать неопределённый индикатор длительное время, старайтесь свести к минимуму изменения режима индикатора выполнения. Применяйте неопределённый индикатор только в крайнем случае.</p></item>
+<item><p>Only communicate the different stages in a task when they are relevant to a user. Generally speaking, this will not be required, and it is not necessary or desirable to communicate separate stages in a task.</p></item>
+<item><p>If a task includes time-remaining and typical-time stages, try to create a single composite typical-time progress bar.</p></item>
+<item><p>If a task includes an indeterminate progress stage, the progress bar can show indeterminate progress for part of the task. However, you should avoid showing indeterminate progress bars for long periods of time, and should attempt to keep the number of progress bar mode changes to an absolute minimum. Avoid indeterminate progress wherever possible.</p></item>
 </list>
 
 </section>
 
 <section id="sub-tasks">
-<title>Подзадачи</title>
+<title>Sub-tasks</title>
 
-<p>Если задача состоит из нескольких подзадач (например, одновременная загрузка нескольких файлов), настоятельно рекомендуется показывать один индикатор, который будет отображать общее выполнение всех задач. Однако в некоторых случаях можно сделать исключение:</p>
+<p>If a task is comprised of multiple sub-tasks (such as downloading several files simultaneously), it is generally advisable to show a single progress bar which indicates composite progress for the overall task. However, there are some situations where this might not be the case:</p>
 
 <list>
-<item><p>Есть пользователю необходимо видеть степень выполнения каждой отдельной подзадачи. (Как вариант, выполнение каждой подзадачи можно отображать с помощью текста в индикаторе выполнения).</p></item>
-<item><p>Если есть необходимость в приостановке или отмене подзадачи (подробнее см. раздел <link xref="#general-guidelines">общие рекомендации</link>).</p></item>
-<item><p>Если подзадачи уже каким-либо образом обозначены в интерфейсе пользователя. В этом случае можно показывать встроенный индикатор выполнения для каждого элемента.</p></item>
+<item><p>If it is genuinely useful for the user to know progress within each individual sub-task. (As an alternative, completion of each sub-task can be indicated with progress text.)</p></item>
+<item><p>If it might be necessary to pause or stop a sub-task (see the <link xref="#general-guidelines">general guidelines</link> on this, below).</p></item>
+<item><p>If sub-tasks are already indicated in your application's user interface. In this case, it can be less disruptive to show a progress for each item inline.</p></item>
 </list>
 
-<p>Если для подзадач применяются индикаторы выполнения:</p>
+<p>When showing progress bars for sub-tasks:</p>
 
 <list>
-<item><p>Каждая подзадача должна удовлетворять общим рекомендациям для индикаторов выполнения (подробнее см. раздел <link xref="#when-to-use">Когда применять</link>.)</p></item>
-<item><p>Общий индикатор выполнения для всего набора задач показывать не обязательно.</p></item>
+<item><p>Each sub-task should conform to the usage guidelines for progress bars (see <link xref="#when-to-use">when to use</link>, above).</p></item>
+<item><p>Generally speaking, it is not necessary to show a progress bar for overall progress through the set of tasks.</p></item>
 </list>
 
 </section>
 
 <section id="progress-windows">
-<title>Окна с индикаторами выполнения</title>
+<title>Progress windows</title>
 
-<p>Раньше для индикации выполнения применялись окна с индикаторами выполнения. Эти второстепенные окна должны были находиться на экране во время выполнения задачи и содержали один или несколько индикаторов выполнения. Но мы не рекомендуем применять подобные окна, так как закрытие этих окон может приводить к неочевидным эффектам, а сами окна могут загораживать полезное содержимое и элементы управления.</p>
+<p>In the past, progress windows were a popular way to present progress bars. These secondary windows would appear for the duration of a task, and would contain one or more progress bars. In general, progress windows are not recommended, since the consequence of closing the window can be unclear and they can obscure useful controls and content.</p>
 
-<p>Индикаторы выполнения, по возможности, должны быть встроены и должны располагаться близко к элементам содержимого или элементам управления, для которых используется индикация.</p>
+<p>Where possible, progress bars should be displayed inline, and should have a close visual relationship with the content items or controls which represent the ongoing task.</p>
 
 </section>
 
@@ -115,20 +111,11 @@
 <title>Общие рекомендации</title>
 
 <list>
-<item><p>Если выполняемое действие потенциально опасно или требовательно к ресурсам, рядом с индикатором выполнения можно разместить кнопку приостановки и/или отмены.</p></item>
-<item><p>Убедитесь, что индикаторы выполнения, показывающие оставшееся или типичное время, используют общее время выполнения, а не время одного шага.</p></item>
-<item><p>Корректируйте индикатор выполнения, использующий оставшееся время, всякий раз, когда происходит изменение, в результате чего операция может завершиться быстрее или медленнее.</p></item>
-<item><p>При использовании индикатора с типичным временем выполнения, если приложению переоценило количество выполненной работы, установите длину индикатора в значение <gui>почти завершено</gui> до завершения операции. Если приложение недооценило количество выполненной работы, заполните оставшееся место индикатора, после выполнения операции.</p></item>
+<item><p>If the operation in progress is potentially destructive or resource intensive, consider placing a pause and/or cancel button close to the progress bar.</p></item>
+<item><p>Ensure that time-remaining and typical-time progress bars measure an operation’s total time or total work, not just that of a single step.</p></item>
+<item><p>Update time-remaining progress bars when changes occur that will cause the operation to finish more quickly or more slowly.</p></item>
+<item><p>When using a typical-time progress bar, if your application overestimates the completed amount of work, the length of the bar can indicate <gui>almost complete</gui> until the operation is complete. If your application underestimates how much work is complete, fill the remaining portion of the bar when the operation is complete.</p></item>
 </list>
 
 </section>
-
-<section id="api-reference">
-<title>API reference</title>
-
-<list>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkProgressBar.html">GtkProgressBar</link></p></item>
-</list>
-</section>
-
 </page>

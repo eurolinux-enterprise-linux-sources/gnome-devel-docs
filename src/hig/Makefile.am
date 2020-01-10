@@ -13,22 +13,18 @@ HELP_FILES = \
 	compatibility.page \
 	design-principles.page \
 	dialogs.page \
-	display-compatibility.page \
 	drop-down-lists.page \
-	empty-placeholders.page \
+	essentials.page \
 	grids.page \
 	header-bar-menus.page \
 	header-bars.page \
 	icons-and-artwork.page \
 	index.page \
-	in-app-notifications.page \
-	info-bars.page \
 	keyboard-input.page \
 	lists.page \
 	menu-bars.page \
 	menus.page \
 	notifications.page \
-	overlaid-controls.page \
 	patterns.page \
 	pointer-and-touch-input.page \
 	popovers.page \
@@ -73,15 +69,11 @@ HELP_MEDIA = \
         figures/patterns/action-dialog.svg \
         figures/patterns/application-menu.svg \
         figures/patterns/editable-lists.svg \
-	figures/patterns/empty-placeholder.svg \
         figures/patterns/grid.svg \
         figures/patterns/header-bar.svg \
         figures/patterns/header-bar-menu.svg \
-        figures/patterns/in-app-notification.svg \
-        figures/patterns/info-bar.svg \
         figures/patterns/list-styles.svg \
         figures/patterns/message-dialog.svg \
-        figures/patterns/overlaid-controls.svg \
         figures/patterns/patterns.svg \
         figures/patterns/presentation-dialog.svg \
         figures/patterns/primary-windows.svg \
@@ -118,4 +110,4 @@ HELP_MEDIA = \
 	figures/ui-elements/spin-boxes.svg \
 	figures/ui-elements/drop-down-list.svg
 
-HELP_LINGUAS = cs de el es ru
+HELP_LINGUAS = de el es ru

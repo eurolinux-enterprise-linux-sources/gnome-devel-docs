@@ -18,33 +18,26 @@
 
     <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
 
-    <desc>Jak přidat okno specifikované v souboru UI do aplikace pomocí GtkBuilder.</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Lucas Lommer</mal:name>
-      <mal:email>llommer@svn.gnome.org</mal:email>
-      <mal:years>2009.</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Marek Černocký</mal:name>
-      <mal:email>marek@manet.cz</mal:email>
-      <mal:years>2015.</mal:years>
-    </mal:credit>
+    <desc>Add the window specified in the UI file to the application using
+    GtkBuilder.</desc>
   </info>
 
   <title>GtkBuilder</title>
   <links type="prevnext" style="top"/>
   <links type="series" style="floatend">
-    <title>Začínáme s GNOME</title>
+    <title>Get started with GNOME</title>
   </links>
 
-  <p>GtkBuilder přebírá popisy UI a vrací je aplikaci Gtk. V tomto případě je popis UI v souboru <file>helloworld.glade</file> a může být přečten metodou <code>get_object()</code>.</p>
+  <p>GtkBuilder accepts UI descriptions and turns them into Gtk applications.
+  In this case, the UI description is in the file <file>helloworld.glade</file>
+  and can be read by the <code>get_object()</code> method.</p>
 
   <example>
-    <p>Načtěte soubor UI pomocí <code>GtkBuilder</code> a získejte objekt okna pomocí <gui>Názvu</gui> (nebo <gui>ID</gui>) zvoleného v Glade a přidejte objekt okna do aplikace:</p>
+    <p>Load the UI file using <code>GtkBuilder</code> and get the window object
+    using the <gui>Name</gui> (or <gui>ID</gui>) chosen in Glade, and add the
+    window object to the application:</p>
 
-    <code>
+    <code><![CDATA[
     _onStartup: function() {
         let builder = new Gtk.Builder();
         builder.add_from_file('helloworld.glade');
@@ -52,7 +45,7 @@
         this.application.add_window(this._window);
     }
 });
-</code>
+]]></code>
   </example>
   <links type="prevnext"/>
 </page>

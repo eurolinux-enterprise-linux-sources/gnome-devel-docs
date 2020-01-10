@@ -34,20 +34,20 @@
     <links type="section"/>
 
   <section id="imports">
-    <title>Zu importierende Bibliotheken</title>
-    <code mime="application/javascript">
+    <title>Libraries to import</title>
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
-</code>
+]]></code>
     <p>These are the libraries we need to import for this application to run. Remember that the line which tells GNOME that we're using Gjs always needs to go at the start.</p>
     </section>
 
   <section id="applicationwindow">
     <title>Entwurf des Anwendungsfensters</title>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 const SwitchExample = new Lang.Class({
     Name: 'Switch Example',
 
@@ -73,10 +73,10 @@ const SwitchExample = new Lang.Class({
         this._initMenus();
         this._buildUI ();
     },
-</code>
+]]></code>
     <p>All the code for this sample goes in the SwitchExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
     <note><p>Before we call _buildUI to create the window and the widgets inside it, we need to call _initMenus, which tells GNOME to create the menu. We can put the actual code for _initMenus after the code for _buildUI, since it doesn't matter what order we put them in so long as _initMenus is called first in _onStartup.</p></note>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
     // Build the application's UI
     _buildUI: function() {
 
@@ -86,20 +86,20 @@ const SwitchExample = new Lang.Class({
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 20,
             title: "Animal Creator"});
-</code>
+]]></code>
     <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
   </section>
 
   <section id="button">
     <title>Creating the switches</title>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Create the image widget and set its default picture
         this._image = new Gtk.Image ({file: "redfox.png"});
-</code>
+]]></code>
 
     <p>We first create the <link xref="image.js">Image</link> that the switches will control. Remember that a file named <file>redfox.png</file> needs to be in the same directory as this application.</p>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Create a label for the first switch
         this._flyLabel = new Gtk.Label ({
             label: "Make it fly",
@@ -117,12 +117,12 @@ const SwitchExample = new Lang.Class({
         // Create the second switch
         this._birdSwitch = new Gtk.Switch ({active: false});
         this._birdSwitch.connect ('notify::active', Lang.bind (this, this._switchFlip));
-</code>
+]]></code>
 
     <p>We use a <link xref="label.js">Label</link> to mark each Switch, and give them a bit of a margin on the right so that they aren't crammed right next to the Switches. After that we create the Switches, and set them to be switched off by default.</p>
     <p>The signal a switch sends out when it's flipped on or off is called notify::active. After we create each switch, we connect its notify::active signal to a function called _switchFlip. If you have multiple switches that each do something different, you might want to connect them to different functions, but here they're both used for the same thing: To control what picture's displayed by _image.</p>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Create a grid for the labels and switches beneath the picture
         this._UIGrid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
@@ -143,23 +143,23 @@ const SwitchExample = new Lang.Class({
         // Attach the picture and the UI grid to the master grid
         this._mainGrid.attach (this._image, 0, 0, 1, 1);
         this._mainGrid.attach (this._UIGrid, 0, 1, 1, 1);
-</code>
+]]></code>
     <p>We create a <link xref="grid.js">Grid</link> for the Labels and Switches first, so that we can organize them in a 2x2 layout with a margin between it and the Image. Then we put that Grid into a larger 2x1 Grid that has the Image on top, and the Grid with the Labels and Switches on the bottom.</p>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Add the master grid to the window
         this._window.add (this._mainGrid);
 
         // Show the window and all child widgets
         this._window.show_all();
     },
-</code>
+]]></code>
     <p>Finally, we add the larger Grid to the window, then tell the window to show itself and all the widgets inside of it.</p>
     </section>
 
     <section id="switch-handler">
     <title>Function which handles the switches being flipped</title>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
     _switchFlip: function() {
 
         // Change the picture depending on which switches are flipped
@@ -179,12 +179,12 @@ const SwitchExample = new Lang.Class({
         }
 
     },
-</code>
+]]></code>
     <p>Each time a Switch is flipped, this function checks to see which of the two Switches are active afterwards, using the Switches' built-in get_active() function. It then changes the Image accordingly. You can change the filenames around as you like, so long as you have pictures to go with them.</p>
 </section>
 
 <section id="about">
-    <title>Erstellen des AboutDialogs</title>
+    <title>Creating the AboutDialog</title>
     <code mime="application/javascript">
     _initMenus: function() {
 
@@ -442,7 +442,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>Weiterführende Dokumentation</title>
+    <title>In-depth documentation</title>
 <list>
   <item><p><link href="http://developer.gnome.org/gio/unstable/GMenu.html">GMenu</link></p></item>
   <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>

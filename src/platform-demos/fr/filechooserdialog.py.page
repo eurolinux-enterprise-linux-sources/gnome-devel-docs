@@ -16,36 +16,6 @@
     </credit>
 
     <desc>A dialog suitable for "Open" and "Save" commands</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
   <title>Boîte de dialogue FileChooser</title>
@@ -160,7 +130,7 @@ class MyWindow(Gtk.ApplicationWindow):
     # callback for new
     def new_callback(self, action, parameter):
         self.buffer.set_text("")
-        print("New file created")
+        print "New file created"
 
     # callback for open
     def open_callback(self, action, parameter):
@@ -198,13 +168,13 @@ class MyWindow(Gtk.ApplicationWindow):
                 # file has been modified from the version on the file system)
                 [success, content, etags] = self.file.load_contents(None)
             except GObject.GError as e:
-                print("Error: " + e.message)
+                print "Error: " + e.message
             # set the content as the text into the buffer
             self.buffer.set_text(content, len(content))
-            print("opened: " + open_dialog.get_filename())
+            print "opened: " + open_dialog.get_filename()
         # if response is "CANCEL" (the button "Cancel" has been clicked)
         elif response_id == Gtk.ResponseType.CANCEL:
-            print("cancelled: FileChooserAction.OPEN")
+            print "cancelled: FileChooserAction.OPEN"
         # destroy the FileChooserDialog
         dialog.destroy()
 
@@ -228,7 +198,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 # set self.file as the current filename for the file chooser
                 save_dialog.set_file(self.file)
             except GObject.GError as e:
-                print("Error: " + e.message)
+                print "Error: " + e.message
         # connect the dialog to the callback function save_response_cb()
         save_dialog.connect("response", self.save_response_cb)
         # show the dialog
@@ -245,7 +215,7 @@ class MyWindow(Gtk.ApplicationWindow):
             self.save_to_file()
         # if response is "CANCEL" (the button "Cancel" has been clicked)
         elif response_id == Gtk.ResponseType.CANCEL:
-            print("cancelled: FileChooserAction.SAVE")
+            print "cancelled: FileChooserAction.SAVE"
         # destroy the FileChooserDialog
         dialog.destroy()
 
@@ -274,9 +244,9 @@ class MyWindow(Gtk.ApplicationWindow):
                                            False,
                                            Gio.FileCreateFlags.NONE,
                                            None)
-                print("saved: " + self.file.get_path())
+                print "saved: " + self.file.get_path()
             except GObject.GError as e:
-                print("Error: " + e.message)
+                print "Error: " + e.message
         # if the contents are empty
         else:
             # create (if the file does not exist) or overwrite the file in readwrite mode.
@@ -286,9 +256,9 @@ class MyWindow(Gtk.ApplicationWindow):
                                             False,
                                             Gio.FileCreateFlags.NONE,
                                             None)
-                print("saved: " + self.file.get_path())
+                print "saved: " + self.file.get_path()
             except GObject.GError as e:
-                print("Error: " + e.message)
+                print "Error: " + e.message
 
 
 class MyApplication(Gtk.Application):
@@ -313,7 +283,7 @@ class MyApplication(Gtk.Application):
         try:
             builder.add_from_file("filechooserdialog.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
         menu = builder.get_object("appmenu")
         self.set_app_menu(menu)

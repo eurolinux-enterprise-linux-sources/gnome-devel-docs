@@ -43,20 +43,7 @@ valgrind --tool=massif --depth=5  --alloc-fn=g_malloc --alloc-fn=g_realloc --all
             <title>Saída do <app>Massif</app> para a versão não otimizada do programa <app>Swell Foop</app>.</title>
             <media type="image" src="figures/massif-before.png"/>
          </figure>
-        <p>
-            The image above shows a typical postscript output from
-            <app>Massif</app>. This is the result you would get from
-            playing a single game of <app>Swell Foop</app> (version
-            2.8.0) and then quitting. The postscript file will have a
-            name like <file>massif.12345.ps</file> and the text file
-            will be called <file>massif.12345.txt</file>. The number
-            in the middle is the process ID of the program that was
-            examined. If you actually try this example you will find
-            two versions of each file, with slightly different
-            numbers, this is because <app>Swell Foop</app> starts a
-            second process and <app>Massif</app>
-            follows that too. We will ignore this second process, it
-            consumes very little memory.</p>
+        <p><link xref="optimization-massif-FIG-output-unoptimized"/> mostra uma saída postscript típica do <app>Massif</app>. Este é o resultado que você obteria ao jogar um único jogo do <app>Swell Foop</app> (versão 2.8.0) e depois saindo. O arquivo postscript terá um nome como <file>massif.12345.ps</file> e o arquivo de texto será chamado <file>massif.12345.txt</file>. O número ao meio é o ID do processo do programa que foi examinado. Se você realmente tentar realizar este exemplo, você encontrará duas versões para cada arquivo com números levemente diferentes, devido o <app>Swell Foop</app> iniciar um segundo processo e o <app>Massif</app> o seguir também. Nós iremos ignorar este segundo processo, ele consome muito pouca memória.</p>
         <p>Ao topo do gráfico, nós vemos uma ampla faixa amarela rotulada gdk_pixbuf_new. Ela parece ser uma candidata ideal para otimização, mas nós iremos precisar utilizar o arquivo de texto para descobrir o que está chamando gdk_pixbuf_new. O topo do arquivo de texto irá se parecer como algo assim:</p>
         <code>
 Comando: ./swell-foop
@@ -95,14 +82,7 @@ Called from:
     <section id="optimization-massif-TBL-acting-on-results">
         <title>Atuando sobre os resultados</title>
         <p>Reduzir o consumo de espaço-tempo é bom, porém há duas formas de reduzi-lo e elas não são iguais. Você pode tanto reduzir a quantidade de memória alocada ou reduzir o montante de tempo que é alocado para isto. Por um momento, considere um modelo de sistema com apenas dois processos em execução. Ambos os processos utilizam quase toda a memória RAM física e se eles se sobrepõem completamente, então o sistema irá utilizar a memória de troca (swap) e tudo vai ficar lento. Obviamente, se nós reduzimos a utilização de memória de cada processo por um fator de dois, então eles podem coexistir pacificamente sem a necessidade de utilizar a memória de troca (swap). Se ao invés disso, nós reduzimos o tempo o qual a memória é alocada por um fator de dois, então os dois programas podem coexistir, mas apenas enquanto seus períodos de alta utilização de memória não sobreporem-se. Logo, é melhor reduzir o montante de memória alocada.</p>
-        <p>
-            Unfortunately, the choice of optimization is also
-	    constrained by the needs of the program. The size of the
-	    pixbuf data in <app>Swell Foop</app> is determined by the
-	    size of the game's graphics and cannot be easily
-	    reduced. However, the amount of time it spends loaded into
-	    memory can be drastically reduced. The image below shows the <app>Massif</app> analysis of <app>Swell Foop</app> after being altered to dispose of the pixbufs once the images have been loaded into the X server.
-        </p>
+        <p>Infelizmente, a escolha de otimização também é reprimida pelas necessidades do programa. O tamanho dos dados do pixbuf no <app>Swell Foop</app> é determinado pelo tamanho dos gráficos do jogo e não pode ser reduzido facilmente. Entretanto, a quantidade de tempo que ele gasta sendo carregado para dentro da memória, pode ser drasticamente reduzido. <link xref="optimization-massif-FIG-output-optimized"/> mostra a análise feita pelo <app>Massif</app> do <app>Swell Foop</app> após se dispor do pixbufs, uma vez que as imagens foram carregadas dentro do servidor X.</p>
         <figure>
             <title>Saída do <app>Massif</app> para o programa <app>Swell Foop</app> otimizado.</title>
            <media type="image" src="figures/massif-after.png"/>

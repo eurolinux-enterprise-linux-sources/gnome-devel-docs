@@ -17,7 +17,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -35,7 +35,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -45,10 +45,10 @@
   <p>Η εργαλειοθήκη μπορεί να περιέχει είτε κείμενο ή εικονίδια παρακαταθήκης. Σε αυτό το παράδειγμα χρησιμοποιούμε εικονίδια παρακαταθήκης. Αυτό το παράδειγμα έχει λειτουργικότητα πλήρους οθόνης.</p>
   <p>Αυτό το παράδειγμα χρησιμοποιεί SimpleActions (παράθυρο και εφαρμογή). Οι ενέργειες της εφαρμογής μπορούν εύκολα να προστεθούν στο μενού της εφαρμογής.</p>
 
-<code mime="text/x-csharp" style="numbered">/* This is the Window */
+<code mime="text/x-csharp" style="numbered">/* Αυτό είναι το παράθυρο */
 class MyWindow : Gtk.ApplicationWindow {
 
-	/* Instance variables belonging to the window */
+	/* Μεταβλητές στιγμιότυπου που ανήκει στο παράθυρο */
 	Gtk.Toolbar toolbar;
 	Gtk.ToolButton new_button;
 	Gtk.ToolButton open_button;
@@ -56,7 +56,7 @@ class MyWindow : Gtk.ApplicationWindow {
 	Gtk.ToolButton fullscreen_button;
 	Gtk.ToolButton leave_fullscreen_button;
 
-	/* Constructor */
+	/* Κατασκευαστής */
 	internal MyWindow (MyApplication app) {
 		Object (application: app, title: "Toolbar Example");
 
@@ -70,19 +70,19 @@ class MyWindow : Gtk.ApplicationWindow {
 		grid.attach (toolbar, 0, 0, 1, 1);
 		toolbar.show ();
 
-		/* create the "undo" window action action */
+		/* Δημιουργία της ενέργειας παραθύρου "undo" */
 		var undo_action = new SimpleAction ("undo", null);
 		undo_action.activate.connect (undo_callback);
 		this.add_action (undo_action);
 
-		/* create the "fullscreen" window action */
+		/* Δημιουργία της ενέργειας παραθύρου "fullscreen" */
 		var fullscreen_action = new SimpleAction ("fullscreen", null);
 		fullscreen_action.activate.connect (fullscreen_callback);
 		this.add_action (fullscreen_action);
 	}
 
-	/* This function creates the toolbar, its  ToolButtons,
-	 * and assigns the actions names to the ToolButtons.*/
+	/* Αυτή η συνάρτηση δημιουργεί την εργαλειοθήκη, τα κουμπιά εργαλείων της
+	 * και εκχωρεί τα ονόματα ενεργειών στα κουμπιά εργαλείων.*/
 	void create_toolbar () {
 		toolbar = new Gtk.Toolbar ();
 		toolbar.get_style_context ().add_class (Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
@@ -137,7 +137,7 @@ class MyWindow : Gtk.ApplicationWindow {
 	}
 }
 
-/* This is the application */
+/* Αυτή είναι η εφαρμογή */
 class MyApplication : Gtk.Application {
 	protected override void activate () {
 		new MyWindow (this).show ();
@@ -146,18 +146,18 @@ class MyApplication : Gtk.Application {
 	protected override void startup () {
 		base.startup ();
 
-		/* Create the "new" action and add it to the app*/
+		/* Δημιουργία της ενέργειας "new" και προσθήκη της στην εφαρμογή*/
 		var new_action = new SimpleAction ("new", null);
 		new_action.activate.connect (new_callback);
 		this.add_action (new_action);
 
-		/* Create the "open" action, and add it to the app */
+		/* Δημιουργία της ενέργειας "open", και προσθήκη της στην εφαρμογή */
 		var open_action = new SimpleAction ("open", null);
 		open_action.activate.connect (open_callback);
 		this.add_action (open_action);
 
-		/* You could also add the action to the app menu
-		 * if you wanted to.
+		/* Μπορείτε επίσης να προσθέσετε την ενέργεια στο μενού εφαρμογών
+		 * αν θέλετε.
 		 */
 		//var menu = new Menu ();
 		//menu.append ("New", "app.new");
@@ -173,7 +173,7 @@ class MyApplication : Gtk.Application {
 	}
 }
 
-/* The main function creates the application and runs it. */
+/* Η κύρια συνάρτηση δημιουργεί την εφαρμογή και την εκτελεί. */
 int main (string[] args) {
 	return new MyApplication ().run (args);
 }

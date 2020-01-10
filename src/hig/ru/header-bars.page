@@ -1,76 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="header-bars" xml:lang="ru">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="header-bars" xml:lang="ru">
 
   <info>
-    <link type="guide" xref="patterns#primary"/>
-    <desc>Element that runs along the top of windows</desc>
+    <link type="guide" xref="patterns" group="header-bars"/>   
     <credit type="author">
-      <name>Алан Дэй (Allan Day)</name>
+      <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Заголовочные панели</title>
+<title>Header bars</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/header-bar.svg"/>
 
-<p>Заголовочная панель это горизонтальный элемент, который помещается в верхнюю часть окна. Заголовочные панели выполняют следующие задачи:</p>
+<p>Header bars are a common horizontal element which are placed at the top of windows. They play a number of roles:</p>
 
 <list>
-<item><p>Управление окнами. Заголовочная панель предоставляет доступ к окну: с помощью неё можно перетаскивать окно, панель также содержит кнопки управления окном (которые обычно представлены одной единственной кнопкой для закрытия окна).</p></item>
-<item><p>Заголовок. Главная задача заголовочной панели предоставить контекст для содержимого окна, это можно реализовать с помощью заголовка или переключателя вида.</p></item>
-<item><p>Управляющие элементы. Заголовочные панели включают в себя ключевые элементы управления, которые чаще всего реализуются в виде кнопок.</p></item>
+<item><p>Window controls - header bars allow windows to be moved by dragging, include window control buttons (typically a single close button), and provide access to a window controls menu.</p></item>
+<item><p>Headings - a key role of a header bar is to provide context for the content of the window, either through a heading or view switcher.</p></item>
+<item><p>Controls - header bars provide a place for key controls, typically in the form of buttons.</p></item>
 </list>
 
 <section id="when-to-use">
-<title>Когда использовать</title>
+<title>When to use</title>
 
-<p>Рекомендуется использовать заголовочные панели для всех окон приложения. Заголовочные панели обладают рядом преимуществ перед традиционной связкой, состоящей из заголовка, меню и панели инструментов: панель заголовка экономит место по вертикали, а также предоставляет функции динамической навигации и изменения режимов (например с помощью <link xref="selection-mode">режима выделения</link>).</p>
+<p>Header bars are recommended for all application windows. They provide a number of advantages over the traditional combination of title bar, menu bar and toolbar, including a smaller vertical footprint, and dynamic navigation and mode changes (such as with <link xref="selection-mode">selection mode</link>).</p>
 
-<p>Заголовочные панели несовместимы с панелями меню. Если в вашем приложении уже есть панель меню, рассмотрите возможность применения альтернативного решения, предложенного в этом руководстве. Подробнее см. рекомендации по использовании <link xref="menu-bars">панели меню</link>.</p>
+<p>Header bars are incompatible with menu bars. If your application already incorporates a menu bar, you should evaluate the alternatives suggested in these guidelines. See the <link xref="menu-bars">menu bar guidelines</link> for more details on this.</p>
 
 </section>
 
 <section id="controls">
-<title>Управляющие элементы</title>
+<title>Controls</title>
 
-<p>Заголовочные панели могут включать в себя ключевые управляющие элементы для окна, которые могут располагаться справа или слева от панели. Примерами такого рода управляющих элементов могут служить кнопки для перемещения назад и вперёд, кнопка поиска и кнопка выделения содержимого.</p>
+<p>Header bars can contain key controls for the window, which can be placed on the left and right-hand side of the header bar. Examples of these controls include buttons for navigating back and forward, search, and selecting content.</p>
 
-<p>Заголовочная панель должна включать в себя минимально необходимое количество ключевых управляющих элементов. Во-первых, пользователям будет проще использовать главную функциональность, предоставляемую главным окном, а во-вторых, при изменении размеров окна, его можно сделать узким.</p>
+<p>Ensure that your header bar only contains a small number of key controls - this will help users to understand the primary functionality provided by the window, and will ensure that the window can be resized to narrow widths.</p>
 
-<p>Если у приложения столько управляющих элементов, что их нельзя нормально разместить в заголовочной панели, дополнительные функции можно вынести в меню заголовочной панели.</p>
+<p>If a window requires more controls than can be comfortably accommodated within the header bar, additional functionality can be included within a header bar menu.</p>
 
 </section>
 
 <section id="dynamic">
-<title>Заголовочные панели должны быть динамичными</title>
+<title>Header bars are dynamic</title>
 
-<p>Заголовочные панели могут и должны изменяться в соответствии с текщим режимом просмотра, таким образов заголовочные панели всегда будут соответствовать текущему контексту.</p>
+<p>A header bar can - and should - update along with view or mode changes. This ensures that header bar controls are always relevant to the current context.</p>
 
-<p>Если в окне используется несколько режимов просмотра (например с помощью <link xref="view-switchers">переключателя вида</link>), заголовочная панель может содержать различные управляющие элементы для каждого режима просмотра.</p>
+<p>If the window includes multiple views (accessed through a <link xref="view-switchers">view switcher</link>), the header bar can include different controls for each view.</p>
 
-<p>Если окно включает в себя навигацию, то отображение различных управляющих элементов может зависеть от местоположения, открытого в окне. Распространённой практика - поместить кнопку для перемещения назад с левой стороны от заголовочной панели.</p>
+<p>If the window incorporates navigation, different controls can be shown depending on the location displayed in the window itself. It is common to show a back button on the left side of the header bar when navigating.</p>
 
 </section>
 
 <section id="additional-guidance">
-<title>Дополнительные рекомендации</title>
+<title>Additional guidance</title>
 
 <list>
-<item><p>Контекст заголовочной панели должен всегда соответствовать окну панели. Это позволяет идентифицировать окно и пояснить, что именно изображено в самом окне. Это можно сделать, поместив заголовок по центру заголовочной панели или добавив <link xref="view-switchers">переключатель вида</link>.</p></item>
-<item><p>Располагайте управляющие элементы в заголовочной панели по трём соответствующим точкам выравнивания, описанным в разделе <link xref="visual-layout">визуальное расположение</link> -- слева, по центру и справа.</p></item>
-<item><p>Кнопки <gui>Создать</gui> и <gui>Назад</gui> размещайте в левой части заголовочной панели.</p></item>
-<item><p>Убедитесь, что для перетаскивания заголовочной панели достаточно свободного места. Это необходимо для перемещения или изменения размеров окон.</p></item>
-</list>
-
-</section>
-
-<section id="api-reference">
-<title>API reference</title>
-
-<list>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkHeaderBar.html">GtkHeaderBar</link></p></item>
+<item><p>A header bar should always provide context for the window it belongs to. This aids window identification, and clarifies what is displayed in the window itself. This can either be done by placing a heading in the center of the header bar, or by including a <link xref="view-switchers">view switcher</link>.</p></item>
+<item><p>Arrange controls within the header bar according to the three alignment points described in the <link xref="visual-layout">visual layout guidelines</link> - left, center and right.</p></item>
+<item><p><gui>New</gui> and back buttons should be placed on the left side of the header bar.</p></item>
+<item><p>Always ensure that there is room for a header bar to be dragged. This is necessary to enable windows to be moved or resized.</p></item>
 </list>
 
 </section>

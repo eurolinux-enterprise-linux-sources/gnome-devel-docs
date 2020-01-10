@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="progress-spinners" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="progress-spinners" xml:lang="es">
 
   <info>
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
-
-    <link type="guide" xref="ui-elements"/>
-    <uix:thumb mime="image/svg" src="figures/ui-elements/progress-spinner.svg"/>
-
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2016</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alex Puchades</mal:name>
-      <mal:email>alex94puchades@gmail.com</mal:email>
-      <mal:years>2015</mal:years>
+      <mal:years>2011 - 2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -51,7 +41,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Oscar Rafael Arachi</mal:name>
       <mal:email>arachi910@gmail.com</mal:email>
-      <mal:years>2014 - 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -113,52 +103,37 @@
       <mal:email>garciag.omar91@gmail.com</mal:email>
       <mal:years>2015</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Edilberto Huerta Niño</mal:name>
-      <mal:email>edilberto.huerta0290@gmail.com</mal:email>
-      <mal:years>2015</mal:years>
-    </mal:credit>
   </info>
 
-<title>Indicadores de progreso</title>
+<title>Progress spinners</title>
 
-<p>Los indicadores de progreso son un elemento común de la interfaz de usuario para indicar el progreso de una tarea. A diferencia de las barras de progreso, sólo indican el progreso que tiene lugar, y no muestran la proporción de la tarea que se ha completado.</p>
+<p>Progress spinners are a common user interface element for indicating progress in a task. In contrast to progress bars, they only indicate that progress is taking place, and do not display the proportion of the task that has been completed.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/progress-spinner.svg"/>
 
 <section id="when-to-use">
 <title>Cuándo usarlas</title>
 
-<p>Generalmente se necesita un indicador de progreso cuando una operación tarda más de tres segundos, y es necesario indicar que la operación se está realizando. De otro modo, el usuario puede dudar de si ha ocurrido un error o no.</p>
+<p>A progress indication is generally needed whenever an operation takes more than around three seconds, and is necessary to indicate that an operation is really taking place. Otherwise, a user will be left in doubt whether an error has occurred.</p>
 
-<p>Al mismo tiempo, las indicaciones de progreso son una potencial fuente de distracción, especialmente cuando se muestran durante cortos de períodos de tiempo. Si una operación tarda menos de 3 segundos, es preferible evitar el uso de un indicador de progreso incremental, ya que los elementos animados que se muestran durante muy poco tiempo pueden degradar la experiencia global del usuario.</p>
+<p>At the same time, progress indications are a potential source of distraction, especially when displayed for short periods of time. If an operation takes less that 3 seconds, it is better to avoid using a progress spinner, since animated elements that are shown for a very short amount of time can detract from the overall user experience.</p>
 
-<p>Los indicadores incrementales no muestra gráficamente el grado de progreso de una tarea, y a menudo son más adecuados para operaciones cortas. Si la tarea va a durar habitualmente más de un minuto, una <link xref="progress-bars">barra de progreso</link> puede ser una mejor elección.</p>
+<p>Spinners do not graphically show the degree of progress through a task, and are often better-suited for shorter operations. If the task is likely to take more than a minute, a <link xref="progress-bars">progress bar</link> might be a better choice.</p>
 
-<p>La forma de los indicadores de progreso incrementales también afecta su idoneidad para diferentes situaciones. Dado que son efectivos en tamaños pequeños, los indicadores se pueden incorporar fácilmente en elementos pequeños de la interfaz de usuario, como listas o barras de cabecera. Del mismo modo, su forma significa que pueden ser eficaces si se integran dentro de contenedores cuadrados o rectangulares. Por otro lado, si el espacio vertical es limitado, una barra de progreso puede ser una mejor elección.</p>
+<p>The shape of progress spinners also affects their appropriateness for different situations. Since they are effective at small sizes, spinners can be easily embedded in small user interface elements, like lists or header bars. Likewise, their shape means that they can be effective when embedded within square or rectangular containers. On the other hand, if vertical space is limited, a progress bar can be a better fit.</p>
 
 </section>
 
 <section id="general-guidelines">
-<title>Guías Generales</title>
+<title>General guidelines</title>
 
 <list>
-<item><p>Si una operación puede variar el tiempo que tarda, use una cuenta atrás para mostrar un indicador de progreso sólo cuando hayan pasado los tres segundos. Este indicador no es necesario para tiempos por debajo de este valor.</p></item>
-<item><p>Coloque los indicadores de progreso junto a o dentro de otros elementos de la interfaz del usuario relacionados. Si un botón desencadena una operación larga, el indicador se puede colocar junto al botón, por ejemplo. Al cargar contenido, el indicador se debe colocar dentro del área en la que aparecerá en contenido.</p></item>
-<item><p>Generalmente, sólo se debe mostrar un indicador de progreso incremental a la vez. Evite mostrar muchos indicadores a la vez, ya que esto puede ser muy cargante visualmente.</p></item>
-<item><p>Se puede mostrar una etiqueta junto a un botón incremental si es útil para aclarar la tarea al a que se refiere el botón.</p></item>
-<item><p>Si es muestra un indicador de progreso durante mucho tiempo, una etiqueta puede indicar tanto la identidad de la tarea como el proceso que realiza.Esto puede ser en forma de porcentaje, de indicación del tiempo restante o del progreso de las subtareas (ej. módulos descargados o páginas exportadas)</p></item>
+<item><p>If an operation can vary in how long it takes, use a timeout to only show a progress spinner after three seconds have elapsed. A progress indication is not needed for lengths of time below this.</p></item>
+<item><p>Place progress spinners close to or within the user interface elements they relate to. If a button triggers a long-running operation, the spinner can be placed next to that button, for example. When loading content, the spinner should be placed within the area where that content will appear.</p></item>
+<item><p>Generally, only one progress spinner should be displayed at once. Avoid showing a large number of spinners simulatenously - this will often be visually overwhelming.</p></item>
+<item><p>A label can be shown next to a spinner if it is helpful to clarify the task which a spinner relates to.</p></item>
+<item><p>If a spinner is displayed for a long time, a label can indicate both the identity of the task and progress through it. This can take the form of a percentage, an indication of the time remaining or, or progress through sub-components of the task (eg. modules downloaded, or pages exported).</p></item>
 </list>
 
 </section>
-
-<section id="api-reference">
-<title>Referencia de la API</title>
-
-<list>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkSpinner.html">GtkSpinner</link></p></item>
-</list>
-</section>
-
 </page>

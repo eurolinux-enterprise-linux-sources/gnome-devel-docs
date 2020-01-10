@@ -19,7 +19,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -37,7 +37,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -65,27 +65,27 @@
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
-// We start out with 0 cookies
+// Ξεκινάμε με 0 cookies
 var cookies = 0;
 
 const GettingTheSignal = new Lang.Class({
     Name: 'Getting the Signal',
 
-    // Create the application itself
+    // Δημιουργούμε την ίδια την εφαρμογή
     _init: function() {
         this.application = new Gtk.Application();
 
-        // Connect 'activate' and 'startup' signals to the callback functions
+        // Σύνδεση σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents window when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
     _onActivate: function() {
         this._window.present();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' κατασκευάζει τη διεπαφή χρήστη
     _onStartup: function() {
         this._buildUI ();
     },
@@ -98,13 +98,13 @@ const GettingTheSignal = new Lang.Class({
 
     <p>Ως συνήθως, θα βάλουμε όλον τον κώδικα για να δημιουργήσουμε το κουμπί μας και άλλα γραφικά στοιχεία μέσα στη συνάρτηση _buildUI, που καλείται όταν ξεκινά η εφαρμογή.</p>
     <code mime="application/javascript">
-    // Build the application's UI
+    // Κατασκευή της διεπαφής χρήστη της εφαρμογής
     _buildUI: function() {
 </code>
 
     <p>Πρώτα, δημιουργούμε το ίδιο το παράθυρο:</p>
     <code mime="application/javascript">
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -115,35 +115,35 @@ const GettingTheSignal = new Lang.Class({
     <p>Σημειώστε ότι έχουμε ορίσει τις ιδιότητες του default_height και default_width. Αυτά μας επιτρέπουν να ελέγξουμε πόσο υψηλό και πλατύ θα είναι το ApplicationWindow, σε εικονοστοιχεία.</p>
     <p>Ύστερα, θα δημιουργήσουμε την ετικέτα που μας εμφανίζει τον αριθμό των cookies. Μπορούμε να χρησιμοποιήσουμε τη μεταβλητή των μπισκότων ως μέρος της ιδιότητας ετικέτας της ετικέτας.</p>
     <code mime="application/javascript">
-        // Create the label
+        // Δημιουργία της ετικέτας
         this._cookieLabel = new Gtk.Label ({
             label: "Number of cookies: " + cookies });
 </code>
 
     <p>Τώρα θα δημιουργήσουμε to κουμπί. Ορίζουμε την ιδιότητα του ετικέτα για να εμφανίσουμε το κείμενο που θέλουμε στο κουμπί και συνδέουμε το σήμα του "clicked" σε μια συνάρτηση που λέγεται _getACookie, που θα γράψουμε αφού έχουμε δομήσει την UI της δόμησής μας.</p>
     <code mime="application/javascript">
-        // Create the cookie button
+        // Δημιουργία του κουμπιού cookie
         this._cookieButton = new Gtk.Button ({ label: "Get a cookie" });
 
-        // Connect the cookie button to the function that handles clicking it
+        // Σύνδεση του κουμπιού μπισκότου με τη συνάρτηση που χειρίζεται το πάτημά του
         this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 </code>
     <p>Τελικά, δημιουργούμε ένα πλέγμα, προσαρτήστε την ετικέτα και το κουμπί σε αυτό, προσθέστε το στο παράθυρο και πείτε στο παράθυρο να εμφανίσει τον εαυτό του και τα περιεχόμενά του. Αυτό χρειαζόμαστε μέσα στη συνάρτηση _buildUI, έτσι το κλείνουμε με μια παρένθεση, καθώς και ένα κόμμα που λέει στο GNOME να συνεχίσει στην επόμενη συνάρτηση. Σημειώστε ότι ακόμα κι αν γράψαμε τον κώδικα για την ετικέτα πρώτα, μπορούμε ακόμα να την προσαρτήσουμε στο πλέγμα με τρόπο που θα την βάλει στο τέλος.</p>
     <code mime="application/javascript">
-        // Create a grid to arrange everything inside
+        // Δημιουργία πλέγματος για τακτοποίηση όλων μέσα του
         this._grid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER,
             row_spacing: 20 });
 
-        // Put everything inside the grid
+        // Τοποθέτηση όλων μέσα του
         this._grid.attach (this._cookieButton, 0, 0, 1, 1);
         this._grid.attach (this._cookieLabel, 0, 1, 1, 1);
 
-        // Add the grid to the window
+        // Προσθήκη του πλέγματος στο παράθυρο
         this._window.add (this._grid);
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
 
     },
@@ -153,7 +153,7 @@ const GettingTheSignal = new Lang.Class({
     <code mime="application/javascript">
     _getACookie: function() {
 
-        // Increase the number of cookies by 1 and update the label
+        // Αύξηση του αριθμού των μπισκότων κατά 1 και ενημέρωση της ετικέτας
         cookies++;
         this._cookieLabel.set_label ("Number of cookies: " + cookies);
 
@@ -164,9 +164,9 @@ const GettingTheSignal = new Lang.Class({
 
     <p>Τελικά, εκτελούμε την εφαρμογή, χρησιμοποιώντας το ίδιο είδος κώδικα όπως στο τελευταίο μας μάθημα.</p>
     <code mime="application/javascript">
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new GettingTheSignal ();
-app.application.run (ARGV);
+app.application.run (ARGV)·
 </code>
   </section>
 
@@ -182,13 +182,13 @@ app.application.run (ARGV);
     <note style="tip"><p>Μπορείτε να πάρετε το μενού πρόσβασης πατώντας στο περίγραμμα ενός ανθρώπου, κοντά στο όνομά σας στην πάνω δεξιά γωνία της οθόνης.</p></note>
     <p>Να πώς δημιουργούμε τον διακόπτη:</p>
     <code mime="application/javascript">
-        // Create the switch that controls whether or not you can win
+        // Δημιουργία του διακόπτη που ελέγχει αν μπορείτε να κερδίσετε ή όχι
         this._cookieSwitch = new Gtk.Switch ();
 </code>
 
     <p>Δεν χρειαζόμαστε πράγματι να συνδέσουμε τον διακόπτη με κάτι. Αυτό που χρειαζόμαστε να κάνουμε είναι να γράψουμε μια πρόταση if στη συνάρτηση μας _getACookie, για να ελέγξουμε να δούμε εάν ο διακόπτης είναι ενεργός. Εάν θα θέλαμε να κάνουμε κάτι να συμβεί μόλις αντιστρέψετε τον διακόπτη, όμως, θα συνδέαμε το σήμα του notify::active, ως εξής:</p>
     <code mime="application/javascript">
-        // Connect the switch to the function that handles it
+        // Σύνδεση του διακόπτη με τη συνάρτηση που το χειρίζεται
         this._cookieSwitch.connect ('notify::active', Lang.bind (this, this._cookieDispenser));
 </code>
 
@@ -199,26 +199,26 @@ app.application.run (ARGV);
 
     <p>Ας τον δημιουργήσουμε κανονικά, όμως, και έπειτα ας δημιουργήσουμε την ετικέτα που πηγαίνει μαζί του. Θέλουμε ο διακόπτης και η ετικέτα να κρατιούνται ακριβώς δίπλα μεταξύ τους, έτσι θα δημιουργήσουμε ένα πλέγμα μόνο για αυτούς, έπειτα θα βάλουμε αυτό το πλέγμα στο μεγαλύτερό μας πλέγμα που κρατά όλα τα γραφικά στοιχεία μέσα του. Να πώς θα φαίνεται ο κώδικας για τη δημιουργία του:</p>
     <code mime="application/javascript">
-        // Create the switch that controls whether or not you can win
+        // Δημιουργία του διακόπτη που ελέγχει αν μπορείτε να κερδίσετε ή όχι
         this._cookieSwitch = new Gtk.Switch ();
 
-        // Create the label to go with the switch
+        // Δημιουργία της ετικέτας που πάει με τον διακόπτη
         this._switchLabel = new Gtk.Label ({
             label: "Cookie dispenser" });
 
-        // Create a grid for the switch and its label
+        // Δημιουργία πλέγματος για τον διακόπτη και την ετικέτα του
         this._switchGrid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER });
 
-        // Put the switch and its label inside that grid
+        // Τοποθέτηση του διακόπτη και της ετικέτας του μες το πλέγμα
         this._switchGrid.attach (this._switchLabel, 0, 0, 1, 1);
         this._switchGrid.attach (this._cookieSwitch, 1, 0, 1, 1);
 </code>
 
     <p>Και τώρα τακτοποιούμε το καθετί στο μεγαλύτερο πλέγμα έτσι.</p>
     <code mime="application/javascript">
-        // Put everything inside the grid
+        // Τοποθέτηση όλων μες το πλέγμα
         this._grid.attach (this._cookieButton, 0, 0, 1, 1);
         this._grid.attach (this._switchGrid, 0, 1, 1, 1);
         this._grid.attach (this._cookieLabel, 0, 2, 1, 1);
@@ -229,10 +229,10 @@ app.application.run (ARGV);
     <code mime="application/javascript">
     _getACookie: function() {
 
-        // Is the cookie dispenser turned on?
+        // Είναι η συσκευή μπισκότων ενεργή;
         if (this._cookieSwitch.get_active()) {
 
-            // Increase the number of cookies by 1 and update the label
+            // Αύξηση του αριθμού των μπισκότων κατά 1 και ενημέρωση της ετικέτας
             cookies++;
             this._cookieLabel.set_label ("Number of cookies: " + cookies);
 
@@ -252,7 +252,7 @@ app.application.run (ARGV);
 
     <p>Πρώτα, ας αλλάξουμε το όνομα του ApplicationWindow μας και ας αυξήσουμε την ιδιότητά του border_width, έτσι ώστε τα γραφικά στοιχεία μας να μην πακετάρονται υπερβολικά σφικτά. Το border_width είναι ο αριθμός των εικονοστοιχείων μεταξύ κάθε γραφικού στοιχείου και της άκρης του παραθύρου.</p>
     <code mime="application/javascript">
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -264,7 +264,7 @@ app.application.run (ARGV);
 
     <p>Μετά από αυτό, δημιουργούμε τα RadioButtons. Θυμάστε πώς δημιουργήθηκαν σε ομάδες; Ο τρόπος που το κάνουμε, είναι ορίζοντας κάθε νέα ιδιότητα ομάδας RadioButton στο όνομα ενός άλλου RadioButton.</p>
     <code mime="application/javascript">
-        // Create the radio buttons
+        // Δημιουργία των ραδιοπλήκτρων
         this._cookieRadio = new Gtk.RadioButton ({ label: "Cookie" });
         this._notCookieOne = new Gtk.RadioButton ({ label: "Not cookie",
             group: this._cookieRadio });
@@ -274,7 +274,7 @@ app.application.run (ARGV);
 
     <p>Ύστερα, δημιουργούμε ένα πλέγμα για τα RadioButtons. Να θυμάστε, δεν είμαστε υποχρεωμένοι να τακτοποιήσουμε τα πράγματα σε πλέγματα με την ίδια σειρά που τα δημιουργούμε.</p>
     <code mime="application/javascript">
-        // Arrange the radio buttons in their own grid
+         // Τακτοποίηση των ραδιοπλήκτρων στο πλέγμα τους
         this._radioGrid = new Gtk.Grid ();
         this._radioGrid.attach (this._notCookieOne, 0, 0, 1, 1);
         this._radioGrid.attach (this._cookieRadio, 0, 1, 1, 1);
@@ -284,13 +284,13 @@ app.application.run (ARGV);
     <p>Κανονικά, το RadioButton που επιλέχτηκε από προεπιλογή είναι αυτό του ονόματος της ομάδας. Θέλουμε το πρώτο κουμπί "Not cookie" να επιλέγεται από προεπιλογή, όμως, έτσι χρησιμοποιούμε τη μέθοδό του set_active.</p>
     <note style="tip"><p>Θα μπορούσαμε επίσης να ορίσουμε την ενεργή του ιδιότητα σε αληθές όταν το δημιουργούμε.</p></note>
     <code mime="application/javascript">
-        // Set the button that will be at the top to be active by default
+        // Ορισμός του πλήκτρου που θα είναι στην κορυφή για να είναι ενεργό από προεπιλογή
         this._notCookieOne.set_active (true);
 </code>
 
     <p>Τώρα τακτοποιούμε καθετί στο δικό μας κύριο πλέγμα όπως συνήθως ...</p>
     <code mime="application/javascript">
-        // Put everything inside the grid
+        // Τοποθέτηση όλων μες το πλέγμα
         this._grid.attach (this._radioGrid, 0, 0, 1, 1);
         this._grid.attach (this._cookieButton, 0, 1, 1, 1);
         this._grid.attach (this._cookieLabel, 0, 2, 1, 1);
@@ -300,10 +300,10 @@ app.application.run (ARGV);
     <code mime="application/javascript">
     _getACookie: function() {
 
-        // Did you select "cookie" instead of "not cookie"?
-        if (this._cookieRadio.get_active()) {
+        // Επιλέξατε "cookie" αντί για "not cookie";
+        if (this._cookieButton.get_active()) {
 
-            // Increase the number of cookies by 1 and update the label
+            // Αύξηση του αριθμού των cookies κατά 1 και ενημέρωση της ετικέτας
             cookies++;
             this._cookieLabel.set_label ("Number of cookies: " + cookies);
 
@@ -323,13 +323,13 @@ app.application.run (ARGV);
 
     <p>Αφού αλλάξουμε το όνομα του παραθύρου, δημιουργούμε το γραφικό στοιχείο καταχώρισης.</p>
     <code mime="application/javascript">
-        // Create the text entry field
+        // Δημιουργία του πεδίου καταχώρισης κειμένου
         this._spellCookie = new Gtk.Entry ();
 </code>
 
     <p>Ύστερα, τακτοποιούμε καθετί στο πλέγμα ...</p>
     <code mime="application/javascript">
-        // Put everything inside the grid
+        // Τοποθέτηση όλων μες το πλέγμα
         this._grid.attach (this._spellCookie, 0, 0, 1, 1);
         this._grid.attach (this._cookieButton, 0, 1, 1, 1);
         this._grid.attach (this._cookieLabel, 0, 2, 1, 1);
@@ -340,10 +340,10 @@ app.application.run (ARGV);
     <code mime="application/javascript">
     _getACookie: function() {
 
-        // Did you spell "cookie" correctly?
+        // Συλλαβίσατε το "cookie" σωστά;
         if ((this._spellCookie.get_text()).toLowerCase() == "cookie") {
 
-            // Increase the number of cookies by 1 and update the label
+            // Αύξηση του αριθμού των μπισκότων κατά 1 και ενημέρωση της ετικέτας
             cookies++;
             this._cookieLabel.set_label ("Number of cookies: " + cookies);
 
@@ -374,37 +374,37 @@ app.application.run (ARGV);
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
-// We start out with 0 cookies
+// Ξεκινάμε με 0 μπισκότα
 var cookies = 0;
 
 const GettingTheSignal = new Lang.Class({
     Name: 'Getting the Signal',
 
-    // Create the application itself
+    // Δημιουργία της ίδιας της εφαρμογής
     _init: function() {
         this.application = new Gtk.Application();
 
-        // Connect 'activate' and 'startup' signals to the callback functions
+        // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents window when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή 
     _onActivate: function() {
         this._window.present();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
     _onStartup: function() {
         this._buildUI ();
     },
 
 
 
-    // Build the application's UI
+    // Δόμηση της επαφής χρήστη της εφαρμογής
     _buildUI: function() {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -412,30 +412,30 @@ const GettingTheSignal = new Lang.Class({
             default_width: 400,
             title: "Click the button to get a cookie!"});
 
-        // Create the label
+        // Δημιουργία της ετικέτας
         this._cookieLabel = new Gtk.Label ({
             label: "Number of cookies: " + cookies });
 
-        // Create the cookie button
+        // Δημιουργία του κουμπιού μπισκότου
         this._cookieButton = new Gtk.Button ({ label: "Get a cookie" });
 
-        // Connect the cookie button to the function that handles clicking it
+        // Σύνδεση του κουμπιού μπισκότου με τη συνάρτηση που χειρίζεται το πάτημά του
         this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
-        // Create a grid to arrange everything inside
+        // Δημιουργία πλέγματος για τακτοποίηση όλων μέσα του
         this._grid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER,
             row_spacing: 20 });
 
-        // Put everything inside the grid
+        // Τοποθέτηση όλων μες το πλέγμα
         this._grid.attach (this._cookieButton, 0, 0, 1, 1);
         this._grid.attach (this._cookieLabel, 0, 1, 1, 1);
 
-        // Add the grid to the window
+        // Προσθήκη του πλέγματος στο παράθυρο
         this._window.add (this._grid);
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
 
     },
@@ -444,7 +444,7 @@ const GettingTheSignal = new Lang.Class({
 
     _getACookie: function() {
 
-        // Increase the number of cookies by 1 and update the label
+        // Αύξηση του αριθμού των μπισκότων κατά 1 και ενημέρωση της ετικέτας
         cookies++;
         this._cookieLabel.set_label ("Number of cookies: " + cookies);
 
@@ -452,7 +452,7 @@ const GettingTheSignal = new Lang.Class({
 
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new GettingTheSignal ();
 app.application.run (ARGV);
 </code>
@@ -466,37 +466,37 @@ app.application.run (ARGV);
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
-// We start out with 0 cookies
+// Ξεκινάμε με 0 μπισκότα
 var cookies = 0;
 
 const GettingTheSignal = new Lang.Class({
     Name: 'Getting the Signal',
 
-    // Create the application itself
+    // Δημιουργία της ίδιας της εφαρμογής
     _init: function() {
         this.application = new Gtk.Application();
 
-        // Connect 'activate' and 'startup' signals to the callback functions
+        // Σύνδεση σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents window when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
     _onActivate: function() {
         this._window.present();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
     _onStartup: function() {
         this._buildUI ();
     },
 
 
 
-    // Build the application's UI
+    // Κατασκευή της διεπαφής χρήστη της εφαρμογής
     _buildUI: function() {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -504,48 +504,48 @@ const GettingTheSignal = new Lang.Class({
             default_width: 400,
             title: "Click the button to get a cookie!"});
 
-        // Create the label
+        // Δημιουργία της ετικέτας
         this._cookieLabel = new Gtk.Label ({
             label: "Number of cookies: " + cookies });
 
-        // Create the cookie button
+        // Δημιουργία του κουμπιού μπισκότου
         this._cookieButton = new Gtk.Button ({
             label: "Get a cookie" });
 
-        // Connect the cookie button to the function that handles clicking it
+        // Σύνδεση του κουμπιού μπισκότου με τη συνάρτηση που χειρίζεται το πάτημά του
         this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
-        // Create the switch that controls whether or not you can win
+        // Δημιουργία του διακόπτη που ελέγχει αν μπορείτε να κερδίσετε ή όχι
         this._cookieSwitch = new Gtk.Switch ();
 
-        // Create the label to go with the switch
+        // Δημιουργία της ετικέτας που πάει μαζί με τον διακόπτη
         this._switchLabel = new Gtk.Label ({
             label: "Cookie dispenser" });
 
-        // Create a grid for the switch and its label
+        // Δημιουργία πλέγματος για τον διακόπτη και την ετικέτα του
         this._switchGrid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER });
 
-        // Put the switch and its label inside that grid
+        // Τοποθέτηση του διακόπτη και της ετικέτας του μέσα σε αυτό το πλέγμα
         this._switchGrid.attach (this._switchLabel, 0, 0, 1, 1);
         this._switchGrid.attach (this._cookieSwitch, 1, 0, 1, 1);
 
-        // Create a grid to arrange everything else inside
+        // Δημιουργία πλέγματος για τακτοποίηση όλων μέσα του
         this._grid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER,
             row_spacing: 20 });
 
-        // Put everything inside the grid
+        // Τοποθέτηση όλων μες το πλέγμα
         this._grid.attach (this._cookieButton, 0, 0, 1, 1);
         this._grid.attach (this._switchGrid, 0, 1, 1, 1);
         this._grid.attach (this._cookieLabel, 0, 2, 1, 1);
 
-        // Add the grid to the window
+        // Προσθήκη του πλέγματος στο παράθυρο
         this._window.add (this._grid);
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
 
     },
@@ -554,10 +554,10 @@ const GettingTheSignal = new Lang.Class({
 
     _getACookie: function() {
 
-        // Is the cookie dispenser turned on?
+        // Είναι η συσκευή μπισκότων ενεργή?
         if (this._cookieSwitch.get_active()) {
 
-            // Increase the number of cookies by 1 and update the label
+            // Αύξηση του αριθμού των μπισκότων κατά 1 και ενημέρωση της ετικέτας
             cookies++;
             this._cookieLabel.set_label ("Number of cookies: " + cookies);
 
@@ -567,7 +567,7 @@ const GettingTheSignal = new Lang.Class({
 
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new GettingTheSignal ();
 app.application.run (ARGV);
 </code>
@@ -581,37 +581,37 @@ app.application.run (ARGV);
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
-// We start out with 0 cookies
+// Ξεκινάμε με 0 cookies
 var cookies = 0;
 
 const GettingTheSignal = new Lang.Class({
     Name: 'Getting the Signal',
 
-    // Create the application itself
+    // Δημιουργία της ίδιας της εφαρμογής
     _init: function() {
         this.application = new Gtk.Application();
 
-        // Connect 'activate' and 'startup' signals to the callback functions
+        // Σύνδεση σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents window when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
     _onActivate: function() {
         this._window.present();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
     _onStartup: function() {
         this._buildUI ();
     },
 
 
 
-    // Build the application's UI
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
     _buildUI: function() {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -620,48 +620,48 @@ const GettingTheSignal = new Lang.Class({
             border_width: 20,
             title: "Choose the one that says 'cookie'!"});
 
-        // Create the radio buttons
-        this._cookieRadio = new Gtk.RadioButton ({ label: "Cookie" });
+        // Δημιουργία των ραδιοπλήκτρων
+        this._cookieButton = new Gtk.RadioButton ({ label: "Cookie" });
         this._notCookieOne = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
         this._notCookieTwo = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
 
-        // Arrange the radio buttons in their own grid
+        // Τακτοποίηση των ραδιοπλήκτρων στο δικό τους πλέγμα
         this._radioGrid = new Gtk.Grid ();
         this._radioGrid.attach (this._notCookieOne, 0, 0, 1, 1);
-        this._radioGrid.attach (this._cookieRadio, 0, 1, 1, 1);
+        this._radioGrid.attach (this._cookieButton, 0, 1, 1, 1);
         this._radioGrid.attach (this._notCookieTwo, 0, 2, 1, 1);
 
-        // Set the button that will be at the top to be active by default
+        // Ορισμός του κουμπιού που θα είναι στην κορυφή για να είναι ενεργό από προεπιλογή
         this._notCookieOne.set_active (true);
 
-        // Create the cookie button
+        // Δημιουργία του κουμπιού cookie
         this._cookieButton = new Gtk.Button ({
             label: "Get a cookie" });
 
-        // Connect the cookie button to the function that handles clicking it
+        // Σύνδεση του κουμπιού μπισκότο με τη συνάρτηση που χειρίζεται το πάτημά του
         this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
-        // Create the label
+        // Δημιουργία της ετικέτας
         this._cookieLabel = new Gtk.Label ({
             label: "Number of cookies: " + cookies });
 
-        // Create a grid to arrange everything inside
+        // Δημιουργία πλέγματος για τακτοποίηση όλων μέσα του
         this._grid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER,
             row_spacing: 20 });
 
-        // Put everything inside the grid
+        // Τοποθέτηση όλων μέσα στο πλέγμα
         this._grid.attach (this._radioGrid, 0, 0, 1, 1);
         this._grid.attach (this._cookieButton, 0, 1, 1, 1);
         this._grid.attach (this._cookieLabel, 0, 2, 1, 1);
 
-        // Add the grid to the window
+        // Προσθήκη του πλέγματος στο παράθυρο
         this._window.add (this._grid);
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
 
     },
@@ -670,10 +670,10 @@ const GettingTheSignal = new Lang.Class({
 
     _getACookie: function() {
 
-        // Did you select "cookie" instead of "not cookie"?
-        if (this._cookieRadio.get_active()) {
+        // Επιλέξατε "cookie" αντί για "not cookie"?
+        if (this._cookieButton.get_active()) {
 
-            // Increase the number of cookies by 1 and update the label
+            // Αύξηση του αριθμού των cookies κατά 1 και ενημέρωση της ετικέτας
             cookies++;
             this._cookieLabel.set_label ("Number of cookies: " + cookies);
 
@@ -683,7 +683,7 @@ const GettingTheSignal = new Lang.Class({
 
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new GettingTheSignal ();
 app.application.run (ARGV);
 </code>
@@ -697,37 +697,37 @@ app.application.run (ARGV);
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
-// We start out with 0 cookies
+// Ξεκινάμε με 0 μπισκότα
 var cookies = 0;
 
 const GettingTheSignal = new Lang.Class({
     Name: 'Getting the Signal',
 
-    // Create the application itself
+    // Δημιουργία αυτής καθεαυτής της εφαρμογής
     _init: function() {
         this.application = new Gtk.Application();
 
-        // Connect 'activate' and 'startup' signals to the callback functions
+        // Σύνδεση σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents window when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
     _onActivate: function() {
         this._window.present();
     },
 
-    // Callback function for 'startup' signal builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
     _onStartup: function() {
         this._buildUI ();
     },
 
 
 
-    // Build the application's UI
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
     _buildUI: function() {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -736,35 +736,35 @@ const GettingTheSignal = new Lang.Class({
             border_width: 20,
             title: "Spell 'cookie' to get a cookie!"});
 
-        // Create the text entry field
+        // Δημιουργία του πεδίου καταχώρισης κειμένου
         this._spellCookie = new Gtk.Entry ();
 
-        // Create the cookie button
+        // Δημιουργία του κουμπιού μπισκότο
         this._cookieButton = new Gtk.Button ({
             label: "Get a cookie" });
 
-        // Connect the cookie button to the function that handles clicking it
+        // Σύνδεση του κουμπιού μπισκότο με τη συνάρτηση που χειρίζεται το πάτημά του
         this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
-        // Create the label
+        // Δημιουργία της ετικέτας
         this._cookieLabel = new Gtk.Label ({
             label: "Number of cookies: " + cookies });
 
-        // Create a grid to arrange everything inside
+        // Δημιουργία πλέγματος για τακτοποίηση όλων μέσα του
         this._grid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER,
             row_spacing: 20 });
 
-        // Put everything inside the grid
+        // Τοποθέτηση όλων μες το πλέγμα
         this._grid.attach (this._spellCookie, 0, 0, 1, 1);
         this._grid.attach (this._cookieButton, 0, 1, 1, 1);
         this._grid.attach (this._cookieLabel, 0, 2, 1, 1);
 
-        // Add the grid to the window
+        // Προσθήκη του πλέγματος στο παράθυρο
         this._window.add (this._grid);
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου κι όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
 
     },
@@ -773,10 +773,10 @@ const GettingTheSignal = new Lang.Class({
 
     _getACookie: function() {
 
-        // Did you spell "cookie" correctly?
+        // Συλλαβίσατε "cookie" σωστά?
         if ((this._spellCookie.get_text()).toLowerCase() == "cookie") {
 
-            // Increase the number of cookies by 1 and update the label
+            // Αύξηση του αριθμού των μπισκότων κατά 1 και ενημέρωση της ετικέτας
             cookies++;
             this._cookieLabel.set_label ("Number of cookies: " + cookies);
 
@@ -786,7 +786,7 @@ const GettingTheSignal = new Lang.Class({
 
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new GettingTheSignal ();
 app.application.run (ARGV);
 </code>

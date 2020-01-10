@@ -102,12 +102,7 @@
 <section id="gad-how-it-works">
 <title>辅助功能在 GNOME 中如何工作</title>
 <para>辅助工具包 (ATK) 描述了一组接口，要访问它们就需要通过 GUI 组件自行实现。这些接口是工具包无关的，意思就是你可以用任意部件集来实现，比如 GTK，Motif 或者 Qt 。</para>
-<para>
-The implementation for the GTK widgets is in a module called GAIL (GNOME Accessibility Implementation Library), which is dynamically loadable at runtime by a GTK application. Once
-loaded, those parts of your application that use standard GTK widgets will have a basic level of accessibility, without you having to modify your application at all. If GAIL is not
-loaded, GTK widgets will have a default accessibility implementation that essentially returns no information, though it nominally conforms to the ATK API. Applications which use
-Bonobo controls, particularly out-of-process ones, also load accessibility support code from module libgail-gnome. Whether or not applications on the GNOME desktop automatically load these accessibility support libraries depends on the value of a <application>gconf</application> key, "/desktop/gnome/interface/accessibility"; a boolean value of "true" enables support for assistive technologies and applications which call gnome_program_init will automatically load the appropriate accessibility libraries at runtime. "Pure GTK+ applications", e.g. those that use gtk+ but do not link to libgnome, rely on the value of the GTK_MODULES environment variable, which must be set to "gail:atk-bridge" in order to enable assistive technology support.
-</para>
+<para>GTK 部件集对接口的实现叫 GAIL（GNOME Accessbility Implementation Library） 模块，它会在运行 GTK 程序时动态加载。加载后，你的应用程序中使用标准 GTK 部件的部分就会自动有一个底层辅助功能，根本不需要你修改程序。如果 GAIL 没有加载，那 GTK 部件集将会有一个默认的辅助功能实现，但只是名义上遵循 ATK 规范而不会返回任何信息。应用程序使用了 Bonobo 控件的，尤其是在进程外使用的，也会从 libgail-gnome 模块加载辅助功能支持代码。GNOME 桌面上的程序是否自动加载这些辅助功能支持库决定于<application>gconf</application> 键, "/desktop/gnome/interface/accessibility"；这个布尔值为"true"则启用辅助技术支持，应用程序调用 gnome_program_init 后就会自动在运行阶段加载合适的辅助功能库。 "纯 GTK+ 应用程序"，比如那些只使用 gtk+ 但不链接  libgnome 的，这就需要依赖 GTK_MODULES 环境变量的值，必须将之设为  "gail:atk-bridge" 以获取辅助技术的支持。</para>
 <para>长久以来，大部分其他桌面平台所使用的辅助技术必须为桌面应用维护一个复杂的离屏模式，这种模式基于对操作系统事件的监听，使用不受支持的操作系统、应用程序特性和 API，还有一些其他高度不可移植的技术。这就使得辅助技术支持有点 "不健壮"，需要特定的操作系统和指定的应用程序，甚至还要指定的应用程序版本。相反，在 GNOME 桌面，通过 GNOME 辅助功能框架，使用服务提供者接口（SPI）独立工具包，AT（辅助技术） 需要的所有信息均可由运行的应用程序提供。SPI 为基于 UNIX 的 AT 提供一些内置服务，比如屏幕阅读器和屏幕放大镜。通过一致而稳定的 API 从运行的程序中获取辅助信息，可以在大多数情况下避免使用离屏模式。对应用程序的辅助功能支持一般通过合适的 API （比如，ATK 多用于原生C程序而Java辅助 API 用于Java 应用）内置在应用程序工具包中，然后通过相应的 "bridge" 导出成通用 "AT-SPI" 接口（见下图）。</para>
 <figure id="gad-architecture">
 <title>GNOME 辅助功能架构</title>
@@ -116,7 +111,7 @@ Bonobo controls, particularly out-of-process ones, also load accessibility suppo
 <para>GNOME 内置辅助功能支持意味着使用 GNOME 部件创建应用程序可以 "免费" 获得辅助技术的支持，而不用额外使用与内置支持相冲突的迂回方法。</para>
 <para>如果一个 gtk+/GNOME 部件遵循本文档中的普遍辅助指南，实现了 ATK 接口并在用户界面上扮演合适的角色，则它是具有辅助性的。 ATK 的执行由 "stock" GNOME 部件工具集提供，而且大多数情况下，由现有 GTK+/GNOME 部件派生出来的新部件同时也会继承合适的辅助功能支持。</para>
 <para>
-Though GNOME's built-in accessibility support provides significant functionality without any accessibility-specific code changes on the part of the application, applications can often improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application, via straightforward calls to ATK methods in the application. For instance, in most cases applications should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assistive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
+Though GNOME's built-in accessibility support provides significant functionality without any accessibility-specific code changes on the part of the application, applications can often improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application, via straightforward calls to ATK methods in the application. For instance, in most cases applications should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assisitive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
 </para>
 <para>如果你的程序使用自定义部件，可能需要做些工作让它们得以使用辅助技术。参阅 <link linkend="gad-custom"> 让自定义组件获得辅助功能 </link> 和 <link linkend="gad-api-examples"> 使用辅助 API 的示例 </link> 获取更多信息。</para>
 <para>此外，关于 GTK/GTK+ 更多深入内容，请参阅 <ulink url="http://library.gnome.org/devel/gtk"> GTK+ 参考手册 </ulink>, <ulink url="http://live.gnome.org/GAP/AtkGuide/Gtk">ATK 指南的 GTK 章节</ulink>, GNOME 网站托管的 <ulink url="http://library.gnome.org/devel/gtk-tutorial/stable/">GTK+ 2.0 教程</ulink> 和官方 <ulink url="http://library.gnome.org/devel/gtk-faq/stable/">GTK+ FAQ</ulink>。</para>
@@ -165,7 +160,7 @@ To start right in, see <link linkend="gad-overview">Making a GNOME Application A
 <title>让一个 GNOME 应用程序具有辅助功能 - 综述</title>
 <para>如果你的应用程序只使用标准 GTK 部件，你可以做很少甚至不做任何事情就能让程序获得（适当的）辅助功能。但要注意那些没有文字说明的GUI对象，比如没有文本标签的图形按钮或者没有工具提示信息的状态指示器。</para>
 <para>
-You can probably also improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application. You should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assistive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
+You can probably also improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application. You should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assisitive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
 </para>
 <para>如果你的程序使用自定义部件，可能需要做些工作以使这些部件利用辅助技术。参阅 <link linkend="gad-custom"> 让自定义组件获得辅助功能 </link> 和 <link linkend="gad-api-examples"> 使用辅助功能 API 的示例</link> 获取更多信息。更多详细内容也可参见 Marc Mulcahy 的 2002 GUADEC 演示文档, <ulink url="https://projects.gnome.org/accessibility/talks/GUAD3C/making-apps-accessible/start.html">“制作具有辅助功能的 GNOME 应用程序”。</ulink></para>
 </section>
@@ -372,9 +367,7 @@ mouse_watcher_focus_id =   atk_add_global_event_listener(_my_global_listener,"Gt
 <listitem>
 <para>下列函数调用可以访问 ATK 顶层对象。</para>
 <programlisting>AtkObject *root_obj = atk_get_root();</programlisting>
-<para>
-This returns an <type>AtkObject</type> which contains all toplevel windows in the currently running program. The user could then navigate through the object hierarchy by accessing the root object's children, which corresponds to the toplevel windows.
-</para>
+<para>返回一个包含当前运行程序中所有顶层窗口的 <type>AtkObject</type>。通过根对象的子节点（相当于顶层窗口），用户可以层层浏览对象。</para>
 </listitem>
 </orderedlist>
 </section>
@@ -458,7 +451,7 @@ The factory must be implemented as a child of class type <type>ATK_TYPE_OBJECT_F
 </section>
 
 <section>
-<title>ATK Implementation for a Specific Object</title>
+<title>为指定对象实现 ATK</title>
 <para>所有 <type>GObject</type> 均要实现一个 <function>get_type()</function> 函数。使用上面的命名惯例将函数命名为 <function>myatkimp_mytype_get_type()</function>。</para>
 <para>
 In this function, you specify which interfaces your object implements. If the following logic were included in this <function>get_type()</function> function, this object would implement the <type>ATK_TEXT</type> interface:
@@ -943,7 +936,7 @@ Provide an option to hide graphics that don't convey essential information. Grap
 <section>
 <title>字体与文本</title>
 <para>
-Even to a user with normal vision, textual output provides the majority of the information and feedback in most applications. It is therefore critical to choose and position text carefully on the screen, and leave the choice of font and size to the user, to ensure that people with vision impairments can also use your application effectively.
+Even to a user with normal vision, textual output provides the majority of the information and feedback in most applications. It is therefore critical to choose and position text carefully on the screen, and leave the choice of font and size to the user, to ensure that people with vision impaiments can also use your application effectively.
 </para>
 <itemizedlist>
 <listitem>
@@ -1194,7 +1187,7 @@ Make all animations optional. The animated information should be available in at
 Showing the keyboard focus position clearly at all times is important, both for users with vision impairments as well as "power-users" who prefer to use the keyboard rather than the mouse. There should never be any confusion as to which control on the desktop has focus at any given time. You ought to be able to leave your computer with the focus on any widget in your application, then go off and phone your girlfriend or walk the dog until you've forgotten which widget you left it on. When you return, you should be able to tell straight away exactly which widget it was.
 </para>
 <para>
-A visual focus indicator is an audio representation of the cursor position relative to the other objects on the desktop. This allows the user to move among objects interactively as the focus changes. The visual focus must be programmatically exposed to assistive technologies. Note that in most cases, this is handled automatically by the ATK, without requiring you to do any additional work. However, you will need to be aware of this requirement when writing your own custom widgets, for example.
+A visual focus indicator is an audio representation of the cursor position relative to the other objects on the desktop. This allows the user to move among objects interactively as the focus changes. The visual focus must be programatically exposed to assistive technologies. Note that in most cases, this is handled automatically by the ATK, without requiring you to do any additional work. However, you will need to be aware of this requirement when writing your own custom widgets, for example.
 </para>
 <itemizedlist>
 <listitem>

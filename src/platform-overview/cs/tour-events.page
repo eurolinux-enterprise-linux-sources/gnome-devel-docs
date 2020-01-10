@@ -18,53 +18,45 @@
 
     <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
 
-    <desc>Napojení funkcí na události pomocí jazyka Lang.</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Lucas Lommer</mal:name>
-      <mal:email>llommer@svn.gnome.org</mal:email>
-      <mal:years>2009.</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Marek Černocký</mal:name>
-      <mal:email>marek@manet.cz</mal:email>
-      <mal:years>2015.</mal:years>
-    </mal:credit>
+    <desc>Bind functions to events using Lang.</desc>
   </info>
 
-  <title>Akce a signály</title>
+  <title>Actions and signals</title>
 
   <links type="prevnext" style="top"/>
   <links type="series" style="floatend">
-    <title>Začínáme s GNOME</title>
+    <title>Get started with GNOME</title>
   </links>
 
-  <p>Gtk má sadu předdefinovaných událostí, které můžete ve své aplikaci použít.</p>
+  <p>Gtk has a set of predefined events that you can use in your application.</p>
   <example>
-    <p>Deklarujte <code>HelloWorld</code> jako novou třídu jazyka <code>Lang</code>. Gjs vyžaduje, aby třídy měly definovánu vlastnost Name.</p>
+    <p>Declare <code>HelloWorld</code> as a new <code>Lang</code> class.
+    Gjs requires classes to have the Name property defined.</p>
 
-    <code>
+    <code><![CDATA[
 const HelloWorld = new Lang.Class({
     Name: 'HelloWorld',
-</code>
+]]></code>
 
-    <p><code>_init</code> je voláno ve chvíli, kdy je vytvořena nová instance. Vytvořte <code>GtkApplication</code>, pak napojte <code>activate</code> na existující událost Gtk <code>_onActivate</code> a <code>startup</code> na <code>_onStartup</code>.</p>
+    <p><code>_init</code> is called when a new instance is created. Create a
+    <code>GtkApplication</code>, then connect <code>activate</code> to the
+    existing Gtk event <code>_onActivate</code> and <code>startup</code> to
+    <code>_onStartup</code>:</p>
 
-    <code>
+    <code><![CDATA[
     _init: function() {
         this.application = new Gtk.Application();
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
-</code>
+]]></code>
 
-    <p>Zobrazte okno ihned po aktivaci aplikace:</p>
-    <code>
+    <p>Show the window upon application activation:</p>
+    <code><![CDATA[
     _onActivate: function(){
         this._window.show_all();
     },
-</code>
+]]></code>
   </example>
   <links type="prevnext"/>
 </page>

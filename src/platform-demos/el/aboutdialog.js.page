@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -52,50 +52,50 @@ const Lang = imports.lang;
 const AboutDialogExample = new Lang.Class({
     Name: 'AboutDialog Example',
 
-    // Create the application itself
+    // Δημιουργία αυτής καθεαυτής της εφαρμογής
         _init: function() {
             this.application = new Gtk.Application({
                 application_id: 'org.example.jsaboutdialog',
                 flags: Gio.ApplicationFlags.FLAGS_NONE
             });
 
-    // Connect 'activate' and 'startup' signals to the callback functions
+    // Σύνδεση των σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
     this.application.connect('activate', Lang.bind(this, this._onActivate));
     this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents windows when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
     _onActivate: function() {
         this._window.present();
     },
 
-    // Callback function for 'startup' signal creates the menu and builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δημιουργεί το μενού και κατασκευάζει τη διεπαφή χρήστη
     _onStartup: function() {
         this._initMenus();
         this._buildUI();
     },
 
-    // Build the application's UI
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
     _buildUI: function(){
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
         this._window = new Gtk.ApplicationWindow({ application: this.application,
                                                    window_position: Gtk.WindowPosition.CENTER,
                                                    title: "AboutDialog Example",
                                                    default_height: 250,
                                                    default_width: 350 });
 
-        // Show the window and all child widgets
+        // Εμφάνιση του παραθύρου κι όλων των θυγατρικών γραφικών στοιχείων
         this._window.show_all();
     },
 
-    // Create the application menu
+    // Δημιουργία του μενού της εφαρμογής
     _initMenus: function() {
         let menu = new Gio.Menu();
         menu.append("About", 'app.about');
         menu.append("Quit",'app.quit');
         this.application.set_app_menu(menu);
 
-        // Create the "About" menu option and have it call the _showAbout() function
+        // Δημιουργία της επιλογής μενού "About" για να καλέσει την _showAbout() function
         let aboutAction = new Gio.SimpleAction({ name: 'about' });
         aboutAction.connect('activate', Lang.bind(this,
             function() {
@@ -103,7 +103,7 @@ const AboutDialogExample = new Lang.Class({
             }));
         this.application.add_action(aboutAction);
 
-        // Create the "Quit" menu option and have it close the window
+        // Δημιουργία της επιλογής μενού "Quit" που κλείνει το παράθυρο
         let quitAction = new Gio.SimpleAction ({ name: 'quit' });
         quitAction.connect('activate', Lang.bind(this,
             function() {
@@ -114,11 +114,11 @@ const AboutDialogExample = new Lang.Class({
 
     _showAbout: function() {
 
-        // String arrays of the names of the people involved in the project
+        // Πίνακες συμβολοσειρών των ονομάτων των ατόμων που εμπλέκονται στο έργο
         var authors = ["GNOME Documentation Team"];
         var documenters = ["GNOME Documentation Team"];
 
-        // Create the About dialog
+        // Δημιουργία του διαλόγου περί
         let aboutDialog = new Gtk.AboutDialog({ title: "AboutDialog Example",
                                                 program_name: "GtkApplication Example",
                                                 copyright: "Copyright \xa9 2012 GNOME Documentation Team",
@@ -127,21 +127,21 @@ const AboutDialogExample = new Lang.Class({
                                                 website: "http://developer.gnome.org",
                                                 website_label: "GNOME Developer Website" });
 
-        // Attach the About dialog to the window
+        // Προσάρτηση του διαλόγου περί στο παράθυρο
         aboutDialog.modal = true;
         aboutDialog.transient_for = this._window;
 
-        // Show the About dialog
+        // Εμφάνιση του διαλόγου περί
         aboutDialog.show();
 
-        // Connect the Close button to the destroy signal for the dialog
+        // Σύνδεση του κουμπιού κλεισίματος με το σήμα καταστροφής του διαλόγου
         aboutDialog.connect('response', function() {
             aboutDialog.destroy();
         });
     }
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new AboutDialogExample();
 app.application.run(ARGV);
 </code>

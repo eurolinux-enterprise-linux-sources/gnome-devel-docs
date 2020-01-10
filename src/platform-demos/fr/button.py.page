@@ -13,43 +13,13 @@
       <years>2012</years>
     </credit>
 
-    <desc>Un bouton qui émet un signal quand il est cliqué</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>Un élément graphique bouton qui émet un signal quand il est cliqué</desc>
   </info>
 
-  <title>Button</title>
+  <title>Bouton</title>
 
   <media type="image" mime="image/png" src="media/button.png"/>
-  <p>Un bouton connecté à une fonction de rappel simple.</p>
+  <p>Un élément graphique bouton connecté à une fonction de rappel simple.</p>
 
   <links type="section"/>
 
@@ -78,7 +48,7 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback function connected to the signal "clicked" of the button
     def do_clicked(self, button):
-        print("You clicked me!")
+        print "You clicked me!"
 
 
 class MyApplication(Gtk.Application):
@@ -100,18 +70,18 @@ sys.exit(exit_status)
   </section>
   
   <section id="methods">
-    <title>Méthode utiles pour un composant graphique Button</title>
+    <title>Méthode utiles pour un élément graphique Bouton</title>
     <p>In line 16 the <code>"clicked"</code> signal from the button is connected to the callback function <code>do_clicked()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
     <list>
       <item><p>La méthode <code>set_relief(Gtk.ReliefStyle.NONE)</code> annule le style en relief des bordures du Gtk.Button - à l'opposé, <code>Gtk.ReliefStyle.NORMAL</code> le rétablit.</p></item>
-      <item><p>Si l'étiquette du bouton est issue de la <link href="http://developer.gnome.org/gtk3/unstable/gtk3-Stock-Items.html">collection d'icônes</link>, la méthode <code>set_use_stock(True)</code> assigne l'étiquette comme étant le nom de l'icône correspondante de la collection.</p></item>
+      <item><p>If the label of the button is a <link href="http://developer.gnome.org/gtk3/unstable/gtk3-Stock-Items.html">stock icon</link>, <code>set_use_stock(True)</code> sets the label as the name of the corresponding stock icon.</p></item>
       <item><p>Pour assigner une image (par ex. une image de la collection d'images) au bouton <code>button</code> :</p>
         <code>
 image = Gtk.Image()
 image.set_from_stock(Gtk.STOCK_ABOUT, Gtk.IconSize.BUTTON)
 button.set_image(image)</code>
       <p>Vous ne devez plus assigner d'étiquette au bouton après cela, sinon il affichera l'étiquette au lieu de l'image.</p></item>
-      <item><p>La fonction <code>set_focus_on_click(False)</code> empêche le bouton de prendre le focus quand vous cliquez dessus avec la souris. Cela peut être utile dans les barres d'outils, afin que la zone principale de l'application ne perde pas le focus clavier.</p></item>
+      <item><p>La fonction <code>set_focus_on_click(False)</code> empêche le bouton de prendre le focus quand vous cliquez dessus avec la souris.</p></item>
     </list>
   </section>
   

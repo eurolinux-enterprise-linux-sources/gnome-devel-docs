@@ -11,43 +11,13 @@
       <years>2012</years>
     </credit>
 
-    <desc>Une case que l'on peut cocher ou décocher</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>Une case qui peut être cochée ou décochée</desc>
   </info>
 
-  <title>CheckButton</title>
+  <title>CaseAcocher</title>
   <media type="image" mime="image/png" src="media/checkbutton.png"/>
-  <p>Cette application possède un CheckButton. L'état de la case – cochée ou non – indique s'il y a quelque chose d'affiché ou non dans la barre de titre de la fenêtre.</p>
-  <p>Un CheckButton envoie le signal d'inversion « toggled » quand il est cochée ou décochée. Tant qu'il est coché, la propriété « active » est vraie et tant qu'elle ne l'est pas, elle est fausse.</p>
+  <p>Cette application possède une CaseAcocher. Selon que la case soit cochée ou non dicte l'affichage ou non de quelque chose dans la barre de titre de la fenêtre.</p>
+  <p>Une CaseAcocher envoie le signal d'inversion « toggled » quand elle cochée ou décochée. Pendant qu'elle est cochée, la valeur de la propriété « active » est sur vrai et quand elle ne l'est pas, elle est sur faux.</p>
     <links type="section"/>
 
   <section id="imports">
@@ -90,7 +60,7 @@ const CheckButtonExample = new Lang.Class({
         this._buildUI ();
     },
 ]]></code>
-    <p>Tout le code de cet exemple va dans la classe CheckButtonExample. Le code ci-dessus crée une <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> qui contiendra la fenêtre et nos composants graphiques.</p>
+    <p>Tout le code de cet exemple va dans la classe CheckButtonExample. Le code ci-dessus crée une <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pour nos éléments graphiques et la fenêtre qui les contient.</p>
     <code mime="application/javascript"><![CDATA[
     // Build the application's UI
     _buildUI: function() {
@@ -104,11 +74,11 @@ const CheckButtonExample = new Lang.Class({
             border_width: 10,
             title: "CheckButton Example"});
 ]]></code>
-    <p>Mettons tout le code nécessaire à la création de l'interface utilisateur dans la fonction _buildUI. Créons maintenant une nouvelle <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link> pour y mettre tous nos composants graphiques.</p>
+    <p>Mettons tout le code nécessaire à la création de l'interface utilisateur dans la fonction _buildUI. Créons maintenant une nouvelle <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link> pour y mettre tous nos éléments graphiques.</p>
   </section>
 
   <section id="button">
-    <title>Création de la case à cocher</title>
+    <title>Création de la CaseAcocher</title>
     <code mime="application/javascript"><![CDATA[
         // Create the check button
         this._button = new Gtk.CheckButton ({label: "Show Title"});
@@ -120,17 +90,17 @@ const CheckButtonExample = new Lang.Class({
         // Connect the button to a function that does something when it's toggled
         this._button.connect ("toggled", Lang.bind (this, this._toggledCB));
 ]]></code>
-    <p>Ce code ne génère que la case à cocher. Pour créer l'étiquette à côté de la case à cocher, il faut donner à la case à cocher la propriété « label » et lui assigner une valeur de chaîne. Comme la case à cocher s'inverse selon que le titre de la fenêtre s'affiche ou non (et nous le mettons en position affiché pour commencer), il faut que la case soit cochée par défaut. Ensuite, à chaque fois que l'utilisateur coche ou décoche la case, nous appelons la fonction _toggledCB.</p>
+    <p>This code creates the checkbutton itself. The label next to the checkbutton is created by giving the checkbutton the "label" property and assigning a string value to it. Since this checkbutton toggles whether the window title is on or off, and the window title will be on to start with, we want the box to be checked by default. Whenever the user checks or unchecks the box, we call the _toggledCB function.</p>
     <code mime="application/javascript"><![CDATA[
         // Show the window and all child widgets
         this._window.show_all();
     },
 ]]></code>
-    <p>Ce code termine la création de l'interface utilisateur en indiquant à la fenêtre de s'afficher toute seule avec tous ses composants graphiques enfants (il n'y a que la case à cocher dans cet exemple).</p>
+    <p>Ce code termine la création de l'interface utilisateur en indiquant à la fenêtre de s'afficher toute seule avec tous ses éléments graphiques enfants (il n'y a que la CaseAcocher dans cet exemple).</p>
   </section>
 
   <section id="function">
-    <title>Fonction prenant en charge l'inversion de la case à cocher</title>
+    <title>Fonction prenant en charge l'inversion de la CaseAcocher</title>
     <code mime="application/javascript"><![CDATA[
     _toggledCB: function () {
 
@@ -144,7 +114,7 @@ const CheckButtonExample = new Lang.Class({
 
 });
 ]]></code>
-    <p>Nous voulons que le titre de la fenêtre disparaisse quand la case à cocher devient décochée, et qu'elle réapparaisse quand elle devient cochée. Pour savoir quel est son état, il nous faut la tester. Nous appellerons pour cela la méthode get_active() dans un bloc if ou else.</p>
+    <p>Quand la CaseAcocher est décochée, nous voulons que le titre de la fenêtre disparaisse. Quand elle est cochée, nous voulons qu'elle réapparaisse. Pour savoir quel est son état, il nous faut la tester. C'est l'instruction if ou else qui va appeler la méthode get_active() de la CaseAcocher et qui fera ce travail.</p>
     <code mime="application/javascript"><![CDATA[
 // Run the application
 let app = new CheckButtonExample ();
@@ -154,7 +124,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="complete">
-    <title>Exemple complet de code</title>
+    <title>Exemple complet du code</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
 const Gio = imports.gi.Gio;

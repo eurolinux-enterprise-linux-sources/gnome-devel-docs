@@ -12,7 +12,7 @@
       <email its:translate="no">tiffany.antopolski@gmail.com</email>
       <years>2012</years>
     </credit>
-    <credit type="author copyright">
+    <credit type="author coyright">
       <name>Marta Maria Casetti</name>
       <email its:translate="no">mmcasetti@gmail.com</email>
       <years>2012</years>
@@ -95,7 +95,7 @@ class MyApplication(Gtk.Application):
         try:
             builder.add_from_file("menubar_basis.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
 
         # we use the method Gtk.Application.set_menubar(menubar) to add the menubar
@@ -182,7 +182,7 @@ self.add_action(new_action)</code>
 
     <p>Some actions, such as "copy" and "paste" deal with the window, not the application. Window actions should be created as part of the window class.</p>
 
-    <p>The complete example files contain both application actions and window actions.  The window actions are the ones usually included in the <link xref="gmenu.py">application menu</link> also.  It is not good practice to include window actions in the application menu. For demonstration purposes, the complete example files which follow include XML in the UI file which creates the application menu which includes a "New" and "Open" item, and these are hooked up to the same actions as the menubar items of the same name.</p>
+    <p>The complete example files contain both application actions and window actions.  The window actions are the ones usually included in the <link xref="gmenu.py">application menu</link> also.  It is not good practice to include window actions in the applcation menu. For demonstration purposes, the complete example files which follow include XML in the UI file which creates the application menu which includes a "New" and "Open" item, and these are hooked up to the same actions as the menubar items of the same name.</p>
   </section>
 
   <section id="choices">
@@ -357,15 +357,15 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback function for copy_action
     def copy_callback(self, action, parameter):
-        print("\"Copy\" activated")
+        print "\"Copy\" activated"
 
     # callback function for paste_action
     def paste_callback(self, action, parameter):
-        print("\"Paste\" activated")
+        print "\"Paste\" activated"
 
     # callback function for shape_action
     def shape_callback(self, action, parameter):
-        print("Shape is set to", parameter.get_string())
+        print "Shape is set to", parameter.get_string()
         # Note that we set the state of the action!
         action.set_state(parameter)
 
@@ -447,7 +447,7 @@ class MyApplication(Gtk.Application):
         try:
             builder.add_from_file("menubar.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
 
         # we use the method Gtk.Application.set_menubar(menubar) to add the menubar
@@ -457,25 +457,25 @@ class MyApplication(Gtk.Application):
 
     # callback function for new
     def new_callback(self, action, parameter):
-        print("You clicked \"New\"")
+        print "You clicked \"New\""
 
     # callback function for quit
     def quit_callback(self, action, parameter):
-        print("You clicked \"Quit\"")
+        print "You clicked \"Quit\""
         sys.exit()
 
     # callback function for state
     def state_callback(self, action, parameter):
-        print("State is set to", parameter.get_string())
+        print "State is set to", parameter.get_string()
         action.set_state(parameter)
 
     # callback function for awesome
     def awesome_callback(self, action, parameter):
         action.set_state(GLib.Variant.new_boolean(not action.get_state()))
         if action.get_state().get_boolean() is True:
-            print("You checked \"Awesome\"")
+            print "You checked \"Awesome\""
         else:
-            print("You unchecked \"Awesome\"")
+            print "You unchecked \"Awesome\""
 
 
 app = MyApplication()
@@ -501,7 +501,7 @@ sys.exit(exit_status)
 
   <section id="translatable"><title>Translatable strings</title>
    <p>
-   Since GNOME applications are being translated into <link href="http://l10n.gnome.org/languages/">many languages</link>, it is important that the strings in your application are translatable.  To make a label translatable, simple set <code>translatable="yes"</code>:
+   Since GNOME applications are being translated into <link href="http://l10n.gnome.org/languages/">many languages</link>, it is important that the strings in your application are translable.  To make a label translatable, simple set <code>translatable="yes"</code>:
    </p>
 
      <code mime="application/xml"><![CDATA[<attribute name="label" translatable="yes">Quit</attribute>]]></code>

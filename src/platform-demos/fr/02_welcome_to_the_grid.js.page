@@ -13,90 +13,60 @@
       <years>2012</years>
     </credit>
 
-    <desc>Apprenez à disposer les éléments d'interface graphique, comme les images ou les étiquettes.</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>Learn how to lay out UI components, like Images and Labels.</desc>
   </info>
 
-  <title>2. Bienvenue devant la Grid</title>
+  <title>2. Welcome to the Grid</title>
   <synopsis>
-    <p>Ce tutoriel vous montrera comment créer des composants graphiques basiques, ou des parties de l'interface utilisateur de GNOME, comme les images ou les étiquettes. Vous apprendrez ensuite comment les arranger tous dans une grille, qui vous permet de placer les widgets où vous le souhaitez.</p>
-    <note style="warning"><p>Avez vous lu <link xref="hellognome.js">le premier tutoriel de cette série</link> ? Faites le avant de continuer.</p></note>
+    <p>This tutorial will show you how to create basic widgets, or parts of the GNOME user interface, like Images and Labels. You'll then learn how to arrange them all in a Grid, which lets you put widgets exactly where you want them.</p>
+    <note style="warning"><p>Have you taken <link xref="hellognome.js">the first tutorial in this series</link> already? You'll want to do so before continuing.</p></note>
   </synopsis>
 
   <links type="section"/>
 
   <section id="native">
-    <title>Côté natif</title>
+    <title>Going native</title>
 
-    <p>Dans le dernier tutoriel, nous avons créé un cadre de fenêtre GNOME pour une application web. Tout le code spécifique à GNOME dont nous avons eu besoin consistait à mettre la WebView ­– le composant graphique contenant notre application – dans notre fenêtre applicative, et lui dire de s'afficher. L'application elle-même était écrite en HTML et JavaScript, comme la plupart des pages du web.</p>
+    <p>In the last tutorial, we created what was basically a GNOME window frame for a web app. All the GNOME-specific code we needed to learn revolved around putting the WebView -- the widget containing our application -- into an ApplicationWindow, and telling it to display. The application itself was written in HTML and JavaScript, just like most pages on the web.</p>
     <p>This time, we're going to use only native GNOME widgets. A widget is just a thing, like a checkbox or picture, and GNOME has a wide variety of them to choose from. We call them "native" widgets to distinguish them from things like the button and header in the web app we wrote. Because instead of using web code, these are going to be 100 percent GNOME, using GTK+.</p>
     <note style="tip"><p>GTK+ stands for "GIMP Toolkit". It's like a toolbox of widgets that you can reach into, while building your applications. It was originally written for <link href="http://www.gimp.org/">the GIMP</link>, which is a free software image editor.</p></note>
   </section>
 
   <section id="setup">
-    <title>Mise en place de notre application</title>
+    <title>Setting up our application</title>
 
-    <p>Avant de sortir des outils de notre boîte à outils GTK+, nous devons écrire du code d'enrobage requis par l'application.</p>
-    <code mime="application/javascript">
+    <p>Before we dig out any widgets from the GTK+ toolbox, we first need to write the basic boilerplate code that our application requires.</p>
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
-</code>
-    <p>Cette partie va toujours au début de votre code. Selon ce que vous souhaitez en faire, vous pourriez importer plus de choses ici. Cet exemple est assez basique, aussi nous n'avons pas besoin de plus ; Gtk pour les composants graphiques et Lang pour pouvoir utilise Lang.bind pour connecter les signaux « activate » et « startup » aux fonctions correspondantes.</p>
-    <p>À propos de cela :</p>
-    <code mime="application/javascript">
+]]></code>
+    <p>This part always goes at the start of your code. Depending on what you'll be doing with it, you may want to declare more imports here. What we're writing today is pretty basic, so these are all we need; Gtk for the widgets, and Lang so we can use Lang.bind to connect our application's activate and startup signals to the requisite functions.</p>
+    <p>Speaking of which:</p>
+    <code mime="application/javascript"><![CDATA[
 const WelcomeToTheGrid = new Lang.Class({
-    Name: 'Bienvenue devant la Grid',
+    Name: 'Welcome to the Grid',
 
-    // Création de l'application
+    // Create the application itself
     _init: function() {
         this.application = new Gtk.Application();
 
-        // Connection des signaux 'activate' et 'startup' aux fonctions de rappel
+        // Connect 'activate' and 'startup' signals to the callback functions
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Fonction de rappel pour que le signal 'activate' présente la fenêtre quand elle est activée
+    // Callback function for 'activate' signal presents windows when active
     _onActivate: function() {
         this._window.present();
     },
 
-    // Fonction de rappel pour que le signal 'startup' construise l'interface graphique
+    // Callback function for 'startup' signal builds the UI
     _onStartup: function() {
         this._buildUI ();
     },
-</code>
+]]></code>
     <p>This is the start of the application itself, and the _init function which creates it. It tells _buildUI to create an ApplicationWindow, which we're going to call _window, and it tells our window to present itself whenever needed.</p>
     <p>This part, again, is pretty much copy-and-paste, but you always want to give your application a unique name.</p>
 
@@ -115,7 +85,7 @@ const WelcomeToTheGrid = new Lang.Class({
   </section>
 
   <section id="toolbox">
-    <title>Sortons la boîte à outils GTK+</title>
+    <title>Reaching into the GTK+ toolbox</title>
     <p>What widgets should we use? Well, let's say we want to write an application that looks like this:</p>
 
     <media type="image" mime="image/png" src="media/02_jsgrid_01.png"/>
@@ -151,7 +121,7 @@ const WelcomeToTheGrid = new Lang.Class({
     <p>This code looks awfully complicated, but it's not. Here's what those numbers mean:</p>
     <list type="numbered">
       <item><p>The <em>first</em> number is what left-to-right position to put things in, starting from 0. Any widget that uses a 0 here goes all the way to the left.</p></item>
-      <item><p>The <em>second</em> number is what top-to-bottom position to put a given widget in, starting from 0. The Label goes beneath the Image, so we give the Image a 0 and the Label a 1 here.</p></item>
+      <item><p>The <em>second</em> number is what top-to-botton position to put a given widget in, starting from 0. The Label goes beneath the Image, so we give the Image a 0 and the Label a 1 here.</p></item>
       <item><p>The <em>third</em> and <em>fourth</em> numbers are how many columns and rows a widget should take up. We'll see how these work in a minute.</p></item>
     </list>
 
@@ -179,7 +149,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="tweaking">
-    <title>Manipulons la Grid</title>
+    <title>Tweaking the Grid</title>
 
     <p>One thing we can do, is we can give the Label a margin_top property when we create it. This works sort of like setting a margin for an HTML element using inline CSS styling.</p>
     <code mime="application/javascript"><![CDATA[
@@ -231,7 +201,7 @@ app.application.run (ARGV);
     <p>There are at least three ways we can get around that last one. First, we can set a margin_left or margin_right on one of the Labels:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_05.png"/>
 
-    <p>Second, we can set the Grid's column_homogeneous property to true.</p>
+    <p>Second, we can set the Grid's column_homogenous property to true.</p>
     <code mime="application/javascript"><![CDATA[
         // Create the Grid
         this._grid = new Gtk.Grid ({
@@ -239,7 +209,7 @@ app.application.run (ARGV);
             row_spacing: 20 });
 ]]></code>
 
-    <p>Cela ressemble à présent à quelque chose comme ceci :</p>
+    <p>That makes it look something like this:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_06.png"/>
 
     <p>And third, we can set the Grid's column_spacing property, the same way we set its row_spacing.</p>
@@ -249,12 +219,12 @@ app.application.run (ARGV);
             column_spacing: 20,
             row_spacing: 20 });
 ]]></code>
-    <p>Cela ressemble à présent à ceci :</p>
+    <p>That makes it look like this:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_07.png"/>
   </section>
 
   <section id="stock">
-    <title>Utilisation des images de la collection</title>
+    <title>Using stock images</title>
 
     <p>GNOME has a lot of stock images on hand already, that we can use if we don't feel like creating our own or if we want a universally-recognized icon. Here's how we create a stock image, compared to how we create a normal one:</p>
     <code mime="application/javascript"><![CDATA[
@@ -299,7 +269,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="complete">
-    <title>Exemple complet de code</title>
+    <title>Exemple complet du code</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
 const Gtk = imports.gi.Gtk;

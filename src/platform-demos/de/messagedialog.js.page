@@ -30,20 +30,20 @@
     <links type="section"/>
 
   <section id="imports">
-    <title>Zu importierende Bibliotheken</title>
-    <code mime="application/javascript">
+    <title>Libraries to import</title>
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
-</code>
+]]></code>
     <p>These are the libraries we need to import for this application to run. Remember that the line which tells GNOME that we're using Gjs always needs to go at the start.</p>
   </section>
 
   <section id="applicationwindow">
     <title>Entwurf des Anwendungsfensters</title>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 const MessageDialogExample = new Lang.Class ({
     Name: 'MessageDialog Example',
 
@@ -68,10 +68,10 @@ const MessageDialogExample = new Lang.Class ({
         this._initMenus();
         this._buildUI ();
     },
-</code>
+]]></code>
     <p>All the code for this sample goes in the MessageDialogExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
     <note><p>Before we call _buildUI to create the window and the widgets inside it, we need to call _initMenus, which tells GNOME to create the menu. We can put the actual code for _initMenus after the code for _buildUI, since it doesn't matter what order we put them in so long as _initMenus is called first in _onStartup.</p></note>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
     // Build the application's UI
     _buildUI: function () {
 
@@ -82,21 +82,21 @@ const MessageDialogExample = new Lang.Class ({
             title: "Gtk.MessageDialog Example",
             default_height: 200,
             default_width: 400 });
-</code>
+]]></code>
     <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Create a silly warning message and add it to the window
         this.warningLabel = new Gtk.Label ({
             label: "This application goes boom! (Not really.)"});
         this._window.add (this.warningLabel);
-</code>
+]]></code>
     <p>For this example, all that we have in the window the popup comes out of is a silly warning <link xref="label.js">Label</link>.</p>
   </section>
 
   <section id="menu">
     <title>Entwurf des Anwendungsmenüs</title>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
     // Build the application menu, including the button that calls the dialog
     _initMenus: function() {
         let menu = new Gio.Menu();
@@ -120,13 +120,13 @@ const MessageDialogExample = new Lang.Class ({
             }));
         this.application.add_action(quitAction);
     },
-</code>
+]]></code>
     <p>Here, we build the <link xref="gmenu.js">GMenu</link> where we'll be putting the "Message" button which triggers the popup MessageDialog. The GMenu is the menu that appears when you click the application's name in the upper-left corner of the screen, next to the Activities menu. Our menu only has two options in it: Message, and Quit.</p>
   </section>
 
   <section id="messagedialog">
     <title>Creating the MessageDialog</title>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
     _showMessageDialog: function () {
 
         // Create a modal MessageDialog whose parent is the window
@@ -140,7 +140,7 @@ const MessageDialogExample = new Lang.Class ({
         this._messageDialog.connect ('response', Lang.bind(this, this._response_cb));
         this._messageDialog.show();
     },
-</code>
+]]></code>
     <p>To make our MessageDialog a popup attached to the main window, we set its modal property to true and set it to be "transient_for" _window. After that, we can set what kind of buttons it has and what kind of message it is (which determines what icon appears next to the message), and write out the text inside it, before connecting its "response" signal to the callback function which handles it.</p>
     <note><p>Here are some resources for making your own MessageDialogs:</p>
       <list>
@@ -149,7 +149,7 @@ const MessageDialogExample = new Lang.Class ({
       </list>
     </note>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
     // Callback function (aka signal handler) for the response signal
     _response_cb: function (messagedialog, response_id) {
 
@@ -171,14 +171,14 @@ const MessageDialogExample = new Lang.Class ({
     }
 
 });
-</code>
+]]></code>
     <p>This function takes two parameters, the MessageDialog and its response_id, both of which are automatically supplied (you don't have to manually pass them to it for it to work). Here we use a simple switch to change the "warning label"'s text, depending on which option you select. The DELETE_EVENT occurs if you press Escape to cancel the MessageDialog, instead of clicking OK or Cancel. Whatever you select, the popup is destroyed afterwards.</p>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 // Run the application
 let app = new MessageDialogExample ();
 app.application.run (ARGV);
-</code>
+]]></code>
     <p>Finally, we create a new instance of the finished MessageDialogExample class, and set the application running.</p>
   </section>
 
@@ -310,7 +310,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>Weiterführende Dokumentation</title>
+    <title>In-depth documentation</title>
 <p>
   In this sample we used the following:
 </p>

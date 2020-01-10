@@ -36,7 +36,7 @@
   <list>
     <item><p>Set up a basic project in Anjuta</p></item>
     <item><p>Create a simple GUI with Anjuta's UI designer</p></item>
-    <item><p>GStreamer zum Abspielen von Klängen verwenden</p></item>
+    <item><p>Use GStreamer to play sounds</p></item>
   </list>
   <p>You'll need the following to be able to follow this tutorial:</p>
   <list>
@@ -48,7 +48,7 @@
 <media type="image" mime="image/png" src="media/guitar-tuner.png"/>
 
 <section id="anjuta">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
   <p>Before you start coding, you'll need to set up a new project in Anjuta. This will create all of the files you need to build and run the code later on. It's also useful for keeping everything together.</p>
   <steps>
     <item>
@@ -63,9 +63,9 @@
     </item>
     <item>
     <p>Click <gui>Apply</gui> and the project will be created for you. Open <file>src/main.c</file> from the <gui>Project</gui> or <gui>File</gui> tabs. You should see some code which starts with the lines:</p>
-    <code mime="text/x-csrc">
-#include &lt;config.h&gt;
-#include &lt;gtk/gtk.h&gt;</code>
+    <code mime="text/x-csrc"><![CDATA[
+#include <config.h>
+#include <gtk/gtk.h>]]></code>
     </item>
   </steps>
 </section>
@@ -131,11 +131,11 @@ six strings) and the orientation to vertical.</p>
   <p>To do this, open <file>main.c</file> while the user interface file is still open. Switch to the <gui>Signals</gui> tab, which you already used to set the signal name. Now take the row where you set the
 <gui>clicked</gui> signal and drag it into to the source file at a
 position that is outside any function. The following code will be added to your source file:</p>
-<code mime="text/x-csrc">
+<code mime="text/x-csrc"><![CDATA[
 void on_button_clicked (GtkWidget* button, gpointer user_data)
 {
 
-}</code>
+}]]></code>
   <p>This signal handler has two arguments: a pointer to the <code>GtkWidget</code> that called the function (in our case, always a <code>GtkButton</code>), and a pointer to some "user data" that you can define, but which we won't be using here. (You can set the user data by calling <code>gtk_builder_connect_signals</code>; it is normally used to pass a pointer to a data structure that you might need to access inside the signal handler.)</p>
   <p>For now, we'll leave the signal handler empty while we work on writing the code to produce sounds.</p>
 </section>
@@ -159,7 +159,7 @@ void on_button_clicked (GtkWidget* button, gpointer user_data)
   <p>This includes the GStreamer library. You also need to add a line to initialize GStreamer; put the following code on the line above the <code>gtk_init</code> call in the <code>main</code> function:</p>
   <code>gst_init (&amp;argc, &amp;argv);</code>
   <p>Then, copy the following function into <file>main.c</file> above the empty <code>on_button_clicked</code> function:</p>
-  <code mime="text/x-csrc">static void
+  <code mime="text/x-csrc"><![CDATA[static void
 play_sound (gdouble frequency)
 {
 	GstElement *source, *sink;
@@ -181,7 +181,7 @@ play_sound (gdouble frequency)
 
 	/* stop it after 500ms */
 	g_timeout_add (LENGTH, (GSourceFunc) pipeline_stop, pipeline);
-}</code>
+}]]></code>
 
   <steps>
     <item>
@@ -204,7 +204,7 @@ play_sound (gdouble frequency)
   <title>Die Wiedergabe stoppen</title>
   <p>We don't want to play an annoying tone forever, so the last thing <code>play_sound</code> does is to call <code>g_timeout_add</code>. This sets a timeout for stopping the sound; it waits for <code>LENGTH</code> milliseconds before calling the function <code>pipeline_stop</code>, and will keep calling it until <code>pipeline_stop</code> returns <code>FALSE</code>.</p>
   <p>Now, we'll write the <code>pipeline_stop</code> function which is called by <code>g_timeout_add</code>. Insert the following code <em>above</em> the <code>play_sound</code> function:</p>
-  <code mime="text/x-csrc">
+  <code mime="text/x-csrc"><![CDATA[
 #define LENGTH 500 /* Length of playing in ms */
 
 static gboolean
@@ -214,23 +214,23 @@ pipeline_stop (GstElement* pipeline)
 	g_object_unref (pipeline);
 
 	return FALSE;
-}</code>
+}]]></code>
   <p>The call to <code>gst_element_set_state</code> stops the playback of the pipeline and <code>g_object_unref</code> unreferences the pipeline, destroying it and freeing its memory.</p>
 </section>
 
 <section id="tones">
   <title>Define the tones</title>
   <p>We want to play the correct sound when the user clicks a button. First of all, we need to know the frequencies for the six guitar strings, which are defined (at the top of <file>main.c</file>) as follows:</p>
-  <code mime="text/x-csrc">
+  <code mime="text/x-csrc"><![CDATA[
 /* Frequencies of the strings */
 #define NOTE_E 329.63
 #define NOTE_A 440
 #define NOTE_D 587.33
 #define NOTE_G 783.99
 #define NOTE_B 987.77
-#define NOTE_e 1318.5</code>
+#define NOTE_e 1318.5]]></code>
   <p>Now to flesh out the signal handler that we defined earlier, <code>on_button_clicked</code>. We could have connected every button to a different signal handler, but that would lead to a lot of code duplication. Instead, we can use the label of the button to figure out which button was clicked:</p>
-  <code mime="text/x-csrc">
+  <code mime="text/x-csrc"><![CDATA[
 /* Callback for the buttons */
 void on_button_clicked (GtkButton* button,
                         gpointer user_data)
@@ -250,7 +250,7 @@ void on_button_clicked (GtkButton* button,
 	else if (g_str_equal (text, _("e")))
 	    play_sound (NOTE_e);
 }
-</code>
+]]></code>
   <p>A pointer to the <code>GtkButton</code> that was clicked is passed as an argument (<code>button</code>) to <code>on_button_clicked</code>. We can get the text of that button using <code>gtk_button_get_label</code>.</p>
   <p>The text is then compared to the notes that we have using <code>g_str_equal</code>, and <code>play_sound</code> is called with the frequency appropriate for that note. This plays the tone; we have a working guitar tuner!</p>
 </section>

@@ -30,20 +30,20 @@
     <links type="section"/>
 
   <section id="imports">
-    <title>Zu importierende Bibliotheken</title>
-    <code mime="application/javascript">
+    <title>Libraries to import</title>
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
-</code>
+]]></code>
     <p>These are the libraries we need to import for this application to run. Remember that the line which tells GNOME that we're using Gjs always needs to go at the start.</p>
     </section>
 
   <section id="applicationwindow">
     <title>Entwurf des Anwendungsfensters</title>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 const SpinButtonExample = new Lang.Class({
     Name: 'SpinButton Example',
 
@@ -67,9 +67,9 @@ const SpinButtonExample = new Lang.Class({
     _onStartup: function() {
         this._buildUI ();
     },
-</code>
+]]></code>
     <p>All the code for this sample goes in the SpinButtonExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
     // Build the application's UI
     _buildUI: function() {
 
@@ -79,22 +79,22 @@ const SpinButtonExample = new Lang.Class({
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 20,
             title: "Kitten Feeder"});
-</code>
+]]></code>
     <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
   </section>
 
   <section id="spinbutton">
-    <title>Erstellen der SpinButtons</title>
-    <code mime="application/javascript">
+    <title>Creating the SpinButtons</title>
+    <code mime="application/javascript"><![CDATA[
         // Create the first spinbutton using a function
         this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
         this._kittens.connect ("value-changed", Lang.bind (this, this._newValue));
-</code>
+]]></code>
 
     <p>We can use the new_with_range function to create a new SpinButton quickly. Its first parameter is the SpinButton's starting value, its second is the maximum value, and its third is how much to increment it when the plus or minus buttons are pressed.</p>
     <p>After we create the first SpinButton, we connect its value-changed signal to a function which handles what happens when the number inside either SpinButton changes.</p>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Create an adjustment to use for the second spinbutton
         this._adjustment = new Gtk.Adjustment ({
             value: 1,
@@ -109,7 +109,7 @@ const SpinButtonExample = new Lang.Class({
 
         // this._tuna.set_digits (1);
         // this._tuna.set_wrap (true);
-</code>
+]]></code>
 
     <p>If you want more fine-grained control over a SpinButton, or want to create a bunch of SpinButtons which all use the same parameters, you can create an object called an <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Adjustment</link>. Then you can use that object as a new SpinButton's adjustment property, and it sets all the values at once. Afterwards, you can change all the SpinButtons which use that adjustment by changing the Adjustment object's properties.</p>
     <p>The commented-out lines here show things you can do to customize your SpinButton. You can set the number of digits which go after the decimal point, for example, or tell it to wrap the number around if it goes past the upper or lower bounds that you set.</p>
@@ -117,9 +117,9 @@ const SpinButtonExample = new Lang.Class({
   </section>
 
   <section id="UI">
-    <title>Erstellen der übrigen Benutzeroberfläche</title>
+    <title>Creating the rest of the UI</title>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Create the text labels to go with the spinbuttons
         this._startLabel = new Gtk.Label ({ label: "There are " });
         this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
@@ -127,10 +127,10 @@ const SpinButtonExample = new Lang.Class({
         this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
         this._lastLabel = new Gtk.Label ({
             label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
-</code>
+]]></code>
     <p>We create each <link xref="label.js">Label</link> individually, and then string them together along with the SpinButtons. The last label needs to show the number of cans of tuna per kitten, so it has a variable in the middle, which corresponds to an equation that uses the SpinButtons' get_value functions to find out what they're set at. JavaScript's Math function's floor method is used to round the number of cans of tuna per kitten down to the nearest whole number.</p>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Create a grid to put the spinbuttons and their labels in
         this._spinGrid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
@@ -152,26 +152,26 @@ const SpinButtonExample = new Lang.Class({
         // Attach the smaller grid and the last label to the main grid
         this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
         this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
-</code>
+]]></code>
 
     <p>Here we use <link xref="grid.js">Grid</link> widgets to keep everything organized. One Grid holds the labels and SpinButtons in order, while the next puts that Grid on top and the final Label on the bottom.</p>
     <p>There isn't a wrong way to organize things in Grids, so long as you like how it turns out. In this case, the top Grid has a margin on the bottom to keep it evenly spaced from the bottom Label, and the bottom Label is inside a separate Grid so it will be centered relative to the Labels and SpinButtons on the top.</p>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
         // Add the main grid to the window
         this._window.add (this._mainGrid);
 
         // Show the window and all child widgets
         this._window.show_all();
     },
-</code>
+]]></code>
     <p>Finally, we add the larger Grid to the window, then tell the window to show itself and all the widgets inside of it.</p>
     </section>
 
     <section id="spinbutton-handler">
     <title>Function which handles the SpinButtons' numerical values being adjusted</title>
 
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
     _newValue: function () {
 
         // Update the label which shows how many cans there are per kitten
@@ -181,7 +181,7 @@ const SpinButtonExample = new Lang.Class({
     }
 
 });
-</code>
+]]></code>
     <p>Here we update the perKitten variable based on the SpinButtons' new values, and use the set_label property to refresh what _lastLabel shows. Since both SpinButtons have their value-changed signal connected to this function, every time either of the numbers changes this function will update the Label.</p>
 
     <code mime="application/javascript">
@@ -311,7 +311,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>Weiterführende Dokumentation</title>
+    <title>In-depth documentation</title>
 <list>
   <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Gtk.Adjustment</link></p></item>
   <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>

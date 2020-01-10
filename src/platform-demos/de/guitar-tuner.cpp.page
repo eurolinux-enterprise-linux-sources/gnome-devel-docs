@@ -35,7 +35,7 @@
   <list>
     <item><p>Set up a basic project in Anjuta</p></item>
     <item><p>Create a simple GUI with Anjuta's UI designer</p></item>
-    <item><p>GStreamer zum Abspielen von Klängen verwenden</p></item>
+    <item><p>Use GStreamer to play sounds</p></item>
   </list>
   <p>You'll need the following to be able to follow this tutorial:</p>
   <list>
@@ -47,7 +47,7 @@
 <media type="image" mime="image/png" src="media/guitar-tuner.png"/>
 
 <section id="anjuta">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
   <p>Before you start coding, you'll need to set up a new project in Anjuta. This will create all of the files you need to build and run the code later on. It's also useful for keeping everything together.</p>
   <steps>
     <item>
@@ -141,7 +141,7 @@ six strings) and the orientation to vertical.</p>
   <p>To simplify the handling of the pipeline we will define a helper class <code>Sound</code>. We do
   that in <file>main.cc</file> in order to keep this example simple, whereas you might usually want
   to use a separate file:</p>
-  <code>
+  <code><![CDATA[
 class Sound
 {
 	public:
@@ -151,9 +151,9 @@ class Sound
 		bool stop_playing();
 
 	private:
-		Glib::RefPtr&lt;Gst::Pipeline&gt; m_pipeline;
-		Glib::RefPtr&lt;Gst::Element&gt; m_source;
-		Glib::RefPtr&lt;Gst::Element&gt; m_sink;
+		Glib::RefPtr<Gst::Pipeline> m_pipeline;
+		Glib::RefPtr<Gst::Element> m_source;
+		Glib::RefPtr<Gst::Element> m_sink;
 };
 
 Sound::Sound()
@@ -163,27 +163,27 @@ Sound::Sound()
 	                                               "source");
 	m_sink = Gst::ElementFactory::create_element("autoaudiosink",
 	                                             "output");
-	m_pipeline-&gt;add(m_source);
-	m_pipeline-&gt;add(m_sink);
-	m_source-&gt;link(m_sink);
+	m_pipeline->add(m_source);
+	m_pipeline->add(m_sink);
+	m_source->link(m_sink);
 }
 
 void Sound::start_playing (double frequency)
 {
-	m_source-&gt;set_property("freq", frequency);
-	m_pipeline-&gt;set_state(Gst::STATE_PLAYING);
+	m_source->set_property("freq", frequency);
+	m_pipeline->set_state(Gst::STATE_PLAYING);
 
 	/* stop it after 200ms */
-	Glib::signal_timeout().connect(sigc::mem_fun(*this, &amp;Sound::stop_playing),
+	Glib::signal_timeout().connect(sigc::mem_fun(*this, &Sound::stop_playing),
 	                               200);
 }
 
 bool Sound::stop_playing()
 {
-	m_pipeline-&gt;set_state(Gst::STATE_NULL);
+	m_pipeline->set_state(Gst::STATE_NULL);
 	return false;
 }
-</code>
+]]></code>
 
   <p>Der Code hat den folgenden Zweck:</p>
   <steps>
@@ -212,27 +212,27 @@ bool Sound::stop_playing()
 
   <p>The function that is called when the user clicks a button can be pretty simple, as
   all the interesting stuff is done in the helper class now:</p>
-  <code mime="text/x-csrc">
+  <code mime="text/x-csrc"><![CDATA[
 static void
 on_button_clicked(double frequency, Sound* sound)
 {
-	sound-&gt;start_playing (frequency);
+	sound->start_playing (frequency);
 }
-</code>
+]]></code>
   <p>It only calls the helper class we defined before to play the correct frequencies. With some more
   clever code we would also have been able to directly connect to the class without using the function
   but we will leave that to use as an exercise.</p>
 
   <p>The code to set up the signals should be added to the <code>main()</code> function just after the
   <code>builder-&gt;get_widget("main_window", main_win);</code> line:</p>
-  <code mime="text/x-csrc">
+  <code mime="text/x-csrc"><![CDATA[
 Sound sound;
 Gtk::Button* button;
 
-builder-&gt;get_widget("button_E", button);
-button-&gt;signal_clicked().connect (sigc::bind&lt;double, Sound*&gt;(sigc::ptr_fun(&amp;on_button_clicked),
-                                              329.63, &amp;sound));
-</code>
+builder->get_widget("button_E", button);
+button->signal_clicked().connect (sigc::bind<double, Sound*>(sigc::ptr_fun(&on_button_clicked),
+                                              329.63, &sound));
+]]></code>
 	<steps>
 	<item>
 	<p>At first we create an instance of our helper class that we want to use now and declare a variable

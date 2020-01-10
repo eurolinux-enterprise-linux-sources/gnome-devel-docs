@@ -16,39 +16,9 @@
     </credit>
 
     <desc>A customizable drop-down menu</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
-  <title>ComboBox</title>
+  <title>BoiteCombinee</title>
   <media type="image" mime="image/png" src="media/combobox_multicolumn.png"/>
   <p>A ComboBox is an extremely customizable drop-down menu. It holds the equivalent of a <link xref="treeview_simple_liststore.js">TreeView</link> widget that appears when you click on it, complete with a ListStore (basically a spreadsheet) that says what's in the rows and columns. In this example, our ListStore has the name of each option in one column, and the name of a stock icon in the other, which the ComboBox then turns into an icon for each option.</p>
   <p>You select a whole horizontal row at a time, so the icons aren't treated as separate options. They and the text beside them make up each option you can click on.</p>
@@ -148,7 +118,7 @@ const ComboBoxExample = new Lang.Class ({
   </section>
 
   <section id="combobox">
-    <title>Création de la ComboBox</title>
+    <title>Creating the ComboBox</title>
     <code mime="application/javascript"><![CDATA[
         // Create the combobox
         this._comboBox = new Gtk.ComboBox({
@@ -189,7 +159,7 @@ const ComboBoxExample = new Lang.Class ({
         this._window.show_all();
     },
 ]]></code>
-    <p>Enfin, ajoutons la ComboBox à la fenêtre et indiquons à la fenêtre de s'afficher avec ses éléments graphiques à l'intérieur.</p>
+    <p>Finally, we add the ComboBox to the window, and tell the window to show itself and everything inside it.</p>
   </section>
 
   <section id="function">
@@ -203,7 +173,7 @@ const ComboBoxExample = new Lang.Class ({
             "Like a simple clam\nrevealing a lustrous pearl\nit opens for you.",
             "A moment in time\na memory on the breeze\nthese things can't be saved."];
 ]]></code>
-    <p>Nous allons créer une <link xref="messagedialog.js">MessageDialog</link> qui affiche un message en fonction de la distribution sélectionnée. Créons d'abord le tableau des réponses à utiliser. Comme la première chaîne de notre ComboBox est justement le message « Select distribution », laissons celle-ci vide.</p>
+    <p>We're going to create a pop-up <link xref="messagedialog.js">MessageDialog</link>, which shows you a silly haiku based on which distro you select. First, we create the array of haiku to use. Since the first string in our ComboBox is just the "Select" message, we make the first string in our array blank.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Which combobox item is active?
@@ -227,9 +197,9 @@ const ComboBoxExample = new Lang.Class ({
 
     },
 ]]></code>
-    <p>Avant d'afficher une MessageDialog, vérifions d'abord que vous n'avez pas choisi le message « Select distribution ». Ensuite, définissons son texte comme étant l'entrée dans le tableau qui correspond à l'entrée active de notre ComboBoxText. Cela se fait avec la méthode <file>get_active</file>, qui renvoie l'identifiant numérique de votre sélection.</p>
+    <p>Before showing a MessageDialog, we first test to make sure you didn't choose the "Select" message. After that, we set its text to be the haiku in the array that corresponds to the active entry in our ComboBoxText. We do that using the <file>get_active</file> method, which returns the number ID of your selection.</p>
     <note style="tip"><p>Other methods you can use include <file>get_active_id</file>, which returns the text ID assigned by <file>append</file>, and <file>get_active_text</file>, which returns the full text of the string you selected.</p></note>
-    <p>Une fois la MessageDialog terminée, connectons son signal de retour à la fonction _onDialogResponse et indiquons lui de s'afficher toute seule.</p>
+    <p>Une fois la BoiteDeDialogueDemessage terminée, connectons son signal de retour à la fonction _onDialogResponse et indiquons lui de s'afficher toute seule.</p>
 
     <code mime="application/javascript"><![CDATA[
     _onDialogResponse: function () {
@@ -240,7 +210,7 @@ const ComboBoxExample = new Lang.Class ({
 
 });
 ]]></code>
-    <p>Comme le seul bouton de la MessageDialog est le bouton OK, il n'est pas nécessaire de vérifier son response_id pour savoir quel bouton a été cliqué. Tout ce que nous faisons ici est détruire le message surgissant.</p>
+    <p>Comme le seul bouton de la BoiteDeDialogueDemessage est le bouton OK, il n'est pas nécessaire de vérifier son response_id pour savoir quel bouton a été cliqué. Tout ce que nous faisons ici est détruire le message surgissant.</p>
 
     <code mime="application/javascript"><![CDATA[
 // Run the application
@@ -251,7 +221,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="complete">
-    <title>Exemple complet de code</title>
+    <title>Exemple complet du code</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
 const GObject = imports.gi.GObject;

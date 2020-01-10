@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="progress-bars" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="progress-bars" xml:lang="es">
 
   <info>
     <credit type="author">
@@ -18,22 +18,12 @@
     <credit>
       <name>Colin Robertson</name>
     </credit>
-
-    <link type="guide" xref="ui-elements"/>
-    <uix:thumb mime="image/svg" src="figures/ui-elements/progress-bars.svg"/>
-
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2016</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alex Puchades</mal:name>
-      <mal:email>alex94puchades@gmail.com</mal:email>
-      <mal:years>2015</mal:years>
+      <mal:years>2011 - 2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -63,7 +53,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Oscar Rafael Arachi</mal:name>
       <mal:email>arachi910@gmail.com</mal:email>
-      <mal:years>2014 - 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -125,118 +115,103 @@
       <mal:email>garciag.omar91@gmail.com</mal:email>
       <mal:years>2015</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Edilberto Huerta Niño</mal:name>
-      <mal:email>edilberto.huerta0290@gmail.com</mal:email>
-      <mal:years>2015</mal:years>
-    </mal:credit>
   </info>
 
-<title>Barras de progreso</title>
+<title>Progress bars</title>
 
-<p>Las barras de progreso indican que se está realizando una tarea, junto con el progreso que se ha hecho en la misma.</p>
+<p>Progress bars indicate that a task is being carried out, along with how much progress has been made through the task.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/progress-bars.svg"/>
 
 <section id="when-to-use">
 <title>Cuándo usarlas</title>
 
-<p>Normalmente es necesario indicar que el progreso se está realizando cuando una operación tarda más de tres segundos. Esto asegura que el usuario entiende que tiene que esperar, y que no ha ocurrido ningún error.</p>
+<p>It is usually necessary to indicate that progress is taking place whenever an operation takes more than around three seconds. This ensures that users understand that they have to wait, and that an error has not occurred.</p>
 
-<p>Al indicar el progreso, la elección principal es entre una barra de progreso o un <link xref="progress-spinners">indicador de progreso incremental</link>. Las barras de progreso indica que cantidad de la tarea se ha completado. Son por lo tanto útiles para tareas que tardan bastante tiempo. Como regla general, use sólo las barras de progreso para tareas que tardan más de 30 segundos. Para tareas más cortas, los <link xref="progress-spinners">indicadores de progreso incrementales</link> son una mejor elección.</p>
+<p>When indicating progress, the primary choice is between a progress bar or a <link xref="progress-spinners">progress spinner</link>. Progress bars indicate how much of a task has been completed. They are therefore useful for tasks that take a long time. As a rule of thumb, only use a progress bar for tasks that take over 30 seconds. For tasks that have shorter periods, <link xref="progress-spinners">progress spinners</link> are often a better choice.</p>
 
 </section>
 
 <section id="types">
-<title>Tipos</title>
+<title>Types</title>
 
-<p>Hay tres tipos de barras de progreso</p>
+<p>There are three types of progress bar:</p>
 
 <list>
-<item><p>Tiempo restante: indica cuánto tiempo le queda a una operación.</p></item>
-<item><p>Tiempo habitual: indica cuánto tiempo queda, basado en una estimación de la duración esperada.</p></item>
-<item><p>Indeterminado: sólo indica que la operación está en progreso, pero no cuánto tiempo tardará.</p></item>
+<item><p>Time-remaining: these indicate how much time remains in an operation.</p></item>
+<item><p>Typical-time: these indicate how much time remains, based on an estimate of the expected duration.</p></item>
+<item><p>Indeterminate: these only indicate that an operation is ongoing, not how long it will take.</p></item>
 </list>
 
-<p>En las barras de progreso es preferible la precisión. Cuando sea posible, use una barra de progreso de tiempo restante, seguida de un tiempo habitual. Trate de evitar las barras de progreso indeterminadas.</p>
+<p>Accuracy is preferable for progress bars. Where possible, use a time-remaining progress bar, followed by typical-time. Try to avoid using indeterminate progress bars.</p>
 
 </section>
 
 <section id="progress-text">
-<title>Texto de progreso</title>
+<title>Progress text</title>
 
-<p>Cada barra de progreso incluye un texto descriptivo. Este texto debe proporcionar una idea sobre cuánto queda para terminar la tarea. Al elegir el texto de la barra de progreso:</p>
+<p>Each progress bar can include a text description. This text should provide an idea of how much of the task has been completed. When deciding on progress text:</p>
 
 <list>
-<item><p>Considere siempre qué es más relevante e interesante para el usuario.</p></item>
-<item><p>A menudo es mejor proporcionar información específica que porcentajes. Por ejemplo, <gui>rotadas 13 de 19 imágenes</gui> o <gui>descargados 12.1 de 30 MB</gui> en lugar de <gui>13% completado</gui>.</p></item>
-<item><p>Para tareas muy largas, puede ser interesante mostrar una estimación del tiempo restante en el texto de la barra de progreso. Si no hay disponibles otra información, se puede mostrar esto únicamente. Como alternativa, puede aparecer junto al texto acerca de la tarea; sin embargo, tenga cuidado de no sobrecargar al usuario con demasiada información al hacer esto, y use los <link xref="typography">convenios tipográficos</link> para diferenciar la información más relevante.</p></item>
-<item><p>Si el tiempo restante es estimado, use la palabra <gui>about</gui>. Por ejemplo: <gui>About 3 minutes left</gui>.</p></item>
+<item><p>Always consider what is most relevant and interesting for the user.</p></item>
+<item><p>It is often better to provide specific information rather than a unitless percentage. For example, <gui>13 of 19 images rotated</gui> or <gui>12.1 of 30 MB downloaded</gui> rather than <gui>13% complete</gui>.</p></item>
+<item><p>For long-running tasks, it can be desirable to show an estimate of the time remaining in the progress bar text. If other relevant information isn't available, this can be shown on its own. Alternatively, it can appear alongside text about task progress; however, be careful not to overwhelm the user with too much information when doing this, and use <link xref="typography">typographic conventions</link> to differente the most useful information.</p></item>
+<item><p>If the time remaining is an estimate, use the word <gui>about</gui>. For example: <gui>About 3 minutes left</gui>.</p></item>
 </list>
 
 </section>
 
 <section id="task-stages">
-<title>Estados de las tareas</title>
+<title>Task stages</title>
 
-<p>Algunas tareas pueden componerse de una serie de fases, cada una de las cuales tiene diferentes opciones para estimar el tiempo. Puede ser posible estimar el tiempo restante para una parte de la tarea, pero no para otra parte, por ejemplo. En estas situaciones:</p>
+<p>Some tasks can be made up of a sequential series of stages, each of which have different options for time estimation. It might be possible to estimate the time remaining for part of a task, but not another part, for example. In these situations:</p>
 
 <list>
-<item><p>Comunique sólo las diferentes fases de una tarea cuando sean relevantes para el usuario. En general, eso no es necesario, y tampoco es deseable informar de las diferentes fases de una tareas.</p></item>
-<item><p>Si una tarea incluye tiempo restante y fases de tiempo estimado, intente crear una composición de tiempo habitual y barra de progreso.</p></item>
-<item><p>Si una tarea incluye una fase de progreso indeterminado, la barra de progreso puede mostrar una parte indeterminada para parte de la tarea. Sin embargo, debe evitar mostrar barras de progreso indeterminadas durante largos períodos de tiempo, y debe intentar mantener el número de cambios de modo de las barras de progreso en un mínimo absoluto. Evite las barras de progreso indeterminadas siempre que sea posible.</p></item>
+<item><p>Only communicate the different stages in a task when they are relevant to a user. Generally speaking, this will not be required, and it is not necessary or desirable to communicate separate stages in a task.</p></item>
+<item><p>If a task includes time-remaining and typical-time stages, try to create a single composite typical-time progress bar.</p></item>
+<item><p>If a task includes an indeterminate progress stage, the progress bar can show indeterminate progress for part of the task. However, you should avoid showing indeterminate progress bars for long periods of time, and should attempt to keep the number of progress bar mode changes to an absolute minimum. Avoid indeterminate progress wherever possible.</p></item>
 </list>
 
 </section>
 
 <section id="sub-tasks">
-<title>Subtareas</title>
+<title>Sub-tasks</title>
 
-<p>Si una tarea se compone de varias subtareas (como descargar varios archivos a la vez), generalmente es recomendable mostrar una una única barra de progreso que indica el progreso total de todas las tareas. Sin embargo, ha algunas situaciones en las que este puede no ser el caso:</p>
+<p>If a task is comprised of multiple sub-tasks (such as downloading several files simultaneously), it is generally advisable to show a single progress bar which indicates composite progress for the overall task. However, there are some situations where this might not be the case:</p>
 
 <list>
-<item><p>Si es especialmente útil para el usuario conocer el progreso individual de cada subtarea. (Como alternativa, el completado de cada subtarea se puede indicar con un texto de progreso).</p></item>
-<item><p>Si puede ser necesario pausar o detener una subtarea (consulte la <link xref="#general-guidelines">guía general</link> sobre esto, más abajo).</p></item>
-<item><p>Si las subtareas ya están indicadas en la interfaz de usuario de su aplicación. En este caso, puede ser menos invasivo mostrar una barra de progreso para cada elemento en línea.</p></item>
+<item><p>If it is genuinely useful for the user to know progress within each individual sub-task. (As an alternative, completion of each sub-task can be indicated with progress text.)</p></item>
+<item><p>If it might be necessary to pause or stop a sub-task (see the <link xref="#general-guidelines">general guidelines</link> on this, below).</p></item>
+<item><p>If sub-tasks are already indicated in your application's user interface. In this case, it can be less disruptive to show a progress for each item inline.</p></item>
 </list>
 
-<p>Al mostrar las barras de progreso para las subtareas:</p>
+<p>When showing progress bars for sub-tasks:</p>
 
 <list>
-<item><p>Cada subtarea debe cumplir las guís de uso de barras de progreso (consulte la sección <link xref="#when-to-use">cuándo usar</link>, más arriba).</p></item>
-<item><p>En general, no es necesario mostrar una barra de progreso para el progreso global a través de todas las subtareas.</p></item>
+<item><p>Each sub-task should conform to the usage guidelines for progress bars (see <link xref="#when-to-use">when to use</link>, above).</p></item>
+<item><p>Generally speaking, it is not necessary to show a progress bar for overall progress through the set of tasks.</p></item>
 </list>
 
 </section>
 
 <section id="progress-windows">
-<title>Ventanas de progreso</title>
+<title>Progress windows</title>
 
-<p>Antiguamente, las ventanas de progreso eran una manera habitual de mostrar las barras de progreso. Estas ventanas secundarias mostraban la duración de la tarea y contenían una o más barras de progreso. En general, las ventanas de progreso no son recomendables, ya que cerrar la ventana puede no ser muy claro y puede ocultar controles útiles o contenido.</p>
+<p>In the past, progress windows were a popular way to present progress bars. These secondary windows would appear for the duration of a task, and would contain one or more progress bars. In general, progress windows are not recommended, since the consequence of closing the window can be unclear and they can obscure useful controls and content.</p>
 
-<p>Cuando sea posible, las barras de progreso se deben mostrar en línea, y deben tener una relación visual cercana con los elementos de contenido o los controles que representan la tarea en curso.</p>
+<p>Where possible, progress bars should be displayed inline, and should have a close visual relationship with the content items or controls which represent the ongoing task.</p>
 
 </section>
 
 <section id="general-guidelines">
-<title>Guías Generales</title>
+<title>General guidelines</title>
 
 <list>
-<item><p>Si la operación en curso es potencialmente destructiva o usa muchos recursos, considere el poner un botón de pausa y/o cancelar junto a la barra de progreso.</p></item>
-<item><p>Asegúrese de que las barras de tiempo restante y de tiempo habitual miden el tiempo o el trabajo total, no sólo uno de los pasos individuales.</p></item>
-<item><p>Actualice el tiempo restante de las barras de progreso cuando haya cambios que hacen que la operación vaya más rápida o más lenta.</p></item>
-<item><p>Al usar una barra de progreso de tiempo habitual, si su aplicación sobrestima la cantidad de trabajo terminado, la longitud de la barra puede indicar <gui>casi completado</gui> hasta que la operación se complete. Si su aplicación infraestima cuando trabajo se ha completado, rellene la parte restante de la barra cuando la operación se complete.</p></item>
+<item><p>If the operation in progress is potentially destructive or resource intensive, consider placing a pause and/or cancel button close to the progress bar.</p></item>
+<item><p>Ensure that time-remaining and typical-time progress bars measure an operation’s total time or total work, not just that of a single step.</p></item>
+<item><p>Update time-remaining progress bars when changes occur that will cause the operation to finish more quickly or more slowly.</p></item>
+<item><p>When using a typical-time progress bar, if your application overestimates the completed amount of work, the length of the bar can indicate <gui>almost complete</gui> until the operation is complete. If your application underestimates how much work is complete, fill the remaining portion of the bar when the operation is complete.</p></item>
 </list>
 
 </section>
-
-<section id="api-reference">
-<title>Referencia de la API</title>
-
-<list>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkProgressBar.html">GtkProgressBar</link></p></item>
-</list>
-</section>
-
 </page>

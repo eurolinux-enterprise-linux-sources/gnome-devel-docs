@@ -1,10 +1,10 @@
 <page xmlns="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
-      type="topic"
+      type="guide" style="task"
       id="c-coding-style">
 
   <info>
-    <link type="guide" xref="index#general-guidelines"/>
+    <link type="guide" xref="index#coding-style"/>
 
     <credit type="author copyright">
       <name>Federico Mena-Quintero</name>
@@ -15,47 +15,45 @@
       <name>The GTK+ Team</name>
     </credit>
 
-    <include href="cc-by-sa-3-0.xml" xmlns="http://www.w3.org/2001/XInclude"/>
-
-    <desc>Our guidelines for C code in GNOME</desc>
+    <desc>Our guidelines for C code in Gnome</desc>
   </info>
 
   <title>C Coding Style</title>
 
   <p>
     This document presents the preferred coding style for C programs
-    in GNOME.  While coding style is very much a matter of taste, in
-    GNOME we favor a coding style that promotes consistency,
+    in Gnome.  While coding style is very much a matter of taste, in
+    Gnome we favor a coding style that promotes consistency,
     readability, and maintainability.
   </p>
 
   <p>
     We present examples of good coding style as well as examples of
-    bad style that is not acceptable in GNOME.  Please try to submit
-    patches that conform to GNOME’s coding style; this indicates that
-    you have done your homework to respect the project’s goal of
-    long-term maintainability.  Patches with GNOME’s coding style will
+    bad style that is not acceptable in Gnome.  Please try to submit
+    patches that conform to Gnome's coding style; this indicates that
+    you have done your homework to respect the project's goal of
+    long-term maintainability.  Patches with Gnome's coding style will
     also be easier to review!
   </p>
 
   <note>
     <p>
       This document is for C code.  For other languages, check the
-      <link xref="index">main page</link> of the GNOME Programming
+      <link xref="index">main page</link> of the Gnome Programming
       Guidelines.
     </p>
   </note>
 
   <p>
-    These guidelines are heavily inspired by GTK’s CODING-STYLE
-    document, the Linux Kernel’s CodingStyle, and the GNU Coding
+    These guidelines are heavily inspired by GTK's CODING-STYLE
+    document, the Linux Kernel's CodingStyle, and the GNU Coding
     Standards.  These are slight variations of each other, with
-    particular modifications for each project’s particular needs and
-    culture, and GNOME’s version is no different.
+    particular modifications for each project's particular needs and
+    culture, and Gnome's version is no different.
   </p>
 
   <section id="most-important-rule">
-    <title>The Single Most Important Rule</title>
+    <title>The single most important rule</title>
 
     <p>
       The single most important rule when writing code is this:
@@ -94,27 +92,27 @@
 
     <p>
       In general there are two preferred indentation styles for code
-      in GNOME.
+      in Gnome.
     </p>
 
     <list type="ordered">
       <item>
 	<p>
-	  Linux Kernel style.  Tabs with a length of 8 characters are
-	  used for the indentation, with K&amp;R brace placement:
+	  Linux Kernel style.  This is 8-space indentations, with
+	  K&amp;R brace placement:
 	</p>
 
-	<code style="valid">
+	<code>
 for (i = 0; i &lt; num_elements; i++) {
-	foo[i] = foo[i] + 42;
+        foo[i] = foo[i] + 42;
 
-	if (foo[i] &lt; 35) {
-		printf ("Foo!");
-		foo[i]--;
-	} else {
-		printf ("Bar!");
-		foo[i]++;
-	}
+        if (foo[i] &lt; 35) {
+                printf ("Foo!");
+                foo[i]--;
+        } else {
+                printf ("Bar!");
+                foo[i]++;
+        }
 }</code>
       </item>
 
@@ -125,7 +123,7 @@ for (i = 0; i &lt; num_elements; i++) {
 	  well.
 	</p>
 
-	<code style="valid">
+	<code>
 for (i = 0; i &lt; num_elements; i++)
   {
     foo[i] = foo[i] + 42;
@@ -148,39 +146,38 @@ for (i = 0; i &lt; num_elements; i++)
     <p>
       Both styles have their pros and cons.  The most important things
       is to <em>be consistent</em> with the surrounding code.  For
-      example, the GTK+ library, which is GNOME’s widget toolkit, is
-      written with the GNU style.  Nautilus, GNOME’s file manager, is
+      example, the GTK+ library, which is Gnome's widget toolkit, is
+      written with the GNU style.  Nautilus, Gnome's file manager, is
       written in Linux kernel style.  Both styles are perfectly
       readable and consistent when you get used to them.
     </p>
 
     <p>
       Your first feeling when having to study or work on a piece of
-      code that doesn’t have your preferred indentation style may be,
+      code that doesn't have your preferred indentation style may be,
       how shall we put it, gut-wrenching.  You should resist your
       inclination to reindent everything, or to use an inconsistent
       style for your patch.  Remember the first rule:  <em>be
-      consistent</em> and respectful of that code’s customs, and your
+      consistent</em> and respectful of that code's customs, and your
       patches will have a much higher chance of being accepted without
       a lot of arguing about the right indentation style.
     </p>
   </section>
 
   <section id="tab-characters">
-    <title>Tab Characters</title>
+    <title>Tab characters</title>
 
     <p>
       <em>Do not ever change the size of tabs in your editor</em>;
       leave them as 8 spaces.  Changing the size of tabs means that
-      code that you didn’t write yourself will be perpetually misaligned.
+      code that you didn't write yourself will be perpetually misaligned.
     </p>
 
     <p>
       Instead, set the <em>indentation size</em> as appropriate for
-      the code you are editing.  When writing in something other than
-      Linux kernel style, you may even want to tell your editor to
-      automatically convert all tabs to 8 spaces, so that there is no
-      ambiguity about the intended amount of space.
+      the code you are editing.  You may even be able to tell your
+      editor to automatically convert all tabs to 8 spaces, so that
+      there is no ambiguity about the intended amount of space.
     </p>
   </section>
 
@@ -191,64 +188,34 @@ for (i = 0; i &lt; num_elements; i++)
       Curly braces should not be used for single statement blocks:
     </p>
 
-<code style="valid">
+<code>
 /* valid */
 if (condition)
-	single_statement ();
+        single_statement ();
 else
-	another_single_statement (arg1);</code>
+        another_single_statement (arg1);</code>
 
 	<p>
-	  The “no block for single statements” rule has only four
+	  The "no block for single statements" rule has only four
 	  exceptions:
 	</p>
 
 	<list type="ordered">
-          <item>
-            <p>
-              In GNU style, if either side of an if-else statement has
-              braces, both sides should, to match up indentation:
-            </p>
-
-<code style="valid">
-/* valid GNU style */
-if (condition)
-  {
-    foo ();
-    bar ();
-  }
-else
-  {
-    baz ();
-  }</code>
-
-<code style="invalid">
-/* invalid */
-if (condition)
-  {
-    foo ();
-    bar ();
-  }
-else
-  baz ();</code>
-          </item>
-
 	  <item>
 	    <p>
 	      If the single statement covers multiple lines, e.g. for functions with
-	      many arguments, and it is followed by <code>else</code> or
-	      <code>else if</code>:
+	      many arguments, and it is followed by else or else if:
 	    </p>
 
-<code style="valid">
+<code>
 /* valid Linux kernel style */
 if (condition) {
-	a_single_statement_with_many_arguments (some_lengthy_argument,
-						another_lengthy_argument,
-						and_another_one,
-						plus_one);
+        a_single_statement_with_many_arguments (some_lengthy_argument,
+                                                another_lengthy_argument,
+                                                and_another_one,
+                                                plus_one);
 } else
-	another_single_statement (arg1, arg2);
+        another_single_statement (arg1, arg2);
 
 /* valid GNU style */
 if (condition)
@@ -259,9 +226,7 @@ if (condition)
                                             plus_one);
   }
 else
-  {
-    another_single_statement (arg1, arg2);
-  }</code>
+  another_single_statement (arg1, arg2);</code>
           </item>
 
           <item>
@@ -269,13 +234,13 @@ else
               If the condition is composed of many lines:
             </p>
 
-<code style="valid">
+<code>
 /* valid Linux kernel style */
 if (condition1 ||
     (condition2 &amp;&amp; condition3) ||
     condition4 ||
     (condition5 &amp;&amp; (condition6 || condition7))) {
-	a_single_statement ();
+        a_single_statement ();
 }
 
 /* valid GNU style */
@@ -286,28 +251,21 @@ if (condition1 ||
   {
     a_single_statement ();
   }</code>
-
-            <p>
-              Note that such long conditions are usually hard to understand.  A
-              good practice is to set the condition to a boolean variable, with
-              a good name for that variable.  Another way is to move the long
-              condition to a function.
-            </p>
           </item>
 
           <item>
             <p>
-              Nested <code>if</code>s, in which case the block should be placed
-              on the outermost <code>if</code>:
+              Nested if's, in which case the block should be placed on the
+              outermost if:
             </p>
 
-<code style="valid">
+<code>
 /* valid Linux kernel style */
 if (condition) {
-	if (another_condition)
-		single_statement ();
-	else
-		another_single_statement ();
+        if (another_condition)
+                single_statement ();
+        else
+                another_single_statement ();
 }
 
 /* valid GNU style */
@@ -317,15 +275,42 @@ if (condition)
       single_statement ();
     else
       another_single_statement ();
-  }</code>
+  }
 
-<code style="invalid">
 /* invalid */
 if (condition)
-	if (another_condition)
-		single_statement ();
-	else if (yet_another_condition)
-		another_single_statement ();</code>
+        if (another_condition)
+                single_statement ();
+        else if (yet_another_condition)
+                another_single_statement ();</code>
+          </item>
+
+          <item>
+            <p>
+              In GNU style, if either side of an if-else statement has
+              braces, both sides should, to match up indentation:
+            </p>
+
+<code>
+/* valid GNU style */
+if (condition)
+  {
+    foo ();
+    bar ();
+  }
+else
+  {
+    baz ();
+  }
+
+/* invalid */
+if (condition)
+  {
+    foo ();
+    bar ();
+  }
+else
+  baz ();</code>
           </item>
         </list>
 
@@ -334,19 +319,19 @@ if (condition)
           like this:
         </p>
 
-        <code style="valid">
+        <code>
 int retval = 0;
 
 statement_1 ();
 statement_2 ();
 
 {
-	int var1 = 42;
-	gboolean res = FALSE;
+        int var1 = 42;
+        gboolean res = FALSE;
 
-	res = statement_3 (var1);
+        res = statement_3 (var1);
 
-	retval = res ? -1 : 1;
+        retval = res ? -1 : 1;
 }</code>
 
         <p>
@@ -354,12 +339,12 @@ statement_2 ();
           new line they should not add an indentation level:
         </p>
 
-        <code style="valid">
+        <code>
 /* valid Linux kernel style*/
 static void
 my_function (int argument)
 {
-	do_my_things ();
+        do_my_things ();
 }
 
 /* valid GNU style*/
@@ -367,13 +352,12 @@ static void
 my_function (int argument)
 {
   do_my_things ();
-}</code>
+}
 
-<code style="invalid">
 /* invalid */
 static void
 my_function (int argument) {
-	do_my_things ();
+        do_my_things ();
 }
 
 /* invalid */
@@ -381,73 +365,52 @@ static void
 my_function (int argument)
   {
     do_my_things ();
-  }</code>
+  }
+        </code>
   </section>
 
   <section id="conditions">
     <title>Conditions</title>
 
     <p>
-      Do not check boolean values for equality.  By using implicit
-      comparisons, the resulting code can be read more like conversational
-      English.  Another rationale is that a ‘true’ value may not be necessarily
-      equal to whatever the <code>TRUE</code> macro uses.  For example:
+      Do not check boolean values for equality.  The rationale is that
+      a "true" value may not be necessarily equal to whatever the
+      <code>TRUE</code> macro uses.  For example:
     </p>
 
-    <code style="invalid">
+    <code>
 /* invalid */
-if (found == TRUE)
-	do_foo ();
-
-/* invalid */
-if (found == FALSE)
-	do_bar ();</code>
-
-    <code style="valid">
-/* valid */
-if (found)
-	do_foo ();
+if (condition == TRUE)
+        do_foo ();
 
 /* valid */
-if (!found)
-	do_bar ();</code>
+if (another_condition)
+        do_bar ();</code>
 
-    <p>
-      The C language uses the value 0 for many purposes.  As a numeric value,
-      the end of a string, a null pointer and the <code>FALSE</code> boolean.
-      To make the code clearer, you should write code that highlights the
-      specific way 0 is used.  So when reading a comparison, it is possible to
-      know the variable type.  For boolean variables, an implicit comparison is
-      appropriate because it’s already a logical expression.  Other variable
-      types are not logical expressions by themselves, so an explicit
-      comparison is better:
-    </p>
+        <p>
+          Even if C handles NULL equality like a boolean, be explicit.
+          This makes it easier to port your C code to something like
+          C#, where testing against null explicitly is important:
+        </p>
 
-    <code style="valid">
+        <code>
 /* valid */
 if (some_pointer == NULL)
-	do_blah ();
+        do_blah ();
 
 /* valid */
-if (number == 0)
-	do_foo ();
-
-/* valid */
-if (str != NULL &amp;&amp; *str != '\0')
-	do_bar ();</code>
-
-    <code style="invalid">
-/* invalid */
-if (!some_pointer)
-	do_blah ();
+if (something != NULL)
+        do_foo ();
 
 /* invalid */
-if (!number)
-	do_foo ();
+if (some_other_pointer)
+        do_blurp ();</code>
 
-/* invalid */
-if (str &amp;&amp; *str)
-	do_bar ();</code>
+        <!-- FIXME: gtk+/docs/CODING-STYLE mentions where to put
+             logical operators in conditiosn split over multiple
+             lines.  I (Federico) disagree with this, for a good
+             reason. -->
+
   </section>
 
   <section id="functions">
@@ -458,12 +421,12 @@ if (str &amp;&amp; *str)
       separate line from the function name:
     </p>
 
-    <code style="valid">
+    <code>
 void
 my_function (void)
 {
-  …
-}</code>
+}
+    </code>
 
     <p>
       The argument list must be broken into a new line for each
@@ -471,20 +434,20 @@ my_function (void)
       account pointers:
     </p>
 
-    <code style="valid">
+    <code>
 void
 my_function (some_type_t      type,
              another_type_t  *a_pointer,
              double_ptr_t   **double_pointer,
              final_type_t     another_type)
 {
-  …
-}</code>
+}
+    </code>
 
     <p>
       If you use Emacs, you can use <code>M-x align</code> to do this
       kind of alignment automatically.  Just put the point and mark
-      around the function’s prototype, and invoke that command.
+      around the function's prototype, and invoke that command.
     </p>
 
     <p>
@@ -492,10 +455,11 @@ my_function (some_type_t      type,
       line length limit:
     </p>
 
-    <code style="valid">
+    <code>
 align_function_arguments (first_argument,
                           second_argument,
-                          third_argument);</code>
+                          third_argument);
+    </code>
   </section>
 
   <section id="whitespace">
@@ -505,55 +469,57 @@ align_function_arguments (first_argument,
       Always put a space before an opening parenthesis but never after:
     </p>
 
-    <code style="valid">
+    <code>
 /* valid */
 if (condition)
-	do_my_things ();
+        do_my_things ();
 
 /* valid */
 switch (condition) {
-}</code>
+}
 
-<code style="invalid">
 /* invalid */
 if(condition)
-	do_my_things();
+        do_my_things();
 
 /* invalid */
 if ( condition )
-	do_my_things ( );</code>
+        do_my_things ( );
+    </code>
 
     <p>
       When declaring a structure type use newlines to separate logical sections
       of the structure:
     </p>
 
-    <code style="valid">
+    <code>
 struct _GtkWrapBoxPrivate
 {
-	GtkOrientation        orientation;
-	GtkWrapAllocationMode mode;
+        GtkOrientation        orientation;
+        GtkWrapAllocationMode mode;
 
-	GtkWrapBoxSpreading   horizontal_spreading;
-	GtkWrapBoxSpreading   vertical_spreading;
+        GtkWrapBoxSpreading   horizontal_spreading;
+        GtkWrapBoxSpreading   vertical_spreading;
 
-	guint16               vertical_spacing;
-	guint16               horizontal_spacing;
+        guint16               vertical_spacing;
+        guint16               horizontal_spacing;
 
-	guint16               minimum_line_children;
-	guint16               natural_line_children;
+        guint16               minimum_line_children;
+        guint16               natural_line_children;
 
-	GList                *children;
-};</code>
+        GList                *children;
+};
+    </code>
 
     <p>
       Do not eliminate whitespace and newlines just because something would
       fit on a single line:
     </p>
 
-    <code style="invalid">
+    <code>
 /* invalid */
-if (condition) foo (); else bar ();</code>
+if (condition) foo (); else bar ();
+    </code>
 
     <p>
       Do eliminate trailing whitespace on any line, preferably as a separate
@@ -576,29 +542,30 @@ if (condition) foo (); else bar ();</code>
 	  (while (re-search-forward "[ 	]+$" nil t)
 	    (setq count (+ count 1))
 	    (replace-match "" t t))
-	  (message "Cleaned %d lines" count)))))</code>
+	  (message "Cleaned %d lines" count)))))
+    </code>
   </section>
 
   <section id="switch">
-    <title>The <code>switch</code> Statement</title>
+    <title>The switch statement</title>
 
     <p>
-      A <code>switch</code> should open a block on a new
+      A <code>switch ()</code> should open a block on a new
       indentation level, and each <code>case</code> should start on
       the same indentation level as the curly braces, with the case
       block on a new indentation level:
     </p>
 
-    <code style="valid">
+    <code>
 /* valid Linux kernel style */
 switch (condition) {
 case FOO:
-	do_foo ();
-	break;
+        do_foo ();
+        break;
 
 case BAR:
-	do_bar ();
-	break;
+        do_bar ();
+        break;
 }
 
 /* valid GNU style */
@@ -611,9 +578,8 @@ switch (condition)
   case BAR:
     do_bar ();
     break;
-  }</code>
+  }
 
-<code style="invalid">
 /* invalid */
 switch (condition) {
   case FOO: do_foo (); break;
@@ -638,58 +604,32 @@ switch (condition)
     case BAR:
     do_bar ();
     break;
-  }</code>
+  }
+    </code>
 
     <p>
       It is preferable, though not mandatory, to separate the various
       cases with a newline:
     </p>
 
-    <code style="valid">
+    <code>
 switch (condition) {
 case FOO:
-	do_foo ();
-	break;
+        do_foo ();
+        break;
 
 case BAR:
-	do_bar ();
-	break;
+        do_bar ();
+        break;
 
 default:
-	do_default ();
-}</code>
+        do_default ();
+}
+    </code>
 
     <p>
-      The <code>break</code> statement for the <code>default</code> case is not
+      The <code>break</code> statement for the default: case is not
       mandatory.
-    </p>
-
-    <p>
-      If switching over an enumerated type, a <code>case</code> statement must
-      exist for every member of the enumerated type. For members you do not
-      want to handle, alias their <code>case</code> statements to
-      <code>default</code>:
-    </p>
-
-    <code style="valid">
-switch (enumerated_condition) {
-case HANDLED_1:
-	do_foo ();
-	break;
-
-case HANDLED_2:
-	do_bar ();
-	break;
-
-case IGNORED_1:
-case IGNORED_2:
-default:
-	do_default ();
-}</code>
-
-    <p>
-      If most members of the enumerated type should not be handled, consider
-      using an <code>if</code> statement instead of a <code>switch</code>.
     </p>
 
     <p>
@@ -698,7 +638,7 @@ default:
       outside of the inner block:
     </p>
 
-    <code style="valid">
+    <code>
 /* valid GNU style */
 switch (condition)
   {
@@ -710,43 +650,47 @@ switch (condition)
     }
     break;
 
-  …
-  }</code>
+  ...
+  }
+    </code>
   </section>
 
   <section id="header-files">
-    <title>Header Files</title>
+    <title>Header files</title>
 
     <p>
       The only major rule for headers is that the function definitions
       should be vertically aligned in three columns:
     </p>
 
-    <code style="valid">
-return_type          function_name           (type   argument,
-                                              type   argument,
-                                              type   argument);</code>
+    <code>
+return value          function_name           (type   argument,
+                                               type   argument,
+                                               type   argument);
+    </code>
 
     <p>
       The maximum width of each column is given by the longest element
       in the column:
     </p>
 
-    <code style="valid">
+    <code>
 void         gtk_type_set_property (GtkType      *type,
                                     const gchar  *value,
                                     GError      **error);
-const gchar *gtk_type_get_property (GtkType      *type);</code>
+const gchar *gtk_type_get_property (GtkType      *type);
+    </code>
 
     <p>
       It is also possible to align the columns to the next tab:
     </p>
 
-    <code style="valid">
+    <code>
 void          gtk_type_set_prop           (GtkType *type,
                                            gfloat   value);
 gfloat        gtk_type_get_prop           (GtkType *type);
-gint          gtk_type_update_foobar      (GtkType *type);</code>
+gint          gtk_type_update_foobar      (GtkType *type);
+    </code>
 
     <p>
       As before, you can use <code>M-x align</code> in Emacs to do
@@ -763,10 +707,11 @@ gint          gtk_type_update_foobar      (GtkType *type);</code>
       applications:
     </p>
 
-    <code style="valid">
+    <code>
 #if !defined (__GTK_H_INSIDE__) &amp;&amp; !defined (GTK_COMPILATION)
 #error "Only &lt;gtk/gtk.h&gt; can be included directly."
-#endif</code>
+#endif
+    </code>
 
     <p>
       For libraries, all headers should have inclusion guards (for
@@ -774,109 +719,104 @@ gint          gtk_type_update_foobar      (GtkType *type);</code>
       "C"</code> magic that C++ requires to include plain C headers:
     </p>
 
-    <code style="valid">
-#ifndef MYLIB_FOO_H_
-#define MYLIB_FOO_H_
+    <code>
+#ifndef __MYLIB_FOO_H__
+#define __MYLIB_FOO_H__
 
 #include &lt;gtk/gtk.h&gt;
 
 G_BEGIN_DECLS
 
-…
+...
 
 G_END_DECLS
 
-#endif /* MYLIB_FOO_H_ */</code>
+#endif /* __MYLIB_FOO_H__ */
+    </code>
   </section>
 
   <section id="gobject">
-    <title>GObject Classes</title>
+    <title>GObject classes</title>
 
     <p>
       GObject class definitions and implementations require some
-      additional coding style notices, and should always be
-      <link xref="namespacing#gobject">correctly namespaced</link>.
+      additional coding style notices.
     </p>
 
     <p>
       Typedef declarations should be placed at the beginning of the file:
     </p>
 
-    <code style="valid">
-typedef struct _GtkBoxedStruct       GtkBoxedStruct;
-typedef struct _GtkMoreBoxedStruct   GtkMoreBoxedStruct;</code>
+    <code>
+typedef struct _GtkFoo          GtkFoo;
+typedef struct _GtkFooClass     GtkFooClass;
+typedef struct _GtkFooPrivate   GtkFooPrivate;
+    </code>
 
     <p>
       This includes enumeration types:
     </p>
 
-    <code style="valid">
+    <code>
 typedef enum
 {
   GTK_SIZE_REQUEST_WIDTH_FOR_HEIGHT,
   GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH
-} GtkSizeRequestMode;</code>
+} GtkSizeRequestMode;
+    </code>
 
     <p>
       And callback types:
     </p>
 
-    <code style="valid">
+    <code>
 typedef void (* GtkCallback) (GtkWidget *widget,
-                              gpointer   user_data);</code>
+                              gpointer   user_data);
+    </code>
 
     <p>
-      Instance structures should be declared using
-      <code>G_DECLARE_FINAL_TYPE</code> or
-      <code>G_DECLARE_DERIVABLE_TYPE</code>:
+      Instance structures should only contain the parent type, and optionally a
+      pointer to a private data structure, and they should be annotated as
+      "private" using the gtk-doc trigraph:
     </p>
 
-    <code style="valid">
-#define GTK_TYPE_FOO (gtk_foo_get_type ())
-G_DECLARE_FINAL_TYPE (GtkFoo, gtk_foo, GTK, FOO, GtkWidget)</code>
-
-    <p>
-      For final types, private data can be stored in the object struct, which
-      should be defined in the C file:
-    </p>
-
-    <code style="valid">
+    <code>
 struct _GtkFoo
 {
-  GObject   parent_instance;
+  /*&lt; private &gt;*/
+  GtkWidget parent_instance;
 
-  guint     private_data;
-  gpointer  more_private_data;
-};</code>
+  GtkFooPrivate *priv;
+};
+    </code>
 
     <p>
-      For derivable types, private data must be stored in a private struct in
-      the C file, configured using <code>G_DEFINE_TYPE_WITH_PRIVATE()</code>
-      and accessed using a <code>_get_instance_private()</code> function:
+      The private data pointer is optional and should be omitted in newly
+      written classes.
     </p>
 
-    <code style="valid">
-#define GTK_TYPE_FOO gtk_foo_get_type ()
-G_DECLARE_DERIVABLE_TYPE (GtkFoo, gtk_foo, GTK, FOO, GtkWidget)
-
-struct _GtkFooClass
-{
-  GtkWidgetClass parent_class;
-
-  void (* handle_frob)  (GtkFrobber *frobber,
-                         guint       n_frobs);
-
-  gpointer padding[12];
-};</code>
+    <p>
+      Always use the G_DEFINE_TYPE(), G_DEFINE_TYPE_WITH_PRIVATE(),
+      and G_DEFINE_TYPE_WITH_CODE() macros, or their abstract variants
+      G_DEFINE_ABSTRACT_TYPE(), G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(),
+      and G_DEFINE_ABSTRACT_TYPE_WITH_CODE(); also, use the similar
+      macros for defining interfaces and boxed types.
+    </p>
 
     <p>
-      Always use the <code>G_DEFINE_TYPE()</code>,
-      <code>G_DEFINE_TYPE_WITH_PRIVATE()</code>, and
-      <code>G_DEFINE_TYPE_WITH_CODE()</code> macros, or their abstract variants
-      <code>G_DEFINE_ABSTRACT_TYPE()</code>,
-      <code>G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE()</code>,
-      and <code>G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</code>; also, use the similar
-      macros for defining interfaces and boxed types.
+      All the properties should be stored inside the private data
+      structure, which is defined inside the source file - or, if
+      needed, inside a private header file; the private header
+      filename must end with "private.h" and must not be installed.
+    </p>
+
+    <p>
+      The private data structure should only be accessed internally
+      either using the pointer inside the instance structure, if one
+      is available, or the generated instance private data getter
+      function for your type. You should never use the
+      G_TYPE_INSTANCE_GET_PRIVATE() macro or the
+      g_type_instance_get_private() function.
     </p>
 
     <p>
@@ -884,16 +824,18 @@ struct _GtkFooClass
       purposes:
     </p>
 
-    <code style="valid">
-typedef struct _GtkFooable          GtkFooable;</code>
+    <code>
+typedef struct _GtkFoo              GtkFoo;
+    </code>
 
     <p>
-      The interface structure should have ‘Interface’ postfixed to the
+      The interface structure should have "Interface" postfixed to the
       dummy typedef:
     </p>
 
-    <code style="valid">
-typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
+    <code>
+typedef struct _GtkFooInterface         GtkFooInterface;
+    </code>
 
     <p>
       Interfaces must have the following macros:
@@ -908,20 +850,20 @@ typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
       </thead>
       <tbody>
 	<tr>
-	  <td><p><code>GTK_TYPE_<var>iface_name</var></code></p></td>
-	  <td><p><code><var>iface_name</var>_get_type</code></p></td>
+	  <td><p>GTK_TYPE_&lt;iface_name&gt;</p></td>
+	  <td><p>&lt;iface_name&gt;_get_type</p></td>
 	</tr>
 	<tr>
-	  <td><p><code>GTK_<var>iface_name</var></code></p></td>
-	  <td><p><code>G_TYPE_CHECK_INSTANCE_CAST</code></p></td>
+	  <td><p>GTK_&lt;iface_name&gt;</p></td>
+	  <td><p>G_TYPE_CHECK_INSTANCE_CAST</p></td>
 	</tr>
 	<tr>
-	  <td><p><code>GTK_IS_<var>iface_name</var></code></p></td>
-          <td><p><code>G_TYPE_CHECK_INSTANCE_TYPE</code></p></td>
+	  <td><p>GTK_IS_&lt;iface_name&gt;</p></td>
+          <td><p>G_TYPE_CHECK_INSTANCE_TYPE</p></td>
 	</tr>
 	<tr>
-	  <td><p><code>GTK_<var>iface_name</var>_GET_IFACE</code></p></td>
-          <td><p><code>G_TYPE_INSTANCE_GET_INTERFACE</code></p></td>
+	  <td><p>GTK_&lt;iface_name&gt;_GET_IFACE</p></td>
+          <td><p>G_TYPE_INSTANCE_GET_INTERFACE</p></td>
 	</tr>
       </tbody>
     </table>
@@ -929,20 +871,17 @@ typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
   </section>
 
   <section id="memory-allocation">
-    <title>Memory Allocation</title>
+    <title>Memory allocation</title>
 
     <p>
-      When dynamically allocating data on the heap use <code>g_new()</code>.
+      When dynamically allocating data on the heap either use g_new()
+      or, if allocating multiple small data structures, g_slice_new().
     </p>
 
     <p>
       Public structure types should always be returned after being
-      zero-ed, either explicitly for each member, or by using
-      <code>g_new0()</code>.
-    </p>
-
-    <p>
-      See <link xref="memory-management"/> for more details.
+      zero-ed, either explicitly for each member, or by using g_new0()
+      or g_slice_new0().
     </p>
   </section>
 
@@ -951,7 +890,7 @@ typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
 
     <p>
       Try to avoid private macros unless strictly necessary. Remember
-      to <code>#undef</code> them at the end of a block or a series of functions
+      to #undef them at the end of a block or a series of functions
       needing them.
     </p>
 
@@ -974,6 +913,8 @@ typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
       getters and setters instead.  Also, beware global variables in
       general.
     </p>
+
+    <!--FIXME; All public functions must be listed in the gtk.symbols file. -->
   </section>
 
   <section id="private-api">
@@ -981,7 +922,7 @@ typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
 
     <p>
       Non-exported functions that are needed in more than one source file
-      should be prefixed with an underscore (‘_’), and declared in a
+      should be prefixed with an underscore ("_"), and declared in a
       private header file.  For example, <code>_mylib_internal_foo()</code>.
     </p>
 
@@ -994,4 +935,81 @@ typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
       should be declared static.
     </p>
   </section>
+
+  <section id="documentation">
+    <title>Documentation</title>
+
+    <p>
+      The preferred documentation system for GNOME libraries is <link
+      xref="http://www.gtk.org/gtk-doc/">gtk-doc</link>, which
+      extracts inline comments from the code to let you build a <link
+      xref="http://docbook.org/">DocBook</link> document.  A lot of
+      GNOME's infrastructure is built to handle with documentation
+      written using gtk-doc.
+    </p>
+
+    <p>
+      All public APIs must have gtk-doc comments. For functions, these should
+      be placed in the source file, directly above the function.
+    </p>
+
+    <code>
+/* valid */
+/**
+ * gtk_get_flow:
+ * @widget: a #GtkWidget
+ *
+ * Gets the flow of a widget.
+ *
+ * Note that flows may be laminar or turbulent...
+ *
+ * Returns: (transfer none): the flow of @widget
+ */
+GtkFlow *
+gtk_get_flow (GtkWidget *widget)
+{
+
+  ...
+
+}
+    </code>
+
+    <p>
+      Documentation comments for macros, function types, class
+      structs, etc. should be placed next to the definitions, typically
+      in header files.
+    </p>
+
+    <p>
+      Section introductions should be placed in the source file they describe,
+      after the license header:
+    </p>
+
+    <code>
+/* valid */
+/**
+ * SECTION:gtksizerequest
+ * @Short_Description: Height-for-width geometry management
+ * @Title: GtkSizeRequest
+ *
+ * The GtkSizeRequest interface is GTK+'s height-for-width (and
+ * width-for-height) geometry management system.
+ * ...
+ */
+    </code>
+
+    <p>
+      Keep in mind that in order to include a function, macro,
+      function type, or struct type, it needs to be listed in your
+      documentation's modulename-sections.txt file.
+    </p>
+
+    <p>
+      To properly document a new class, it needs to be given its own
+      section in modulename-sections.txt, needs to be included in your
+      toplevel modulename-docs.sgml, and the get_type() function for
+      your class needs to listed in your modulename.types.
+    </p>
+  </section>
+
 </page>

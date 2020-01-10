@@ -2,7 +2,7 @@
 <page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="label.c" xml:lang="el">
   <info>
     <title type="text">Ετικέτα (C)</title>
-    <link type="guide" xref="c#display-widgets"/>
+    <link type="guide" xref="beginner.c#display-widgets"/>
     <link type="seealso" xref="switch.c"/>
     <revision version="0.2" date="2012-06-22" status="draft"/>
 
@@ -17,7 +17,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -35,7 +35,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -49,7 +49,7 @@
   </tr>
 </table>
 
-<code mime="text/x-csrc" style="numbered">#include &lt;gtk/gtk.h&gt;
+<code mime="text/x-csrc" style="numbered">#περιλαμβάνει &lt;gtk/gtk.h&gt;
 
 
 
@@ -60,15 +60,15 @@ activate (GtkApplication *app,
   GtkWidget *window;
   GtkWidget *label;
 
-  /*Create a window with a title and a default size*/
+  /*Δημιουργία παραθύρου με τίτλο και προεπιλεγμένο μέγεθος*/
   window = gtk_application_window_new (app);
   gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (app));
   gtk_window_set_title (GTK_WINDOW (window), "Welcome to GNOME");
   gtk_window_set_default_size (GTK_WINDOW (window), 200,100);
    
-  /*Create a label and set its alignment. Setting the line wrap to TRUE makes 
-  the label break lines if the text exceeds the widget's size. When set to 
-  FALSE the text gets cut off by the edge of the widget*/
+  /*Δημιουργία ετικέτας και ορισμός στοίχισης της. Ορίζοντας την αναδίπλωση της γραμμής  σε TRUE  
+  αλλάζει τις γραμμές της ετικέταςαν το κείμενο ξεπερνά το μέγεθος του γραφικού στοιχείου.  Αν οριστεί σε 
+  FALSE το κείμενο αποκόπτεται από το άκρο του γραφικού στοιχείου*/
   label = gtk_label_new ("Hello GNOME!");
   gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_CENTER);
   gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);

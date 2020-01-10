@@ -25,7 +25,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -43,7 +43,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -218,7 +218,7 @@ play_sound (gdouble frequency)
   <p>Δεν θέλουμε να παίζουμε έναν ενοχλητικό ήχο για πάντα, οπότε το τελευταίο πράγμα που κάνει η <code>play_sound</code> είναι να καλεί το <code>g_timeout_add</code>. Αυτό ορίζει ένα χρονικό περιθώριο που θα σταματήσει τον ήχο· περιμένει για <code>LENGTH</code> ms πριν καλέσει τη συνάρτηση <code>pipeline_stop</code>, και θα συνεχίσει να την καλεί μέχρι η <code>pipeline_stop</code> να επιστρέψει <code>False</code>.</p>
   <p>Τώρα θα γράψουμε τη συνάρτηση <code>pipeline_stop</code>, η οποία καλείται από το <code>g_timeout_add</code>. Προσθέστε τον ακόλουθο κώδικα <em>πάνω</em> από τη συνάρτηση <code>play_sound</code>:</p>
   <code mime="text/x-csrc">
-#define LENGTH 500 /* Length of playing in ms */
+#define LENGTH 500 /* Χρόνος αναπαραγωγής σε ms */
 
 static gboolean
 pipeline_stop (GstElement* pipeline)
@@ -235,7 +235,7 @@ pipeline_stop (GstElement* pipeline)
   <title>Ορισμός των τόνων</title>
   <p>Θέλουμε να παίζουμε το σωστό ήχο όταν ο χρήστης πατά ένα κουμπί. Πρώτα από όλα, θέλουμε να ξέρουμε τις συχνότητες για τις έξι χορδές της κιθάρας, οι οποίες ορίζονται (στην αρχή του <file>main.c</file>) ως ακολούθως:</p>
   <code mime="text/x-csrc">
-/* Frequencies of the strings */
+/* Συχνότητες των γραμματοσειρών */
 #define NOTE_E 329.63
 #define NOTE_A 440
 #define NOTE_D 587.33
@@ -244,7 +244,7 @@ pipeline_stop (GstElement* pipeline)
 #define NOTE_e 1318.5</code>
   <p>Για να δούμε τον χειριστή σημάτων που ορίσαμε πριν, <code>on_button_clicked</code>. Θα μπορούσαμε να είχαμε συνδέσει όλα τα κουμπιά σε διαφορετικό χειριστή σημάτων, αλλά αυτό θα οδηγούσε σε πολλές επαναλήψεις του κώδικα. Αντί αυτού, μπορούμε να χρησιμοποιήσουμε τις ετικέτες στα κουμπιά για να δούμε ποιο πατήθηκε:</p>
   <code mime="text/x-csrc">
-/* Callback for the buttons */
+/* Επανάκληση των κουμπιών */
 void on_button_clicked (GtkButton* button,
                         gpointer user_data)
 {

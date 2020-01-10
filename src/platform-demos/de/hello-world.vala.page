@@ -43,15 +43,15 @@
 
     <links type="section"/>
 
-    <section id="application"><title>Erstellen des Hauptfensters der Anwendung</title>
-      <code mime="text/x-csharp">class MyApplication : Gtk.Application {
+    <section id="application"><title>Creating the main window for the application</title>
+      <code mime="text/x-csharp"><![CDATA[class MyApplication : Gtk.Application {
         protected override void activate () {
                 var window = new Gtk.ApplicationWindow (this);
                 window.set_title ("Welcome to GNOME");
                 window.set_default_size (200, 100);
                 window.show_all ();
         }
-}</code>
+}]]></code>
 
     <p>Gtk.Application initializes GTK+. It also connects the <gui>x</gui> button that's automatically generated along with the window to the "destroy" signal.</p>
     <p>We can start building our first window. We do this by creating a variable called <var>window</var> and assigning it a new Gtk.ApplicationWindow.</p>
@@ -60,22 +60,22 @@
     </section>
 
     <section id="label"><title>Label for the window</title>
-      <code mime="text/x-csharp">var label = new Gtk.Label ("Hello GNOME!");
+      <code mime="text/x-csharp"><![CDATA[var label = new Gtk.Label ("Hello GNOME!");
                 window.add (label);
-</code>
+]]></code>
 
       <p>Finally, we create and run the application:</p>
 
-      <code mime="text/x-csharp">int main (string[] args) {
+      <code mime="text/x-csharp"><![CDATA[int main (string[] args) {
         return new MyApplication ().run (args);
-}</code>
+}]]></code>
 
       <p>Gtk.ApplicationWindow can only hold one widget at a time. To construct more elaborate programs you need to create a holder widget like Gtk.Grid inside the window, and then add all the other widgets to it.</p>
    </section>
 
 
     <section id="vala"><title>hello-world.vala</title>
-      <p>Die vollständige Datei:</p>
+      <p>The complete file:</p>
       <code mime="text/x-csharp" style="numbered">public class MyApplication : Gtk.Application {
 	protected override void activate () {
 		var window = new Gtk.ApplicationWindow (this);
@@ -102,7 +102,7 @@ public int main (string[] args) {
     </section>
   </section>
 
-  <section id="desktop.in"><title>Die Datei <file>.desktop.in</file></title>
+  <section id="desktop.in"><title>The <file>.desktop.in</file> file</title>
       <p>Running applications from the Terminal is useful at the beginning of the application making process. To have fully working <link href="https://developer.gnome.org/integration-guide/stable/mime.html.en">application integration</link> in GNOME 3 requires a desktop launcher. For this you need to create a  <file>.desktop</file> file. The <file>.desktop</file> file describes the application name, the used icon and various integration bits. A deeper insight into the <file>.desktop</file> file can be found <link href="http://developer.gnome.org/desktop-entry-spec/">here</link>. The <file>.desktop.in</file> file will create the <file>.desktop</file>.</p>
 
     <p>The example shows you the minimum requirements for a <code>.desktop.in</code> file.</p>
@@ -122,7 +122,7 @@ Categories=GNOME;GTK;Utility;
     <p>Now let's go through some parts of the <code>.desktop.in</code> file.</p>
     <terms>
       <item><title>Name</title><p>Der Anwendungsname.</p></item>
-      <item><title>Comment</title><p>Eine kurze Beschreibung der Anwendung.</p></item>
+      <item><title>Kommentar</title><p>Eine kurze Beschreibung der Anwendung.</p></item>
       <item><title>Exec</title><p>Specifies a command to execute when you choose the application from the menu. In this example exec just tells where to find the <file>hello-world</file> file and the file takes care of the rest.</p></item>
       <item><title>Terminal</title><p>Specifies whether the command in the Exec key runs in a terminal window.</p></item>
     </terms>

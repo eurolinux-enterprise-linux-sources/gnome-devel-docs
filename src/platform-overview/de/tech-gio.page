@@ -1,35 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-gio" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="tech-gio" xml:lang="de">
+<info>
+  <link type="guide" xref="tech" group="gio"/>
+  <desc>File and URI handling, asynchronous file operations, volume handling</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="review"/>
 
-  <info>
-    <link type="guide" xref="tech" group="gio"/>
-    <revision pkgversion="3.0" date="2011-04-05" status="review"/>
-
-    <credit type="author copyright">
-      <name>Shaun McCance</name>
-      <email its:translate="no">shaunm@gnome.org</email>
-      <years>2011</years>
-    </credit>
-    <credit type="copyright editor">
-      <name>Federico Mena Quintero</name>
-      <email its:translate="no">federico@gnome.org</email>
-      <years>2013</years>
-    </credit>
-
-    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
-
-    <desc>Umgang mit Dateien und Adressen, asynchrone Dateioperationen und Umgang mit Datenträgern</desc>
-  
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Mario Blättermann</mal:name>
       <mal:email>mario.blaettermann@gmail.com</mal:email>
-      <mal:years>2009-2012, 2016</mal:years>
+      <mal:years>2009-2012</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Christian Kirbach</mal:name>
       <mal:email>christian.kirbach@gmail.com</mal:email>
-      <mal:years>2011, 2012, 2015</mal:years>
+      <mal:years>2011, 2012.</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -41,7 +26,12 @@
 
 <title>GIO-Dateien</title>
 
-<p>GIO stellt Programmierschnittstellen zum asynchronen Lesen und Schreiben von Dateien und anderen Datenströmen bereit. Dateien werden durch Adressen (URL) referenziert und Backends können Zugriff auf mehr als nur lokalen Dateien bieten. Wenn es auf der GNOME-Arbeitsumgebung läuft, verwendet GIO GVFS, um Zugriff auf Dateien über SFTP, FTP, WebDAV, SMB und andere gängige Protokolle zu gewähren. Dieser transparente Zugriff auf Netzwerkdateien steht für alle Anwendungen mit Hilfe von GIO zur Verfügung.</p>
+<p>GIO provides APIs for asynchronously reading and writing files and
+other streams. Files are referenced by URIs (uniform resource locators), and backends can
+provide access to more than just local files. When running under the
+GNOME desktop, GIO uses GVFS to allow access to files over SFTP, FTP,
+WebDAV, SMB, and other popular protocols. This transparent network
+file access is free to all applications using GIO.</p>
 
 <p>Die GIO-Datei-APIs wurden für ereignisbasierte grafische Oberflächen entworfen. Das nicht-blockierende, asynchrone Design bedeutet, dass Ihre Oberfläche nicht hängt während auf eine Datei gewartet wird. Es gibt auch synchrone Versionen der APIs, die manchmal bequemer für Arbeitsthreads und Prozesse sind.</p>
 

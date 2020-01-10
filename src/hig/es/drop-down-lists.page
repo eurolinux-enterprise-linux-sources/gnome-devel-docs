@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="drop-down-lists" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="drop-down-lists" xml:lang="es">
 
   <info>
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
-
-    <link type="guide" xref="ui-elements"/>
-    <uix:thumb mime="image/svg" src="figures/ui-elements/drop-down-list.svg"/>
-
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2016</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alex Puchades</mal:name>
-      <mal:email>alex94puchades@gmail.com</mal:email>
-      <mal:years>2015</mal:years>
+      <mal:years>2011 - 2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -51,7 +41,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Oscar Rafael Arachi</mal:name>
       <mal:email>arachi910@gmail.com</mal:email>
-      <mal:years>2014 - 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -113,54 +103,48 @@
       <mal:email>garciag.omar91@gmail.com</mal:email>
       <mal:years>2015</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Edilberto Huerta Niño</mal:name>
-      <mal:email>edilberto.huerta0290@gmail.com</mal:email>
-      <mal:years>2015</mal:years>
-    </mal:credit>
   </info>
 
-<title>Listas desplegables</title>
+<title>Drop-down lists</title>
 
-<p>Una lista desplegable es un elemento de la interfaz de usuario que le permite seleccionar de una lista opciones mutuamente excluyentes. Aparece como un botón que, cuando se pulsa, muestra una lista.</p>
+<p>A drop-down list is a user interface element which allows the user to select from a list of mutually exclusive options. It appears as a button which, when clicked, reveals a list.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/drop-down-list.svg"/>
 
-<p>Los botones de radio o una lista a menudo ofrecen una lista despegable preferible, ya que presentan todas las opciones disponibles de una vez, sin más interacciones. También una lista desplegable puede ser la mejor opción cuando:</p>
+<p>Radio buttons or a list will often be preferable to a drop-down list, as they present all the available options at once without any further interaction. At the same time, a drop-down list might be a better choice when:</p>
 
 <list>
 <item><p>El número de opciones es grande.</p></item>
-<item><p>Hay poco espacio disponible.</p></item>
-<item><p>La lista de opciones puede cambiar en el tiempo.</p></item>
-<item><p>El contenido de la parte oculta del menú es obvia a partir su etiqueta y del elemento seleccionado. Por ejemplo, si tiene una opción de menú etiquetada como «Mes:» con el elemento «Enero» seleccionado, el usuario puede pensar razonablemente que el menú contiene los 12 meses del año sin tener que comprobarlo.</p></item>
+<item><p>There is little available space.</p></item>
+<item><p>The list of options may change over time.</p></item>
+<item><p>The contents of the hidden part of the menu are obvious from its label and the one selected item. For example, if you have an option menu labelled “Month:” with the item “January” selected, the user might reasonably infer that the menu contains the 12 months of the year without having to look.</p></item>
 </list>
 
 <section id="general-guidelines">
-<title>Guías Generales</title>
+<title>General guidelines</title>
 
 <list>
-<item><p>Aunque GTK+ proporciona un qidget de caja combinada específico, se recomienda que las listas desplegables se construyan usando una combinación de un botón y una ventana emergente. Esto permite un desplazamiento más cómodo en listas largas y permite integrar búsquedas en la lista. Usar este enfoque también permite mostrar siempre el elemento seleccionado.</p></item>
-<item><p>Si el número de elementos es muy grande, ofrezca una función de búsqueda que filtre la lista.</p></item>
-<item><p>Etiquete el botón de la lista desplegable con un texto por encima o a su izquierda, usando <link xref="writing-style#capitalization">mayúsculas</link>. Proporcione una tecla de acceso en la etiqueta que permita al usaurio dar el foco directamente a la lista desplegable.</p></item>
-<item><p>Use <link xref="writing-style#capitalization">mayúsculas en las frases</link> para los elementos de las lista desplegables, por ejemplo <gui>Movimiento desplazado</gui>.</p></item>
+<item><p>While GTK+ does provide a specific combobox widget, it is recommended that drop-down lists are constructed using a combination of a button and a popover. This allows more comfortable scrolling for long lists, and allows search to be integrated into the list. Using this approach also allows the current selected item to always be displayed.</p></item>
+<item><p>If the number of items is very large, provide a search function that filters the list.</p></item>
+<item><p>Label the drop-down list button with a text label above it or to its left, using <link xref="writing-style#capitalization">sentence capitalization</link>. Provide an access key in the label that allows the user to give focus directly to the drop-down list.</p></item>
+<item><p>Use <link xref="writing-style#capitalization">sentence capitalization</link> for drop-down list items, for example <gui>Switched movement</gui>.</p></item>
 </list>
 
 </section>
 
 <section id="custom-values">
-<title>Valores personalizados</title>
+<title>Custom values</title>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/drop-down-list-custom-values.svg"/>
 
-<p>Una lista desplegable puede permitir que se añadan valores personalizados a un número de configuración prestablecidas, o se puede usar para introducir y seleccionar desde valores personalizados aislados.</p>
+<p>A drop-down list can allow custom values to be added to a number of presets, or can be used to enter and select from custom values alone.</p>
 
 <list>
-<item><p>Asegúrese de que los valores personalizados se ordenan de una manera útil para la mayoría de los usuarios. Alfabéticamente o más recientes son las ordenaciones más comunes.</p></item>
-<item><p>Cuando una lista desplegable incluya valores prestablecidos y valores personalizados, sepárelos en grupos dentro de la lista.</p></item>
-<item><p>Permita que los valores personalizados se eliminen de la lista.</p></item>
-<item><p>Valide los valores personalizados a medida que se introducen, con el fin de evitar errores.</p></item>
-<item><p>Si el desplegable sólo acepta valores personalizados, y no se han introducido valores previamente, muestre el valor de la entrada personalizada cuando el desplegable se abra, en lugar de mostrar una lista vacía.</p></item>
+<item><p>Ensure that custom values are ordered in a way that is most useful to users. Alphabetical or recency ordering is common.</p></item>
+<item><p>When a drop-down list includes both preset and custom values, separate them into separate groups within the list.</p></item>
+<item><p>Allow custom values to be removed from the list.</p></item>
+<item><p>Validate custom values as they are entered, in order to prevent errors.</p></item>
+<item><p>If the drop-down only accepts custom values, and no values have been entered previously, present the custom value entry when the drop-down is opened, instead of showing an empty list.</p></item>
 </list>
 
 </section>

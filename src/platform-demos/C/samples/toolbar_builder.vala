@@ -7,7 +7,7 @@ class MyWindow : Gtk.ApplicationWindow {
 	Gtk.ToolButton fullscreen_button;
 	Gtk.ToolButton leave_fullscreen_button;
 
-	/* Constructor */
+	/* Contstructor */
 	internal MyWindow (MyApplication app) {
 		Object (application: app, title: "Toolbar Example");
 

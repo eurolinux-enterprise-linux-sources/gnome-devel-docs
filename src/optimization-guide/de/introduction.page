@@ -6,7 +6,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Mario Blättermann</mal:name>
       <mal:email>mario.blaettermann@gmail.com</mal:email>
-      <mal:years>2009, 2012, 2013, 2015</mal:years>
+      <mal:years>2009, 2012, 2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -23,7 +23,9 @@
 	<section id="doing-the-optimization">        
           <title>Ausführung der Optimierung</title>
         <p>Aus dem vorigen Abschnitt wurde deutlich: Um etwas optimieren zu können, muss es messbar sein. Sie können Zufriedenheit nicht messen, aber Sie können sehr wohl Startzeiten messen, um sagen zu können, dass Sie sie verbessert haben. Die Zufriedenheit wird dann - hoffentlich - folgen.</p>
-        <p>Optimierung ist ein Prozess des Messens, der Verfeinerung und erneuten Messens. Daher müssen Sie zunächst einen Weg finden, das zu messen, was Sie optimieren wollen. Idealerweise ist dieser Messwert eine einzige Zahl, beispielsweise die Zeit, die für die Ausführung einer Aufgabe benötigt wird. Dies ist Ihr Maßstab, es ist der einzige Weg festzustellen, ob Sie auf der Gewinner- oder der Verliererseite sind. Es ist ein sehr wesentlicher Unterschied, ob ein Programm schnell sein <em>sollte</em> oder ob es tatsächlich schnell <em>ist</em>.</p>
+        <p>
+            Optimization is the process of measurement, refinement and re-measurement. So the first thing you must do is find a way to measure what you are optimizing. Ideally this measurement is a single number, for example: the time taken to perform a task. This is your benchmark, it is the only way to tell if you are winning or losing. There is a big difference between a program that <em>should</em> be fast and a program that <em>is</em> fast.
+        </p>
         <p>Sobald Sie einen Ausgangsmaßstab gefunden haben, müssen Sie nun herausfinden, warum Ihr Code seine Aufgabe nicht so gut erledigt, wie er es eigentlich sollte. Es ist verlockend, dies durch eine einfache Sichtung zu tun: Sich den Code anzuschauen und etwas zu finden, dass verbesserungswürdig scheint. Doch Sie werden immer falsch liegen. Der einzig sichere Weg ist es, einen Profiler für eine detaillierte Aufschlüsselung der Programmaktivitäten zu verwenden.</p>
         <p>Gewöhnlich ist das Problem auf kleine Code-Abschnitte beschränkt. Wählen Sie den schlimmsten Teil und konzentrieren Sie sich zuerst darauf. Führen Sie den Profiler erneut aus und wiederholen Sie den Arbeitsschritt, sobald dies erledigt ist. Wenn Sie so arbeiten, werden die Gewinne mit jedem Schritt geringer. Ab einem bestimmten Punkt müssen Sie entscheiden, dass die Ergebnisse gut genug sind. Wenn Ihre Bemühungen nur 10% Verbesserung ergeben, dann sind Sie bereits weit über den Punkt hinaus, wo Sie hätten stoppen sollen.</p>
         <p>Vergessen Sie nicht das Gesamtbild. Zum Beispiel sollten Sie sich fragen, ob der Code überhaupt unbedingt ausgeführt werden muss, statt seine Geschwindigkeit zu verbessern. Kann er mit anderem Code kombiniert werden? Können bereits ausgeführte Berechnungen gespeichert und später wieder verwertet werden? Eine Optimierung kann man sich auch sparen, wenn der Code dort ausgeführt wird, wo ihn der Benutzer niemals bemerken wird. Noch schlimmer, der Code ist eventuell bereits optimiert und führt kostspielige Berechnungen jetzt aus, um dies später zu vermeiden. Code läuft nicht isoliert und ebenso wenig der Optimierungsprozess.</p>
@@ -89,7 +91,9 @@
                 <p>Gliedern Sie Code aus Schleifen aus. Ein etwas umfangreicheres Stück Code, das nur einmal ausgeführt wird, ist um Einiges schneller als ein simples Stück Code, was dafür tausend Schleifen durchläuft. Vermeiden Sie es, langsamen Code allzu oft aufzurufen.</p>
             </item>
             <item>
-                <p>Geben Sie dem Compiler so viele Hinweise wie möglich. Verwenden Sie das const-Schlüsselwort. Verwenden Sie <code>G_INLINE_FUNC</code> für kurze, häufig aufgerufene Funktionen. Schauen Sie nach <code>G_GNUC_PURE</code>, <code>G_LIKELY</code> und weiteren diversen glib-Makros. Verwenden Sie diese Makros anstelle der gcc-spezifischen Schlüsselwörter, um die Portierbarkeit zu erhalten.</p>
+                <p>
+                      Give the compiler as many hints as possible. Use the const keyword. Use <code>G_INLINE_FUNC</code> for short, frequently called, functions. Look up <code>G_GNUC_PURE</code>, <code>G_LIKELY</code> and the other glib miscellaneous macros. Use the macros instead of gcc-specific keywords to ensure portability.
+                </p>
             </item>
             <item>
                 <p>Verwenden Sie keine Assemblersprachen. Sie sind nicht portierbar. Während sie auf dem einen Prozessor unglaublich schnell sind, ist nicht unbedingt garantiert, dass dies auf jedem von der Architektur unterstützten Prozessor genauso ist (beispielsweise Athlon vs Pentium 4).</p>

@@ -45,14 +45,14 @@
 
     <links type="section"/>
 
-    <section id="imports"><title>Zu importierende Bibliotheken</title>
+    <section id="imports"><title>Libraries to import</title>
       <code mime="text/x-python"><![CDATA[from gi.repository import Gtk
 import sys]]></code>
       <p>In order for our script to work with GNOME, we need to import GNOME libraries via GObject Introspection. Here we import the language bindings and GTK+, the library which contains the graphical widgets used to make GNOME applications.</p>
     </section>
 
-    <section id="mainwindow"><title>Erstellen des Hauptfensters der Anwendung</title>
-      <code mime="text/x-python">class MyWindow(Gtk.ApplicationWindow):
+    <section id="mainwindow"><title>Creating the main window for the application</title>
+      <code mime="text/x-python"><![CDATA[class MyWindow(Gtk.ApplicationWindow):
 
     # constructor for a Gtk.ApplicationWindow
     def __init__(self, app):
@@ -68,7 +68,7 @@ class MyApplication(Gtk.Application):
         win.show_all()
 
     def do_startup(self):
-        Gtk.Application.do_startup(self)</code>
+        Gtk.Application.do_startup(self)]]></code>
 
     <p>Gtk.Application initializes GTK+. It also connects the <gui>x</gui> button that's automatically generated along with the window to the "destroy" signal.</p>
     <p>We can start building our first window. We do this by creating a class called <var>MyWindow</var> and assigning it a Gtk.ApplicationWindow.</p>
@@ -77,7 +77,7 @@ class MyApplication(Gtk.Application):
     </section>
 
     <section id="label"><title>Label for the window</title>
-      <code mime="text/x-python"># Add a label widget to your window
+      <code mime="text/x-python"><![CDATA[# Add a label widget to your window
 
         # create a label
         label = Gtk.Label()
@@ -86,7 +86,7 @@ class MyApplication(Gtk.Application):
         label.set_text("Hello GNOME!")
 
         # add the label to the window
-        self.add(label)</code>
+        self.add(label)]]></code>
 
       <p>A text label is one of the GTK+ widgets we can use, on account of having imported the GTK+ library. To use it, we create a variable called <var>label</var> and set the text that the label will hold. Finally, we create and run the application:</p>
 
@@ -101,7 +101,7 @@ sys.exit(exit_status)</code>
 
 
     <section id="py"><title>hello-world.py</title>
-      <p>Die vollständige Datei:</p>
+      <p>The complete file:</p>
       <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
@@ -145,7 +145,7 @@ sys.exit(exit_status)
     </section>
   </section>
 
-  <section id="desktop.in"><title>Die Datei <file>.desktop.in</file></title>
+  <section id="desktop.in"><title>The <file>.desktop.in</file> file</title>
       <p>Running applications from the Terminal is useful at the beginning of the application making process. To have fully working <link href="https://developer.gnome.org/integration-guide/stable/mime.html.en">application integration</link> in GNOME 3 requires a desktop launcher. For this you need to create a  <file>.desktop</file> file. The <file>.desktop</file> file describes the application name, the used icon and various integration bits. A deeper insight into the <file>.desktop</file> file can be found <link href="http://developer.gnome.org/desktop-entry-spec/">here</link>. The <file>.desktop.in</file> file will create the <file>.desktop</file>.</p>
 
     <p>The example shows you the minimum requirements for a <code>.desktop.in</code> file.</p>
@@ -165,7 +165,7 @@ Categories=GNOME;GTK;Utility;
     <p>Now let's go through some parts of the <code>.desktop.in</code> file.</p>
     <terms>
       <item><title>Name</title><p>Der Anwendungsname.</p></item>
-      <item><title>Comment</title><p>Eine kurze Beschreibung der Anwendung.</p></item>
+      <item><title>Kommentar</title><p>Eine kurze Beschreibung der Anwendung.</p></item>
       <item><title>Exec</title><p>Specifies a command to execute when you choose the application from the menu. In this example exec just tells where to find the <file>hello-world</file> file and the file takes care of the rest.</p></item>
       <item><title>Terminal</title><p>Specifies whether the command in the Exec key runs in a terminal window.</p></item>
     </terms>

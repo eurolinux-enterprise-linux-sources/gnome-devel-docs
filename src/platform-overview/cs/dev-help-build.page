@@ -18,29 +18,18 @@
 
     <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
 
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Lucas Lommer</mal:name>
-      <mal:email>llommer@svn.gnome.org</mal:email>
-      <mal:years>2009.</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Marek Černocký</mal:name>
-      <mal:email>marek@manet.cz</mal:email>
-      <mal:years>2015.</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Nastavení systému sestavení</title>
+  <title>Set up your build system</title>
 
   <links type="series" style="floatend">
-    <title>Nastaven nápovědy</title>
+    <title>Set up help</title>
   </links>
 
-  <p>Normálně se soubory nápovědy instalují do složky <file its:translate="no">/usr/share/help/<input>locale</input>/<input>HELP_ID</input></file>.</p>
+  <p>Help is normally installed into the
+  <file its:translate="no">/usr/share/help/<input>locale</input>/<input>HELP_ID</input></file> directory.</p>
 
-  <p>Do souboru <file>configure.ac</file> přidejte následující řádky:</p>
+  <p>Add the following lines in the file <file>configure.ac</file>:</p>
   
   <code>YELP_HELP_INIT</code>
   
@@ -48,10 +37,11 @@
 help/Makefile
 ])</code>
 
-  <p>Do souboru <file>Makefile.am</file> přidejte následující řádky:</p>
+  <p>Add the following line to the <file>Makefile.am</file>:</p>
   <code>SUBDIRS = help</code>
   		
-  <p>Přidejte soubor <file>help/Makefile.am</file>, který by měl obsahovat seznam souborů vašeho projektu, které chcete instalovat:</p>
+  <p>Add a <file>help/Makefile.am</file>, it should list the help files in your
+  project that you want to install:</p>
 <code>
 @YELP_HELP_RULES@
 
@@ -68,7 +58,7 @@ HELP_FILES = \
 	anotherpage.page
 
 # Translated languages, blank if no translations exist
-HELP_LINGUAS = cs 
+HELP_LINGUAS = en_GB 
 </code>
 
 </page>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="menu-bars" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="menu-bars" xml:lang="el">
 
   <info>
     <credit type="author">
@@ -18,22 +18,12 @@
     <credit>
       <name>Colin Robertson</name>
     </credit>
-
-    <link type="guide" xref="ui-elements"/>
-    <uix:thumb mime="image/svg" src="figures/ui-elements/menu-bar.svg"/>
-
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2014-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Δημήτρης Σπίγγος</mal:name>
-      <mal:email>dmtrs32@gmail.com</mal:email>
-      <mal:years>2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -45,61 +35,61 @@
 
 <title>Γραμμή μενού</title>
 
-<p>Μια γραμμή μενού ενσωματώνει μια λουρίδα πτυσσόμενων μενού. Είναι συνήθως τοποθετημένη στην κορυφή του πρωτεύοντος παραθύρου, κάτω από μια γραμμή τίτλου παραθύρου.</p>
+<p>A menu bar incorporates a strip of drop-down menus. It is typically located at the top of a primary window, below a window title bar.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/menu-bar.svg"/>
 
 <section id="when-to-use">
 <title>Πότε χρησιμοποιούνται</title>
 
-<p>Οι γραμμές μενού αυξάνουν το κάθετο ίχνος της διεπαφής χρήστη μιας εφαρμογής, εισάγουν έναν μεγάλο αριθμό σημείων αποκάλυψης και λειτουργούν ως ένα σταθερό σύνολο αυστηρών επιλογών. Για αυτούς τους λόγους, οι <link xref="header-bars">γραμμές κεφαλίδας</link> και τα <link xref="header-bar-menus">μενού γραμμών κεφαλίδας</link> συνιστάται γενικά να είναι πάνω από τις γραμμές μενού, μαζί με άλλα υποδείγματα σχεδίασης για την αποκάλυψη στοιχείων ελέγχου όταν ζητηθεί, όπως <link xref="selection-mode">κατάσταση επιλογής</link>, <link xref="action-bars">γραμμές ενέργειας</link> και <link xref="popovers">αναδυόμενα παράθυρα</link>.</p>
+<p>Menu bars increase the vertical footprint of an application’s user interface, introduce a large number of disclosure points, and function as a fixed set of inflexible options. For these reasons, <link xref="header-bars">header bars</link> and <link xref="header-bar-menus">header bar menus</link> are generally recommended over menu bars, along with other design patterns for exposing controls on demand, such as <link xref="selection-mode">selection mode</link>, <link xref="action-bars">action bars</link>, and <link xref="popovers">popovers</link>.</p>
 
-<p>Ταυτόχρονα, μπορεί να είναι κατάλληλο για σύνθετες εφαρμογές που περιλαμβάνουν ήδη μια γραμμή μενού να την διατηρήσουν. Επιπρόσθετα, κάποια λειτουργικά συστήματα επίσης ενσωματώνουν χώρο για μια γραμμή μενού στο περιβάλλον του χρήστη τους και ένα μοντέλο μενού μπορεί να είναι επιθυμητό για διαλειτουργικούς σκοπούς ενσωμάτωσης.</p>
+<p>At the same time, it can be appropriate for complex applications that already include a menu bar to retain it. Additionally, some platforms also incorporate space for a menu bar in their user environment, and a menu model can be desirable for cross-platform integration purposes.</p>
 
 </section>
 
 <section id="standard-menus">
 <title>Τυπικά μενού</title>
 
-<p>Αυτή η ενότητα δίνει λεπτομέρειες για τα πιο συνηθισμένα μενού και στοιχεία μενού σε μια γραμμή μενού. Για λεπτομέρειες σε τυπικά στοιχεία που θα συμπεριληφθούν σε καθένα από αυτά τα μενού, δείτε <link xref="keyboard-input#application-shortcuts">είσοδος πληκτρολογίου</link>.</p>
+<p>This section details the most common menus and menu items in a menu bar. For details on the standard items to include in each of these menus, see <link xref="keyboard-input#application-shortcuts">keyboard input</link>.</p>
 
 <table>
 <tr>
-<td><p><gui>Αρχείο</gui></p></td>
-<td><p>Οι εντολές λειτουργούν στο τρέχον έγγραφο ή στοιχείο περιεχομένου ως σύνολο. Είναι το πιο αριστερό στοιχείο στη γραμμή μενού λόγω της σημασίας του και της συχνότητας χρήσης, καθώς και επειδή είναι ένα σχετικό μενού σε πολλές εφαρμογές.</p>
-<p>Αν η εφαρμογή σας δεν λειτουργεί σε αρχεία, ονομάστε αυτό το μενού με τον τύπο του αντικειμένου που εμφανίζει. Παραδείγματος χάρη, μια συσκευή αναπαραγωγής μουσικής μπορεί να έχει το <gui>Μουσική</gui> αντί για το μενού <gui>Αρχείο</gui>.</p></td>
+<td><p><gui>File</gui></p></td>
+<td><p>Commands that operate on the current document or content item as a whole. It is the left-most item in the menubar because of its importance and frequency of use, and because it is a relevant menu in many applications.</p>
+<p>If your application does not operate on files, name this menu for the type of object it displays. For example, a music player could have a <gui>Music</gui> instead of a <gui>File</gui> menu.</p></td>
 </tr>
 <tr>
-<td><p><gui>Επεξεργασία</gui></p></td>
-<td><p>Το μενού <gui>Επεξεργασία</gui> περιέχει στοιχεία σχετικά με την επεξεργασία εγγράφου, όπως χειρισμός προχείρου, εύρεση και αντικατάσταση, καθώς και εισαγωγή αντικειμένων.</p></td>
+<td><p><gui>Edit</gui></p></td>
+<td><p>The <gui>Edit</gui> menu contains items relating to editing the document, such as clipboard handling, find and replace, and inserting objects.</p></td>
 </tr>
 <tr>
-<td><p><gui>Προβολή</gui></p></td>
-<td><p>Περιλαμβάνει στοιχεία που επηρεάζουν την προβολή χρήστη, όπως το τρέχον έγγραφο ή σελίδα, ή πώς εμφανίζονται τα στοιχεία στην περιήγηση. Μην βάζετε στοιχεία στο μενού <gui>Προβολή</gui> που επηρεάζουν τα στοιχεία περιεχομένου.</p></td>
+<td><p><gui>View</gui></p></td>
+<td><p>Includes items that affect the user’s view, such as of the current document or page, or how items are presented for browsing. Do not place any items on the <gui>View</gui> menu that affect content items.</p></td>
 </tr>
 <tr>
-<td><p><gui>Εισαγωγή</gui></p></td>
-<td><p>Εμφανίζει τους τύπους αντικειμένων που μπορούν να εισαχθούν στο τρέχον έγγραφο, όπως εικόνες, σύνδεσμοι ή αλλαγές σελίδας. Δώστε αυτό το μενού μόνο αν έχετε περισσότερους από περίπου έξι τύπους αντικειμένων που μπορούν να εισαχθούν, αλλιώς βάλτε ξεχωριστά στοιχεία για κάθε τύπο στο μενού <gui>Επεξεργασία</gui>.</p></td>
+<td><p><gui>Insert</gui></p></td>
+<td><p>Lists the types of objects that can be inserted into the current document, such as images, links or page breaks. Only provide this menu if you have more than about six types of object that can be inserted, otherwise place individual items for each type on the <gui>Edit</gui> menu.</p></td>
 </tr>
 <tr>
-<td><p><gui>Μορφή</gui></p></td>
-<td><p>Περιλαμβάνει εντολές για να αλλάξει την οπτική εμφάνιση του εγγράφου. Παραδείγματος χάρη, αλλαγή γραμματοσειράς, χρώματος, ή διάστιχου μιας επιλογής κειμένου.</p>
-<p>Η διαφορά μεταξύ αυτών των εντολών και αυτών στο μενού <gui>Προβολή</gui> είναι ότι αλλαγές που έγιναν με τις εντολές <gui>Μορφής</gui> παραμένουν και αποθηκεύονται ως μέρος του εγγράφου.</p>
-<p>Στοιχεία που βρίσκονται στο μενού μορφής είναι πολύ ειδικά για την εφαρμογή.</p></td>
+<td><p><gui>Format</gui></p></td>
+<td><p>Includes commands to change the visual appearance of the document. For example, changing the font, color, or line spacing of a text selection.</p>
+<p>The difference between these commands and those on the <gui>View</gui> menu is that changes made with <gui>Format</gui> commands are persistent and saved as part of the document.</p>
+<p>Items found on the Format menu are very application-specific.</p></td>
 </tr>
 <tr>
-<td><p><gui>Σελιδοδείκτες</gui></p></td>
-<td><p>Παρέχει ένα μενού σελιδοδεικτών σε οποιαδήποτε εφαρμογή που επιτρέπει στο χρήστη να περιηγηθεί τα αρχεία και τους φακέλους, στα έγγραφα βοήθειας, στις ιστοσελίδες ή οποιοδήποτε άλλο μεγάλο χώρο πληροφοριών.</p></td>
+<td><p><gui>Bookmarks</gui></p></td>
+<td><p>Provide a Bookmarks menu in any application that allows the user to browse files and folders, help documents, web pages or any other large information space.</p></td>
 </tr>
 <tr>
-<td><p><gui>Μετάβαση</gui></p></td>
+<td><p><gui>Go</gui></p></td>
 <td><p>Το μενού <gui>Μετάβαση</gui> παρέχει εντολές για γρήγορη περιήγηση σε ένα έγγραφο ή συλλογή εγγράφων, ή έναν χώρο πληροφορίας όπως μια δομή καταλόγου ή τον ιστό.</p>
-<p>Τα περιεχόμενα του μενού θα ποικίλουν ανάλογα με τον τύπο της εφαρμογής.</p></td>
+<p>The contents of the menu will vary depending on the type of application.</p></td>
 </tr>
 <tr>
-<td><p><gui>Παράθυρα</gui></p></td>
-<td><p>Εντολές που εφαρμόζονται σε όλα τα ανοικτά παράθυρα της εφαρμογής. Μπορείτε επίσης να ονομάσετε αυτό το μενού <gui>Έγγραφα</gui>, <gui>Buffers</gui>, ή παρόμοια σύμφωνα με τον τύπο του εγγράφου που χειρίζεται η εφαρμογή σας.</p>
-<p>Τα τελευταία στοιχεία σε αυτό το μενού είναι ένας αριθμημένος κατάλογος των πρωτευόντων παραθύρων της εφαρμογής, παραδείγματος χάρη <gui>1shoppinglist.abw</gui>. Η επιλογή ενός από αυτά τα στοιχεία ανυψώνει το αντίστοιχο παράθυρο.</p></td>
+<td><p><gui>Windows</gui></p></td>
+<td><p>Commands that apply to all of the application’s open windows. You may also label this menu <gui>Documents</gui>, <gui>Buffers</gui>, or similar according to the type of document handled by your application.</p>
+<p>The last items on this menu are a numbered list of the application’s primary windows, for example <gui>1shoppinglist.abw</gui>. Selecting one of these items raises the corresponding window.</p></td>
 </tr>
 </table>
 
@@ -109,26 +99,13 @@
 <title>Γενικές οδηγίες</title>
 
 <list>
-<item><p>Η γραμμή μενού είναι κανονικά ορατή πάντα και είναι πάντα προσβάσιμη από το πληκτρολόγιο, έτσι κάντε όλες τις διαθέσιμες εντολές στην εφαρμογή σας διαθέσιμες στη γραμμή μενού. (Αυτή η οδηγία είναι μοναδική στις γραμμές μενού - άλλα μενού δεν πρέπει να επιδιώκεται να αναπαράξουν λειτουργικότητα που είναι διαθέσιμη από άλλα στοιχεία ελέγχου).</p></item>
-<item><p>Θεωρήστε τα <link xref="application-menus">μενού εφαρμογών</link> ως μέρος της γραμμή μενού - δεν είναι απαραίτητο να αναπαράξετε τα στοιχεία από το μενού εφαρμογής σε άλλα μενού.</p></item>
-<item><p>Μην απενεργοποιείτε τους τίτλους μενού. Να επιτρέπετε στον χρήστη να εξερευνήσει το μενού, ακόμα κι αν μπορεί να μην υπάρχουν διαθέσιμα στοιχεία για αυτό εκείνη τη στιγμή.</p></item>
-<item><p>Οι τίτλοι μενού σε μια γραμμή μενού είναι μονές λέξεις με το πρώτο τους γράμμα κεφαλαίο. Μην χρησιμοποιείτε κενά στους τίτλους μενού, καθώς αυτό τα κάνει εύκολα λανθασμένα για δύο ξεχωριστούς τίτλους μενού. Να μην χρησιμοποιείτε σύνθετες λέξεις (όπως <gui>ΕπιλογέςΠαραθύρου</gui>) ή ενωτικά (όπως <gui>Παράθυρο-Επιλογές</gui>) για να παρακάμψτε αυτήν την οδηγία.</p></item>
-<item><p>Μην δίνετε έναν μηχανισμό για απόκρυψη της γραμμής μενού, επειδή αυτό μπορεί να ενεργοποιηθεί τυχαία. Μερικοί χρήστες δεν θα μπορούν να καταλάβουν πώς να επιστρέψει η γραμμή μενού σε αυτήν την περίπτωση.</p></item>
+<item><p>The menubar is normally visible at all times and is always accessible from the keyboard, so make all the commands available in your application available on the menubar. (This guideline is unique to menu bars - other menus should not seek to reproduce functionality that is made available by other controls).</p></item>
+<item><p>Treat <link xref="application-menus">application menus</link> as part of the menu bar - it is not necessary to reproduce items from the application menu in other menus.</p></item>
+<item><p>Do not disable menu titles. Allow the user to explore the menu, even though there might be no available items on it at that time.</p></item>
+<item><p>Menu titles on a menubar are single words with their first letter capitalized. Do not use spaces in menu titles, as this makes them easily-mistaken for two separate menu titles. Do not use compound words (such as <gui>WindowOptions</gui>) or hyphens (such as <gui>Window-Options</gui>) to circumvent this guideline.</p></item>
+<item><p>Do not provide a mechanism for hiding the menubar, as this may be activated accidentally. Some users will not be able to figure out how to get the menu bar back in this case.</p></item>
 </list>
 
-</section>
-
-<section id="api-reference">
-<title>Αναφορά API</title>
-
-<list>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenu.html">GtkMenu</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuBar.html">GtkMenuBar</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuItem.html">GtkMenuItem</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkRadioMenuItem.html">GtkRadioMenuItem</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkCheckMenuItem.html">GtkCheckMenuItem</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkSeparatorMenuItem.html">GtkSeparatorMenuItem</link></p></item>
-</list>
 </section>
 
 </page>

@@ -27,36 +27,6 @@
     </credit>
 
     <desc>Une barre de boutons et autres éléments graphiques</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
   <title>Barre d'outils créée avec Glade</title>
@@ -305,7 +275,7 @@ class MyWindow(Gtk.ApplicationWindow):
         try:
             builder.add_from_file("toolbar_builder.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
         # and attach it to the grid
         grid.attach(builder.get_object("toolbar"), 0, 0, 1, 1)
@@ -330,7 +300,7 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback for undo
     def undo_callback(self, action, parameter):
-        print("You clicked \"Undo\".")
+        print "You clicked \"Undo\"."
 
     # callback for fullscreen
     def fullscreen_callback(self, action, parameter):
@@ -377,11 +347,11 @@ class MyApplication(Gtk.Application):
 
     # callback for new
     def new_callback(self, action, parameter):
-        print("You clicked \"New\".")
+        print "You clicked \"New\"."
 
     # callback for open
     def open_callback(self, action, parameter):
-        print("You clicked \"Open\".")
+        print "You clicked \"Open\"."
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
@@ -400,7 +370,7 @@ sys.exit(exit_status)
 <item><p>La méthode <code>add_from_file(nomdufichier)</code> charge et analyse le fichier donné et le fusionne avec le contenu actuel de Gtk.Builder.</p></item>
 <item><p>La méthode <code>add_from_string(chaîne)</code> charge et analyse la chaîne de caractères donnée et la fusionne avec le contenu actuel de Gtk.Builder.</p></item>
 <item><p>La méthode <code>add_objects_from_file(nomdufichier, object_ids)</code> est identique à <code>add_from_file()</code>, mais elle ne charge que les objets qui possèdent les identifiants donnés par la liste <code>object_id</code>.</p></item>
-<item><p><code>add_objects_from_string(string, object_ids)</code>  is the same as <code>add_from_string()</code>, but it loads only the objects with the ids given in the <code>object_id</code>s list.</p></item>
+<item><p>La méthode <code>add_objects_from_string(nomdufichier, object_ids)</code> est identique à <code>add_from_string()</code>, mais elle ne charge que les objets avec les identifiants donnés par la liste <code>object_id</code>.</p></item>
 <item><p>La méthode <code>get_object(object_id)</code> récupère l'élément graphique possédant l'identifiant <code>object_id</code> à partir des objets chargés dans le constructeur.</p></item>
 <item><p>La méthode <code>get_objects()</code> renvoie tous les objets chargés.</p></item>
 <item><p><code>connect_signals(handler_object)</code> connects the signals to the methods given in the <code>handler_object</code>. This can be any object which contains keys or attributes that are called like the signal handler names given in the interface description, e.g. a class or a dict. In line 39 the signal <code>"activate"</code> from the action <code>undo_action</code> is connected to the callback function <code>undo_callback()</code> using <code><var>action</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>

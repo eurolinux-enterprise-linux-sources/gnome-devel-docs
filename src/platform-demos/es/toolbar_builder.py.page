@@ -31,7 +31,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2016</mal:years>
+      <mal:years>2011 - 2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -281,7 +281,7 @@ class MyWindow(Gtk.ApplicationWindow):
         try:
             builder.add_from_file("toolbar_builder.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
         # and attach it to the grid
         grid.attach(builder.get_object("toolbar"), 0, 0, 1, 1)
@@ -306,7 +306,7 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback for undo
     def undo_callback(self, action, parameter):
-        print("You clicked \"Undo\".")
+        print "You clicked \"Undo\"."
 
     # callback for fullscreen
     def fullscreen_callback(self, action, parameter):
@@ -353,11 +353,11 @@ class MyApplication(Gtk.Application):
 
     # callback for new
     def new_callback(self, action, parameter):
-        print("You clicked \"New\".")
+        print "You clicked \"New\"."
 
     # callback for open
     def open_callback(self, action, parameter):
-        print("You clicked \"Open\".")
+        print "You clicked \"Open\"."
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
@@ -376,7 +376,7 @@ sys.exit(exit_status)
 <item><p><code>add_from_file(filename)</code> carga y procesa el archivo dado y lo une con el contenido actual del Gtk.Builder.</p></item>
 <item><p><code>add_from_string(string)</code> procesa la cadena dada y la une con el contenido actual del Gtk.Builder.</p></item>
 <item><p><code>add_objects_from_file(filename, object_ids)</code> es igual a <code>add_from_file()</code>, pero solo carga los objetos con los ID dados en la lista de <code>object_id</code>.</p></item>
-<item><p><code>add_objects_from_string(string, object_ids)</code> es lo mismo que <code>add_from_string()</code>, pero sólo carga los objetos con los ID dados en la lista de <code>object_id</code>.</p></item>
+<item><p><code>add_objects_from_string(filename, object_ids)</code> es igual a <code>add_from_string()</code>, pero sólo carga los objetos con las ID dadas en la lista de <code>object_id</code>.</p></item>
 <item><p><code>get_object(object_id)</code> obtiene el widget con el ID <code>object_id</code> de los objetos cargados en el constructor.</p></item>
 <item><p><code>get_objects()</code> devuelve todos los objetos cargados.</p></item>
 <item><p><code>connect_signals(handler_object)</code> conecta las señales a los métodos dados en el <code>handler_object</code>. Este puede ser cualquier objeto que contenga claves o atributos que se llamen como los nombres del manejador de señales dados en la descripción de la interfaz, por ejemplo una clase o un diccionario. En la línea 39 la señal <code>"activate"</code> de la acción <code>undo_action</code> se conecta a la función de retorno de llamada <code>undo_callback()</code> usando <code><var>action</var>.connect(<var>señal</var>, <var>función de retorno de llamada</var>)</code>. Consulte la <link xref="signals-callbacks.py"/> para una explicación más detallada.</p>

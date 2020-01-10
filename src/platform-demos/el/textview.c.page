@@ -2,7 +2,7 @@
 <page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="textview.c" xml:lang="el">
   <info>
     <title type="text">TextView (C)</title>
-    <link type="guide" xref="c#multiline"/>
+    <link type="guide" xref="beginner.c#multiline"/>
     <revision version="0.1" date="2012-07-10" status="draft"/>
 
     <credit type="author copyright">
@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -48,7 +48,7 @@
     <p>Αυτό είναι ένα παράδειγμα του Gtk.TextView</p>
 
       <code mime="text/x-csrc" style="numbered">
-#include &lt;gtk/gtk.h&gt;
+#περιλαμβάνει &lt;gtk/gtk.h&gt;
 
 
 
@@ -56,7 +56,7 @@ static void
 activate (GtkApplication *app,
           gpointer        user_data)
 {
-  /* Declare variables */
+  /* Δήλωση μεταβλητών */
   GtkWidget *window;
   GtkWidget *text_view;
   GtkWidget *scrolled_window;
@@ -64,35 +64,35 @@ activate (GtkApplication *app,
   GtkTextBuffer *buffer;
 
 
-  /* Create a window with a title, and a default size */
+  /* Δημιουργία παραθύρου με τίτλο και προεπιλεγμένο μέγεθος */
   window = gtk_application_window_new (app);
   gtk_window_set_title (GTK_WINDOW (window), "TextView Example");
   gtk_window_set_default_size (GTK_WINDOW (window), 220, 200);
 
 
-  /* The text buffer represents the text being edited */
+  /* Η ενδιάμεση μνήμη του κειμένου παρουσιάζει το κείμενο που επεξεργάστηκε */
   buffer = gtk_text_buffer_new (NULL);
   
 
-  /* Text view is a widget in which can display the text buffer. 
-   * The line wrapping is set to break lines in between words.
+  /* Η προβολή κειμένου είναι ένα γραφικό στοιχείο στο οποίο μπορείτε να εμφανίσετε τη ρυθμιστική μνήμη του κειμένου. 
+   * Η αναδίπλωση γραμμής ορίζεται στην αλλαγή γραμμών μεταξύ λέξεων.
    */
   text_view = gtk_text_view_new_with_buffer (buffer);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (text_view), GTK_WRAP_WORD); 
 
 
-  /* Create the scrolled window. Usually NULL is passed for both parameters so 
-   * that it creates the horizontal/vertical adjustments automatically. Setting 
-   * the scrollbar policy to automatic allows the scrollbars to only show up 
-   * when needed. 
+  /* Δημιουργία του κυλιόμενου παράθυρου. Συνήθως περνιέτει NULL και για τις δυο παραμέτρους, 
+   * έτσι ώστε να δημιουργούνται αυτόματα οι οριζόντιες/κάθετες ρυθμίσεις. Ορισμός 
+   * της πολιτικής της γραμμής κύλισης σε αυτόματη επιτρέπει στις γραμμές κύλισης να εμφανίζονται μόνο 
+   * όταν χρειάζονται. 
    */
   scrolled_window = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), 
                                   GTK_POLICY_AUTOMATIC, 
                                   GTK_POLICY_AUTOMATIC); 
-  /* The function directly below is used to add children to the scrolled window 
-   * with scrolling capabilities (e.g text_view), otherwise, 
-   * gtk_scrolled_window_add_with_viewport() would have been used
+  /* Η αμέσως παρακάτω συνάρτηση χρησιμοποιείται για προσθήκη θυγατρικών στο κυλιόμενο παράθυρο 
+   * με δυνατότητες κύλισης (π.χ. text_view), αλλιώς, 
+   * gtk_scrolled_window_add_with_viewport() θα έπρεπε να χρησιμοποιηθεί
    */
   gtk_container_add (GTK_CONTAINER (scrolled_window), 
                                          text_view);

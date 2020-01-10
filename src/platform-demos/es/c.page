@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:ui="http://projectmallard.org/experimental/ui/" type="guide" id="c" xml:lang="es">
+<info>
+  <title type="link">C</title>
+  <link type="guide" xref="index#tutorials"/>
+  <revision version="3.4" date="2012-04-28" status="stub"/>
+  <credit type="editor">
+    <name>Tiffany Antopolski</name>
+    <email its:translate="no">tiffany.antopolski@gmail.com</email>
+  </credit>
 
-  <info>
-    <!-- The text title is used on the help.gnome.org -->
-    <title type="link">C</title>
-    <link type="guide" xref="index#tutorials"/>
-    <revision version="3.4" date="2012-04-28" status="stub"/>
-
-    <credit type="editor">
-      <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
-    </credit>
-    <credit type="editor">
-      <name>Bastian Ilso</name>
-      <email its:translate="no">bastianilso@gnome.org</email>
-    </credit>
-
-    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
-
-    <desc>Tutoriales y ejemplos de código en C.</desc>
-  
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2016</mal:years>
+      <mal:years>2011 - 2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -39,108 +28,22 @@
     </mal:credit>
   </info>
 
-  <title>Demostraciones de la plataforma en C</title>
+<title>Tutoriales, ejemplos de código y demostraciones de la plataforma en C</title>
 
-  <section id="prerequisites">
+<links type="section"/>
 
-    <title>Prerrequisitos</title>
+<section id="code-samples">
+<title>Ejemplos de código y tutorial</title>
 
-    <p>Para estas demostraciones de la plataforma necesitará un compilador de C, por ejemplo <link href="https://gcc.gnu.org/">gcc</link>. También necesitará las cabeceras de GTK+3 y los archivos pkg-config. Normalmente, las distribuciones de Linux proporcionan las cabeceras de GTK+ 3y los archivos pkg-config en paquetes separados llamados <em>gtk3-devel</em>, <em>gtk3-dev</em> o similar.</p>
-
-  </section>
-
-  <section id="for-beginners" ui:expanded="false">
-
-    <title>Guías para nuevos desarrolladores</title>
-
-    <p>Más allá de los requisitos mencionados anteriormente, se han desarrollado varias herramientas para ayudarle a desarrollar su aplicación para GNOME. Se recomienda un estilo de codificación determinado y unos convenios que se detallarán más adelante en esta sección.</p>
-
-    <section id="recommended-tools">
-      <title>Herramientas recomendadas</title>
-
-      <list>
-        <item>
-          <p><link href="https://wiki.gnome.org/Apps/Devhelp">DevHelp</link>: un explorador de la documentación de la API para GNOME.</p>
-        </item>
-        <item>
-          <p>Un EID para GNOME (Entorno integrado de desarrollo). Un EID puede ayudarle a escribir y depurar código en C, por ejemplo <link href="https://wiki.gnome.org/Apps/Builder">Builder</link> o <link href="https://wiki.gnome.org/Apps/Anjuta">Anjuta</link>.</p>
-        </item>
-        <item>
-          <p><link href="http://glade.gnome.org/">Glade</link>: un diseñador de interfaces para aplicaciones en GTK+.</p>
-        </item>
-        <item>
-          <p>Un cliente de IRC, por ejemplo <link href="https://wiki.gnome.org/Apps/Polari">Polari</link> o <link href="https://wiki.gnome.org/Apps/Empathy">Empathy</link>. Si tiene problemas al seguir los tutoriales para principiantes, únase a #gnome en <em>irc.gnome.org</em>.</p>
-        </item>
-      </list>
-    </section>
-
-    <section id="coding-style">
-      <title>Estilo del código</title>
-
-      <p>La mayoría de las aplicaciones del proyecto GNOME están escritas siguiendo el estilo de sangrado de <link href="http://en.wikipedia.org/wiki/Indent_style#GNU_style">GNU</link>. Los tutoriales y los códigos de ejemplo mostrados siguen este convenio y se recomienda que haga lo mismo.</p>
-    </section>
-
-    <section id="executing-code">
-      <title>Ejecutar el código</title>
-
-      <p>Para ejecutar los ejemplos de código:</p>
-
-      <steps>
-        <item>
-          <p>Copie y pegue el código en <var>nombre_archivo</var>.c</p>
-        </item>
-        <item>
-          <p>Escriba en la terminal:</p>
-          <screen>gcc <var>nombre_archivo</var>.c `pkg-config --cflags --libs gtk+-3.0` -o <var>nombre_archivo</var></screen>
-          <screen>./<var>nombre_archivo</var></screen>
-        </item>
-      </steps>
-
-      <note>
-        <p>Para obtener más información sobre cómo compilar programas en GTK+, consulte <link href="http://developer.gnome.org/gtk3/3.4/gtk-compiling.html">Compilar aplicaciones GTK+ en UNIX</link>.</p>
-      </note>
-    </section>
-
-  </section>
-
-  <section id="examples">
-    <title>Tutoriales</title>
-  </section>
-
-<section id="samples">
-<title>Ejemplos de código de widget</title>
- <section id="windows" style="2column"><title>Ventanas</title>
-    <p/>
-  </section>
-  <section id="display-widgets" style="2column"><title>Widgets de visualización</title>
-  </section>
-  <section id="buttons" style="2column"><title>Botones y casillas</title>
-  </section>
-  <section id="entry" style="2column"><title>Entrada de daos numérica y de texto</title>
-  </section>
-  <section id="multiline" style="2column"><title>Editor de texto multilínea</title>
-  </section>
-  <section id="menu-combo-toolbar" style="2column"><title>Widgets de menú, caja combinada y barra de herramientas</title>
-  </section>
-  <section id="treeview" style="2column"><title>Widget TreeView</title>
-  </section>
-  <section id="selectors"><title>Selectores</title>
-    <section id="file-selectors" style="2column"><title>Selectores de archivos</title>
-    </section>
-    <section id="font-selectors" style="2column"><title>Selectores de tipografías</title>
-    </section>
-    <section id="color-selectors" style="2column"><title>Selectores de color</title>
-    </section>
-  </section>
-  <section id="layout" style="2column"><title>Contenedores de la distribución</title>
-  </section>
-  <section id="ornaments" style="2column"><title>Adornos</title>
-  </section>
-  <section id="scrolling" style="2column"><title>Desplazamiento</title>
-  </section>
-  <section id="misc" style="2column"><title>Varios</title>
-  </section>
 
 </section>
+
+
+<section id="examples">
+<title>Ejemplos de aplicaciones</title>
+
+
+</section>
+
 
 </page>

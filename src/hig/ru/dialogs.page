@@ -2,149 +2,148 @@
 <page xmlns="http://projectmallard.org/1.0/" type="topic" id="dialogs" xml:lang="ru">
 
   <info>
-    <link type="guide" xref="patterns#primary"/>
-    <desc>Secondary windows that appear over primary, parent windows</desc>  
+    <link type="guide" xref="patterns" group="dialogs"/>   
     <credit type="author">
-      <name>Алан Дэй (Allan Day)</name>
+      <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
     <credit>
-      <name>Калум Бенсон (Calum Benson)</name>
+      <name>Calum Benson</name>
     </credit>
     <credit>
-      <name>Адам Элман (Adam Elman)</name>
+      <name>Adam Elman</name>
     </credit>
     <credit>
-      <name>Сэт Никел (Seth Nickell)</name>
+      <name>Seth Nickell</name>
     </credit>
     <credit>
-      <name>Колин Робертсон (Colin Robertson)</name>
+      <name>Colin Robertson</name>
     </credit>
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Dialog windows</title>
+<title>Dialogs</title>
 
-<p>Диалоги — это второстепенные окна, которые появляются на главным родительским окном. Диалоги служат для представления дополнительной информации или элементов управления, включая свойства и параметры, или для представления сообщений или вопросов.</p>
+<p>Dialogs are secondary windows that appear over a primary, parent window. They are used to present additional information or controls, including preferences and properties, or to present messages or questions.</p>
 
-<p>GTK+ предоставляет некоторое количество стандартные диалоговых окон, например диалог печати или выбора цвета.</p>
+<p>GTK+ provides a number of stock dialogs that can be used, such as for printing or color selection.</p>
 
-<p>Существует три основных типа диалогов.</p>
+<p>There are three basic types of dialogs.</p>
 
 <section id="when-to-use">
-<title>Когда использовать</title>
+<title>When to use</title>
 
-<p>Диалоги являются одними из самых распространённых шаблонов проектирования, существуют устоявшиеся соглашения для различных типов диалогов. Далее даются рекомендации по каждому типу диалогов.</p>
+<p>Dialogs are a commonly recognized design pattern, and there are established conventions for the different types of dialogs that you might want to use. The guidelines on each type of dialog provides further information on this.</p>
 
-<p>Диалоги не только могут эффективно скрывать дополнительные элементы управления и информацию, но они также могут являться отвлекающим фактором. Поэтому всегда ставьте вопрос, действительно ли тот или иной диалог является необходимым. Попытайтесь обойти ситуации, в которых они необходимы.</p>
+<p>While dialogs can be an effective way to disclose additional controls or information, they can also be a source of interruption for the user. For this reason, always question whether a dialog is necessary, and work to avoid the situations in which they are required.</p>
 
-<p>Существует несколько способов избежать использования диалогов:</p>
+<p>There are many ways to avoid using dialogs:</p>
 
 <list>
-<item><p>Используйте внутреннее включение для новых сообщений, записей или контактов.</p></item>
-<item><p>Встроенные уведомления являются альтернативой диалогам с сообщениями.</p></item>
-<item><p>С помощью <link xref="popovers">всплывающих виджетов</link> можно показывать дополнительные элементы управления или параметры менее отвлекающим способом.</p></item>
+<item><p>Use inline composition for new messages, records or contacts.</p></item>
+<item><p>In-application notifications are an alternative to message dialogs.</p></item>
+<item><p><link xref="popovers">Popovers</link> can be a way to display additional controls or options in a less disruptive manner.</p></item>
 </list>
 
 </section>
 
 <section id="message-dialogs">
-<title>Диалоги сообщений</title>
+<title>Message Dialogs</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/message-dialog.svg"/>
 
-<p>Диалоги сообщений — это самый простой тип диалогов. Они служат для предоставления сообщений или вопросов, для обратной связи используется от одной до трёх кнопок. Эти диалоговые окна всегда являются модальными, то есть они блокируют доступ к их родительскому окну. Диалоги сообщений применяются в том случае, когда необходимо гарантировать то, чтобы пользователь прочитал и ответил на сообщение.</p>
+<p>Message dialogs are the simplest type of dialog. They present a message or question, along with 1-3 buttons with which to respond. They are always modal, meaning that they prevent access to their parent window. Message dialogs are an appropriate choice when it is essential that the user sees and responds to a message.</p>
 
 <section id="message-dialog-examples">
-<title>Примеры</title>
+<title>Examples</title>
 
-<p>Диалоги подтверждения используют сообщения для проверки (подтверждения) того, что пользователь желает выполнить некоторое действие. В таких диалогах используется две кнопки: одна кнопка служит для подтверждения действия, вторая — для отмены.</p>
+<p>Confirmation dialogs use a message dialog to check - or confirm - that the user wants to carry out an action. They have two buttons: one to confirm that the action should be carried out and one to cancel the action.</p>
 
-<note style="tip"><p>Пользователи часто нечаянно или машинально подтверждают действия в таких диалогах, поэтому они далеко не всегда могут уберечь от возникновения ошибок. Чаще лучше предоставить возможность отменить выполненное действие.</p></note>
+<note style="tip"><p>Confirmation dialogs will often be accidentally or automatically acknowledged, and will not always prevent mistakes from happening. It is often better to provide undo functionality instead.</p></note>
 
-<p>Диалоги ошибок служат для представление сообщений об ошибках. Они часто содержат одну-единственную кнопку, которая закрывает диалог.</p>
+<p>Error dialogs present an error message to the user. They often include a single button that allows the user to acknowledge and close the dialog.</p>
 
-<note style="tip"><p>Диалоги сообщений — это крайней средство. Проектируйте свои приложение так, чтобы в них не возникали ошибки, а если что-то пойдёт не так, то работа приложения восстанавливалась автоматически.</p></note>
+<note style="tip"><p>Error dialogs should generally be a last resort. You should design your application so that errors do not occur, and to automatically recover if something does go wrong.</p></note>
 
 </section>
 </section>
 
 <section id="action-dialogs">
-<title>Диалоги действий</title>
+<title>Action Dialogs</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/action-dialog.svg"/>
 
-<p>Диалоги действий служат для представления параметров и информации об определённом действии до его выполнения. В таких диалогах обычно есть заголовок (заголовок описывает действие) и две главные кнопки: одна кнопка используется для выполнения действия, вторая — для отмены.</p>
+<p>Action dialogs present options and information about a specific action before it is carried out. They have a heading (which typically describes the action) and two primary buttons - one which allows the action to be carried out and one which cancels it.</p>
 
-<p>Иногда пользователь должен выбрать некоторые параметры перед выполнением действия. В этих случаях кнопка подтверждения в диалоге должна быть неактивной до тех пор, пока не будут выбраны необходимые параметры.</p>
+<p>Sometimes, the user may be required to choose options before an action can be carried out. In these cases, the affirmative dialog button should be insensitive until the required options have been selected.</p>
 
 <section id="action-dialog-examples">
-<title>Примеры</title>
+<title>Examples</title>
 
-<p>Многие стандартные диалоги GTK+ являются диалогами действий. Наглядным примером может послужить диалог печатли: он появляется, когда пользователь активирует действие печатти, и представляет информацию и параметры для этого действия. Две кнопки в заголовочной панели служат для подтверждения действия и его отмены.</p>
+<p>Many of the stock GTK+ dialogs are action dialogs. The print dialog is a good example: it is displayed in response to the user using the print action, and presents information and options for that print action. The two header bar buttons allow the print action to either be cancelled or carried out.</p>
 
 </section>
 </section>
 
 <section id="presentation-dialogs">
-<title>Диалоги представления</title>
+<title>Presentation Dialogs</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/presentation-dialog.svg"/>
 
-<p>Диалоги представлений служат для представления информации или элементов управления. Также как у диалогов действия у них есть заголовочная панель и тема. Но вместо действия их содержимое относится к приложению или к элементам его содержимого.</p>
+<p>Presentation dialogs present information or controls. Like action dialogs, they have a header bar and a subject. However, instead of prefixing an action, their content relates to an application or content item.</p>
 
 <section id="presentation-dialog-examples">
-<title>Примеры</title>
+<title>Examples</title>
 
-<p>Примерами таких диалогов служат диалоги свойств и диалоги параметров. В этих диалогах находится информация и параметры, относящиеся к определённому объекту (либо к приложению в целом, либо к одному из элементов его содержимого). Диалоги свойств демонстрируют, как можно использовать диалоги для скрытия дополнительной информации, которая не всегда нужна в главном окне приложения.</p>
+<p>Preferences and properties are both examples of presentation dialogs, and both present information and settings in relation to a specific entity (either an application or a content item). Properties dialogs are a good example of how dialogs can be used to disclose additional information which is not always needed in the main application window.</p>
 
-<note style="tip"><p>Старайтесь избежать необходимости добавления окна с параметрами для вашего приложения. Подумайте, действительно ли нужны дополнительные параметры. Большинство людей не утруждают себя изучением параметров, которые вы им предоставляете. Параметры настройки также повысят сложность вашего приложения. Сделайте так, чтобы ваше приложение работало для всех без необходимости изменять его параметры.</p></note>
+<note style="tip"><p>Resist the temptation to provide a preference window for your application. Always question whether additional settings are really necessary. Most people will not bother to investigate the preferences that you provide, and configuration options will contribute to the complexity of your application. Make an effort to ensure that your application design works for everybody without the need to change its settings.</p></note>
 
 </section>
 
 <section id="instant-and-explicit-apply">
-<title>Мгновенное и явное применение</title>
+<title>Instant and Explicit Apply</title>
 
-<p>Диалоги представления применяют изменения мгновенно либо явно. При мгновенном применении изменения в параметрах или значениях применяются сразу же после из изменения. И наоборот, диалоги для явного применения предоставляют кнопку для применения изменений.</p>
+<p>Presentation dialogs are either instant or explicit apply. In instant apply dialogs, changes to settings or values are immediately updated. In contrast, explicit apply dialogs include a button for applying changes.</p>
 
-<p>Используйте мгновенное применение везде, где это возможно. В диалогах мгновенного применения есть кнопка закрытия в заголовочной панели, как у <link xref="primary-windows">главных окон</link>.</p>
+<p>Instant apply should be used wherever possible. Instant apply presentation dialogs have a close button in their header bar, like a <link xref="primary-windows">primary window</link>.</p>
 
-<p>Явное применение необходимо только в тех случаях, когда для получения желаемого поведения измененияе, сделанные в диалоге, должны применяться одновременно. В диалоговых окнах с явным применением используется две кнопки: <gui>Готово</gui> и <gui>Отмена</gui> (<gui>Отмена</gui> сбрасывает все значения в диалоге в исходные и закрывает окно).</p>
+<p>Explicit apply is only necessary if changes in the dialog have to be applied simultaneously in order to have the desired behaviour. Explicit apply dialogs include a <gui>Done</gui> and <gui>Cancel</gui> button (<gui>Cancel</gui> resets all values in the dialog to the state before it was opened and Done applies all changes and closes the window).</p>
 
 </section>
 </section>
 
 <section id="primary-buttons">
-<title>Основные кнопки</title>
+<title>Primary buttons</title>
 
-<p>Сообщения и диалоги действия содержат главные кнопки, которые оказывают действие на всё окно. Порядок этих кнопок, а также текстовые метки в них — важнейшая часть диалога.</p>
+<p>Message and action dialogs include primary buttons which affect the whole window. The order of these buttons, as well as the labels used, are a key part of the dialog.</p>
 
 <section id="order">
-<title>Порядок</title>
+<title>Order</title>
 
-<p>Если диалог содержит кнопки подтверждения и отмены, кнопка отмены всегда должна располагаться до кнопки подтверждения. Для локалей с письмом слева направо кнопка отмены должна находиться слева.</p>
+<p>When a dialog includes an affirmative and a cancel button, always ensure that the cancel button appears first, before the affirmative button. In left-to-right locales, this is on the left.</p>
 
-<p>Такой порядок кнопок даёт понять пользователям, что возможность отмены имеет больший приоритет, чем подтверждение действия.</p>
+<p>This button order ensures that users become aware of, and are reminded of, the ability to cancel prior to encountering the affirmative button.</p>
 
 </section>
 
 <section id="labels">
-<title>Текстовые метки</title>
+<title>Labels</title>
 
-<p>Используйте в качестве текстовой метки для главной кнопки глагол в повелительно наклонении. Например: <gui>Сохранить</gui>, <gui>Перезагрузить</gui>, <gui>Удалить</gui> (исключением является <gui>Печать</gui>). Такие текстовые метки понятнее, чем просто <gui>OK</gui> или <gui>Готово</gui>.</p>
+<p>Label the affirmative primary button with a specific imperative verb, for example: <gui>Save</gui>, <gui>Print</gui>, <gui>Remove</gui>. This is clearer than a generic label like <gui>OK</gui> or <gui>Done</gui>.</p>
 
-<p>Диалоги ошибок обычно содержат одну кнопку, которая закрывает диалог. В этом случае определённое действие не нужно ассоциировать с чем-нибудь. Тут есть возможность немного пошутить: вместо обычной текстовой метки можно вставить что-то наподобие <gui>Извенения приняты</gui> или <gui>Понятненько</gui>.</p>
+<p>Error dialogs typically include a single button which dismisses the dialog. In this case, a specific action does not need to be referenced, and this can be a good opportunity to use humor. <gui>Apology Accepted</gui> or <gui>Got It</gui> are both examples of good labels.</p>
 
 </section>
 
 <section id="default-action-and-escape">
-<title>Действие по умолчанию и выход</title>
+<title>Default action and escape</title>
 
-<p>Назначьте клавишу Enter для активации главной кнопки подтверждения в диалоге (например <gui>Печать</gui> в диалоге печати). Это называется действием по умолчанию, такие кнопки должны визуально отличаться от остальных. Не дейлайте кнопками по умолчанию кнопки, которые выполняют невозвратные, разрушительные или какие-либо неудобные действия. Если ни одна из кнопок не подходит под кнопку по умолчанию, не назначайте её.</p>
+<p>Assign the return key to activate the primary affirmative button in a dialog (for example <gui>Print</gui> in a print dialog). This is called the default action, and is indicated by a different visual style. Do not make a button the default if its action is irreversible, destructive or otherwise inconvenient to the user. If there is no appropriate button to designate as the default button, do not set one.</p>
 
-<p>Клавиша Esc должна активировать кнопку отмены или закрытия, одна из этих кнопок должна обязательно присутствовать в диалоге. В диалогах сообщений с одной кнопкой можно одновременно привязать клавишу Esc и Enter.</p>
+<p>You should also ensure that the escape key activates the cancel or close button, should either of them be present. Message dialogs with a single button can have both escape and return bound to the button.</p>
 
-<p>Привязка клавиш Esc и Enter обеспечивает очевидный и удобный способ продолжить работу или вернуться назад.</p>
+<p>Binding return and escape in this way provides a predictable and convenient way to continue through a dialog, or to go back.</p>
 
 </section>
 
@@ -154,23 +153,14 @@
 <title>Общие рекомендации</title>
 
 <list>
-<item><p>Диалоговые окна никогда не должны открываться внезапно, они должны открываться только в ответ на действия пользователя.</p></item>
-<item><p>У диалоговых окон всегда должны быть родительское окно.</p></item>
-<item><p>При проектировании содержимого диалоговых окон следуйте <link xref="visual-layout">рекомендациям по визуальному расположению</link>.</p></item>
-<item><p>Для разбиения элементов управления и информации используйте <link xref="view-switchers">переключатели вида</link> или <link xref="tabs">вкладки</link>.</p></item>
-<item><p>Избегайте открытие диалоговых окон поверх других диалогов. Одновременно может отображаться только одно диалоговое окно.</p></item>
-<item><p>При открытии диалога переводите фокус ввода с клавиатуры на компонент, с которого пользователи начинают взаимодействие. Это особенно важно для пользователей, которые для навигации по вашему приложению используют клавиатуру.</p></item>
+<item><p>Dialog windows should never pop up unexpectedly, and should only ever be displayed in immediate response to a deliberate user action.</p></item>
+<item><p>Dialogs should always have a parent window.</p></item>
+<item><p>Follow the <link xref="visual-layout">layout guidelines</link> when designing the content of windows.</p></item>
+<item><p>Use <link xref="view-switchers">view switchers</link> or <link xref="tabs">tabs</link> to break up controls and information.</p></item>
+<item><p>Avoid stacking dialog windows on top of one another. Only one dialog window should be displayed at a time.</p></item>
+<item><p>When opening a dialog, provide initial keyboard focus to the component that you expect users to operate first. This focus is especially important for users who must use a keyboard to navigate your application.</p></item>
 </list>
 
-</section>
-
-<section id="api-reference">
-<title>API reference</title>
-<list>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkAboutDialog.html">GtkAboutDialog</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkDialog.html">GtkDialog</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMessageDialog.html">GtkMessageDialog</link></p></item>
-</list>
 </section>
 
 </page>

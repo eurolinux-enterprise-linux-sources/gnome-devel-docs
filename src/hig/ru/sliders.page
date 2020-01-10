@@ -1,49 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="sliders" xml:lang="ru">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="sliders" xml:lang="ru">
 
   <info>
     <credit type="author">
-      <name>Алан Дэй (Allan Day)</name>
+      <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
     <credit>
-      <name>Калум Бенсон (Calum Benson)</name>
+      <name>Calum Benson</name>
     </credit>
     <credit>
-      <name>Адам Элман (Adam Elman)</name>
+      <name>Adam Elman</name>
     </credit>
     <credit>
-      <name>Сэт Никел (Seth Nickell)</name>
+      <name>Seth Nickell</name>
     </credit>
     <credit>
-      <name>Колин Робертсон (Colin Robertson)</name>
+      <name>Colin Robertson</name>
     </credit>
-
-    <link type="guide" xref="ui-elements"/>
-    <uix:thumb mime="image/svg" src="figures/ui-elements/sliders.svg"/>
-
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Ползунки</title>
+<title>Sliders</title>
 
-<p>A slider allows the user to quickly select a value from a range.</p>
+<p>A slider allows the user to quickly select a value from a range. In GTK+, sliders can be implemented using the GtkHScale or GtkVScale controls, for horizontal or vertical sliders respectively.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/sliders.svg"/>
 
 <section id="when-to-use">
-<title>Когда использовать</title>
+<title>When to use</title>
 
-<p>Ползунки можно применять не только для изменения значения, но и для перемещение по содержимому (перемотка видео, аудио или перелистывание страниц документов). Полузнки также часто применяют для изменения масштаба, уровня громкости или выбора значений в графических редакторах.</p>
+<p>Sliders can be used to either change a value, or for navigation within a content item, such as video, audio or even documents. Common uses include seeking through audio or video, changing a zoom or volume level, or setting values in image editors.</p>
 
-<p>Применяйте ползунки, когда:</p>
+<p>Use a slider when:</p>
 
 <list>
-<item><p>диапазон значений фиксирован и упорядочен, и выбор значения относительно его текущего значения предпочтительнее, чем указание его абсолютного значения;</p></item>
-<item><p>изменение значения должно происходить в реальном времени.</p></item>
+<item><p>The range of values is fixed and ordered, and when adjusting the value relative to its current value is more important than choosing an absolute value.</p></item>
+<item><p>It is useful for the user to control the rate of change of the value in real time.</p></item>
 </list>
 
-<p>Если диапазон значений не имеет фиксированного минимального и/или максимального значения, вместо ползунка можно применить <link xref="spin-boxes">счётчик</link>.</p>
+<p>If the range of values does not have a fixed maximum and/or minimum, a <link xref="spin-boxes">spin box</link> can be used.</p>
 
 </section>
 
@@ -51,24 +47,14 @@
 <title>Рекомендации</title>
 
 <list>
-<item><p>Обратная связь от полузнка должна работать в режиме реального времени, чтобы пользователь мог быстро скорректировать значение. Например: регулировка громкости звуки или изменение параметров в графическом редакторе.</p></item>
-<item><p>Пользователь должен ясно понимать назначение ползунка.</p>
+<item><p>Ensure that real time feedback is provided, in order to enable the user to make live adjustments. Examples of this include sound from speakers, indicating volume changes, or live feedback in an image editor.</p></item>
+<item><p>Take care to ensure that the purpose of a slider is clearly identified.</p>
 <list>
-<item><p>При стандартном применении полузнков придерживайтесь устовяшихся соглашений об их расположении. Например в видеопроигрывателях горизонтальная панель прокрутки обычно распологается в нижней части окна, если ползунок разместить в этой части окна, то пользователю сразу будет понятно, какую функцию он выполняет.</p></item>
-<item><p>В других случаях разместите рядом с ползунком текстовую метку, текстовая метка должна располагаться слева от ползунка или над ползунком. Для интерфейса на английском языке для текстовых меток используйте <link xref="writing-style#capitalization">написание прописных букв, как в предложениях</link>. Добавьте <link xref="keyboard-input#access-keys">ускорители</link>, чтобы пользователь мог перевести фокус на ползунок с помощью клавиатуры.</p></item>
+<item><p>In cases where it is common to use a slider, follow placement conventions. For example, in video players, it is common to situate a horizontal seek bar along the bottom of the window. Simply placing a slider in this position is enough to identify it.</p></item>
+<item><p>In other cases, label the slider with a text label above it or to its left, using <link xref="writing-style#capitalization">sentence capitalization</link>. Provide an <link xref="keyboard-input#access-keys">access key</link> in the label that allows the user to give focus directly to the slider.</p></item>
 </list></item>
-<item><p>Отметьте важные значения с помощью текста или делений. Например, на ползунке, который управляет балансом звука, отмечается левая, правая и центральная точка.</p></item>
-<item><p>Ползунки с широкими диапазонами целых значений (больше 20) и чисел с плавающей запятой можно связать с <link xref="text-fields">текстовыми полями ввода</link> или <link xref="spin-boxes">счётчиками</link>. В этом случае ползунок используется для быстрой установки значения, а поле ввода или счётчик — для более точной установки значения.</p></item>
-</list>
-
-</section>
-
-<section id="api-reference">
-<title>API reference</title>
-
-<list>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkHScale.html">GtkHSCale</link></p></item>
-<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkHScale.html">GtkVSCale</link></p></item>
+<item><p>Mark significant values along the length of the slider with text or tick marks. For example the left, right and center points on an audio balance control in Figure 6-7.</p></item>
+<item><p>For large ranges of integers (more than about 20), and for ranges of floating point numbers, consider providing a <link xref="text-fields">text box</link> or <link xref="spin-boxes">spin box</link> that is linked to the slider’s value. This allows the user to quickly set or fine-tune the setting more easily than they could with the slider control alone.</p></item>
 </list>
 
 </section>

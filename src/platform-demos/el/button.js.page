@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -52,57 +52,57 @@ const Lang = imports.lang;
 const ButtonExample = new Lang.Class ({
     Name: 'Button Example',
 
-    /* Create the application itself
-       This boilerplate code is needed to build any GTK+ application. */
+    /* Δημιουργία της εφαρμογής αυτής καθεαυτής
+       Αυτός ο κώδικαςχρειάζεται για τη δόμηση οποιασδήποτε εφαρμογής GTK+. */
         _init: function () {
             this.application = new Gtk.Application ({
                 application_id: 'org.example.jsbutton',
                 flags: Gio.ApplicationFlags.FLAGS_NONE
             });
 
-    // Connect 'activate' and 'startup' signals to the callback functions
+    // Σύνδεση σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
     this.application.connect('activate', Lang.bind(this, this._onActivate));
     this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Callback function for 'activate' signal presents windows when active
+    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
     _onActivate: function () {
         this._window.present ();
     },
 
-    // Callback function for 'startup' signal initializes menus and builds the UI
+    // Η συνάρτηση επανάκλησης για το σήμα 'startup' αρχικοποιεί μενού και δομεί τη διεπαφή χρήστη
     _onStartup: function () {
         this._buildUI ();
     },
 
-    // Build the application's UI
+    // Δόμηση της διεπαφής χρήστη της εφαρμογής
     _buildUI: function () {
 
-        // Create the application window
+        // Δημιουργία του παραθύρου της εφαρμογής
             this._window = new Gtk.ApplicationWindow  ({ application: this.application,
                                                               window_position: Gtk.WindowPosition.CENTER,
                                                               title: "GNOME Button",
                                                               default_height: 50,
                                                               default_width: 250 });
 
-        // Create the button
+        // Δημιουργία του κουμπιού
         this.Button = new Gtk.Button ({label: "Click Me"});
         this._window.add (this.Button);
 
-        // Bind it to a function that says what to do when the button is clicked
+        // Σύνδεσή του με μια συνάρτηση που λέει τι να γίνει όταν πατιέται το κουμπί
         this.Button.connect ("clicked", Lang.bind(this, this._clickHandler));
 
-                // Show the window and all child widgets
+                // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
                 this._window.show_all();
     },
 
-    // Here's the function that says what happens when the button is clicked
+    // Ιδού η συνάρτηση που λέει τι συμβαίνει όταν πατιέται το κουμπί
     _clickHandler: function () {
         this.Button.set_label ("Clicked!");
     }
 });
 
-// Run the application
+// Εκτέλεση της εφαρμογής
 let app = new ButtonExample ();
 app.application.run (ARGV);
 </code>

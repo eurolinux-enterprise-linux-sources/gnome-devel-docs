@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
+      <mal:years>2014</mal:years>
     </mal:credit>
   </info>
 
@@ -121,7 +121,7 @@ guitar_box.show_all();</code>
   </section>
   <section id="playSound">
    <title>Κάνοντας τους ήχους με GStreamer</title>
-   <code mime="application/javascript" style="numbered">
+   <code mime="application/javascript" style="numbered"><![CDATA[
 var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5}
 
 function playSound(frequency){
@@ -139,7 +139,7 @@ function playSound(frequency){
     pipeline.set_state(Gst.State.NULL);
 	  return false;
   });
-}</code>
+}]]></code>
    <p>Το πρώτο πράγμα που χρειαζόμαστε είναι να αποφασίσουμε τι μελωδίες θέλουμε να κάνουμε όταν πατάμε ένα κουμπί. Η λίστα συχνοτήτων το φροντίζει. Μετά από αυτό φροντίζουμε να κάνει στην πραγματικότητα τους ήχους με τη συνάρτηση playSound. Για τη συνάρτηση playSound δίνουμε ως είσοδο μια συχνότητα (που μόλις ορίσαμε στη μεταβλητή συχνοτήτων). Το πρώτο πράγμα που χρειαζόμαστε να κατασκευάσουμε είναι μια διοχέτευση, μια πηγή και μια έξοδο. Για την πηγή ορίζουμε τη συχνότητα. Στη διοχέτευση προσθέτουμε και την πηγή και την έξοδο και έπειτα της λέμε να συνεχίσει να παίζει. Ως τελευταίο πράγμα χρησιμοποιούμε τη σταθερά κύριου βρόχου για να κάνει τη διοχέτευση να σταματήσει μετά από 500ms.</p>
    <p>Τώρα έχουμε τη μέθοδο αναπαραγωγής μιας μελωδίας πατώντας ένα κουμπί. Μετά γίνονται οι συνδέσεις μεταξύ πατήματος ενός κουμπιού και αναπαραγωγής του σωστού ήχου από αυτό το κουμπί.</p>
   </section>
@@ -168,8 +168,8 @@ e.connect("clicked", function(){
   </section>
   <section id="guitarjs">
     <title>Όλο το πρόγραμμα</title>
-    <p>Έτσι αυτό είναι πώς δείχνουν όλα τα ενωμένα τμήματα. Όταν τρέχει αυτός ο κώδικας, θα μπορούσατε να συντονίσετε την κιθάρα σας (εάν έχετε σωστά βαθμονομημένα ηχεία).</p>
-      <code mime="application/javascript" style="numbered">
+    <p>So this is what all the parts combined looks like. When running this code, you should be able to tune your guitar (if you have correctly calibrated speakers).</p>
+      <code mime="application/javascript" style="numbered"><![CDATA[
 #!/usr/bin/gjs
 var Gtk = imports.gi.Gtk;
 var Gst = imports.gi.Gst;
@@ -243,7 +243,7 @@ guitarwindow.add(guitar_box);
 
 guitar_box.show_all();
 guitarwindow.show();
-Gtk.main();</code>
+Gtk.main();]]></code>
   </section>
 
 <section id="terminal">
