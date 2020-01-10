@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="logging" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Ladicí záznamy a informační výstup z knihoven a programů</desc>
+  </info>
+
+  <title>Záznamy (log)</title>
+
+  <synopsis>
+    <title>Shrnutí</title>
+
+    <p>Záznam ladicího a informačního výstupu z knihoven a programů je stále otevřený problém a existuje řada metod pro převod více datových proudů s výstupními záznamy do vlastních datových proudů stdout a stderr. Níže jsou uvedena některá doporučení, jak zaznamenávání implementovat. Nejdůležitější věcí ale je zajistit, aby záznamy byly konzistentní, takže k nim bude jednoduchý přístup a půjde v nich snadno vyhledávat, protože to je přesně to, k čemu slouží. Používat odlišné mechanizmy záznamu a odlišné formáty u různých projektů není ten pravý přístup.</p>
+
+    <list>
+      <item><p>Místo záznamů přímo do stderr a stdout používejte framework GLib pro záznamy. (<link xref="#glib-logging-framework"/>)</p></item>
+      <item><p>Když může být projekt závislý na systemd, zvažte přímé použití záznamů v žurnálu. (<link xref="#journald-integration"/>)</p></item>
+      <item><p>Neimplementujte rotaci a mazání záznamů. Ponechte to na systémových službách. (<link xref="#log-rotation"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="glib-logging-framework">
+    <title>Framework GLib pro záznamy</title>
+
+    <p>GLib poskytuje <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html">framework pro zaznamenávání</link>, který je postavený na funkci <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-log"><code>g_log()</code></link> spolu s obalujícími funkcemi <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-debug"><code>g_debug()</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-message"><code>g_message()</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-warning"><code>g_warning()</code></link> a <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-error"><code>g_error()</code></link> pro větší pohodlí. Tento framework má pár užitečných vlastností:</p>
+    <list>
+      <item><p>Programové přesměrování záznamu zpráv pomocí <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-log-set-handler"><code>g_log_set_handler()</code></link>.</p></item>
+      <item><p>Více domén záznamů, které mohou být zpracovány odděleně.</p></item>
+      <item><p>Více úrovní záznamů, které mohou být zpracovány odděleně. Například to umožňuje za běhu zapnout a vypnout ladicí zprávy.</p></item>
+      <item><p>Podpora pro automatické přerušení programu u „kritických“ zpráv.</p></item>
+    </list>
+
+    <p>Uvedeným postupům byste měli dát přednost před funkcemi jako jsou <code>printf()</code>, <link href="https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-print"><code>g_print()</code></link> a <link href="https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-printerr"><code>g_printerr()</code></link>, protože je to daleko flexibilnější. Funkce pro zaznamenávání umožňují provádět zaznamenávání přímo z kódu, namísto pomocí externích shellových skriptů, čímž se vše zjednoduší.</p>
+
+    <p>Klíčovým důvodem pro používání frameworku pro záznamy je, že jej používá GLib a ostatní související knihovny. Když jej budete používat i vy, půjdou všechny zprávy skrz ten samý systém a mohou být zpracovány podobně.</p>
+
+    <p>Když chcete používat framework GLib pro záznamy, definujte pro projekt jedinečnou <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#G-LOG-DOMAIN:CAPS"><code>G_LOG_DOMAIN</code></link>, lišící se od ostatních projektů. Ladicí zprávu zaznamenáte zavoláním <code>g_debug("Zpráva")</code>.</p>
+
+    <p>V případě, že výchozí obsluha záznamů v GLib není dostačující, například když potřebujete zaznamenávané zprávy ve vlastním formátu nebo potřebujete <link xref="#journald-integration">integraci s journald</link>, nastavte obsluhu záznamů pomocí následujícího kódu:</p>
+    <code mime="text/x-csrc">
+static const gchar *
+log_level_to_string (GLogLevelFlags level)
+{
+  switch (level)
+    {
+      case G_LOG_LEVEL_ERROR: return "ERROR";
+      case G_LOG_LEVEL_CRITICAL: return "CRITICAL";
+      case G_LOG_LEVEL_WARNING: return "WARNING";
+      case G_LOG_LEVEL_MESSAGE: return "MESSAGE";
+      case G_LOG_LEVEL_INFO: return "INFO";
+      case G_LOG_LEVEL_DEBUG: return "DEBUG";
+      default: return "UNKNOWN";
+    }
+}
+
+static void
+log_handler_cb (const gchar    *log_domain,
+                GLogLevelFlags  log_level,
+                const gchar    *message,
+                gpointer        user_data)
+{
+  const gchar *log_level_str;
+
+  /* Když je vypnuto ladění, ignorovat ladicí zprávy. */
+  if (!debug_enabled &amp;&amp; (log_level &amp; G_LOG_LEVEL_DEBUG))
+    {
+      return;
+    }
+
+  log_level_str = log_level_to_string (log_level &amp; G_LOG_LEVEL_MASK);
+
+  /* Použít g_printerr() pro varování a g_print() v ostatních případech. */
+  if (flags &lt;= G_LOG_LEVEL_WARNING)
+    {
+      g_printerr ("%s: %s: %s\n", log_domain, log_level_str, message);
+    }
+  else
+    {
+      g_print ("%s: %s: %s\n", log_domain, log_level_str, message);
+    }
+}
+
+g_log_set_handler ("log-domain",
+                   G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
+                   log_handler_cb, NULL);</code>
+
+    <section id="exceptions">
+      <title>Výjimky</title>
+
+      <list>
+        <item><p>Nepoužívejte <code>g_message()</code> v normálním kódu k výpisům. Výpisy by se měly dělat jen v nejvyšší úrovni aplikace pomocí <code>g_print()</code> a měly by být jen zřídkavé, tj. prováděné jen v aplikacích pro příkazový řádek.</p></item>
+        <item><p>Nepoužívejte <code>g_warning()</code> v programovém kódu knihoven. Místo toho použijte <link xref="gerror"><code>GError</code></link>.</p></item>
+        <item><p>Obdobně, nenastavujte obsluhu záznamů v kódu knihovny. Zprávy do záznamu by měly být propagovány z kódu knihovny ven a obslouženy v obsluze záznamu v nejvyšší úrovni aplikace.</p></item>
+      </list>
+    </section>
+  </section>
+
+  <section id="journald-integration">
+    <title>Integrace journald</title>
+
+    <p>Ve srovnání s tradičními záznamy ve stylu syslog, journald podporuje ukládání záznamů ve strukturované podobě, co usnadňuje následnou analýzu záznamů. Můžete přidat <code>systemd-journal</code> jako závislost do svého projektu a jako funkce pro obsluhu záznamů pak můžete použít <link href="http://0pointer.de/public/systemd-man/sd_journal_send.html"><code>sd_journal_print()</code> a <code>sd_journal_send()</code></link>, na místo <code>g_print()</code> a <code>g_printerr()</code>.</p>
+
+    <p>Další informace najdete v tomto <link href="http://0pointer.de/blog/projects/journal-submit.html">článku o záznamu do žurnálu</link>.</p>
+  </section>
+
+  <section id="log-rotation">
+    <title>Rotování záznamů</title>
+
+    <p>Rotování záznamů je jedna z funkcí, která jde mimo rozsah systému záznamů v GLib. Mělo by být obsluhováno normálním mechanizmem systému záznamů, jako je <cmd>logrotate</cmd> nebo <cmd>systemd-journald</cmd>.</p>
+  </section>
+</page>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="file-system" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Acessando o sistema de arquivos</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Acesso ao sistema de arquivos</title>
+
+  <synopsis>
+    <title>Resumo</title>
+
+    <p>Há alguns antipadrões a serem considerados ao acessar o sistema de arquivos. Esse artigo presume conhecimento das APIs <link href="https://developer.gnome.org/gio/stable/GFile.html"><code>GFile</code></link>, <link href="https://developer.gnome.org/gio/stable/GInputStream.html"><code>GInputStream</code></link> e <link href="https://developer.gnome.org/gio/stable/GOutputStream.html"><code>GOutputStream</code></link> padrões.</p>
+
+    <list>
+      <item><p>Use E/S assíncrona para acesso de arquivo. (<link xref="#asynchronous-io"/>)</p></item>
+      <item><p>Sempre use funções adequadas para construir nomes e caminhos de arquivos . (<link xref="#file-path-construction"/>)</p></item>
+      <item><p>Valide caminhos de arquivos que estão em diretórios esperados antes de usá-los. (<link xref="#path-validation-and-sandboxing"/>)</p></item>
+      <item><p>Use perfis obrigatórios de controle de acesso para reforçar restrições de acesso de arquivos. (<link xref="#path-validation-and-sandboxing"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="asynchronous-io">
+    <title>E/S assíncrona</title>
+
+    <p>Quase toda E/S deve ser feita assincronamente, ou seja, sem bloqueio do <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html">contexto principal do GLib</link>. Isso pode ser alcançado por sempre usar as variantes <code>*_async()</code> e <code>*_finish()</code> de cada função de E/S.</p>
+
+    <example>
+      <p>Por exemplo, <link href="https://developer.gnome.org/gio/stable/GInputStream.html#g-input-stream-read-async"><code>g_input_stream_read_async()</code></link> em vez de <link href="https://developer.gnome.org/gio/stable/GInputStream.html#g-input-stream-read"><code>g_input_stream_read()</code></link>.</p>
+    </example>
+
+    <p>E/S síncrona bloqueia o loop principal, o que significa que outros eventos, tal como entrada de usuário, chegada de pacotes de rede, expiração de tempo limite e retorno de chamada ocioso, não são tratados até que a função bloqueadora retorne.</p>
+
+    <p>E/S síncrona é aceitável em certas circunstâncias nas quais a sobrecarga de agendar uma operação assíncrona excede o custo de E/S síncrona local no Linux. Por exemplo, fazer uma leitura pequena de um arquivo local, ou de um sistema de arquivos virtual tal como <file>/proc</file>. Para tais leituras, as funções de baixo nível <code>g_open()</code>, <code>read()</code> e <code>g_close()</code> devem ser usadas, em vez do GIO.</p>
+
+    <p>Arquivos no diretório pessoal do usuário <em>não</em> contam como locais, pois eles podem estar em um sistema de arquivos de rede.</p>
+
+    <p>Note que a alternativa – executar E/S síncrona em uma thread separada – é altamente desencorajada; veja as <link xref="threading#when-to-use-threading">diretrizes de thread</link> para mais informações.</p>
+  </section>
+
+  <section id="file-path-construction">
+    <title>Construção de caminho de arquivo</title>
+
+    <p>Nomes e caminhos de arquivos não são strings normais: em alguns sistemas, eles podem usar uma codificação de caracteres diferente de UTF-8, enquanto strings normais no GLib têm a garantia de sempre usar UTF-8. Por este motivo, funções especiais devem ser usadas para compilar e tratar nomes e caminhos de arquivos. (Sistemas Linux modernos quase que universalmente usam UTF-8 para codificação de nome de arquivo, então isso não é um problema na prática, mas as funções de caminho de arquivo ainda devem ser usadas para compatibilidade com sistemas como o Windows, que usam nomes de arquivos UTF-16.)</p>
+
+    <example>
+      <p>Por exemplo, caminhos de arquivos devem ser construídos usando <link href="https://developer.gnome.org/glib/stable/glib-Miscellaneous-Utility-Functions.html#g-build-filename"><code>g_build_filename()</code></link> em vez de <link href="https://developer.gnome.org/glib/stable/glib-String-Utility-Functions.html#g-strconcat"><code>g_strconcat()</code></link>.</p>
+    </example>
+
+    <p>Fazer isso deixa mais claro qual é a intenção do código e também elimina separadores duplicados de diretórios, de forma que o caminho retornado é canonical (apesar de não necessariamente absoluto).</p>
+
+    <example>
+      <p>Como um outro exemplo, caminhos devem ser desmembrados usando <link href="https://developer.gnome.org/glib/stable/glib-Miscellaneous-Utility-Functions.html#g-path-get-basename"><code>g_path_get_basename()</code></link> e <link href="https://developer.gnome.org/glib/stable/glib-Miscellaneous-Utility-Functions.html#g-path-get-dirname"><code>g_path_get_dirname()</code></link> em vez de <link href="https://developer.gnome.org/glib/stable/glib-String-Utility-Functions.html#g-strrstr"><code>g_strrstr()</code></link> e outras funções manuais de pesquisa.</p>
+    </example>
+  </section>
+
+  <section id="path-validation-and-sandboxing">
+    <title>Validação de caminho e <em>sandboxing</em></title>
+
+    <p>Se um nome ou caminho de arquivo vem com uma entrada externa, tal como uma página web ou entrada de usuário, ele deve ser validado para garantir que colocá-lo em um caminho de arquivo não produzirá um caminho arbitrário. Por exemplo, se um nome de arquivo é construído a partir de uma string constante <file>~/</file> junto com alguma entrada de usuário, se o usuário insere <file>./../etc/passwd</file>, eles podem (potencialmente) ganhar acesso a informação sensível de contas, dependendo de com qual usuário o programa está sendo executado e o que ele faz com os dados carregados a partir do caminho construído.</p>
+
+    <p>Isso pode ser evitado por meio de uma validação dos caminhos construídos antes de usá-los usando <link href="https://developer.gnome.org/gio/stable/GFile.html#g-file-resolve-relative-path"><code>g_file_resolve_relative_path()</code></link> para converter quaisquer caminhos relativos para absolutos e, então, validar se aqueles caminhos estão dentro de um diretório raiz de <em>sandbox</em> apropriado para a operação. Por exemplo, se um código baixa um arquivo, ele poderia validar se aqueles caminhos estejam dentro de <file>~/Downloads</file>, usando <link href="https://developer.gnome.org/gio/stable/GFile.html#g-file-has-parent"><code>g_file_has_parent()</code></link>.</p>
+
+    <p>Como uma segunda linha de defesa, todos os projetos que acessam o sistema de arquivos devem considerar fornecer um perfil obrigatório de controle de acesso, usando um sistema tal como <link href="http://apparmor.net/">AppArmor</link> ou <link href="http://selinuxproject.org/">SELinux</link> que limita os diretórios e arquivos nos quais eles podem ler de ou escrever em.</p>
+  </section>
+</page>

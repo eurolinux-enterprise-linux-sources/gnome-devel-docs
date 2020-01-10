@@ -42,51 +42,49 @@
     <title>Configurando seu aplicativo</title>
 
     <p>Antes de nos aprofundarmos na caixa de ferramentas do GTK+, nós primeiro precisamos escrever o código básico padrão que nosso aplicativo requer.</p>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
-</code>
-    <p>Essa parte sempre vai no começo do seu código. Dependendo do que você vai fazer com ele, você pode querer declarar muitas importações aqui. O que nós estamos escrevendo hoje é bem básico, de forma que isso é tudo que precisamos; o Gtk para os widgets, e Lang de forma que nós possamos usar o Lang.bind para conectar os sinais de ativação e inicialização de nosso aplicativo para requisitar funções.</p>
+]]></code>
+    <p>This part always goes at the start of your code. Depending on what you'll be doing with it, you may want to declare more imports here. What we're writing today is pretty basic, so these are all we need; Gtk for the widgets, using the stable '3.0' API.</p>
     <p>Falando nisso:</p>
-    <code mime="application/javascript">
-const WelcomeToTheGrid = new Lang.Class({
-    Name: 'Bem-vindo à Grid',
-
-    // Cria o aplicativo em si
-    _init: function() {
+    <code mime="application/javascript"><![CDATA[
+class WelcomeToTheGrid {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application();
 
-        // Conecta os sinais 'activate' e 'startup' para as funções de chamada
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Função de chamada para o sinal 'activate' apresenta janelas quando ativa
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
         this._window.present();
-    },
+    }
 
-    // Função de chamada para sinal 'startup' constrói a interface gráfica
-    _onStartup: function() {
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
         this._buildUI ();
-    },
-</code>
+    }
+]]></code>
     <p>Esse é o começo de um aplicativo em si e a função _init que cria-o. Ela fala para _buildUI criar um ApplicationWindow, com o qual nós vamos chamar _window, e fala para nossa janela para se apresentar quando for necessário.</p>
     <p>Essa parte, de novo, é basicamente um copia-e-cola, mas você sempre deseja dar seu aplicativo um nome único.</p>
 
-    <code mime="application/javascript">
-    // Constrói a interface gráfica do aplicativo
-    _buildUI: function() {
+    <code mime="application/javascript"><![CDATA[
+    // Build the application's UI
+    _buildUI() {
 
-        // Cria a janela do aplicativo
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 10,
-            title: "Bem-vindo à Grid"});
-</code>
+            title: "Welcome to the Grid"});
+]]></code>
     <p>Finalmente, nós começamos a função _buildUI criando uma nova ApplicationWindow. Nós especificamos que ela vai com este aplicativo, que ela deveria aparecer no centro da tela, e que deve haver pelo menos 10 pixels entre a borda exterior e quaisquer widgets dentro dela. Nós também damos a ela um título, que vai aparecer no topo da janela.</p>
   </section>
 
@@ -127,24 +125,24 @@ const WelcomeToTheGrid = new Lang.Class({
     <p>Este código parece muito complicado, mas não é. Aqui segue o que aqueles números significam:</p>
     <list type="numbered">
       <item><p>O <em>primeiro</em> número é qual posição esquerda-para-direita deve-se coloca as coisas, começando de 0. Qualquer widget que usa um 0 aqui vai para o mais esquerda possível.</p></item>
-      <item><p>O <em>segundo</em> número é qual posição de cima-para-baixo deve-se colocar uma dado widget, começando de 0. O Label vai embaixo da Image, de forma que nós damos à Image um 0 e o Label um 1 aqui.</p></item>
+      <item><p>The <em>second</em> number is what top-to-bottom position to put a given widget in, starting from 0. The Label goes beneath the Image, so we give the Image a 0 and the Label a 1 here.</p></item>
       <item><p>O <em>terceiro</em> e <em>quarto</em> números são quantas colunas e linhas um widget deveria levar. Nós vamos ver como estes funcionam em um minuto.</p></item>
     </list>
 
-    <code mime="application/javascript">
-        // Adiciona a grade à janela
+    <code mime="application/javascript"><![CDATA[
+        // Add the grid to the window
         this._window.add (this._grid);
 
-        // Mostra a janela e todos seus widgets filhos
+        // Show the window and all child widgets
         this._window.show_all();
     }
 
-});
+};
 
-// Executa o aplicativo
+// Run the application
 let app = new WelcomeToTheGrid ();
 app.application.run (ARGV);
-</code>
+]]></code>
     <p>Agora que nós criamos a Grid e anexamos todos os nossos widgets a ela, nós adicionamos-a à janela e falamos para a janela se mostrar, como parte da função _buildUI. Como sempre, para finalizar nós criamos uma nova instância da classe do aplicativo e falamos para ele executar.</p>
     <p>Salva seu aplicativo como welcome_to_the_grid.js. Então, para executar seu aplicativo basta abrir um terminal, ir até o diretório onde seu aplicativo se encontra e digitar</p>
       <screen> <output style="prompt">$ </output>gjs welcome_to_the_grid.js </screen>
@@ -207,7 +205,7 @@ app.application.run (ARGV);
     <p>Há pelo menos três formas de resolvermos o último. Primeiro, nós podemos definir um margin_left ou margin_right em um dos Labels:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_05.png"/>
 
-    <p>Segundo, nós podemos definir a propriedade column_homogenous da Grid para "true".</p>
+    <p>Second, we can set the Grid's column_homogeneous property to true.</p>
     <code mime="application/javascript">
         // Cria a Grid
         this._grid = new Gtk.Grid ({
@@ -278,69 +276,66 @@ app.application.run (ARGV);
     <title>Amostra de código completo</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const WelcomeToTheGrid = new Lang.Class({
-    Name: 'Bem-vindo à Grid',
+class WelcomeToTheGrid {
 
-    // Cria o aplicativo em si
-    _init: function() {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application();
 
-    // Conecta os sinais 'activate' e 'startup' às funções de chamada
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', this._onActivate.bind(this));
+    this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Função de chamada para o sinal 'activate' apresenta janelas quando ativo
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
         this._window.present();
-    },
+    }
 
-    // Função de chamada para o sinal 'startup' constrói a interface gráfica
-    _onStartup: function() {
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
         this._buildUI ();
-    },
+    }
 
+    // Build the application's UI
+    _buildUI() {
 
-
-    // Constrói a interface gráfica do aplicativo
-    _buildUI: function() {
-
-        // Cria a janela do aplicativo
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 10,
-            title: "Bem-vindo à Grid"});
+            title: "Welcome to the Grid"});
 
-        // Cria a Grid
+        // Create the Grid
         this._grid = new Gtk.Grid ({
             // column_homogeneous: true,
             // column_spacing: 20,
             row_spacing: 20 });
 
-        // Cria uma imagem
+        // Create an image
         this._image = new Gtk.Image ({ file: "gnome-image.png" });
 
-        // Cria uma segunda imagem usando um ícone padrão
+        // Create a second image using a stock icon
         this._icon = new Gtk.Image ({ stock: 'gtk-about' });
 
-        // Cria um rótulo
+        // Create a label
         this._label = new Gtk.Label ({
-            label: "Bem-vindo ao GNOME, também!",
+            label: "Welcome to GNOME, too!",
             /* margin_top: 20 */ });
 
-        /* Cria um segundo rótulo
+        /* Create a second label
         this._labelTwo = new Gtk.Label ({
-            label: "O bolo é uma torta." }); */
+            label: "The cake is a pie." }); */
 
-        /* Cria um botão
+        /* Create a button
         this._button = new Gtk.Button ({
-            label: "Bem-vindo ao GNOME, também!"}); */
+            label: "Welcome to GNOME, too!"}); */
 
-        // Anexa as imagens e botão à grade
+        // Attach the images and button to the grid
         this._grid.attach (this._image,  0, 0, 2, 1);
         this._grid.attach (this._icon,   0, 1, 1, 1);
         this._grid.attach (this._label,  1, 1, 1, 1);
@@ -350,16 +345,16 @@ const WelcomeToTheGrid = new Lang.Class({
 
         // this._grid.attach (this._button, 1, 1, 1, 1);
 
-        // Adiciona a grade à janela
+        // Add the grid to the window
         this._window.add (this._grid);
 
-        // Mostra a janela e todos os widgets filhos
+        // Show the window and all child widgets
         this._window.show_all();
     }
 
-});
+};
 
-// Executa o aplicativo
+// Run the application
 let app = new WelcomeToTheGrid ();
 app.application.run (ARGV);
 </code>

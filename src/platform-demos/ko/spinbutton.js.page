@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.js" xml:lang="ko">
+  <info>
+  <title type="text">SpinButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#entry"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="grid.js"/>
+    <link type="seealso" xref="label.js"/>
+    <revision version="0.1" date="2012-06-24" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>+ 단추와 - 단추가 있는 숫자 항목 필드</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>SpinButton</title>
+  <media type="image" mime="image/png" src="media/spinbuttonkittens.png"/>
+  <p>SpinButton은 <link xref="spinner.js">Spinner</link>와는 관련이 없습니다. 숫자 값만 받는 텍스트 항목 빌드이며, 더하기 빼기 단추가 있어 직접 입력받지 않고도 숫자 값을 입력 받을 수 있습니다.</p>
+  <p>숫자만 입력할 수 있다는게 명백하다면 최상의 용도입니다. 이 예제에서는 SpinButton 두개를 활용하여 고양이 수랑 참치캔 수를 입력합니다.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>가져올 라이브러리</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>이 프로그램을 실행할 때 가져올 라이브러리입니다. 시작 부분에 항상 gjs가 필요함을 알리는 줄을 작성해야 함을 기억하십시오.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>프로그램 창 만들기</title>
+    <code mime="application/javascript">
+const SpinButtonExample = new Lang.Class({
+    Name: 'SpinButton Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsspinbutton'
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>이 예제의 모든 코드는 SpinButtonExample 클래스에 들어갑니다. 위 코드는 위젯과 창이 들어가는 <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link>을 만듭니다.</p>
+    <code mime="application/javascript">
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Kitten Feeder"});
+</code>
+    <p>_buildUI 함수는 프로그램 사용자 인터페이스를 만드는 모든 코드를 넣는 곳입니다. 첫 단계에서는 모든 위젯을 우겨넣을 새 <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link>를 만듭니다.</p>
+  </section>
+
+  <section id="spinbutton">
+    <title>SpinButton 만들기</title>
+    <code mime="application/javascript">
+        // Create the first spinbutton using a function
+        this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
+        this._kittens.connect ("value-changed", Lang.bind (this, this._newValue));
+</code>
+
+    <p>new_with_range 함수를 사용하여 새 SpinButton을 빨리 만들 수 있습니다. 첫번째 매개변수는 SpinButton의 시작 값, 두번째는 최대 값, 세번째는 더하기 빼기 단추를 눌렀을 때 적용할 증가 감소 값입니다.</p>
+    <p>첫 SpinButton을 만들고 나면, value-changed 시그널을 SpinButton의 숫지 값이 바뀌었을 때 처리할 함수에 연결하겠습니다.</p>
+
+    <code mime="application/javascript">
+        // Create an adjustment to use for the second spinbutton
+        this._adjustment = new Gtk.Adjustment ({
+            value: 1,
+            lower: 0,
+            upper: 9001,
+            step_increment: 1,
+            page_increment: 10 });
+
+        // Create the second spinbutton
+        this._tuna = new Gtk.SpinButton ({ adjustment: this._adjustment });
+        this._tuna.connect ("value-changed", Lang.bind (this, this._newValue));
+
+        // this._tuna.set_digits (1);
+        // this._tuna.set_wrap (true);
+</code>
+
+    <p>SpinButton을 더 세밀하게 조절하려거나, 모든 SpinButtons에서 동일한 매개 변수를 활용하게 하려면 <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Adjustment</link> 객체를 만들 수 있습니다. 그 다음 SpinButton의 adjustment 새 속성값으로 이 객체를 사용하며, 모든 값을 한번에 설정합니다. 이렇게 하면, Adjustment 객체 속성 값을 바꾸어서 모든 SpinButton의 adjustment 속성 값을 바꿀 수 있습니다.</p>
+    <p>여기서 주석 표시를 날린 부분은 SpinButton의 속성을 개별적으로 설정할 수 있습니다. 예를 들면 소숫점 다음에 표시할 숫자 갯수를 설정하거나, 여러분이 설정한 자릿수 범위 위아래를 벗어나면 숫자 값이 시작 값 내지는 끝 값으로 돌아가도록 설정할 수 있습니다.</p>
+    <note><p>고양이 수 처리를 목적으로, 고양이 숫자 값을 받을 때 set_digits를 사용하지 마십시오.</p></note>
+  </section>
+
+  <section id="UI">
+    <title>나머지 UI 만들기</title>
+
+    <code mime="application/javascript">
+        // Create the text labels to go with the spinbuttons
+        this._startLabel = new Gtk.Label ({ label: "There are " });
+        this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
+        this._tunaLabel = new Gtk.Label ({ label: " can(s) of tuna."});
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
+        this._lastLabel = new Gtk.Label ({
+            label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
+</code>
+    <p>각 <link xref="label.js">Label</link>을 만들고 SpinButtons에 문자열을 넣겠습니다. 마지막 레이블에는 고양이 한마리당 참치캔 갯수를 보여주어야 하므로, 각각의 SpinButton에 어떤 값을 설정했는지 가져오는 get_value 함수를 활용하여 공식에 해당하는 변수를 둡니다. JavaScript의 Math 함수 중 floor 메서드는 고양이 한마리당 필요한 참치캔 갯수가 소수로 나왔을 경우 소숫점 아래를 버릴때 씁니다.</p>
+
+    <code mime="application/javascript">
+        // Create a grid to put the spinbuttons and their labels in
+        this._spinGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_bottom: 20 });
+
+        // Attach everything to the grid
+        this._spinGrid.attach (this._startLabel, 0, 0, 1, 1);
+        this._spinGrid.attach (this._kittens, 1, 0, 1, 1);
+        this._spinGrid.attach (this._kittenLabel, 2, 0, 1, 1);
+        this._spinGrid.attach (this._tuna, 3, 0, 1, 1);
+        this._spinGrid.attach (this._tunaLabel, 4, 0, 1, 1);
+
+        // Create a main grid to hold it and the last label
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Attach the smaller grid and the last label to the main grid
+        this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
+        this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
+</code>
+
+    <p>여기서 모든 위젯을 모아두려 <link xref="grid.js">Grid</link> 위젯을 사용하겠습니다. 그리드 하나는 레이블과 SpinButton를 순서대로 유지하며 그 다음 둘 내용은 그리스 상단에, 마지막으로 레이블은 하단에 둡니다.</p>
+    <p>여러분이 바라는대로 결과가 나오는 동안 그리드에 무언가를 정돈해넣는 잘못된 방식은 없습니다. 이 경우 그리드 하단에 여백이 있는데, 하단 레이블과 균등한 간격을 유지하고, 하단 레이블은 별도의 그리드에 두어, 상단의 레이블과 SpinButton과 견주어 봤을 떄 상대적으로 가운데에 들어갑니다.</p>
+
+    <code mime="application/javascript">
+        // Add the main grid to the window
+        this._window.add (this._mainGrid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+</code>
+    <p>마지막으로 창에 제일 큰 그리드를 추가하고, 창에서 창 자신과 그 안에 들어간 위젯을 모두 보여주도록 하겠습니다.</p>
+    </section>
+
+    <section id="spinbutton-handler">
+    <title>SpinButton의 숫자 값 조절을 처리하는 함수</title>
+
+    <code mime="application/javascript">
+    _newValue: function () {
+
+        // Update the label which shows how many cans there are per kitten
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()))
+        this._lastLabel.set_label ("That's " + this.perKitten + " can(s) of tuna per kitten.");
+
+    }
+
+});
+</code>
+    <p>여기에서는 SpinButton의 새 값에 따라 perKitten 값을 업데이트하며, set_label 속성으로 _lastLabel에서 보여줄 내용을 새로 고칩니다. 두 SpinButton에는 앞에 언급한 함수와 연결한 value-changed 시그널이 있기 때문에, 숫자가 바뀔 때마다 이 함수를 통해 레이블의 내용을 새로 고칩니다.</p>
+
+    <code mime="application/javascript">
+// Run the application
+let app = new SpinButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>마지막으로 마무리한 SpinButtonExample 클래스의 새 인스턴스를 만들고 프로그램 실행을 설정합니다.</p>
+  </section>
+
+  <section id="complete">
+    <title>완전한 코드 예제</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+
+class SpinButtonExample {
+
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsspinbutton'
+        });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Kitten Feeder"});
+
+        // Create the first spinbutton using a function
+        this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
+        this._kittens.connect ("value-changed", this._newValue.bind(this));
+
+        // Create an adjustment to use for the second spinbutton
+        this._adjustment = new Gtk.Adjustment ({
+            value: 1,
+            lower: 0,
+            upper: 9001,
+            step_increment: 1,
+            page_increment: 10 });
+
+        // Create the second spinbutton
+        this._tuna = new Gtk.SpinButton ({ adjustment: this._adjustment });
+        this._tuna.connect ("value-changed", this._newValue.bind(this));
+
+        // this._tuna.set_digits (1);
+        // this._tuna.set_wrap (true);
+
+        // Create the text labels to go with the spinbuttons
+        this._startLabel = new Gtk.Label ({ label: "There are " });
+        this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
+        this._tunaLabel = new Gtk.Label ({ label: " can(s) of tuna."});
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
+        this._lastLabel = new Gtk.Label ({
+            label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
+
+        // Create a grid to put the spinbuttons and their labels in
+        this._spinGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_bottom: 20 });
+
+        // Attach everything to the grid
+        this._spinGrid.attach (this._startLabel, 0, 0, 1, 1);
+        this._spinGrid.attach (this._kittens, 1, 0, 1, 1);
+        this._spinGrid.attach (this._kittenLabel, 2, 0, 1, 1);
+        this._spinGrid.attach (this._tuna, 3, 0, 1, 1);
+        this._spinGrid.attach (this._tunaLabel, 4, 0, 1, 1);
+
+        // Create a main grid to hold it and the last label
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Attach the smaller grid and the last label to the main grid
+        this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
+        this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
+
+        // Add the main grid to the window
+        this._window.add (this._mainGrid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+
+    _newValue() {
+        // Update the label which shows how many cans there are per kitten
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()))
+        this._lastLabel.set_label ("That's " + this.perKitten + " can(s) of tuna per kitten.");
+    }
+};
+
+// Run the application
+let app = new SpinButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>자세한 문서</title>
+<list>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Gtk.Adjustment</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.SpinButton.html">Gtk.SpinButton</link></p></item>
+</list>
+  </section>
+</page>

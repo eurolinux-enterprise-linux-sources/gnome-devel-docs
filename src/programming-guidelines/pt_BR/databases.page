@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="databases" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Armazenamentos simples de objetos persistentes</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Bancos de dados</title>
+
+  <synopsis>
+    <title>Resumo</title>
+
+    <list>
+      <item><p>Use bancos de dados para casos de uso apropriados: não para dados de configuração (use GSettings). (<link xref="#when-to-use-databases"/>)</p></item>
+      <item><p>Escolha entre GOM e GVDB com base em se indexação é necessária. (<link xref="#when-to-use-databases"/>)</p></item>
+      <item><p>Considere sua política de <em>vacuuming</em> antes de usar GOM. (<link xref="#when-to-use-databases"/>)</p></item>
+      <item><p>Evite vulnerabilidades de injeção SQL usando as instruções preparadas. (<link xref="#sql-injection"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="when-to-use-databases">
+    <title>Quando usar bancos de dados</title>
+
+    <p>Dados de configuração devem ser armazenados em <link href="https://developer.gnome.org/gio/stable/GSettings.html">GSettings</link>. Como uma regra de ouro, se alguns dados precisam ser persistentes e afetam como um aplicativo se comporta, eles são dados de configuração. Se eles estão potencialmente sujeitos a políticas impostas pelo administrador do sistema (tal como configurações de proxy e bloqueio), são dados de configuração. Se eles contêm conteúdo criado por usuários, não são dados de configuração e não devem ser armazenados em GSettings.</p>
+
+    <p>Para tais situações nas quais dados de usuário estejam altamente estruturado, armazená-los em um banco de dados é sensível. Há dois bancos de dados principais sugeridos para usar com GNOME: GOM e GVDB. GOM é um interfaceador do SQLite e, portanto, implementa indexação de campos e consultas no tipo SQL. GVDB é um armazenamento de objeto muito mais simples, oferecendo suporte a serialização rápida de um dicionário de objetos para disco.</p>
+
+    <p>GOM deve ser usado se você precisa de recursos avançados, especialmente indexação. Do contrário, GVDB deve ser usado.</p>
+
+    <p>Antes de decidir por usar o GOM (e, portanto, SQLite), você deveria considerar uma política de <em>vacuuming</em> para o banco de dados e se seu caso de uso vai interagir bem com o sistema de vácuo do SQLite. <em>Vaccuming</em> é, efetivamente, o termo para desfragmentação do banco de dados — se um banco de dados não for adequadamente aspirado, o desempenho será degradado e seu tamanho vai aumentar indefinidamente. Leia <link href="http://blogs.gnome.org/jnelson/2015/01/06/sqlite-vacuum-and-auto_vacuum/">este artigo</link> sobre <em>vacuuming</em> para mais informações; considere-o antes de escolher usar GOM.</p>
+
+    <p>GNOME possui uma outra biblioteca de banco de dados: GNOME Data Access (GDA). Ela visa abstrair o acesso a vários tipos de banco de dados relacionais, para uso em um programa utilitário de banco de dados ou programa de escritório, por exemplo. Ela não é adequado para armazenar <link href="https://developer.gnome.org/gio/stable/GSettings.html">configurações de usuários</link>.</p>
+  </section>
+
+  <section id="gom">
+    <title>Usando o GOM</title>
+
+    <p>Fornecer um tutorial do GOM vai além do escopo deste documento, mas um <link href="https://developer.gnome.org/gom/">manual de referência está disponível</link>.</p>
+
+    <section id="sql-injection">
+      <title>Injeção de SQL</title>
+
+      <p>GOM não permite acesso às APIs de consulta de baixo de nível do SQLite. Ao usá-las, as consultas <em style="strong">devem</em> ser construídas usando a API de <link href="https://www.sqlite.org/c3ref/stmt.html">prepared statement</link> (instrução preparada) e <link href="https://www.sqlite.org/c3ref/bind_blob.html">value binding</link> (associação de valor) do SQLite, em vez de construir strings SQL e, então, passá-las para o SQLite interpretar. Construir strings possibilita as vulnerabilidades da <link href="https://pt.wikipedia.org/wiki/Inje%C3%A7%C3%A3o_de_SQL">injeção de SQL</link>, o que pode fornecer acesso aos atacantes a dados de usuários a partir do banco de dados.</p>
+    </section>
+  </section>
+
+  <section id="gvdb">
+    <title>Usando o GVDB</title>
+
+    <p>GVDB possui uma API simples que espelha a tabela de hash convencional. Atualmente, GVDB está disponível apenas como uma biblioteca de copiar-e-colar; obtenha a cópia mais recente do código de <link href="https://git.gnome.org/browse/gvdb">GVDB git</link> e copie-o para seu projeto. Ele está licenciado sob LGPLv2.1+.</p>
+
+    <p>Um tutorial completo do GVDB vai além do escopo deste documento.</p>
+  </section>
+</page>

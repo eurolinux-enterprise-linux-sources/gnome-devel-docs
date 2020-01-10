@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="gerror" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Tratamento e relatório de erro em tempo de execução</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>GError</title>
+
+  <section id="gerror-usage">
+    <title>Uso do GError</title>
+
+    <p><link href="https://developer.gnome.org/glib/stable/glib-Error-Reporting.html"><code>GError</code></link> é o mecanismo padrão de relatório de erro para códigos usando GLib e pode ser pensado como uma implementação C de uma <link href="http://en.wikipedia.org/wiki/Exception_handling">exceção</link>.</p>
+
+    <p>Qualquer tipo de falha em tempo de execução (qualquer coisa que não seja um <link xref="preconditions">erro de programação</link>) deve ser tratado com a inclusão de um parâmetro <code>GError**</code> na função e definição de um GError útil e relevante que descreva a falha, antes de retornar a função. Os erros de programação não devem ser tratados usando GError: use asserções, pré-condições ou pós-condições.</p>
+
+    <p>O GError deve ser usado como preferência a um código de retorno simples, pois ele pode transmitir mais informações e também tem suporte em todas as ferramentas em GLib. Por exemplo, <link xref="introspection">introspecção de uma API</link> detectará automaticamente todos os parâmetros de GError de forma que eles possam ser convertidos para exceções em outros idiomas.</p>
+
+    <p>A impressão de avisos para o console não deve ser feita no código da biblioteca: use um GError e o código de chamada pode propagá-lo mais para cima, decidir tratá-lo ou decidir imprimi-lo para o console. Idealmente, o único código que imprime para o console será um código de aplicativo topo de nível, e não um código de biblioteca.</p>
+
+    <p>Qualquer chamada de função que possa levar um <code>GError**</code>, <em>deve</em> levar tal parâmetro e o GError retornado deve ser tratado apropriadamente. Há muito poucas situações nas quais ignorar um erro em potencial passando <code>NULL</code> para um parâmetro <code>GError**</code> é aceitável.</p>
+
+    <p>A documentação de API do GLib contém um <link href="https://developer.gnome.org/glib/stable/glib-Error-Reporting.html#glib-Error-Reporting.description">tutorial completo sobre o uso de GError</link>.</p>
+  </section>
+</page>

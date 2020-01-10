@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="strings.py" xml:lang="cs">
+
+<info>
+  <title type="text">Strings (Python)</title>
+  <link type="guide" xref="beginner.py#theory"/>
+  <link type="next" xref="label.py"/>
+  <revision version="0.1" date="2012-06-16" status="draft"/>
+
+  <desc>Vysvětlení, jak zacházet s řetězci v jazyce Python a v GTK+.</desc>
+  <credit type="author copyright">
+    <name>Sebastian Pölsterl</name>
+    <email its:translate="no">sebp@k-d-w.org</email>
+    <years>2011</years>
+  </credit>
+  <credit type="editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012</years>
+  </credit>
+</info>
+
+<title>Strings</title>
+
+<links type="section"/>
+
+<note style="warning"><p>GNOME důrazně doporučuje používat pro psaní aplikací Python 3!</p></note>
+
+<section id="python-2">
+<title>Řetězce v jazyce Python 2</title>
+
+<p>Python 2 přichází se dvěma různými druhy objektů, které mohou být použity k reprezentaci řetězců – <code>str</code> a <code>unicode</code>. Instance <code>unicode</code> se používají k vyjádření řetězců v Unikódu, zatímco instance typu <code>str</code> k bajtové reprezentaci (kódované řetězce). Pod kapotou Python uchovává unikódové řetězce jako 16 nebo 32bitová čísla, v závislosti na tom, jak je zkompilován interpretr jazyka Python.</p>
+
+<code>
+&gt;&gt;&gt; unicode_string = u"Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; print unicode_string
+Fußbälle
+</code>
+
+<p>Unikódové řetězce je možné převést na 8bitové řetězce pomocí <code>unicode.encode()</code>. 8bitové řetězce v jazyce Python mají metodu <code>str.decode()</code>, které interpretuje řetězec pomocí zadaného kódování (tj. opak metody <code>unicode.encode()</code>):</p>
+
+<code>
+&gt;&gt;&gt; type(unicode_string)
+&lt;type 'unicode'&gt;
+&gt;&gt;&gt; unicode_string.encode("utf-8")
+'Fu\xc3\x9fb\xc3\xa4lle'
+&gt;&gt;&gt; utf8_string = unicode_string.encode("utf-8")
+&gt;&gt;&gt; type(utf8_string)
+&lt;type 'str'&gt;
+&gt;&gt;&gt; unicode_string == utf8_string.decode("utf-8")
+True</code>
+
+<p>Bohužel, Python 2.x umožňuje míchat typy <code>unicode</code> a <code>str</code>, v případě, že 8bitový řetězec obsahuje jen 7bitové hodnoty (ASCII), ale když obsahuje jiné hodnoty (ne ASCII), obdržíte chybu <sys>UnicodeDecodeError</sys>.</p>
+
+</section>
+
+<section id="python-3">
+<title>Řetězce v jazyce Python 3</title>
+
+<p>Od verze Python 3.0 jsou všechny řetězce uchovávány jako Unikód v instanci typu <code>str</code>. Kódované řetězce jsou na druhou stranu reprezentovány jako binární data ve formě instance typu <code>bytes</code>. Koncepčně <code>str</code> představuje řetězec, zatímco <code>bytes</code> data. K přechodu ze <code>str</code> na <code>bytes</code> použijte <code>encode()</code> a pro přechod z <code>bytes</code> na <code>str</code> zase <code>decode()</code>.</p>
+
+<p>Navíc již nadále není možné míchat unikódové řetězce s kódovanými řetězci, protože to způsobí chybu <code>TypeError</code>:</p>
+
+<code>
+&gt;&gt;&gt; text = "Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; data = b" sind rund"
+&gt;&gt;&gt; text + data
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: Can't convert 'bytes' object to str implicitly
+&gt;&gt;&gt; text + data.decode("utf-8")
+'Fußbälle sind rund'
+&gt;&gt;&gt; text.encode("utf-8") + data
+b'Fu\xc3\x9fb\xc3\xa4lle sind rund'</code>
+
+</section>
+
+<section id="gtk">
+<title>Unikód v GTK+</title>
+
+<p>GTK+ používá pro veškerý text řetězce kódované v UTF-8. To znamená, že když zavoláte metodu vracející řetězec, vždy obdržíte instanci typu <code>str</code>. To stejné platí pro metody, které očekávají jeden nebo více řetězců jako parametr, musí být kódované v UTF-8. Nicméně, kvůli pohodlí objekt <code>PyGObject</code> automaticky převádí instance <code>unicode</code> na <code>str</code>, když jsou předány jako argument:</p>
+
+<code>
+&gt;&gt;&gt; from gi.repository import Gtk
+&gt;&gt;&gt; label = Gtk.Label()
+&gt;&gt;&gt; unicode_string = u"Fu\u00dfb\u00e4lle"
+&gt;&gt;&gt; label.set_text(unicode_string)
+&gt;&gt;&gt; txt = label.get_text()
+&gt;&gt;&gt; type(txt)
+&lt;type 'str'&gt;</code>
+
+<p>Navíc:</p>
+
+<code>
+&gt;&gt;&gt; txt == unicode_string</code>
+
+<p>by vrátilo <code>False</code> s varováním <code>__main__:1: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal</code> (<code>Gtk.Label.get_text()</code> vždy vrátí instanci <code>str</code>, a proto si <code>txt</code> a <code>unicode_string</code> nejsou rovny).</p>
+
+<p>Toto je obzvláště důležité, kdy chcete svůj program internacionalizovat pomocí <link href="http://docs.python.org/library/gettext.html"><code>gettext</code></link>. Musíte zajistit, že <code>gettext</code> bude vracet pro všechny jazyky 8bitové řetězce kódované v UTF-8.</p>
+
+<p>Obecně je doporučováno v aplikacích GTK+ vůbec nepoužívat objekty <code>unicode</code> a používat jen objekty <code>str</code> kódované v UTF-8, protože GTK+ nemá objekty <code>unicode</code> plně integrovány.</p>
+
+<p>Kódování řetězců je více konzistentní ve verzi Python 3.x, protože <code>PyGObject</code> automaticky kóduje/dekóduje do/z UTF-8, když předáváte řetězec metodě, nebo metoda vrací řetězec. Řetězce nebo texty budou vždy reprezentovány jen jako instance <code>str</code>.</p>
+
+</section>
+
+<section id="references">
+<title>Odkazy</title>
+
+<p><link href="http://python-gtk-3-tutorial.readthedocs.org/en/latest/unicode.html">Jak zacházet s řetězci – Výuka jazyka Python s GTK+ 3</link></p>
+
+</section>
+
+</page>

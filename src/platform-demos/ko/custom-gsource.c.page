@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="guide" style="task" id="custom-gsource.c" xml:lang="ko">
+
+  <info>
+    <link type="guide" xref="c#examples"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+
+    <desc>개별 <code>GSource</code> 구현체 작성 지침서</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>개별 GSource</title>
+
+  <synopsis>
+    <title>요약</title>
+
+    <p>이 글은 개별 <code>GSource</code>를 만드는 지침 내용을 담고 있습니다. 참고 문서를 찾아보려면 <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#GSource">GLib API 참고서</link>를 살펴보십시오.</p>
+  </synopsis>
+
+  <section id="what-is-gsource">
+    <title><code>GSource</code>가 뭐죠?</title>
+
+    <p><link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#GSource"><code>GSource</code></link>는 이벤트를 받았을때 실행할 콜백 함수와 관계있는 기대 이벤트입니다.  예를 들어 이벤트는 시간 초과 상황 또는 소켓을 통해 데이터를 받았을 때가 될 수 있습니다.</p>
+
+    <p>GLib에는 다양한 <code>GSource</code>가 있지만, 메인 루프에 통합할 개별 이벤트를 허용하여 프로그램 자체에서의 <code>GSource</code> 정의를 허용합니다.</p>
+
+    <p><code>GSource</code> 구조와 가상 함수에 대한 자세한 문서는 <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#GSourceFuncs">GLib API 참고서</link>에 있습니다.</p>
+  </section>
+
+  <section id="queue-source">
+    <title>메시지 큐 소스</title>
+
+    <p>실행 예제와 같이, 메시지 큐 소스는 내부에서 메시지를 큐에 넣을 때마다 콜백을 source에서 실행하는 함수에</p>
+
+    <p>이 소스 형식은 메인 컨텍스트간 상당한 양의 메시지를 효율적으로 주고 받을때 쓸만합니다. 대신, <code>g_source_attach()</code> 함수를 활용하여 각 메시지를 개별 대기 <code>GSource</code> 로 보내는 방법이 있습니다. 수많은 메시지에 대해 <code>GSource</code>에 대해 메모리를 할당하고 해제함을 의미합니다.</p>
+
+    <section id="gsource-structure">
+      <title>구조체</title>
+
+      <p>우선 source 구조를 선언해야합니다. <code>GSource</code>를 상위 구조로 넣어야하며 그 다음 source 자체 필드를 넣습니다. 큐와 각 메시지를 처리하고 나서 메모리 할당을 해제할 함수가 이에 해당합니다.</p>
+      <code mime="text/x-csrc">
+typedef struct {
+  GSource         parent;
+  GAsyncQueue    *queue;  /* owned */
+  GDestroyNotify  destroy_message;
+} MessageQueueSource;</code>
+    </section>
+
+    <section id="prepare-function">
+      <title>준비 함수</title>
+
+      <p>그 다음, source의 준비 함수를 정의해야합니다. source를 처리할 준비가 됐는지 여부를 결정합니다. source가 인메모리 큐를 사용하기 때문에 큐 길이를 검사하여 결정할 수 있습니다. 큐에 구성요소를 넣어두었다면 source에서 해당 구성 요소를 처리할 수 있습니다.</p>
+      <code mime="text/x-csrc">
+return (g_async_queue_length (message_queue_source-&gt;queue) &gt; 0);</code>
+    </section>
+
+    <section id="check-function">
+      <title>점검 함수</title>
+
+      <p>이 소스에 파일 서술자가 없기에, 준비하고 검사하는 함수는 근본적으로 동일한 동작을 취합니다. 따라서 검사 함수가 필요하지 않습니다. <code>GSourceFuncs</code>에서 필드 값을 <code>NULL</code>로 설정하면 소스 형식에 대한 검사 함수 동작을 건너뜁니다.</p>
+    </section>
+
+    <section id="dispatch-function">
+      <title>실행 함수</title>
+
+      <p>이 source에 대해, 실행 함수는 복잡성이 존재하는 곳입니다. 큐에서 메시지를 빼낸 후 <code>GSource</code>의 콜백 함수에 메시지를 전달해야합니다. 큐에 메시지가 없을 수도 있습니다. 준비 함수에서 true를 반환한다 하더라도, 동일한 큐를 래핑하는 다른 source를 평균 시간내에 처리하며 큐에서 마지막 메시지를 취하기도 합니다. 게다가 <code>GSource</code>에 (허용한) 콜백을 설정하지 않으면, 메시지를 해체하고 버려야합니다.</p>
+
+      <p>메시지와 콜백을 설정하면 콜백에서 메시지를 처리하고, 실행 함수의 반환 값으로 반환 값을 전달합니다. <code>GSource</code>가 해체되면 <code>FALSE</code>, <code>GSourceFunc</code>에 대해 계속 남아있으면 <code>TRUE</code>입니다. 이런 식의 의미는 모든 실행 함수 구현에 동일하게 적용합니다.</p>
+      <code mime="text/x-csrc">
+/* Pop a message off the queue. */
+message = g_async_queue_try_pop (message_queue_source-&gt;queue);
+
+/* If there was no message, bail. */
+if (message == NULL)
+  {
+    /* Keep the source around to handle the next message. */
+    return TRUE;
+  }
+
+/* @func may be %NULL if no callback was specified.
+ * If so, drop the message. */
+if (func == NULL)
+  {
+    if (message_queue_source-&gt;destroy_message != NULL)
+      {
+        message_queue_source-&gt;destroy_message (message);
+      }
+
+    /* Keep the source around to consume the next message. */
+    return TRUE;
+  }
+
+return func (message, user_data);</code>
+    </section>
+
+    <section id="callback">
+      <title>콜백 함수</title>
+
+      <p><code>GSource</code> 콜백은 <code>GSourceFunc</code> 형식일 필요는 없습니다. 이 형식에 대해 충분히 문서로 남겨둔 만큼 source의 실행 함수에서 불리는 어떤 함수 형식이든 될 수 있습니다.</p>
+
+      <p>보통, 소스 인스턴스에서 콜백 함수를 설정할 때 <code>g_source_set_callback()</code> 함수를 사용합니다. <code>GDestroyNotify</code>를 함께 사용하면, 소스가 계속 살아있는 동안 객체의 강 참조를 유지할 수 있습니다:</p>
+      <code mime="text/x-csrc">
+g_source_set_callback (source, callback_func,
+                       g_object_ref (object_to_strong_ref),
+                       (GDestroyNotify) g_object_unref);</code>
+
+      <p>그러나, <code>GSource</code>는 <code>g_source_set_callback_indirect()</code>로 노출하여 콜백을 전달하는 간접 계층입니다. GObject는 객체 사용을 마감했을 때 소스에서 자동으로 해제하는 소스에 <code>GClosure</code>를 콜백으로 설정할 수 있게 합니다  — 위의 <em>강</em> 참조에 대비되는 <em>약</em>참조는 다음과 같습니다:</p>
+      <code mime="text/x-csrc">
+g_source_set_closure (source,
+                      g_cclosure_new_object (callback_func,
+                                             object_to_weak_ref));</code>
+
+      <p>소스에서는 콜백이 필요하지만 콜백에서 동작이 필요하지 않은 경우 사용할 수 있는 일반 클로저 기반 'dummy' 콜백을 허용합니다:</p>
+      <code mime="text/x-csrc">
+g_source_set_dummy_callback (source);</code>
+    </section>
+
+    <section id="constructor">
+      <title>생성자</title>
+
+      <p>마지막으로 <code>GSource</code>의 <code>GSourceFuncs</code> 정의를 생성자 함수에 작성할 수 있습니다. 보통 하위 형식 구조로서가 아닌 <code>GSource</code>로서 새 source 형식을 노출하는 전형적인 사례입니다. 이렇게 하여 생성자에서 <code>GSource*</code>를 반환합니다.</p>
+
+      <p>여기 예제 생성자에서는 편하게 취소하는 방식을 지원하는 하위 source 활용법을 예를 들어 보여줍니다. <code>GCancellable</code>를 취소처리하면, 프로그램의 콜백 함수를 실행하여 취소 여부를확인할 수 있습니다(프로그램 코드에서는 <code>g_source_set_callback()</code> 함수의 콜백 사용자 데이터 세트로, 콜백 함수에 <code>GCancellable</code> 에 접근할 수 있는 포인터를 만들어아합니다.)</p>
+      <code mime="text/x-csrc">
+GSource *
+message_queue_source_new (GAsyncQueue    *queue,
+                          GDestroyNotify  destroy_message,
+                          GCancellable   *cancellable)
+{
+  GSource *source;  /* alias of @message_queue_source */
+  MessageQueueSource *message_queue_source;  /* alias of @source */
+
+  g_return_val_if_fail (queue != NULL, NULL);
+  g_return_val_if_fail (cancellable == NULL ||
+                        G_IS_CANCELLABLE (cancellable), NULL);
+
+  source = g_source_new (&amp;message_queue_source_funcs,
+                         sizeof (MessageQueueSource));
+  message_queue_source = (MessageQueueSource *) source;
+
+  /* The caller can overwrite this name with something more useful later. */
+  g_source_set_name (source, "MessageQueueSource");
+
+  message_queue_source-&gt;queue = g_async_queue_ref (queue);
+  message_queue_source-&gt;destroy_message = destroy_message;
+
+  /* Add a cancellable source. */
+  if (cancellable != NULL)
+    {
+      GSource *cancellable_source;
+
+      cancellable_source = g_cancellable_source_new (cancellable);
+      g_source_set_dummy_callback (cancellable_source);
+      g_source_add_child_source (source, cancellable_source);
+      g_source_unref (cancellable_source);
+    }
+
+  return source;
+}</code>
+    </section>
+  </section>
+
+  <section id="full-listing">
+    <title>완전한 예제</title>
+
+    <listing>
+      <title>완전한 예제 코드</title>
+
+      <code mime="text/x-csrc">/**
+ * MessageQueueSource:
+ *
+ * This is a #GSource which wraps a #GAsyncQueue and is dispatched whenever a
+ * message can be pulled off the queue. Messages can be enqueued from any
+ * thread.
+ *
+ * The callbacks dispatched by a #MessageQueueSource have type
+ * #MessageQueueSourceFunc.
+ *
+ * #MessageQueueSource supports adding a #GCancellable child source which will
+ * additionally dispatch if a provided #GCancellable is cancelled.
+ */
+typedef struct {
+  GSource         parent;
+  GAsyncQueue    *queue;  /* owned */
+  GDestroyNotify  destroy_message;
+} MessageQueueSource;
+
+/**
+ * MessageQueueSourceFunc:
+ * @message: (transfer full) (nullable): message pulled off the queue
+ * @user_data: user data provided to g_source_set_callback()
+ *
+ * Callback function type for #MessageQueueSource.
+ */
+typedef gboolean (*MessageQueueSourceFunc) (gpointer message,
+                                            gpointer user_data);
+
+static gboolean
+message_queue_source_prepare (GSource *source,
+                              gint    *timeout_)
+{
+  MessageQueueSource *message_queue_source = (MessageQueueSource *) source;
+
+  return (g_async_queue_length (message_queue_source-&gt;queue) &gt; 0);
+}
+
+static gboolean
+message_queue_source_dispatch (GSource     *source,
+                               GSourceFunc  callback,
+                               gpointer     user_data)
+{
+  MessageQueueSource *message_queue_source = (MessageQueueSource *) source;
+  gpointer message;
+  MessageQueueSourceFunc func = (MessageQueueSourceFunc) callback;
+
+  /* Pop a message off the queue. */
+  message = g_async_queue_try_pop (message_queue_source-&gt;queue);
+
+  /* If there was no message, bail. */
+  if (message == NULL)
+    {
+      /* Keep the source around to handle the next message. */
+      return TRUE;
+    }
+
+  /* @func may be %NULL if no callback was specified.
+   * If so, drop the message. */
+  if (func == NULL)
+    {
+      if (message_queue_source-&gt;destroy_message != NULL)
+        {
+          message_queue_source-&gt;destroy_message (message);
+        }
+
+      /* Keep the source around to consume the next message. */
+      return TRUE;
+    }
+
+  return func (message, user_data);
+}
+
+static void
+message_queue_source_finalize (GSource *source)
+{
+  MessageQueueSource *message_queue_source = (MessageQueueSource *) source;
+
+  g_async_queue_unref (message_queue_source-&gt;queue);
+}
+
+static gboolean
+message_queue_source_closure_callback (gpointer message,
+                                       gpointer user_data)
+{
+  GClosure *closure = user_data;
+  GValue param_value = G_VALUE_INIT;
+  GValue result_value = G_VALUE_INIT;
+  gboolean retval;
+
+  /* The invoked function is responsible for freeing @message. */
+  g_value_init (&amp;result_value, G_TYPE_BOOLEAN);
+  g_value_init (&amp;param_value, G_TYPE_POINTER);
+  g_value_set_pointer (&amp;param_value, message);
+
+  g_closure_invoke (closure, &amp;result_value, 1, &amp;param_value, NULL);
+  retval = g_value_get_boolean (&amp;result_value);
+
+  g_value_unset (&amp;param_value);
+  g_value_unset (&amp;result_value);
+
+  return retval;
+}
+
+static GSourceFuncs message_queue_source_funcs =
+  {
+    message_queue_source_prepare,
+    NULL,  /* check */
+    message_queue_source_dispatch,
+    message_queue_source_finalize,
+    (GSourceFunc) message_queue_source_closure_callback,
+    NULL,
+  };
+
+/**
+ * message_queue_source_new:
+ * @queue: the queue to check
+ * @destroy_message: (nullable): function to free a message, or %NULL
+ * @cancellable: (nullable): a #GCancellable, or %NULL
+ *
+ * Create a new #MessageQueueSource, a type of #GSource which dispatches for
+ * each message queued to it.
+ *
+ * If a callback function of type #MessageQueueSourceFunc is connected to the
+ * returned #GSource using g_source_set_callback(), it will be invoked for each
+ * message, with the message passed as its first argument. It is responsible for
+ * freeing the message. If no callback is set, messages are automatically freed
+ * as they are queued.
+ *
+ * Returns: (transfer full): a new #MessageQueueSource
+ */
+GSource *
+message_queue_source_new (GAsyncQueue    *queue,
+                          GDestroyNotify  destroy_message,
+                          GCancellable   *cancellable)
+{
+  GSource *source;  /* alias of @message_queue_source */
+  MessageQueueSource *message_queue_source;  /* alias of @source */
+
+  g_return_val_if_fail (queue != NULL, NULL);
+  g_return_val_if_fail (cancellable == NULL ||
+                        G_IS_CANCELLABLE (cancellable), NULL);
+
+  source = g_source_new (&amp;message_queue_source_funcs,
+                         sizeof (MessageQueueSource));
+  message_queue_source = (MessageQueueSource *) source;
+
+  /* The caller can overwrite this name with something more useful later. */
+  g_source_set_name (source, "MessageQueueSource");
+
+  message_queue_source-&gt;queue = g_async_queue_ref (queue);
+  message_queue_source-&gt;destroy_message = destroy_message;
+
+  /* Add a cancellable source. */
+  if (cancellable != NULL)
+    {
+      GSource *cancellable_source;
+
+      cancellable_source = g_cancellable_source_new (cancellable);
+      g_source_set_dummy_callback (cancellable_source);
+      g_source_add_child_source (source, cancellable_source);
+      g_source_unref (cancellable_source);
+    }
+
+  return source;
+}
+</code>
+    </listing>
+  </section>
+
+  <section id="further-examples">
+    <title>더 많은 예제</title>
+
+    <p>위에 보여드린 예제보다 소스가 더 복잡할 수 있습니다. <link href="http://nice.freedesktop.org/">libnice</link>에서 자체 정의한 <code>GSource</code>는 동적으로 바뀌는 소켓 세트를 폴링 처리해야 합니다. 구현체는 <link href="http://cgit.freedesktop.org/libnice/libnice/tree/agent/component.c#n941">component.c</link>의 <code>ComponentSource</code>를 들 수 있으며, 준비 함수보다 더욱 복잡한 활용의 예를 보여줍니다.</p>
+
+    <p>다른 예제로는 GLib의 <code>GTlsConnection</code> 구현체에서 GLib용 GnuTLS 인터페이스를 제공하는 부분입니다. <link href="https://git.gnome.org/browse/glib-networking/tree/tls/gnutls/gtlsconnection-gnutls.c#n871"><code>GTlsConnectionGnutlsSource</code></link>는 메인 스레드와 TLS 처리 블로킹을 수행하는 TLS 워커 스레드를 동기화합니다.</p>
+  </section>
+</page>

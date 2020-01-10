@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="design-principles" xml:lang="cs">
+
+  <info>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+    <desc>Obecná příručka o návrhu a rady.</desc>
+  </info>
+
+<title>Principy návrhu</title>
+
+<p>Následující principy návrhu sestávají ze sady obecných pravidel, které, když jsou dodržována, umožní vytvářet pro uživatele vysoce kvalitní aplikace z hlediska přívětivosti.</p>
+
+<section id="focus">
+<title>Dejte své aplikaci jasné zaměření</title>
+
+<p>Klíčem k dobrému návrhu jsou jasně a pevně stanovené cíle. Určete si koncepčně ucelený soubor funkcí, které chcete poskytnout a dbejte, abyste se od vytyčeného cíle neodchýlili. Aplikace, která se snaží dělat příliš mnoho různorodých věcí skončí jako neúměrně složitá a uživatel v ní bude jen tápat.</p>
+
+<p>Pamatujte: nejlepší aplikace poskytují elegantní řešení pro konkrétní okruh úkolů.</p>
+
+</section>
+
+<section id="complexity">
+<title>Udržujte složitost uživatelského rozhraní na minimu</title>
+
+<p>Každý ovládací prvek nebo informace, kterou přidáte do své aplikace znamená další zátěž pro uživatele a zvyšuje složitost vaší aplikace – potenciálně ji dělá složitou a méně přívětivou na používání. Proto do uživatelského rozhraní své aplikace přidávejte jen opravdu podstatné ovládací prvky a informace.</p>
+
+<p>Pokaždé, když přidáváte nový ovládací prvek nebo informaci, položte si otázku, jestli je to opravdu nutné.</p>
+
+</section>
+
+<section id="progressive-disclosure">
+<title>Ovládací prvky zobrazujte postupně až ve chvíli, kdy jsou zapotřebí</title>
+
+<p>Zobrazení všech možných ovládacích prvků po celou dobu činí aplikaci složitou na používání, protože se uživatel musí prodírat ovládacími prvky, které často nemají v dané situaci význam. Místo toho zobrazujte jen ovládací prvky, které jsou zapotřebí. Tím udržíte aplikaci jednoduchou na používání, přestože bude poskytovat stejné množství funkcionality.</p>
+
+<p>Existuje řada způsobů, jak ovládací prvky odhalovat postupně, od použití různých zobrazení a režimů, po zobrazení dočasných nebo plovoucích ovládacích prvků ve chvíli, kdy jsou vybrány konkrétní položky obsahu.</p>
+
+</section>
+
+<section id="work">
+<title>Požadujte po uživatelích co nejméně práce je možné</title>
+
+<p>Aplikace, které je náročná na používání se může stát zdrojem znechucení. Snažte se proto, aby váš software pracoval pro uživatele a ne naopak. Pokaždé, když vaše aplikace žádá po uživateli nějaký vstup, ať už přes ovládací prvky nebo ve formě zadání údajů, zeptejte se sami sebe, jestli by nebylo možné tyto informace získat bez jeho obtěžování.</p>
+
+<p>Snažte se vyhnout potřebě obrazovky s ručním nastavením nebo průvodcům a zajistěte jednoduchý přístup k nedávno použitému obsahu.</p>
+
+</section>
+
+<section id="hierarchy">
+<title>Vytvářejte jasnou hierarchii</title>
+
+<p>Lidé mají tendenci „číst“ uživatelské rozhraní zleva doprava a shora dolů. Položky, které objeví první, vnímají jako dominantní nad těmi, které přijdou později. Využijte této přirozené hierarchie ke sdělení, které části vaší aplikace jsou nejdůležitější.</p>
+
+<p>Umístěte nejdůležitější ovládací prvky k levé horní části oken a hlavní ovládací prvky umístěte před zbývající ovládací prvky. Další podrobnosti viz pokyny k <link xref="visual-layout">vizuálnímu rozvržení</link>.</p>
+
+</section>
+
+<section id="content">
+<title>Dávejte přednost obsahu</title>
+
+<p>Aplikace typicky prezentují nějaký obsah, ať už to jsou obrázky, text, zprávy nebo nějaká složitější data. Tento obsah je to, co uživatele zajímá, a přílišné množství ovládacích prvků a jiných prvků uživatelského rozhraní jej zbytečně rozptyluje od toho, na co se chce soustředit.</p>
+
+<p>Poskytněte obsahu v uživatelském rozhraní co nejvíce místa je možné tím, že omezíte počet ovládacích prvků. Nevytlačujte hlavní objekt zájmu druhotnými informacemi.</p>
+
+</section>
+
+<section id="errors">
+<title>Předvídejte chyby</title>
+
+<p>Lidé prostě dělají chyby. Předvídáním těchto chyb předejdete negativním následkům a vaše aplikace bude při používání mnohem příjemnější a uspokojující. První linií obrany je, navrhnout aplikaci tak, aby chyby nešlo udělat. Druhou pak, snadné napravení chyby, když už ji udělat lze.</p>
+
+<p>Automaticky opravujte možné neplatné vstupy a vždy dejte možnost vrátit zpět destruktivní operace.</p>
+
+</section>
+
+<section id="interruptions">
+<title>Vyvarujte se přerušování</title>
+
+<p>Přerušení způsobují znechucení a rozmrzelost a brání lidem v soustředění na to, co je zajímá. Navrhujte své aplikace tak, aby zůstaly stranou, když nejsou používány, a nepřekvapovaly, když používány jsou.</p>
+
+<p>Používejte <link xref="notifications">upozornění</link> v rozumné míře, vždy se vyvarujte samovolnému vyskakování dialogových oken bez přičinění uživatele a vyhněte se rušivým způsobům zpětné odezvy, jako jsou zprávy v dialogových oknech.</p>
+
+</section>
+
+<section id="search">
+<title>Poskytněte rychlé a účinné hledání</title>
+
+<p><link xref="search">Hledání</link> je mocný mechanizmus, který lze použít k rychlému nalezení obsahu. Poskytněte jej vždy, když zobrazujete velké množství obsahu, ať už ve formě seznamu nebo mřížky. Když poskytnete funkci hledání, je dobré, aby reagovala bez prodlev, a aby vracela výsledky, po kterých se uživatel pátrá.</p>
+
+<p>GNOME 3 poskytuje integrovanou funkcionalitu vyhledání. Když do aplikace přidáte vyhledávání, dáte tím lidem rychlý a jednoduchý způsob přístupu k obsahu poskytovaném vaší aplikací.</p>
+
+</section>
+
+<section id="options">
+<title>Používejte co nejméně voleb nastavení</title>
+
+<p>Přidání volby často vypadá jako jednoduchá oprava návrhu. Většina lidí se však na ni nikdy nepodívá nebo ji nepoužije. Místo přidání volby zkuste navrhnout výchozí chování své aplikace tak, aby vyhovovalo co nejvíce lidem je možné.</p>
+
+</section>
+
+<section id="name-and-icon">
+<title>Dejte své aplikaci názorný název a atraktivní ikonu</title>
+
+<p><link xref="application-basics#application-names">Název</link> a <link xref="icons-and-artwork#application-icons">ikona</link> vaší aplikace jsou její dvě nejvýraznější věci, takže navrhněte tak, aby sdělovali její funkci a příslušnost. Zajistěte, aby lidé pochopili účel vaší aplikace už z jejího názvu. Věnujte pozornost tomu, abyste měli krásnou a rozeznatelnou ikonu aplikace, která aplikaci dá přítažlivou a snadno rozeznatelnou vizuální identitu.</p>
+
+</section>
+
+<section id="emotion">
+<title>Používejte city a humor (s mírou)</title>
+
+<p>Účinné použití citů a vtipu může zvýšit přivětivost poskytovanou vaší aplikací a napomoci kladnému vztahu mezi vývojářem a uživateli aplikace. Ale buďte opatrní, ať to s tím nepřeženete. Je mnohem účinnější zvolit pár momentů, kdy se použijí city, než je chrlit v uživatelském rozhraní v jednom kuse.</p>
+
+<p>Buďte vstřícní, když je vaše aplikace použita poprvé. Použití humoru, když se věci nevyvíjí tak, jak by měly, je také jednou ze technik.</p>
+
+</section>
+
+</page>

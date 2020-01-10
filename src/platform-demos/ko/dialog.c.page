@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="dialog.c" xml:lang="ko">
+  <info>
+    <title type="text">Dialog(C)</title>
+    <link type="guide" xref="c#windows"/>
+    <link type="seealso" xref="label.c"/>
+    <link type="seealso" xref="button.c"/>
+    <revision version="0.1" date="2012-06-14" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>뜨는 창</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Dialog</title>
+
+  <media type="image" mime="image/png" src="media/dialog.png"/>
+  <p>단추를 누르면 튀어나오는 대화상자 창입니다.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+ 
+
+/*Callback function in which reacts to the "response" signal. Be sure to place 
+it before the function it is called in*/
+static void
+on_response (GtkDialog *dialog,
+             gint       response_id,
+             gpointer   user_data)
+{
+  /*For demonstration purposes, this will show the int value 
+  of the response type*/
+  g_print ("response is %d\n", response_id);
+  
+  /*This will cause the dialog to be destroyed*/
+  gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+
+
+/*Callback function in which reacts to the "clicked" signal*/
+static void
+show_dialog (GtkButton *button,
+             gpointer   user_data)
+{
+  GtkWindow *window = user_data;
+  GtkWidget *dialog;
+  GtkWidget *content_area;
+  GtkWidget *label;
+
+  gint response_id;
+
+  /*Create the dialog window. Modal windows prevent interaction with other 
+  windows in the same application*/
+  dialog = gtk_dialog_new_with_buttons ("A Gtk+ Dialog", 
+                                        window, 
+                                        GTK_DIALOG_MODAL, 
+                                        GTK_STOCK_OK, 
+                                        GTK_RESPONSE_OK, 
+                                        NULL);
+
+  /*Create a label and attach it to the content area of the dialog*/
+  content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+  label = gtk_label_new ("This demonstrates a dialog with a label");
+  gtk_container_add (GTK_CONTAINER (content_area), label);
+
+  /*The main purpose of this is to show dialog's child widget, label*/
+  gtk_widget_show_all (dialog);
+  
+  /*Connecting the "response" signal from the user to the associated
+  callback function*/
+  g_signal_connect (GTK_DIALOG (dialog), 
+                    "response", 
+                    G_CALLBACK (on_response), 
+                    NULL);
+
+}
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *button;
+ 
+  /*Create a window with a title and a default size*/
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "GNOME Button");
+  gtk_window_set_default_size (GTK_WINDOW (window), 250, 50);
+
+  /*Create a button with a label, and add it to the window*/
+  button = gtk_button_new_with_label ("Click Me");
+  gtk_container_add (GTK_CONTAINER (window), button);
+ 
+  /*Connecting the clicked signal to the callback*/
+  g_signal_connect (GTK_BUTTON (button), 
+                    "clicked", 
+                    G_CALLBACK (show_dialog), 
+                    GTK_WINDOW (window));
+ 
+  gtk_widget_show_all (window);
+}
+ 
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+ 
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+ 
+  return status;
+}
+</code>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkDialog.html">GtkDialog</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkLabel.html">GtkLabel</link></p></item>
+</list>
+</page>

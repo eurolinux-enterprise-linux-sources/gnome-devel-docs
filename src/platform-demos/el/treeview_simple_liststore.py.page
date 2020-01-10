@@ -18,7 +18,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -36,7 +36,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -82,7 +82,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # a treeview to see the data stored in the model
         view = Gtk.TreeView(model=listmodel)
         # for each column
-        for i in range(len(columns)):
+        for i, column in enumerate(columns):
             # cellrenderer to render the text
             cell = Gtk.CellRendererText()
             # the text in the first column should be in boldface
@@ -90,7 +90,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 cell.props.weight_set = True
                 cell.props.weight = Pango.Weight.BOLD
             # the column is created
-            col = Gtk.TreeViewColumn(columns[i], cell, text=i)
+            col = Gtk.TreeViewColumn(column, cell, text=i)
             # and it is appended to the treeview
             view.append_column(col)
 

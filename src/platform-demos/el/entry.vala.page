@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -42,10 +42,10 @@
   <media type="image" mime="image/png" src="media/entry.png"/>
   <p>Αυτή η εφαρμογή σας υποδέχεται στο τερματικό.</p>
 
-<code mime="text/x-csharp" style="numbered">/* Ένα παράθυρο στην εφαρμογή. */
+<code mime="text/x-csharp" style="numbered">/* A window in the application. */
 class MyWindow : Gtk.ApplicationWindow {
 
-	/* Κατασκευαστής */
+	/* Constructor */
 	internal MyWindow (MyApplication app) {
 		Object (application: app, title: "What is your name?");
 
@@ -58,11 +58,11 @@ class MyWindow : Gtk.ApplicationWindow {
 		this.set_default_size (300, 100);
 		this.border_width = 10;
 
-		/* Προσθήκη του name_box σε αυτό το παράθυρο. */
+		/* Add the name_box to this window. */
 		this.add (name_box);
 	}
 
-	/* Ο χειριστής σήματος (aka. συνάρτηση επανάκλησης) για το 'activate'
+	/* Signal handler (aka. callback function) for the 'activate'
 	 * signal of a Gtk.Entry.
 	 */
 	void on_activate (Gtk.Entry entry) {
@@ -71,25 +71,25 @@ class MyWindow : Gtk.ApplicationWindow {
 	}
 }
 
-/* Αυτή είναι η εφαρμογή. */
+/* This is the application. */
 class MyApplication : Gtk.Application {
 
-	/* Ο κατασκευαστής για την εφαρμογή. */
+	/* Constructor for the application. */
 	internal MyApplication () {
 		Object (application_id: "org.example.MyApplication");
 	}
 
-	/* Αντικατάσταση του σήματος 'activate' της GLib.Application. */
+	/* Override the 'activate' signal of GLib.Application. */
 	protected override void activate () {
 
-		/* Δημιουργία νέου παραθύρου για την εφαρμογή
-		 * και εμφάνισή του. */
+		/* Create a new window for this application
+		 * and show it. */
 		new MyWindow (this).show ();
 	}
 
 }
 
-/* Η κύρια συνάρτηση δημιουργεί και τρέχει την εφαρμογή. */
+/* The main function creates and runs the application. */
 int main (string[] args) {
 	return new MyApplication ().run (args);
 }

@@ -1,83 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="menu-bars" xml:lang="ru">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="menu-bars" xml:lang="ru">
 
   <info>
     <credit type="author">
-      <name>Allan Day</name>
+      <name>Алан Дэй (Allan Day)</name>
       <email>aday@gnome.org</email>
     </credit>
     <credit>
-      <name>Calum Benson</name>
+      <name>Калум Бенсон (Calum Benson)</name>
     </credit>
     <credit>
-      <name>Adam Elman</name>
+      <name>Адам Элман (Adam Elman)</name>
     </credit>
     <credit>
-      <name>Seth Nickell</name>
+      <name>Сэт Никел (Seth Nickell)</name>
     </credit>
     <credit>
-      <name>Colin Robertson</name>
+      <name>Колин Робертсон (Colin Robertson)</name>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/menu-bar.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Menu bars</title>
+<title>Панели меню</title>
 
-<p>A menu bar incorporates a strip of drop-down menus. It is typically located at the top of a primary window, below a window title bar.</p>
+<p>Панель меню представляет собой полосу из выпадающих меню. Панель меню обычно располагается в верхней части главного окна под заголовочной панелью окна.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/menu-bar.svg"/>
 
 <section id="when-to-use">
-<title>When to use</title>
+<title>Когда использовать</title>
 
-<p>Menu bars increase the vertical footprint of an application’s user interface, introduce a large number of disclosure points, and function as a fixed set of inflexible options. For these reasons, <link xref="header-bars">header bars</link> and <link xref="header-bar-menus">header bar menus</link> are generally recommended over menu bars, along with other design patterns for exposing controls on demand, such as <link xref="selection-mode">selection mode</link>, <link xref="action-bars">action bars</link>, and <link xref="popovers">popovers</link>.</p>
+<p>Под панель меню отводится дополнительное место по вертикали, она содержит множество точек раскрытия. В панели располгается фиксированный набор параметров. По этим причинам вместо панели меню рекомендуется применять <link xref="header-bars">заголовочные панели</link> и <link xref="header-bar-menus">меню заголовочной панели</link>, а также другие шаблоны проектирования, которые могут управлять появлением элементами интерфейса, например <link xref="selection-mode">режим выделения</link>, <link xref="action-bars">панель действий</link> и <link xref="popovers">всплывающие виджеты</link>.</p>
 
-<p>At the same time, it can be appropriate for complex applications that already include a menu bar to retain it. Additionally, some platforms also incorporate space for a menu bar in their user environment, and a menu model can be desirable for cross-platform integration purposes.</p>
+<p>В то же время, применение панели меню уместно в сложных приложениях, в которых уже есть панель меню. Кроме того, некоторые платформы включают область для панели меню в свои пользовательские окружения, и модель меню может оказаться полезной при кросс-платформенной интеграции.</p>
 
 </section>
 
 <section id="standard-menus">
-<title>Standard menus</title>
+<title>Стандартные меню</title>
 
-<p>This section details the most common menus and menu items in a menu bar. For details on the standard items to include in each of these menus, see <link xref="keyboard-input#application-shortcuts">keyboard input</link>.</p>
+<p>В этом разделе даётся описание наиболее распространённых меню и его элементов в панели меню. Подробнее о том, какие стандартные элементы включать в каждое из этих меню, см. раздел «<link xref="keyboard-input#application-shortcuts">Ввод с клавиатуры</link>».</p>
 
 <table>
 <tr>
-<td><p><gui>File</gui></p></td>
-<td><p>Commands that operate on the current document or content item as a whole. It is the left-most item in the menubar because of its importance and frequency of use, and because it is a relevant menu in many applications.</p>
-<p>If your application does not operate on files, name this menu for the type of object it displays. For example, a music player could have a <gui>Music</gui> instead of a <gui>File</gui> menu.</p></td>
+<td><p><gui>Файл</gui></p></td>
+<td><p>Команды, управляющие текущим документом или самим содержимым. Находится слева от остальных элементов в панели меню, поскольку является наиболее важным и часто используемым элементом. Этот элемент применяется во многих приложениях.</p>
+<p>Если приложение не работает с файлами, назовите это меню по типу объекта, котоый оно показывает. Например, в музыкальном прогрывателе меню <gui>Файл</gui> может называться <gui>Музыка</gui>.</p></td>
 </tr>
 <tr>
-<td><p><gui>Edit</gui></p></td>
-<td><p>The <gui>Edit</gui> menu contains items relating to editing the document, such as clipboard handling, find and replace, and inserting objects.</p></td>
+<td><p><gui>Правка</gui></p></td>
+<td><p>Меню <gui>Правка</gui> содержит элементы, которые связаны с редактированием документа, например обработка буфера обмены, поиск и замена, вставка объектов.</p></td>
 </tr>
 <tr>
-<td><p><gui>View</gui></p></td>
-<td><p>Includes items that affect the user’s view, such as of the current document or page, or how items are presented for browsing. Do not place any items on the <gui>View</gui> menu that affect content items.</p></td>
+<td><p><gui>Вид</gui></p></td>
+<td><p>Содержит элементы, которые управляют внешним видом, например режимом отображения текущего документа или страницы или способом представления элементов. Меню <gui>Вид</gui> не должно содержать каких-либо элементов, которые влияют на содержимое.</p></td>
 </tr>
 <tr>
-<td><p><gui>Insert</gui></p></td>
-<td><p>Lists the types of objects that can be inserted into the current document, such as images, links or page breaks. Only provide this menu if you have more than about six types of object that can be inserted, otherwise place individual items for each type on the <gui>Edit</gui> menu.</p></td>
+<td><p><gui>Вставка</gui></p></td>
+<td><p>Содержит список типов объектов, которые можно вставлять в текущий документ (например, изображения, ссылки или разрывы страниц). Предоставляйте это меню, если количество типов объектов, которые можно вставлять, больше шести, иначе элементы типов объектов должны размещаться в меню <gui>Правка</gui>.</p></td>
 </tr>
 <tr>
-<td><p><gui>Format</gui></p></td>
-<td><p>Includes commands to change the visual appearance of the document. For example, changing the font, color, or line spacing of a text selection.</p>
-<p>The difference between these commands and those on the <gui>View</gui> menu is that changes made with <gui>Format</gui> commands are persistent and saved as part of the document.</p>
-<p>Items found on the Format menu are very application-specific.</p></td>
+<td><p><gui>Формат</gui></p></td>
+<td><p>Содержит команды для изменения внешнего вида документа. Например, изменение шрифта, цвета, межстрочный интервал выделенного текста.</p>
+<p>Различие между этими командами и командами из меню <gui>Вид</gui> в том, что изменения, совершаемые с помощью команд из меню <gui>Формат</gui>, являются постоянными и сохраняются как часть документа.</p>
+<p>Элементы в меню <gui>Формат</gui> бывают очень разными.</p></td>
 </tr>
 <tr>
-<td><p><gui>Bookmarks</gui></p></td>
-<td><p>Provide a Bookmarks menu in any application that allows the user to browse files and folders, help documents, web pages or any other large information space.</p></td>
+<td><p><gui>Закладки</gui></p></td>
+<td><p>Предоставьте меню <gui>Закладки</gui>, если в приложении можно просматривать файлы и папки, справочные документы, веб-страницы или другие большие информационные области.</p></td>
 </tr>
 <tr>
-<td><p><gui>Go</gui></p></td>
-<td><p>A <gui>Go</gui> menu provides commands for quickly navigating around a document or collection of documents, or an information space such as a directory structure or the web.</p>
-<p>The contents of the menu will vary depending on the type of application.</p></td>
+<td><p><gui>Переход</gui></p></td>
+<td><p>Меню <gui>Переход</gui> содержит команды для быстрого перемещения по одному или нескольким документам или по большим информационным областям таким как деревья каталогов или веб-ресуры.</p>
+<p>Содержимое этого меню сильно зависит от типа приложения.</p></td>
 </tr>
 <tr>
-<td><p><gui>Windows</gui></p></td>
-<td><p>Commands that apply to all of the application’s open windows. You may also label this menu <gui>Documents</gui>, <gui>Buffers</gui>, or similar according to the type of document handled by your application.</p>
-<p>The last items on this menu are a numbered list of the application’s primary windows, for example <gui>1shoppinglist.abw</gui>. Selecting one of these items raises the corresponding window.</p></td>
+<td><p><gui>Окна</gui></p></td>
+<td><p>Команды, применяемые ко всех открытых окнам приложения. Это меню можно переименовать в <gui>Документы</gui>, <gui>Буферы</gui> или какое-нибудь другое называние, связанное с типом документа, с которым работает приложение.</p>
+<p>В конце меню должен находиться пронумерованный список главных окон приложения (например, <gui>1список_покупок.abw</gui>). Выбор любого из этих элементов показывает соответствующее окно.</p></td>
 </tr>
 </table>
 
@@ -87,13 +91,26 @@
 <title>Общие рекомендации</title>
 
 <list>
-<item><p>The menubar is normally visible at all times and is always accessible from the keyboard, so make all the commands available in your application available on the menubar. (This guideline is unique to menu bars - other menus should not seek to reproduce functionality that is made available by other controls).</p></item>
-<item><p>Treat <link xref="application-menus">application menus</link> as part of the menu bar - it is not necessary to reproduce items from the application menu in other menus.</p></item>
-<item><p>Do not disable menu titles. Allow the user to explore the menu, even though there might be no available items on it at that time.</p></item>
-<item><p>Menu titles on a menubar are single words with their first letter capitalized. Do not use spaces in menu titles, as this makes them easily-mistaken for two separate menu titles. Do not use compound words (such as <gui>WindowOptions</gui>) or hyphens (such as <gui>Window-Options</gui>) to circumvent this guideline.</p></item>
-<item><p>Do not provide a mechanism for hiding the menubar, as this may be activated accidentally. Some users will not be able to figure out how to get the menu bar back in this case.</p></item>
+<item><p>Панель меню обычно всегда находится на виду и к ней всегда можно получить доступ при помощи клавиатуры. Сделайте, чтобы все команды, которые доступны в вашем приложении, были бы доступны через панель меню. Эта рекомендация распространяется только на панель меню, в любых других меню необходимо избегать дублирования функциональности, которая реализуется за счёт других элементов управления.</p></item>
+<item><p>Рассматривайте <link xref="application-menus">меню приложения</link> как часть панели меню, элементы меню приложения необязательно дублировать в других меню.</p></item>
+<item><p>Не выключайте заголовки меню. Позвольте пользователю исследовать меню, даже если на данный момент в нём нет доступных элементов.</p></item>
+<item><p>В качестве заголовка меню используйте одно слово, записанное с прописной буквы. Не используйте пробел в заголовках, поскольку это может внести путаницу, и одно меню будет выглядеть как два. Не склеивайте слова (например, <gui>ПараметрыОкна</gui>) и не используйте дефисное написание (например, <gui>Параметры-окна</gui>).</p></item>
+<item><p>Не используйте механизм для скрытия панели меню, пользователь может ненарочно скрыть панель меню и будет искать, как вернуть её обратно.</p></item>
 </list>
 
+</section>
+
+<section id="api-reference">
+<title>API reference</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenu.html">GtkMenu</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuBar.html">GtkMenuBar</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuItem.html">GtkMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkRadioMenuItem.html">GtkRadioMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkCheckMenuItem.html">GtkCheckMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkSeparatorMenuItem.html">GtkSeparatorMenuItem</link></p></item>
+</list>
 </section>
 
 </page>

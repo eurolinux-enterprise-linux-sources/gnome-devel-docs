@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="popovers" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="popovers" xml:lang="el">
 
   <info>
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/popover.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -21,37 +31,37 @@
     </mal:credit>
   </info>
 
-<title>Popovers</title>
+<title>Αναδυόμενα παράθυρα</title>
 
-<p>A popover is a transient container that appears over its parent window in response to a user action. Popovers can contain a variety of UI elements, including buttons, lists or menus. They are often used as a part of button menus or context menus.</p>
+<p>Ένα αναδυόμενο παράθυρο είναι ένας παροδικός περιέκτης που εμφανίζεται πάνω από το γονικό παράθυρο ως απάντηση σε μια ενέργεια του χρήστη. Τα αναδυόμενα παράθυρα μπορούν να περιέχουν μια ποικιλία στοιχείων UI, συμπεριλαμβανομένων των κουμπιών, καταλόγων ή μενού. Χρησιμοποιούνται συχνά ως τμήμα του μενού κουμπιών ή μενού περιεχομένων.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/popover.svg"/>
 
 <section id="when-to-use">
 <title>Πότε χρησιμοποιούνται</title>
 
-<p>Popovers can be used to reveal additional controls that are not always needed by the user. They can can allow the user to take actions or they can contain settings and preferences. They are a very flexible interface element that lend themselves to creative design solutions.</p>
+<p>Τα αναδυόμενα παράθυρα μπορούν να χρησιμοποιηθούν για να φανερώσουν πρόσθετα στοιχεία ελέγχου που χρειάζονται πάντα από τον χρήστη. Μπορεί να επιτρέπουν στον χρήστη την εκτέλεση ενεργειών ή μπορεί να περιέχουν ρυθμίσεις και προτιμήσεις. Είναι ένα πολύ ευέλικτο στοιχείο διεπαφής που προσφέρονται σε δημιουργικές σχεδιαστικές λύσεις.</p>
 
-<p>A popover should always relate to a specific interface element which acts as the source of the popover. Typically, this is either a button or a content item. When they are triggered by a button, a popover can be used as a more flexible version of a button menu, allowing groups of controls to be accessed when needed. Examples of this include:</p>
+<p>Ένα αναδυόμενο παράθυρο πρέπει πάντα να συσχετίζεται με ένα συγκεκριμένο στοιχείο διεπαφής που δρα ως πηγή του αναδυόμενου παραθύρου. Συνήθως, αυτό είναι ή ένα κουμπί ή ένα στοιχείο περιεχομένου. Όταν προκαλούνται από ένα κουμπί, μπορεί να χρησιμοποιηθεί ένα αναδυόμενο παράθυρο ως πιο ευέλικτη έκδοση ενός μενού κουμπιών, επιτρέποντας σε ομάδες στοιχείων ελέγχου να προσπελαστούν όταν χρειάζονται. Παραδείγματα αυτού περιλαμβάνουν:</p>
 
 <list>
-<item><p>Revealing a small toolbox of text formatting controls.</p></item>
-<item><p>A find interface, with a search entry box and a space for a list of results.</p></item>
-<item><p>A collection of view controls, such as zoom, list/grid and content ordering.</p></item>
+<item><p>Εμφάνιση μιας μικρής εργαλειοθήκης των στοιχείων ελέγχου μορφοποίησης κειμένου.</p></item>
+<item><p>Μια διεπαφή εύρεσης, με ένα πλαίσιο καταχώρισης αναζήτησης και έναν χώρο για έναν κατάλογο αποτελεσμάτων.</p></item>
+<item><p>Μια συλλογή στοιχείων ελέγχου προβολής, όπως εστίαση, κατάλογος/πλέγμα και διάταξη περιεχομένου.</p></item>
 </list>
 
-<p>As a mechanism for disclosing additional controls or information, popovers are similar to <link xref="dialogs">dialog windows</link>. Their main advantage over dialogs is that they are less disruptive and have a close relationship with a single element which the popover points to. However, you should still consider using a dialog if you want to display large amounts of information, or more complex arrangements of controls, or if the situation requires one of the common conventions for dialog usage, such as a confirmation dialog.</p>
+<p>Ως ένας μηχανισμός εμφάνισης πρόσθετων στοιχείων ελέγχου ή πληροφοριών, τα αναδυόμενα παράθυρα είναι παρόμοια με <link xref="dialogs">παράθυρα διαλόγου</link>. Το κύριο πλεονέκτημα συγκριτικά με τους διαλόγους είναι ότι είναι λιγότερο αποδιοργανωτικοί και έχουν μια στενή σχέση με ένα μοναδικό στοιχείο στο οποίο αναφέρεται. Όμως, θα πρέπει ακόμα να σκεφτείτε τη χρήση ενός διαλόγου αν θέλετε να εμφανίσετε μεγάλα ποσά πληροφοριών, ή πιο περίπλοκες διατάξεις των στοιχείων ελέγχου, ή αν η κατάσταση απαιτεί μία από τις συνηθισμένες συμβάσεις χρήσης διαλόγου, όπως έναν διάλογο επιβεβαίωσης.</p>
 
 </section>
 
 <section id="popover-content">
-<title>Περιεχόμενο του Popover</title>
+<title>Περιεχόμενο του αναδυόμενου παραθύρου</title>
 
 <list>
-<item><p>A popover is a generic container, and can include a wide variety of controls, such as buttons, sliders, lists, switches and text fields. However, don’t mix too many different types of control within the same popover, and try to group controls of the same type together.</p></item>
-<item><p>Popovers can function as a container for a menu, or for a menu in combination with a small number of supplementary controls.</p></item>
-<item><p>If the purpose of a popover’s controls is ambigious, the popover can be given a heading.</p></item>
-<item><p><gui>Close</gui> or <gui>Done</gui> buttons are not usually required in a popover.</p></item>
+<item><p>Ένα αναδυόμενο παράθυρο είναι ένας γενικός περιέκτης και μπορεί να περιλαμβάνει μια πλατιά ποικιλία στοιχείων ελέγχου, όπως κουμπιά, ρυθμιστικά, καταλόγους, διακόπτες και πεδία κειμένου. Όμως, μην αναμειγνύετε υπερβολικά πολλούς διαφορετικούς τύπους στοιχείων ελέγχου μέσα στο ίδιο αναδυόμενο παράθυρο και προσπαθήστε να ομαδοποιήσετε τα στοιχεία ελέγχου του ίδιου τύπου μαζί.</p></item>
+<item><p>Τα αναδυόμενα παράθυρα μπορούν να λειτουργούν ως περιέκτες μενού, ή για μενού σε συνδυασμό με έναν μικρό αριθμό συμπληρωματικών στοιχείων ελέγχου.</p></item>
+<item><p>Αν ο σκοπός των στοιχείων ελέγχου του αναδυόμενου παραθύρου είναι ασαφής, το αναδυόμενο παράθυρο μπορεί να δοθεί ως επικεφαλίδα.</p></item>
+<item><p>Τα κουμπιά <gui>Κλείσιμο</gui> ή <gui>Ολοκλήρωση</gui> δεν απαιτούνται συνήθως σε ένα αναδυόμενο παράθυρο.</p></item>
 </list>
 
 </section>
@@ -60,9 +70,19 @@
 <section id="general-guidelines">
 <title>Γενικές οδηγίες</title>
 
-<p>Popovers should always be small in size (as a rule of thumb, they should not cover more than a third of their parent window) and low in complexity. They should always appear as subordinates to their parent windows.</p>
-<p>A popover should only ever appear in response to a user action, and should never appear in a surprising or unintended manner.</p>
+<p>Τα αναδυόμενα παράθυρα πρέπει πάντα να είναι μικρά σε μέγεθος (ως πρόχειρος κανόνας, δεν πρέπει να καλύπτουν περισσότερο από το ένα τρίτο του γονικού παραθύρου τους) και να είναι μικρής συνθετότητας. Πρέπει να εμφανίζονται πάντα ως εξαρτημένα στα γονικά τους παράθυρα.</p>
+<p>Ένα αναδυόμενο παράθυρο πρέπει να εμφανίζεται μόνο μια φορά σε απάντηση μιας ενέργειας του χρήστη και δεν πρέπει ποτέ να εμφανίζεται αναπάντεχα ή αθέλητα.</p>
 
+</section>
+
+
+<section id="api-reference">
+<title>Αναφορά API</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkPopover.html">GtkPopover</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkPopoverMenu.html">GtkPopoverMenu</link></p></item>
+</list>
 </section>
 
 </page>

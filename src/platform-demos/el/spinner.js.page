@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -44,70 +44,68 @@
 
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gdk = '3.0';
+imports.gi.versions.Gtk = '3.0';
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const Gdk = imports.gi.Gdk;
-const Lang = imports.lang;
 
-const SpinnerExample = new Lang.Class ({
-    Name: 'Spinner Example',
+class SpinnerExample {
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
-    _init: function () {
-        this.application = new Gtk.Application ({
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application({
             application_id: 'org.example.jsspinner',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-        // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' signal παρουσιάζει παράθυρα όταν είναι ενεργή
-    _onActivate: function () {
-        this._window.present ();
-    },
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function () {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
+    // Build the application's UI
+    _buildUI() {
 
-
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function () {
-
-        // Δημιουργία του παραθύρου της εφαρμογής
-        this._window = new Gtk.ApplicationWindow  ({
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             title: "Spinner Example",
             default_height: 200,
             default_width: 200,
-            border_width: 30 });
+            border_width: 30
+        });
 
-        // Δημιουργία ενός μετρητή που ξεκινά αυτόματα την αυξομείωση
+        // Create a spinner which starts spinning automatically
         this._spinner = new Gtk.Spinner ({active: true});
         this._window.add (this._spinner);
 
-        // Σύνδεση ενός συμβάντος πατήματος πλήκτρου με τη συνάρτηση που την κάνει να ξεκινά ή να σταματά την μέτρηση
-        this._window.connect("key-press-event", Lang.bind(this, this._onKeyPress));
+        // Connect a keypress event to the function that makes it start or stop spinning
+        this._window.connect("key-press-event", this._onKeyPress.bind(this));
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
+    _onKeyPress(widget, event) {
 
+        // Get the value of the key that was pressed
+        let [, keyval] = event.get_keyval();
 
-    _onKeyPress: function(widget, event) {
-
-        // Λήψη της τιμής του πλήκτρου που πατήθηκε
-        let keyval = event.get_keyval()[1];
-
-        // Αν ήταν το πλήκτρο διαστήματος, εναλλαγή στον μετρητή να ξεκινήσει ή να σταματήσει
+        // If it was the spacebar, toggle the spinner to start or stop
         if (keyval == Gdk.KEY_space) {
             if (this._spinner.active == true)
                 this._spinner.stop();
@@ -115,11 +113,9 @@ const SpinnerExample = new Lang.Class ({
                 this._spinner.start();
         }
     }
+};
 
-
-});
-
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new SpinnerExample ();
 app.application.run (ARGV);
 </code>

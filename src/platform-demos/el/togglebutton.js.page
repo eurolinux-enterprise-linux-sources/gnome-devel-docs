@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -168,41 +168,39 @@ app.application.run (ARGV);
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const ToggleButtonExample = new Lang.Class({
-    Name: 'ToggleButton Example',
+class ToggleButtonExample {
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
-    _init: function() {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jstogglebutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents window when active
+    _onActivate() {
         this._window.present();
-    },
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function() {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
+    // Build the application's UI
+    _buildUI() {
 
-
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function() {
-
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -211,41 +209,38 @@ const ToggleButtonExample = new Lang.Class({
             border_width: 30,
             title: "ToggleButton Example"});
 
-        // Δημιουργία του μετρητή που το κουμπί σταματά και ξεκινά
+        // Create the spinner that the button stops and starts
         this._spinner = new Gtk.Spinner ({hexpand: true, vexpand: true});
 
-        // Δημιουργία του κουμπιού εναλλαγής που ξεκινά και σταματά τον μετρητή
+        // Create the togglebutton that starts and stops the spinner
         this._toggleButton = new Gtk.ToggleButton ({label: "Start/Stop"});
-        this._toggleButton.connect ('toggled', Lang.bind (this, this._onToggle));
+        this._toggleButton.connect ('toggled', this._onToggle.bind(this));
 
-        // Δημιουργία ενός πλέγματος και τοποθέτηση όλων μέσα του
+        // Create a grid and put everything in it
         this._grid = new Gtk.Grid ({
             row_homogeneous: false,
             row_spacing: 15});
         this._grid.attach (this._spinner, 0, 0, 1, 1);
         this._grid.attach (this._toggleButton, 0, 1, 1, 1);
 
-        // Προσθήκη του πλέγματος στο παράθυρο
+        // Add the grid to the window
         this._window.add (this._grid);
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
+    _onToggle() {
 
-
-    _onToggle: function() {
-
-        // Έναρξη ή παύση του μετρητή
+        // Start or stop the spinner
         if (this._toggleButton.get_active ())
             this._spinner.start ();
         else this._spinner.stop ();
 
     }
+};
 
-});
-
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new ToggleButtonExample ();
 app.application.run (ARGV);
 </code>

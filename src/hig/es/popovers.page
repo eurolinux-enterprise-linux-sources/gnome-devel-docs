@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="popovers" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="popovers" xml:lang="es">
 
   <info>
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/popover.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2014</mal:years>
+      <mal:years>2011 - 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alex Puchades</mal:name>
+      <mal:email>alex94puchades@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -41,7 +51,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Oscar Rafael Arachi</mal:name>
       <mal:email>arachi910@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014 - 2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -103,50 +113,66 @@
       <mal:email>garciag.omar91@gmail.com</mal:email>
       <mal:years>2015</mal:years>
     </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Edilberto Huerta Niño</mal:name>
+      <mal:email>edilberto.huerta0290@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
+    </mal:credit>
   </info>
 
 <title>Ventanas emergentes</title>
 
-<p>A popover is a transient container that appears over its parent window in response to a user action. Popovers can contain a variety of UI elements, including buttons, lists or menus. They are often used as a part of button menus or context menus.</p>
+<p>Una ventana emergente es un contenedor transitorio que aparece sobre la ventana padre en respuesta a una acción del usuario. Las ventanas emergentes pueden contener diversos elementos de la IU, incluyendo botones, listas o menús. A menudo se usan como parte de botones de menú o menús contextuales.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/popover.svg"/>
 
 <section id="when-to-use">
 <title>Cuándo usarlas</title>
 
-<p>Popovers can be used to reveal additional controls that are not always needed by the user. They can can allow the user to take actions or they can contain settings and preferences. They are a very flexible interface element that lend themselves to creative design solutions.</p>
+<p>Las ventanas emergentes se pueden usar para mostrar controles adicionales que no siempre el usuario necesita. Pueden permitir al usuario realizar acciones o pueden contener configuración y preferencias. Son un elemento de la interfaz muy flexible que permite crear soluciones de diseños creativos.</p>
 
-<p>A popover should always relate to a specific interface element which acts as the source of the popover. Typically, this is either a button or a content item. When they are triggered by a button, a popover can be used as a more flexible version of a button menu, allowing groups of controls to be accessed when needed. Examples of this include:</p>
+<p>Una ventana emergente siempre debe ser relativa a un elemento específico de la interfaz que actúa como origen de la ventana. Normalmente, esto es un botón o un elemento de contenido. Cuando se muestran por una pulsación en un botón, la ventana emergente se puede usar como una versión más flexible de un menú de botón, permitiendo acceder a grupos de controles cuando se necesita. Un ejemplo de esto sería:</p>
 
 <list>
-<item><p>Revealing a small toolbox of text formatting controls.</p></item>
-<item><p>A find interface, with a search entry box and a space for a list of results.</p></item>
-<item><p>A collection of view controls, such as zoom, list/grid and content ordering.</p></item>
+<item><p>Mostrar una pequeña caja de herramientas con controles de formato de texto.</p></item>
+<item><p>Una interfaz de búsqueda, con una caja de búsqueda y espacio para la lista de resultados.</p></item>
+<item><p>Una colección de controles de vista, como ampliación, lista/rejilla y ordenación de contenido.</p></item>
 </list>
 
-<p>As a mechanism for disclosing additional controls or information, popovers are similar to <link xref="dialogs">dialog windows</link>. Their main advantage over dialogs is that they are less disruptive and have a close relationship with a single element which the popover points to. However, you should still consider using a dialog if you want to display large amounts of information, or more complex arrangements of controls, or if the situation requires one of the common conventions for dialog usage, such as a confirmation dialog.</p>
+<p>Como mecanismo para mostrar controles o información, las ventanas emergentes</p>
 
 </section>
 
 <section id="popover-content">
-<title>Popover content</title>
+<title>Contenido de la ventana emergente</title>
 
 <list>
-<item><p>A popover is a generic container, and can include a wide variety of controls, such as buttons, sliders, lists, switches and text fields. However, don’t mix too many different types of control within the same popover, and try to group controls of the same type together.</p></item>
-<item><p>Popovers can function as a container for a menu, or for a menu in combination with a small number of supplementary controls.</p></item>
-<item><p>If the purpose of a popover’s controls is ambigious, the popover can be given a heading.</p></item>
-<item><p><gui>Close</gui> or <gui>Done</gui> buttons are not usually required in a popover.</p></item>
+<item><p>Una ventana emergente es un contenedor genérico que puede incluir diferentes controles, tales como botones, deslizadores, listas, interruptores y campos de texto. Sin embargo, procure no mezclar muchos tipos de controles diferentes, e intente agrupar los del mismo tipo.</p></item>
+<item><p>Las ventanas emergentes pueden actuar como un contenedor para un menú, o par aun menú junto con un pequeño número de controles adicionales.</p></item>
+<item><p>Si el propósito de los controles de la ventana emergente es ambiguo, se puede poner un encabezado en la ventana emergente.</p></item>
+<item><p>Normalmente, los botones <gui>Cerrar</gui> o <gui>Hecho</gui> no son obligatorios en una ventana emergente.</p></item>
 </list>
 
 </section>
 
 
 <section id="general-guidelines">
-<title>General guidelines</title>
+<title>Guías Generales</title>
 
-<p>Popovers should always be small in size (as a rule of thumb, they should not cover more than a third of their parent window) and low in complexity. They should always appear as subordinates to their parent windows.</p>
-<p>A popover should only ever appear in response to a user action, and should never appear in a surprising or unintended manner.</p>
+<p>Las ventanas emergentes siempre deben tener un tamaño pequeño (como regla general, no deben cubrir más de la tercera parte de la ventana padre) y ser poco complejas. Siempre deben aparece como subordinadas a su ventana padre.</p>
+<p>Una ventana emergente sólo debe aparecer como respuesta a una acción del usuario, y nunca deben aparecer por sorpresa o de manera inesperada.</p>
 
+</section>
+
+
+<section id="api-reference">
+<title>Referencia de la API</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkPopover.html">GtkPopover</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkPopoverMenu.html">GtkPopoverMenu</link></p></item>
+</list>
 </section>
 
 </page>

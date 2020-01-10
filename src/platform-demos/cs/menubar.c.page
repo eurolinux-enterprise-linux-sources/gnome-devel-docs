@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.c" xml:lang="cs">
+  <info>
+    <title type="text">MenuBar (C)</title>
+    <link type="guide" xref="c#menu-combo-toolbar"/>
+    <link type="seealso" xref="aboutdialog.c"/>
+    <link type="seealso" xref="gmenu.c"/>
+    <revision version="0.2" date="2012-08-19" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Widget, který sdružuje widgety GtkMenuItem.</desc>
+  </info>
+
+  <title>MenuBar</title>
+
+  <media type="image" mime="image/png" src="media/menubar.png"/>
+  <p>MenuBar vytvořený pomocí XML a GtkBuilder.</p>
+<note><p>Kvůli hlubšímu prozkoumání této ukázky se neváhejte podívat i na lekce <link xref="menubar.vala">MenuBar (Vala)</link> a <link xref="menubar.py">MenuBar (Python)</link>.</p></note>
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+
+
+/* Funkce zpětného volání pro akci "copy" */
+static void
+copy_callback (GSimpleAction *simple,
+            GVariant      *parameter,
+            gpointer       user_data)
+{
+   g_print ("\"Copy\" activated\n");
+}
+
+
+
+/* Funkce zpětného volání pro akci "paste" */
+static void
+paste_callback (GSimpleAction *simple,
+            GVariant      *parameter,
+            gpointer       user_data)
+{
+   g_print ("\"Paste\" activated\n");
+}
+
+
+
+/* Funkce zpětného volání pro akci "shape" */
+static void
+shape_callback (GSimpleAction *simple,
+            GVariant      *parameter,
+            gpointer       user_data)
+{
+   /* We first gather the value of the GVariant instance with a string type.
+    * The overall goal here is to see if shape is set to line, triangle, etc,
+    * and put that value within the variable "answer".
+    */
+   const gchar *answer = g_variant_get_string (parameter, NULL);
+   g_printf ("Shape is set to %s.\n", answer);
+   /* Všimněte si, že zde nastavíme stav akce */
+   g_simple_action_set_state (simple, parameter);
+}
+
+
+
+/* Funkce zpětného vulání, ve které zavíráme about_dialog vytvořený dále */
+static void
+on_close (GtkDialog *dialog,
+          gint       response_id,
+          gpointer   user_data)
+{
+  gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+
+
+/* Funkce zpětného volání pro akci "about" (viz příklad aboutdialog.c) */
+static void
+about_callback (GSimpleAction *simple,
+            GVariant      *parameter,
+            gpointer       user_data)
+{
+   GtkWidget *about_dialog;
+
+   about_dialog = gtk_about_dialog_new ();
+
+   const gchar *authors[] = {"GNOME Documentation Team", NULL};
+   const gchar *documenters[] = {"GNOME Documentation Team", NULL};
+
+   /* Vyplní about_dialog požadovanými informacemi */
+   gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (about_dialog), "AboutDialog Example");
+   gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_dialog), "Copyright \xc2\xa9 2012 GNOME Documentation Team");
+   gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (about_dialog), authors);
+   gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (about_dialog), documenters);
+   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_dialog), "GNOME Developer Website");
+   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_dialog), "http://developer.gnome.org");
+
+   /* Signál "response" je vyslán, když dialogové okno přijme událost "delete",
+    * proto jsme tento signál napojili na funkci zpětného volání on_close vytvořenou
+    * výše.
+    */
+   g_signal_connect (GTK_DIALOG (about_dialog), "response",
+                    G_CALLBACK (on_close), NULL);
+
+   /* Zobrazí about_dialog */
+   gtk_widget_show (about_dialog);
+}
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+
+  GSimpleAction *copy_action;
+  GSimpleAction *paste_action;
+  GSimpleAction *shape_action;
+  GSimpleAction *about_action;
+
+  /* Vytvoří okno s názvem a výchozí velikostí */
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "MenuBar Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
+
+  /* Začne vytvářet akci "copy"
+   * Všimněte si, že je bezstavová
+   */
+  copy_action = g_simple_action_new ("copy", NULL);
+  /* Napojí akci na funkci zpětného volání */
+  g_signal_connect (copy_action, "activate", G_CALLBACK (copy_callback),
+                    GTK_WINDOW (window));
+  /* Přidá ji do okna */
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (copy_action));
+
+  /* Začně vytvářet akci "paste"
+   * Všimněte si, že je bezstavová
+   */
+  paste_action = g_simple_action_new ("paste", NULL);
+  /* Napojí akci na funkci zpětného volání */
+  g_signal_connect (paste_action, "activate", G_CALLBACK (paste_callback),
+                    GTK_WINDOW (window));
+  /* Přidá ji do okna */
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (paste_action));
+
+  /* Začne vytvářet akci "shape"
+   * Všimněte si, že tato akce je stavová
+   * Nejprve uveďme, že typ parametru je pro jednoduchou akci řetězec.
+   * Když používáme g_variant_type_new, je potřeba vrácenou hodnotu
+   * příslušně uvolnit, když jsem s ní hotovi.
+   */
+  GVariantType *type_string = g_variant_type_new ("s");
+  /* Parametry pro g_simple_action_new_stateful jsou: název, typ parametru,
+   * počáteční stav
+   */
+  shape_action = g_simple_action_new_stateful ("shape", type_string,
+                                               g_variant_new_string ("line"));
+  /* Napojí akci na funkci zpětného volání */
+  g_signal_connect (shape_action, "activate", G_CALLBACK (shape_callback),
+                    GTK_WINDOW (window));
+  /* Přidá ji do okna */
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (shape_action));
+  g_variant_type_free (type_string);
+
+  /* Začne vytvářet akci "about"
+   * Všimně te si, že tato akce je stavová
+   */
+  about_action = g_simple_action_new ("about", NULL);
+  /* Napojí akci na funkci zpětného volání */
+  g_signal_connect (about_action, "activate", G_CALLBACK (about_callback),
+                    GTK_WINDOW (window));
+  /* Přidá ji do okna */
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (about_action));
+
+  gtk_widget_show_all (window);
+}
+
+
+
+/* Funkce zpětného volání pro akci "new" */
+static void
+new_callback (GSimpleAction *simple,
+         GVariant      *parameter,
+         gpointer       user_data)
+{
+  g_print ("You clicked \"New\"\n");
+}
+
+
+
+/* Funkce zpětného volání pro akci "quit" */
+static void
+quit_callback (GSimpleAction *simple,
+         GVariant      *parameter,
+         gpointer       user_data)
+{
+  GApplication *application = user_data;
+
+  g_print ("You clicked \"Quit\"\n");
+  g_application_quit (application);
+}
+
+
+
+/* Funkce zpětného volání pro akci "state" */
+static void
+state_callback (GSimpleAction *simple,
+         GVariant      *parameter,
+         gpointer       user_data)
+{
+   /* Dvě možnosti v tomto případě pro proměnnou "answer" jsou
+    * "on" nebo "off"
+    */
+   const gchar *answer = g_variant_get_string (parameter, NULL);
+   /* Vypíšeme informace uživateli */
+   g_printf ("State is set to %s.\n", answer);
+   /* Všimněte si, že zde nastavíme stav akce */
+   g_simple_action_set_state (simple, parameter);
+}
+
+
+
+/* Funkce zpětného volání pro akci "awesome" */
+static void
+awesome_callback (GSimpleAction *simple,
+         GVariant      *parameter,
+         gpointer       user_data)
+{
+  GVariant *action_state = g_action_get_state (G_ACTION (simple));
+  gboolean active = g_variant_get_boolean (action_state);
+  GVariant *new_state = g_variant_new_boolean (!active);
+  /* Nastaví nový stav pro akci
+   * (uchovává znalost, jestli naposledy bylo zaškrtnuto nebo nezaškrtnuto)
+   */
+  g_simple_action_set_state (simple, new_state);
+
+  if (active)
+     g_print ("You unchecked \"Awesome\"\n");
+  else
+     g_print ("You checked \"Awesome\"\n");
+}
+
+
+
+/* Spouštěcí funkce pro nabídku, kterou jsme vytvořili v tomto příkladu */
+static void
+startup (GApplication *app,
+         gpointer      user_data)
+{
+  /* Inicializace proměnných */
+  GSimpleAction *new_action;
+  GSimpleAction *quit_action;
+  GSimpleAction *state_action;
+  GSimpleAction *awesome_action;
+
+  GtkBuilder *builder;
+
+  GError *error = NULL;
+
+  /* Začne vytvářet akci "new"
+   * Všimněte si, že je bezstavová
+   */
+  new_action = g_simple_action_new ("new", NULL);
+  g_signal_connect (new_action, "activate", G_CALLBACK (new_callback), app);
+  /* Přidá se pro celou aplikaci */
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (new_action));
+
+  /* Začne vytvářet akci "quit"
+   * Všimněte si, že je bezstavová
+   */
+  quit_action = g_simple_action_new ("quit", NULL);
+  g_signal_connect (quit_action, "activate", G_CALLBACK (quit_callback), app);
+  /* Přidá ji pro celou aplikaci */
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (quit_action));
+
+  /* Začne vytvářet akci "state"
+   * Všimněte si, že tato akce je stavová
+   */
+  GVariantType *type_string2 = g_variant_type_new ("s");
+  state_action = g_simple_action_new_stateful ("state", type_string2,
+                                               g_variant_new_string ("off"));
+  g_signal_connect (state_action, "activate", G_CALLBACK (state_callback), app);
+  /* Přidá ji pro celou aplikaci */
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (state_action));
+  g_variant_type_free (type_string2);
+
+  /* Začne vytvářet akci "awesome"
+   * Všimněte si, že tato akce je stavová
+   */
+  awesome_action = g_simple_action_new_stateful ("awesome", NULL, g_variant_new_boolean (FALSE));
+  g_signal_connect (awesome_action, "activate", G_CALLBACK (awesome_callback), app);
+  /* Přidá ji pro celou aplikaci */
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (awesome_action));
+
+  /* Použije builder pro přidání návrhu uživatelského rozhraní z GLADE do mřížky */
+  builder = gtk_builder_new ();
+  /* Získá soubor (pokud existuje)
+   * Poznámka: musíte se ujistit, že soubor je v aktuální složce s touto
+   * prací. Pokud je objevena chyba, funkce použitá zde vrací neprázdnou
+   * hodnotu do naší proměnné "error"
+   */
+  gtk_builder_add_from_file (builder, "menubar.ui", &amp;error);
+  if (error != NULL) {
+     g_print ("%s\n", error-&gt;message);
+     g_error_free (error);
+  }
+
+  /* Získá nabídkovou lištu */
+  GObject *menubar = gtk_builder_get_object (builder, "menubar");
+  gtk_application_set_menubar (GTK_APPLICATION (app), G_MENU_MODEL (menubar));
+
+  /* Získá aplikační nabídku */
+  GObject *appmenu = gtk_builder_get_object (builder, "appmenu");
+  gtk_application_set_app_menu (GTK_APPLICATION (app), G_MENU_MODEL (appmenu));
+}
+
+
+
+/* Spouštěcí funkce pro aplikaci */
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect (app, "startup", G_CALLBACK (startup), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk/stable/GtkAboutDialog.html">GtkAboutDialog</link></p></item>
+  <item><p><link href="http://developer.gnome.org/glib/stable/glib-GVariantType.html">GtkVariantType</link></p></item>
+</list>
+</page>

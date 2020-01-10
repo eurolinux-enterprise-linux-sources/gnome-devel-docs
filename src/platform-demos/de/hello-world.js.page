@@ -52,14 +52,14 @@
     </section>
 
 
-    <section id="imports"><title>Libraries to import</title>
+    <section id="imports"><title>Zu importierende Bibliotheken</title>
       <code mime="application/javascript">const Lang = imports.lang;
 const Gtk = imports.gi.Gtk;</code>
       <p>In order for our script to work with GNOME, we need to import GNOME libraries via GObject Introspection. Here we import the language bindings and GTK+, the library which contains the graphical widgets used to make GNOME applications.  </p>
     </section>
 
-    <section id="mainwindow"><title>Creating the main window for the application</title>
-      <code mime="application/javascript"><![CDATA[const Application = new Lang.Class({
+    <section id="mainwindow"><title>Erstellen des Hauptfensters der Anwendung</title>
+      <code mime="application/javascript">const Application = new Lang.Class({
     //A Class requires an explicit Name parameter. This is the Class Name.
     Name: 'Application',
 
@@ -89,7 +89,7 @@ const Gtk = imports.gi.Gtk;</code>
         this._buildUI();
     }
 });
-]]></code>
+</code>
 
     <p>GtkApplication initializes GTK+. It also connects the <gui>x</gui> button that's automatically generated along with the window to the "destroy" signal.</p>
     <p>We can start building our first window. We do this by creating a variable called <var>_window</var> and assigning it a new Gtk.ApplicationWindow.</p>
@@ -98,61 +98,59 @@ const Gtk = imports.gi.Gtk;</code>
     </section>
 
     <section id="label"><title>Label for the window</title>
-      <code mime="application/javascript"><![CDATA[// Add a label widget to your window
+      <code mime="application/javascript">// Add a label widget to your window
 this.label = new Gtk.Label({ label: "Hello World" });
 this._window.add(this.label);
-this._window.set_default_size(200, 200);]]></code>
+this._window.set_default_size(200, 200);</code>
 
       <p>A text label is one of the GTK+ widgets we can use, on account of having imported the GTK+ library. To use it, we create a new variable called label, and assign it a new Gtk.Label. Then we give it properties inside the curly braces {}. In this case, we're setting the text that the label will hold. Finally, we create and run the application:</p>
 
-      <code mime="application/javascript"><![CDATA[//run the application
+      <code mime="application/javascript">//run the application
 let app = new Application();
-app.application.run(ARGV);]]></code>
+app.application.run(ARGV);</code>
 
       <p>Gtk.ApplicationWindow can only hold one widget at a time. To construct more elaborate programs you need to create a holder widget like Gtk.Grid inside the window, and then add all the other widgets to it.</p>
    </section>
 
 
     <section id="js"><title>hello-world.js</title>
-      <p>The complete file:</p>
+      <p>Die vollständige Datei:</p>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-const Lang = imports.lang;
+imports.gi.versions.Gtk = '3.0'
 const Gtk = imports.gi.Gtk;
 
-const Application = new Lang.Class({
-    //A Class requires an explicit Name parameter. This is the Class Name.
-    Name: 'Application',
+class Application {
 
     //create the application
-    _init: function() {
+    constructor() {
         this.application = new Gtk.Application();
 
        //connect to 'activate' and 'startup' signals to handlers.
-       this.application.connect('activate', Lang.bind(this, this._onActivate));
-       this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+       this.application.connect('activate', this._onActivate.bind(this));
+       this.application.connect('startup', this._onStartup.bind(this));
+    }
 
     //create the UI
-    _buildUI: function() {
+    _buildUI() {
         this._window = new Gtk.ApplicationWindow({ application: this.application,
                                                    title: "Hello World!" });
         this._window.set_default_size(200, 200);
         this.label = new Gtk.Label({ label: "Hello World" });
         this._window.add(this.label);
-    },
+    }
 
     //handler for 'activate' signal
-    _onActivate: function() {
+    _onActivate() {
         //show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
     //handler for 'startup' signal
-    _onStartup: function() {
+    _onStartup() {
         this._buildUI();
     }
-});
+};
 
 //run the application
 let app = new Application();
@@ -168,7 +166,7 @@ app.application.run(ARGV);
 
 
 
-  <section id="desktop.in"><title>The <file>.desktop.in</file> file</title>
+  <section id="desktop.in"><title>Die Datei <file>.desktop.in</file></title>
       <p>Running applications from the Terminal is useful at the beginning of the application making process. To have fully working <link href="https://developer.gnome.org/integration-guide/stable/mime.html.en">application integration</link> in GNOME 3 requires a desktop launcher. For this you need to create a  <file>.desktop</file> file. The <file>.desktop</file> file describes the application name, the used icon and various integration bits. A deeper insight into the <file>.desktop</file> file can be found <link href="http://developer.gnome.org/desktop-entry-spec/">here</link>. The <file>.desktop.in</file> file will create the <file>.desktop</file>.</p>
 
   <note>
@@ -193,7 +191,7 @@ Categories=GNOME;GTK;Utility;
     <p>Now let's go through some parts of the <code>.desktop.in</code> file.</p>
     <terms>
       <item><title>Name</title><p>Der Anwendungsname.</p></item>
-      <item><title>Kommentar</title><p>Eine kurze Beschreibung der Anwendung.</p></item>
+      <item><title>Comment</title><p>Eine kurze Beschreibung der Anwendung.</p></item>
       <item><title>Exec</title><p>Specifies a command to execute when you choose the application from the menu. In this example exec just tells where to find the <file>hello-world</file> file and the file takes care of the rest.</p></item>
       <item><title>Terminal</title><p>Specifies whether the command in the Exec key runs in a terminal window.</p></item>
     </terms>

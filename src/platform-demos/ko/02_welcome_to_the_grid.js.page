@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="02_welcome_to_the_grid.js" xml:lang="ko">
+  <info>
+    <link type="guide" xref="beginner.js#tutorials"/>
+    <link type="seealso" xref="grid.js"/>
+    <link type="seealso" xref="image.js"/>
+    <link type="seealso" xref="label.js"/>
+    <revision version="0.1" date="2012-07-28" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>그림과 레이블 같은 사용자 인터페이스 구성요소를 어떻게 배치하는지 알아보겠습니다.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>2. Grid를 쓰러 오셨어요?</title>
+  <synopsis>
+    <p>이 따라하기 지침서에서는 기본 위젯 또는 그림 및 레이블 같은 그놈 사용자 인터페이스 일부를 만드는 방법을 보여드리겠습니다. 그 다음, 해당 위젯을 놓고 싶은 곳에 정확히 놓게 하는 그리드로 정돈하는 방법을 알아보겠습니다.</p>
+    <note style="warning"><p><link xref="hellognome.js">이 시리즈의 따라하기 첫번째</link>를 해보셨쥬? 계속 진행하기전에 해보는게 좋아요.</p></note>
+  </synopsis>
+
+  <links type="section"/>
+
+  <section id="native">
+    <title>네이티브로 갑시다</title>
+
+    <p>이전 따라하기에서, 웹 앱용 그놈 기본 창 프레임을 만들었습니다. 우리가 배울 모든 그놈 코드는 ApplicationWindow의 WebView 주변에 두고 표시하게 했습니다. 프로그램 자체는 웹의 대부분 페이지처럼 HTML과 JavaScript로 작성했습니다.</p>
+    <p>이제 자체 그놈 위젯을 사용하겠습니다. 위젯은 그냥 확인 상자 또는 그림 같은거고, 그놈에는 선택해 볼 수 있는 다양한 위젯이 있습니다. 우리가 작성했던 웹 앱의 단추 및 헤더 같은걸 따로 구분할 목적으로 "자체" 위젯이라고 하겠습니다. 웹 코드를 사용하는 대신, GTK+로 완전한 그놈 프로그램을 이루기 때문입니다.</p>
+    <note style="tip"><p>GTK+는 "GIMP Toolkit"입니다. 프로그램을 구성하는 동안 여러분이 접근할 수 있는 위젯의 도구함 같은 존재입니다. 원래는 자유 소프트웨어 그림 편집기 <link href="http://www.gimp.org/">김프</link>를 작성하려고 만들었었죠.</p></note>
+  </section>
+
+  <section id="setup">
+    <title>프로그램 구성</title>
+
+    <p>GTK+ 도구함의 위젯을 찾아보기 전에, 우선 프로그램에서 필요한 기본 준비 코드를 작성해야합니다.</p>
+    <code mime="application/javascript"><![CDATA[
+#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+const Gtk = imports.gi.Gtk;
+]]></code>
+    <p>This part always goes at the start of your code. Depending on what you'll be doing with it, you may want to declare more imports here. What we're writing today is pretty basic, so these are all we need; Gtk for the widgets, using the stable '3.0' API.</p>
+    <p>말 나온 김에:</p>
+    <code mime="application/javascript"><![CDATA[
+class WelcomeToTheGrid {
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application();
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI ();
+    }
+]]></code>
+    <p>프로그램 자체를 시작하는 부분이고 _init 함수에서 프로그램을 구성합니다. _buildUI에서 _window를 호출할 ApplicationWindow 객체를 만들게 하고, 필요할 때 창을 나타내게 합니다.</p>
+    <p>다시 말해, 이 부분을 막 갖다 붙여넣긴 했지만, 이 프로그램에 언제든 고유한 이름을 줄 수 있습니다.</p>
+
+    <code mime="application/javascript"><![CDATA[
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 10,
+            title: "Welcome to the Grid"});
+]]></code>
+    <p>마지막으로 _buildUI 함수로 새 ApplicationWindow 객체를 만들겠습니다. 이 프로그램에서 창을 화면 가운데에서 나타나게 하고 바깥 가장자리는 최소한 10 픽셀의 간격을 두고 어떤 위젯이든 이 안에 두도록 하겠습니다. 또한 창 상단에 뜨는 제목도 넣겠습니다.</p>
+  </section>
+
+  <section id="toolbox">
+    <title>GTK+ 도구함 찾아가기</title>
+    <p>어떤 위젯을 사용할까요? 일단 다음과 같은 프로그램을 작성한다고 가정하겠습니다:</p>
+
+    <media type="image" mime="image/png" src="media/02_jsgrid_01.png"/>
+
+    <p>최소한, 필요한걸 그림과 텍스트 레이블이라고 하죠. 그림 놓기로 시작해보겠습니다:</p>
+    <code mime="application/javascript">
+        // Create an image
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
+</code>
+
+    <p>이 예제에서 사용하는 그림 파일은 <link href="https://live.gnome.org/TarynFox?action=AttachFile&amp;do=get&amp;target=gnome-image.png">여기</link>에서 받을 수 있습니다. 작성 중인 코드대로 동일한 디렉터리에 그림을 두었는지 확인해보십시오.</p>
+
+    <code mime="application/javascript">
+        // Create a label
+        this._label = new Gtk.Label ({ label: "Welcome to GNOME, too!" });
+</code>
+    <p>이 코드에서 그림 하단에 레이블을 추가합니다. 위젯을 만드는 방법을 볼 수가 있지요. GTK의 일부분이고, 바꿀 모양으로 속성 값을 줄 수 있습니다. 여기서는 그림의 file 속성을 우리가 원하는 그림의 파일 이름으로 넣었고 레이블의 label 속성은 그림 아래에 표시할 문장을 넣었습니다.</p>
+    <note style="tip"><p>예 레이블의 label 속성은 뭔가 반복된 것 같죠. 하지만 그렇진 않습니다. 텍스트를 가진 다른 위젯에도 label 속성이 있어서, 문장을 가진 레이블 위젯에 대해 <em>일관된</em> 양상을 취하고 있죠.</p></note>
+    <p>창에 위젯을 추가할 때 이렇게 만 할 수 있는게 아니라, 위젯을 작성할 때 HTML 구성 요소로 동일한 방식으로 작성하여 나타낼 수 있습니다. ApplicationWindow에서 위젯 하나만 넣을 수 있는 이유가 됩니다.</p>
+    <p>어떻게 할까요? 이 위젯을 컨테이너 위젯으로 만들면, 위젯에 다른 위젯을 하나 이상 더 넣을 수 있습니다. 이걸 그리드라 하죠.</p>
+    <code mime="application/javascript">
+        // Create the Grid
+        this._grid = new Gtk.Grid ();
+</code>
+
+    <p>아직은 속성 값을 넣지 않았습니다. 일단 그리드의 막강한 기능을 사용하는 법을 배우고 나서 속성 값을 넣겠구요. 우선, 앞에서 구성한 그림과 레이블을 그리드에 넣어보겠습니다.</p>
+    <code mime="application/javascript">
+        // Attach the image and label to the grid
+        this._grid.attach (this._image, 0, 0, 1, 1);
+        this._grid.attach (this._label, 0, 1, 1, 1);
+</code>
+
+    <p>이 코드는 억수로 복잡해보이지만, 그렇지가 않아요읭? 여기 나타난 숫자는:</p>
+    <list type="numbered">
+      <item><p><em>첫번째</em> 숫자는 왼쪽에서 오른쪽으로 어떤 위치에 둘거냐를 말하는데, 0부터 시작합니다. 여기에 0 값이 들어가면 왼쪽에 넣겠다는 의미죠.</p></item>
+      <item><p><em>두번째</em> 숫자는 위에서 아래로 어떤 위치에 둘거냐를 말하는데, 역시 0부터 시작합니다. 레이블이 그림 아래로 가니까, 그림에는 이 자리에 0 값을 주고, 레이블은 1 값을 줍니다.</p></item>
+      <item><p><em>세번째</em>와 <em>네번째</em> 숫자는 행열(열-행 순) 위젯 갯수를 몇개로 둘지 나타냅니다. 조금 이따가 어떻게 동작하는지 보겠습니다.</p></item>
+    </list>
+
+    <code mime="application/javascript"><![CDATA[
+        // Add the grid to the window
+        this._window.add (this._grid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+
+};
+
+// Run the application
+let app = new WelcomeToTheGrid ();
+app.application.run (ARGV);
+]]></code>
+    <p>이제 모든 위젯을 넣은 그리드를 만들어서 창에 추가했고, _buildUI 함수의 마지막 부분에서 창에서 그동안 추가한 위젯을 표시하도록 했습니다. 언제든지 마무리할 때는 프로그램 클래스의 새 인스턴스를 만들고 실행을 지시합니다.</p>
+    <p>프로그램을 welcome_to_the_grid.js로 저장하시고요. 프로그램을 실행하려면 그냥 터미널을 여시고, 프로그램이 있는 디렉터리로 가셔서 다음 명령을 쳐 넣으세요</p>
+      <screen> <output style="prompt">$ </output>gjs welcome_to_the_grid.js </screen>
+
+    <media type="image" mime="image/png" src="media/02_jsgrid_02.png"/>
+
+    <p>아 돌아가네요! 어 근데 잠깐만요? 제대로 나타나질 않네요. 왜 레이블이 그림 옆으로 쑤셔들어갔을까요? 별로 좋아보이지 않고, 알아보기가 어렵네요. 이걸 어떻게 할 수 있을까요?</p>
+  </section>
+
+  <section id="tweaking">
+    <title>그리드 조절</title>
+
+    <p>여기서 우리는 우리가 레이블을 만들 때 margin_top 속성 값을 줄 수 있습니다. 인라인 CSS 스타일로 HTML 구성 요소에 여백 값을 주는 일과 비슷하죠.</p>
+    <code mime="application/javascript">
+        // Create a label
+        this._label = new Gtk.Label ({
+            label: "Welcome to GNOME, too!",
+            margin_top: 20 });
+</code>
+
+    <p>물론, 이렇게 하고 나면 레이블을 다른 모양새로, 또는 다른 위젯으로 바꿀 때 margin_top 속성 값 설정을 반복해야합니다. 아니면 다음과 같이 끝냅니다:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_03.png"/>
+
+    <p>그림에 margin_bottom 속성 값을 줄 수 있지만, 새 레이블을 개별 칸에 넣을 경우 동작하지 않습니다. 그래서 대신, 다음과 같이 해보겠습니다:</p>
+    <code mime="application/javascript">
+        // Create the Grid
+        this._grid = new Gtk.Grid ({
+            row_spacing: 20 });
+</code>
+
+    <p>수평행에 배치했을 때 사이 여백을 항상 20 픽셀로 두도록합니다.</p>
+    <note style="tip"><p>예, 그리드에서 column_spacing 속성 값을 설정하든지 각 위젯의 margin_left, margin_right 값을 설정할 수도 있습니다. 원하면 해보세요!</p></note>
+  </section>
+
+  <section id="adding">
+    <title>위젯 또 추가하기</title>
+
+    <p>두번째 레이블을 또 추가하고 싶다면 말이죠. 우리가 그리드에 어떻게 넣어서 그렇게 보이게 했을까요? 방법은 상단 그림을 가운데로 두어서 레이블의 왼편으로 가는 대신 두 레이블의 위로 가게 했습니다. 다음 내용은 그리드에 레이블을 또 넣는 방법을 나타냅니다:</p>
+    <code mime="application/javascript">
+        // Create a second label
+        this._labelTwo = new Gtk.Label ({
+            label: "The cake is a pie." });
+
+        // Attach the image and labels to the grid
+        this._grid.attach (this._image, 0, 0, 2, 1);
+        this._grid.attach (this._label, 0, 1, 1, 1);
+        this._grid.attach (this._labelTwo, 1, 1, 1, 1);
+</code>
+
+    <p>두번째 레이블을 만들고 나면 처음 레이블의 오른쪽으로 가도록 그리드에 붙여넣습니다. 처음 숫자 두개는 열-행 숫자를 각각 왼쪽에서 오른쪽순으로 그리고 위에서 아래 순으로 0번부터 센다는 점을 기억하시죠. 그러니까 첫번째 레이블이 0번째 칸, 1번째 줄(첫번째 칸, 두번째 줄)에서 시작하면, 두번째 레이블은 처음 레이블의 오른쪽에 가도록 1번째 칸, 1번째 줄(두번째 칸, 두번째 줄)에 둘 수 있습니다.</p>
+    <p>여기서 붙여넣기 구분의 숫자 2는 그림에 해당합니다. 여기서 사용하는 꼼수에서 할 일입니다. 해당 숫자 값은 그림이 칸을 얼마나 차지하겠느냐는 의미입니다. 그래서 이걸 같이 두면, 다음과 같이 나타납니다:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_04.png"/>
+
+    <p>알아둘 게 두가지가 있는데요.</p>
+    <list>
+      <item><p>그림에 두칸을 차지하도록 설정한다고 해서 그림 자체가 수평으로 쭉 늘어나진 않아요. 대신 그림 위젯 뒤의 보이지 않는 상자가 늘어나서 두 칸을 채우고, 그림은 상자 한가운데로 갑니다.</p></item>
+      <item><p>그리드 row_spacing 속성 값과 ApplicationWindow의 border_width 속성 값을 설정하긴 했지만, 레이블 둘 사이의 테두리에 대한 그 어떤 값도 설정하지 않았습니다. 그림이 한 칸만 차지했을 때는 따로 나뉘어져있었지만, 그놈 그림이 두 칸을 차지한 이후로는 두 레이블이 따로 떨어져 보일 이유를 찾아볼 수가 없죠.</p></item>
+    </list>
+
+    <p>마지막 문제를 해결할 수 있는데는 최소한 세가지 방법이 있습니다. 우선 레이블 중 하나에 margin_left 또는 margin_right 값을 설정할 수 있습니다:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_05.png"/>
+
+    <p>두번째로, 그리드의 column_homogeneous 속성 값을 true로 설정할 수 있고요.</p>
+    <code mime="application/javascript">
+        // Create the Grid
+        this._grid = new Gtk.Grid ({
+            column_homogeneous: true,
+            row_spacing: 20 });
+</code>
+
+    <p>이렇게 하면 다음과 같이 나타납니다:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_06.png"/>
+
+    <p>그리고 세번째로는, 그리드의 column_spacing 속성 값을 설정하는데요. row_spacing 속성 값 설정 방식과 동일합니다.</p>
+    <code mime="application/javascript">
+        // Create the Grid
+        this._grid = new Gtk.Grid ({
+            column_spacing: 20,
+            row_spacing: 20 });
+</code>
+    <p>이렇게 하면 다음과 같이 나타나죠:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_07.png"/>
+  </section>
+
+  <section id="stock">
+    <title>스톡 그림 사용</title>
+
+    <p>그놈에는 그림을 만들고 싶지 않거나 전세계적으로 통용하는 아이콘을 사용하고 싶을 때 쓸 수 있는 여러가지 스톡 그림이 이미 있습니다. 여기서 그냥 그림을 만드는 방법과 비교하여, 스톡 그림을 만드는 방법을 알아보도록 하겠습니다:</p>
+    <code mime="application/javascript">
+        // Create an image
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
+
+        // Create a second image using a stock icon
+        this._icon = new Gtk.Image ({ stock: 'gtk-about' });
+</code>
+    <p>그 다음 그리드에 붙인 처음 레이블의 왼편에 붙여넣어보겠습니다(이 예제에는 두번째 레이블이 없어요~).</p>
+    <code mime="application/javascript">
+        // Attach the images and label to the grid
+        this._grid.attach (this._image, 0, 0, 2, 1);
+        this._grid.attach (this._icon,  0, 1, 1, 1);
+        this._grid.attach (this._label, 1, 1, 1, 1);
+</code>
+    <p>실행하면 다음 화면이 나타납니다:</p>
+    <media type="image" mime="image/png" src="media/02_jsgrid_08.png"/>
+
+    <p>이게 "정보" 스톡 아이콘 같은 그림입니다. gtk-about부터 시작하는 모든 스톡 항목은 <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html#GTK-STOCK-ABOUT:CAPS">그놈 개발자 문서</link>에서 볼 수 있습니다. C 프로그래머에 해당하는 내용으로 작성했지만, 스톡 항목을 사용하는데 C 언어를 알 필요는 없습니다. 그냥 "gtk-about" 처럼 큰 따옴표에 둘러싸인 부분만 보시고, 아이콘 옆에 있는 부분을 복사해서 쓰십시오.</p>
+    <note style="tip"><p>큰 따옴표를 붙여넣은 텍스트 문자열과는 달리 'gtk-about'에 작은 따옴표를 붙여넣었는데, 이 부분은 다른 언어로 굳이 번역할 필요가 전혀 없습니다. 사실, 어떤 언어를 사용하든 스톡 그림 이름이 "gtk-about"이기 때문에, 이 부분을 번역<em>하면</em> 아이콘이 깨집니다.</p></note>
+  </section>
+
+
+  <section id="next">
+    <title>다음은요?</title>
+    <p>다음 따라하기 내용으로 넘어가기 전에, 좀 다른걸 해보겠습니다:</p>
+    <code mime="application/javascript">
+        // Create a button
+        this._button = new Gtk.Button ({
+            label: "Welcome to GNOME, too!"});
+
+        // Attach the images and button to the grid
+        this._grid.attach (this._image,  0, 0, 2, 1);
+        this._grid.attach (this._icon,   0, 1, 1, 1);
+        this._grid.attach (this._button, 1, 1, 1, 1);
+</code>
+
+    <p>예, 됐구요~ 레이블을 이름만 바꿔서 단추로 만들었습니다! 프로그램을 실행하고 나서 눌러보면 아무동작도 하지 않습니다. 단추를 눌렀을 때 어떤 동작을 하게 하려면 어떻게 할까요? <link xref="03_getting_the_signal.js">다음 따라하기</link>에서 찾아볼 수 있습니다.</p>
+    <p>원한다면 그리드, 레이블, 그림, 스톡 그림으로 자유롭게 무언가를 해보세요.</p>
+    <note style="tip"><p>더 복잡하게 배치하는 방법은 그리드 안에 그리드를 넣는 방법입니다. 위젯에 상대적인 위치에 모아둘 수 있고 쉽게 재정돈할 수 있습니다. 어떻게 하는지 보고 싶으면 <link xref="radiobutton.js">RadioButton</link> 예제 코드를 살펴보시지요.</p></note>
+  </section>
+
+  <section id="complete">
+    <title>완전한 코드 예제</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+const Gtk = imports.gi.Gtk;
+
+class WelcomeToTheGrid {
+
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application();
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', this._onActivate.bind(this));
+    this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI ();
+    }
+
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 10,
+            title: "Welcome to the Grid"});
+
+        // Create the Grid
+        this._grid = new Gtk.Grid ({
+            // column_homogeneous: true,
+            // column_spacing: 20,
+            row_spacing: 20 });
+
+        // Create an image
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
+
+        // Create a second image using a stock icon
+        this._icon = new Gtk.Image ({ stock: 'gtk-about' });
+
+        // Create a label
+        this._label = new Gtk.Label ({
+            label: "Welcome to GNOME, too!",
+            /* margin_top: 20 */ });
+
+        /* Create a second label
+        this._labelTwo = new Gtk.Label ({
+            label: "The cake is a pie." }); */
+
+        /* Create a button
+        this._button = new Gtk.Button ({
+            label: "Welcome to GNOME, too!"}); */
+
+        // Attach the images and button to the grid
+        this._grid.attach (this._image,  0, 0, 2, 1);
+        this._grid.attach (this._icon,   0, 1, 1, 1);
+        this._grid.attach (this._label,  1, 1, 1, 1);
+
+        // this._grid.attach (this._label, 0, 1, 1, 1);
+        // this._grid.attach (this._labelTwo, 1, 1, 1, 1);
+
+        // this._grid.attach (this._button, 1, 1, 1, 1);
+
+        // Add the grid to the window
+        this._window.add (this._grid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+
+};
+
+// Run the application
+let app = new WelcomeToTheGrid ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+</page>

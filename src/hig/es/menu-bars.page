@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="menu-bars" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="menu-bars" xml:lang="es">
 
   <info>
     <credit type="author">
@@ -18,12 +18,22 @@
     <credit>
       <name>Colin Robertson</name>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/menu-bar.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2014</mal:years>
+      <mal:years>2011 - 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alex Puchades</mal:name>
+      <mal:email>alex94puchades@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -53,7 +63,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Oscar Rafael Arachi</mal:name>
       <mal:email>arachi910@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014 - 2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -115,81 +125,100 @@
       <mal:email>garciag.omar91@gmail.com</mal:email>
       <mal:years>2015</mal:years>
     </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Edilberto Huerta Niño</mal:name>
+      <mal:email>edilberto.huerta0290@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
+    </mal:credit>
   </info>
 
-<title>Menu bars</title>
+<title>Barras de menú</title>
 
-<p>A menu bar incorporates a strip of drop-down menus. It is typically located at the top of a primary window, below a window title bar.</p>
+<p>Una barra de menú incorpora una tira de menús desplegables. Típicamente está ubicada en la parte superior de una ventana primaria, bajo una barra de título de la ventana.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/menu-bar.svg"/>
 
 <section id="when-to-use">
 <title>Cuándo usarlas</title>
 
-<p>Menu bars increase the vertical footprint of an application’s user interface, introduce a large number of disclosure points, and function as a fixed set of inflexible options. For these reasons, <link xref="header-bars">header bars</link> and <link xref="header-bar-menus">header bar menus</link> are generally recommended over menu bars, along with other design patterns for exposing controls on demand, such as <link xref="selection-mode">selection mode</link>, <link xref="action-bars">action bars</link>, and <link xref="popovers">popovers</link>.</p>
+<p>Las barras de menú incrementan el impacto vertical de una interfaz de usuario de la aplicación, introducen un gran número de puntos conocidos, y funcionan como un conjunto fijo de opciones inflexibles. Por estas razones, las <link xref="header-bars">barras de cabecera</link> y los <link xref="header- bar-menus">menús de barras de cabecera</link> generalmente se colocan en lugar de barras de menú, junto con otros patrones de diseño para mostrar controles bajo demanda, tales como <link xref="selection-mode">modo de selección</link>, <link xref="action-bars">barras de acción</link>, y <link xref="popovers">ventanas emergentes</link>.</p>
 
-<p>At the same time, it can be appropriate for complex applications that already include a menu bar to retain it. Additionally, some platforms also incorporate space for a menu bar in their user environment, and a menu model can be desirable for cross-platform integration purposes.</p>
+<p>Al mismo tiempo, puede ser apropiado para aplicaciones complejas que ya incluyen una barra de menú conservarla. Adicionalmente, algunas plataformas también pueden incorporar espacio para una barra de menú en su entorno de usuario, y un modelo de menú puede ser deseable para para propósitos de integración multiplataforma.</p>
 
 </section>
 
 <section id="standard-menus">
-<title>Standard menus</title>
+<title>Menús estándar</title>
 
-<p>This section details the most common menus and menu items in a menu bar. For details on the standard items to include in each of these menus, see <link xref="keyboard-input#application-shortcuts">keyboard input</link>.</p>
+<p>Esta sección detalla los menús más comunes y los elementos del menú en una barra de menú. Para obtener más detalles sobre los elementos estándar que incluir en cada uno de estos menús, consulte la <link xref="keyboard-input#application-shortcuts">entrada de teclado</link>.</p>
 
 <table>
 <tr>
-<td><p><gui>File</gui></p></td>
-<td><p>Commands that operate on the current document or content item as a whole. It is the left-most item in the menubar because of its importance and frequency of use, and because it is a relevant menu in many applications.</p>
-<p>If your application does not operate on files, name this menu for the type of object it displays. For example, a music player could have a <gui>Music</gui> instead of a <gui>File</gui> menu.</p></td>
+<td><p><gui>Archivo</gui></p></td>
+<td><p>Comandos que operan en conjunto en el documento actual o elemento actual. Esto es el elemento más a la izquierda en la barra de menú debido a su importancia y frecuencia de uso, y porque es un menú relevante en muchas aplicaciones.</p>
+<p>Si su aplicación no trabaja con archivos, nombre este elemento de acuerdo al tipo de objeto que muestre. Por ejemplo, mun reproductor de música podría tener un menú <gui>Música</gui> en lugar de <gui>Archivo</gui>.</p></td>
 </tr>
 <tr>
-<td><p><gui>Edit</gui></p></td>
-<td><p>The <gui>Edit</gui> menu contains items relating to editing the document, such as clipboard handling, find and replace, and inserting objects.</p></td>
+<td><p><gui>Editar</gui></p></td>
+<td><p>El menú <guimenu>Editar</guimenu> contiene elementos relacionados con la edición del documento tales como manejo del portapapeles, buscar y remplazar, e insertar objetos.</p></td>
 </tr>
 <tr>
-<td><p><gui>View</gui></p></td>
-<td><p>Includes items that affect the user’s view, such as of the current document or page, or how items are presented for browsing. Do not place any items on the <gui>View</gui> menu that affect content items.</p></td>
+<td><p><gui>Ver</gui></p></td>
+<td><p>Incluye elementos que afectan la vista del usuario, como el del documento o página actual, o cómo se presentan los elementos para navegación. No coloque ningún elemento en el menú <gui>Ver</gui> que afecte elementos de contenido.</p></td>
 </tr>
 <tr>
-<td><p><gui>Insert</gui></p></td>
-<td><p>Lists the types of objects that can be inserted into the current document, such as images, links or page breaks. Only provide this menu if you have more than about six types of object that can be inserted, otherwise place individual items for each type on the <gui>Edit</gui> menu.</p></td>
+<td><p><gui>Insertar</gui></p></td>
+<td><p>Lista los tipos de objetos que se pueden insertar en el documento actual, tales como imágenes, enlaces o saltos de página. Proporcione este menú sólo si se tienen aproximadamente seis o más tipos de objetos que se puedan insertar; si no es así, ponga elementos individuales para cada tipo en el menú <gui>Editar</gui>.</p></td>
 </tr>
 <tr>
-<td><p><gui>Format</gui></p></td>
-<td><p>Includes commands to change the visual appearance of the document. For example, changing the font, color, or line spacing of a text selection.</p>
-<p>The difference between these commands and those on the <gui>View</gui> menu is that changes made with <gui>Format</gui> commands are persistent and saved as part of the document.</p>
-<p>Items found on the Format menu are very application-specific.</p></td>
+<td><p><gui>Formato</gui></p></td>
+<td><p>Incluye comandos para cambiar la apariencia visual del documento. Por ejemplo, cambiar la tipografía, el color o el interlineado en una selección de texto.</p>
+<p>La diferencia entre estos comandos y aquellos los del menú <gui>Ver</gui> es que los cambios hechos con comandos de <gui>Formato</gui> son persistentes y se guardan como parte del documento.</p>
+<p>Los elementos del menú Formato son muy específicos de la aplicación.</p></td>
 </tr>
 <tr>
-<td><p><gui>Bookmarks</gui></p></td>
-<td><p>Provide a Bookmarks menu in any application that allows the user to browse files and folders, help documents, web pages or any other large information space.</p></td>
+<td><p><gui>Marcadores</gui></p></td>
+<td><p>Proporcione un menú de Marcadores en cualquier aplicación que permita al usuario buscar archivos y carpetas, documentos de ayuda, páginas web o cualquier otro espacio con gran cantidad de información.</p></td>
 </tr>
 <tr>
-<td><p><gui>Go</gui></p></td>
-<td><p>A <gui>Go</gui> menu provides commands for quickly navigating around a document or collection of documents, or an information space such as a directory structure or the web.</p>
-<p>The contents of the menu will vary depending on the type of application.</p></td>
+<td><p><gui>Ir</gui></p></td>
+<td><p>Un menú <gui>Ir</gui> proporciona comandos para navegar rápidamente por un documento o colección de documentos, o un espacio de información como una estructura de carpetas o la web.</p>
+<p>Los contenidos del menú pueden variar dependiendo del tipo de aplicación.</p></td>
 </tr>
 <tr>
-<td><p><gui>Windows</gui></p></td>
-<td><p>Commands that apply to all of the application’s open windows. You may also label this menu <gui>Documents</gui>, <gui>Buffers</gui>, or similar according to the type of document handled by your application.</p>
-<p>The last items on this menu are a numbered list of the application’s primary windows, for example <gui>1shoppinglist.abw</gui>. Selecting one of these items raises the corresponding window.</p></td>
+<td><p><gui>Ventanas</gui></p></td>
+<td><p>Comandos que aplican a todas las ventanas abiertas de la aplicación. También puede etiquetar este menú como <gui>Documentos</gui>, <gui>Búferes</gui> o similar, de acuerdo con el tipo de documento manejado por la aplicación.</p>
+<p>Los últimos elementos de este menú son una lista numerada de las ventanas primarias de la aplicación, por ejemplo <gui>1shoppinglist.abw</gui>. Seleccionar uno de estos elementos muestra la correspondiente ventana.</p></td>
 </tr>
 </table>
 
 </section>
 
 <section id="general-guidelines">
-<title>General guidelines</title>
+<title>Guías Generales</title>
 
 <list>
-<item><p>The menubar is normally visible at all times and is always accessible from the keyboard, so make all the commands available in your application available on the menubar. (This guideline is unique to menu bars - other menus should not seek to reproduce functionality that is made available by other controls).</p></item>
-<item><p>Treat <link xref="application-menus">application menus</link> as part of the menu bar - it is not necessary to reproduce items from the application menu in other menus.</p></item>
+<item><p>Normalmente, la barra de menú está visible todo el tiempo y es siempre accesible desde el teclado, por lo que debe hacer que todos los comandos disponibles en su aplicación estén disponibles desde la barra de menú. (Esta guía es única para barras de menú; otros menús no deberían buscar reproducir la funcionalidad que se hace disponible con otros controles)</p></item>
+<item><p>Considere los <link xref="application-menus">menús de la aplicación</link> como parte de la barra de menú; no es necesario reproducir los elementos del menú de la aplicación en otros menús.</p></item>
 <item><p>No desactive títulos de menús. Permítale al usuario explorarlos, incluso si no hay elementos disponibles en ese momento.</p></item>
-<item><p>Menu titles on a menubar are single words with their first letter capitalized. Do not use spaces in menu titles, as this makes them easily-mistaken for two separate menu titles. Do not use compound words (such as <gui>WindowOptions</gui>) or hyphens (such as <gui>Window-Options</gui>) to circumvent this guideline.</p></item>
+<item><p>Los títulos de menú en una barra de menú son una palabra con su primera letra en mayúsculas. No use espacios en un título de menú, esto hace fácil confundirlo con dos títulos separados. No use palabras compuestas (como <gui>OpcionesDeVentana</gui>) o guiones (como <guimenu>Opciones-De-Ventana</guimenu>) para esquivar esta guía.</p></item>
 <item><p>No proporcione un mecanismo para esquivar la barra de menú, podría activarse accidentalmente. Algunos usuarios no podrán descubrir como recuperar la barra de menú en este caso.</p></item>
 </list>
 
+</section>
+
+<section id="api-reference">
+<title>Referencia de la API</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenu.html">GtkMenu</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuBar.html">GtkMenuBar</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuItem.html">GtkMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkRadioMenuItem.html">GtkRadioMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkCheckMenuItem.html">GtkCheckMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkSeparatorMenuItem.html">GtkSeparatorMenuItem</link></p></item>
+</list>
 </section>
 
 </page>

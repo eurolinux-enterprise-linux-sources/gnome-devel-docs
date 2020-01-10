@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="window.py" xml:lang="ko">
+  <info>
+    <title type="text">Window (Python)</title>
+    <link type="guide" xref="beginner.py#windows"/>
+    <link type="seealso" xref="properties.py"/>
+    <link type="next" xref="GtkApplicationWindow.py"/>
+    <revision version="0.2" date="2012-06-09" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="author">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>다른 위젯을 넣을 수 있는 최상위 창</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Window</title>
+
+  <table>
+    <tr>
+      <td>
+        <media type="image" mime="image/png" src="media/window.png"/>
+        <p>작은 GTK+ 프로그램: 제목이 들어간 창.</p>
+      </td>
+      <td>
+        <p><link xref="gmenu.py"/> 지원 기능이 필요하면 <link xref="GtkApplicationWindow.py"/>를 사용하세요.</p>
+      </td>
+    </tr>
+  </table>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>예제 결과를 만드는 코드</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyApplication(Gtk.Application):
+
+    def do_activate(self):
+        # create a Gtk Window belonging to the application itself
+        window = Gtk.Window(application=self)
+        # set the title
+        window.set_title("Welcome to GNOME")
+        # show the window
+        window.show_all()
+
+# create and run the application, exit with the value returned by
+# running the program
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+  <title>Window 위젯에 쓸만한 메서드</title>
+  <list>
+    <item><p><code>set_default_size(200, 100)</code> 함수는 창의 기본 크기를 너비 <code>200</code>, 높이 <code>100</code>으로 설정합니다. 양수를 넣지 않을 때는 기본 크기를 설정할 때 대신 <code>-1</code> 값을 전달합니다.</p></item>
+    <item><p><code>set_position(Gtk.WindowPosition.CENTER)</code> 함수는 창을 가운데에 놓습니다. 다른 옵션으로는 <code>Gtk.WindowPosition.NONE, Gtk.WindowPosition.MOUSE, Gtk.WindowPosition.CENTER_ALWAYS, Gtk.WindowPosition.CENTER_ON_PARENT</code>가 있습니다.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>API 참고서</title>
+
+  <p>이 예제는 다음 참고자료가 필요합니다:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplication.html">GtkApplication</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+  </list>
+  </section>
+</page>

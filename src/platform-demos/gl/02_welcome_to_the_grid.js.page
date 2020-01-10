@@ -42,51 +42,49 @@
     <title>Configurar o seu aplicativo</title>
 
     <p>Antes de profundizar en calquera widget da caixa de ferramentas de GTK+, primeiro debemos escribir un código básico de arrinque que o noso aplicativo require.</p>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
-</code>
-    <p>Esta parte sempre vai ao inicio do seu código. Dependendo do que faga con el, pode querer declarar máis imports aquí. O que estamos escribindo hoxe é moi básico, polo que vai ser todo o que imos precisar; Gtk para os widgets e Lang para que poidamos usar Lang.bind para conectar os sinais do aplicativo «activate» e «startup» ás funcións requiridas.</p>
+]]></code>
+    <p>This part always goes at the start of your code. Depending on what you'll be doing with it, you may want to declare more imports here. What we're writing today is pretty basic, so these are all we need; Gtk for the widgets, using the stable '3.0' API.</p>
     <p>Falando diso:</p>
-    <code mime="application/javascript">
-const WelcomeToTheGrid = new Lang.Class({
-    Name: 'Benvida á Grella',
-
-    // Crear o aplicativo
-    _init: function() {
+    <code mime="application/javascript"><![CDATA[
+class WelcomeToTheGrid {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application();
 
-        // Conectar os sinais 'activate' e 'startup' ás funcións callback
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Función callback para o sinal 'activate' presente cando a xanela se active
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
         this._window.present();
-    },
+    }
 
-    // Función callback para o sinal 'startup' cando se constrúa a IU
-    _onStartup: function() {
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
         this._buildUI ();
-    },
-</code>
+    }
+]]></code>
     <p>Isto é o inicio do aplicativo en si, e a función _init o que o crea. Dille a _buildUI que cree un ApplicationWindow, que imos chamar a _window, e dílle á nosa anela presentarse a si mesmo onde sexa preciso.</p>
     <p>Esta parte, de nogo é principalmente copiar e pegar, pero sempre quererá darlle un nome único ao seu aplicativo.</p>
 
-    <code mime="application/javascript">
-    // Construír a IU do aplicativo
-    _buildUI: function() {
+    <code mime="application/javascript"><![CDATA[
+    // Build the application's UI
+    _buildUI() {
 
-        // Crear a xanela do aplicativo
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 10,
-            title: "Benvida á grella"});
-</code>
+            title: "Welcome to the Grid"});
+]]></code>
     <p>Finalmente, iniciamos coa función _buildUI creando un novo ApplicationWindow. Especificamos como ten que ir o aplicativo, debe aparecer no centro da pantalla e debería ter cando menos 10 píxeles de espacio entre o borde da xanela e calquera widget dentro dela. Tamén fornécelle un título, o cal aparecerá na parte superior da xanela.</p>
   </section>
 
@@ -127,7 +125,7 @@ const WelcomeToTheGrid = new Lang.Class({
     <p>Este código semella moi complicado, pero non é así. Isto é o que significan ditos números:</p>
     <list type="numbered">
       <item><p>The <em>first</em> number is what left-to-right position to put things in, starting from 0. Any widget that uses a 0 here goes all the way to the left.</p></item>
-      <item><p>The <em>second</em> number is what top-to-botton position to put a given widget in, starting from 0. The Label goes beneath the Image, so we give the Image a 0 and the Label a 1 here.</p></item>
+      <item><p>The <em>second</em> number is what top-to-bottom position to put a given widget in, starting from 0. The Label goes beneath the Image, so we give the Image a 0 and the Label a 1 here.</p></item>
       <item><p>The <em>third</em> and <em>fourth</em> numbers are how many columns and rows a widget should take up. We'll see how these work in a minute.</p></item>
     </list>
 
@@ -139,7 +137,7 @@ const WelcomeToTheGrid = new Lang.Class({
         this._window.show_all();
     }
 
-});
+};
 
 // Run the application
 let app = new WelcomeToTheGrid ();
@@ -207,7 +205,7 @@ app.application.run (ARGV);
     <p>There are at least three ways we can get around that last one. First, we can set a margin_left or margin_right on one of the Labels:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_05.png"/>
 
-    <p>Second, we can set the Grid's column_homogenous property to true.</p>
+    <p>Second, we can set the Grid's column_homogeneous property to true.</p>
     <code mime="application/javascript"><![CDATA[
         // Create the Grid
         this._grid = new Gtk.Grid ({
@@ -278,35 +276,32 @@ app.application.run (ARGV);
     <title>Exemplos de código</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const WelcomeToTheGrid = new Lang.Class({
-    Name: 'Welcome to the Grid',
+class WelcomeToTheGrid {
 
     // Create the application itself
-    _init: function() {
+    constructor() {
         this.application = new Gtk.Application();
 
     // Connect 'activate' and 'startup' signals to the callback functions
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+    this.application.connect('activate', this._onActivate.bind(this));
+    this.application.connect('startup', this._onStartup.bind(this));
+    }
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate: function() {
+    _onActivate() {
         this._window.present();
-    },
+    }
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup: function() {
+    _onStartup() {
         this._buildUI ();
-    },
-
-
+    }
 
     // Build the application's UI
-    _buildUI: function() {
+    _buildUI() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -357,7 +352,7 @@ const WelcomeToTheGrid = new Lang.Class({
         this._window.show_all();
     }
 
-});
+};
 
 // Run the application
 let app = new WelcomeToTheGrid ();

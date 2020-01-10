@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="colorbutton.vala" xml:lang="cs">
+  <info>
+  <title type="text">ColorButton (Vala)</title>
+    <link type="guide" xref="beginner.vala#color-selectors"/>
+    <link type="seealso" xref="grid.vala"/>
+    <link type="seealso" xref="label.vala"/>
+    <revision version="0.1" date="2012-06-07" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Tlačítko, které zobrazí dialogové okno pro výběr barvy</desc>
+  </info>
+
+  <title>ColorButton</title>
+  <media type="image" mime="image/png" src="media/colorbutton.png"/>
+  <p>Hodnoty RGB vybrané barvy se zobrazí v popisku.</p>
+
+<code mime="text/x-csharp" style="numbered">/* Toto je aplikace. */
+public class MyApplication : Gtk.Application {
+	Gtk.Label label;
+
+	/* Přepíše signál "activate" z GLib.Application. */
+	protected override void activate () {
+		/* Vytvoří okno této aplikace a zobrazí jej. */
+		var window = new Gtk.ApplicationWindow (this);
+		window.title = "ColorButton";
+		window.set_default_size (150, 50);
+		window.set_border_width (10);
+
+		/* Vytvoří nové ColorButton s výchozí modrou. */
+		var blue = Gdk.RGBA ();
+		blue.parse ("blue");
+		var colorbutton = new Gtk.ColorButton.with_rgba (blue);
+
+		label = new Gtk.Label ("Click to choose a color");
+
+		var grid = new Gtk.Grid ();
+		grid.attach (colorbutton, 0, 0, 1, 1);
+		grid.attach_next_to (label, colorbutton, Gtk.PositionType.BOTTOM, 1, 1);
+
+		colorbutton.color_set.connect (this.on_color_set);
+
+		window.add (grid);
+		window.show_all ();
+	}
+
+	void on_color_set (Gtk.ColorButton button) {
+		var color =  button.get_rgba ();
+		label.set_text ("RGBA: " + color.to_string());
+	}
+}
+
+/* main vytvoří a spustí aplikaci. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://valadoc.org/gtk+-3.0/Gtk.ColorButton.html">Gtk.ColorButton</link></p></item>
+  <item><p><link href="http://valadoc.org/gdk-3.0/Gdk.RGBA.html">Gdk.RGBA</link></p></item>
+</list>
+</page>

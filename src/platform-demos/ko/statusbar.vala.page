@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.vala" xml:lang="ko">
+  <info>
+  <title type="text">Statusbar (Vala)</title>
+    <link type="guide" xref="beginner.vala#display-widgets"/>
+    <link type="seealso" xref="grid.vala"/>
+    <link type="seealso" xref="button.vala"/>
+    <link type="seealso" xref="label.vala"/>
+    <revision version="0.1" date="2012-05-08" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>별로 중요하지 않은 메시지를 사용자에게 알립니다</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Statusbar</title>
+  <media type="image" mime="image/png" src="media/statusbar.png"/>
+  <p>상태 표시줄은 무슨 일이 일어나는지 알려줍니다.</p>
+
+<code mime="text/x-csharp" style="numbered">public class MyWindow : Gtk.ApplicationWindow {
+
+	Gtk.Statusbar statusbar;
+	uint context_id;
+
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "Statusbar Example");
+
+		statusbar = new Gtk.Statusbar ();
+		context_id = statusbar.get_context_id ("example");
+		statusbar.push (context_id, "Waiting for you to do something...");
+
+		//set the default size of the window
+		this.set_default_size (200, 100);
+		var grid = new Gtk.Grid ();
+		var label = new Gtk.Label ("Press any key or ");
+
+		grid.attach (label, 0, 0, 1, 1);
+		label.show ();
+
+		var button = new Gtk.Button.with_label ("click me.");
+		grid.attach_next_to (button, label, Gtk.PositionType.RIGHT, 1, 1);
+		button.show ();
+
+		grid.attach (statusbar, 0, 1, 2, 1);
+		statusbar.show ();
+
+		grid.set_column_spacing (5);
+		grid.set_column_homogeneous (true);
+		grid.set_row_homogeneous (true);
+
+		this.add (grid);
+		grid.show ();
+
+		button.clicked.connect(button_clicked_cb);
+	}
+
+	/* Since the key-press-event is a signal received by the window, we don't need to connect
+	the window to a callback function.  We can just override key_press_event. */
+	protected override bool key_press_event (Gdk.EventKey event) {
+		statusbar.push (context_id, Gdk.keyval_name(event.keyval) + " key was pressed.");
+		return true;
+	}
+
+	void button_clicked_cb (Gtk.Button button) {
+		statusbar.push (context_id, "You clicked the button.");
+	}
+}
+
+public class MyApplication : Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+
+	internal MyApplication () {
+		Object (application_id: "org.example.status");
+	}
+}
+
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Statusbar.html">Gtk.Statusbar</link></p></item>
+</list>
+</page>

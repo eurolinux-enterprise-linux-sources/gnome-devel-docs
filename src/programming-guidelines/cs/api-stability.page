@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="api-stability" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#maintainer-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Zpětná kompatibilita v API</desc>
+  </info>
+
+  <title>Stabilita API</title>
+
+  <synopsis>
+    <title>Shrnutí</title>
+
+    <list>
+      <item><p>Definujte stabilitu API zaručovanou ve vašem projektu. (<link xref="#stability"/>)</p></item>
+      <item><p>Zajistěte změnu čísla verze příslušně ke změnám v API. (<link xref="#versioning"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="api-and-abi">
+    <title>API a ABI</title>
+
+    <p>Ve vysokoúrovňovém programování je API (<em>Application Programming Interface</em> – rozhraní pro programování aplikací) hranicí mezi dvěma komponentami použitými při vývoji. Úzce souvisí s ABI (<em>Application Binary Interface</em> – nízkoúrovňové rozhraní aplikací), které je tou stejnou hranicí, ale za běhu. Definuje možné způsoby, kterými mohou s komponentou spolupracovat ostatní komponenty. Z praktického hlediska jsou formou API běžné hlavičkové soubory C knihovny a zkompilované knihovní symboly jsou pak ABI. Rozdíl mezi API a ABI je jen v kompilaci kódu: existují určité věci v hlavičkách C, jako třeba <code>#define</code>, které mohou způsobit, že se změní API knihovny, aniž by se změnilo ABI. Ale tyto rozdíly jsou spíše akademického rázu a v praktickém životě můžete API a ABI považovat za jinou formu téhož.</p>
+
+    <p>Příkladem změn narušujících kompatibilitu API ve funkci C by bylo přidání nového parametru, změna typu vraceného funkcí nebo odstranění parametru.</p>
+
+    <p>Ale i další části projektu mohou mít formu API. Když démon vystavuje sám sebe na sběrnici D-Bus, tak tam exportovaná rozhraní mají podobu API. Obdobně, když je API C vystaveno v jazycích vyšší úrovně pomocí GIR, tvoří soubor GIR další API — když se změní, kterýkoliv kód vyšší úrovně, který jej používá, se musí změnit také.</p>
+
+    <p>Dalšími příklady méně obvyklých API jsou umístění a formáty souborů s nastavením a schémata GSettings. Jakékoliv změny v nich vyžadují, aby se změnil kód používající vaši knihovnu.</p>
+  </section>
+
+  <section id="stability">
+    <title>Stabilita</title>
+
+    <p>Stabilitou API se míní určitá úroveň záruky od projektu, že se jeho API bude v budoucnu měnit jen jasně daným způsobem, případně vůbec. Obecně je API považováno za „stabilní“, pokud přináší zpětnou kompatibilitu (viz níže). Může ale být také prohlášeno za nestabilní nebo dopředně kompatibilní. Účelem záruky na stabilitu API je umožnit lidem používat váš projekt v rámci jejich vlastního programového kódu bez obav, že jej neustále budou muset aktualizovat kvůli změnám v API. Typická záruka na stabilitu API znamená, že kód, který ke kompilován vůči jedné verzi knihovny, poběží bez problémů vůči všem budoucím verzím knihovny se stejným hlavním číslem verze, nebo obdobně, že kód, který běží vůči démonovi, poběží i vůči všem budoucím verzím démona se stejným hlavním číslem verze.</p>
+
+    <p>Je možné použít pro různé komponenty projektu různé úrovně stability API. Například základní funkce v knihovně budou stabilní, takže jejich API zůstane v budoucnu beze změn, zatímco novější, méně základní funkce, by zůstaly nestabilní a mohly by se značně měnit, dokud by návrh nebyl vyladěn a pak by teprve byly označené za stabilní.</p>
+
+    <p>Obvykle se počítá s několika běžnými typy kompatibility:</p>
+    <terms>
+      <item>
+        <title>Nestabilní</title>
+        <p>API se může v budoucnu změnit nebo může být zrušeno.</p>
+      </item>
+      <item>
+        <title>Zpětně kompatibilní</title>
+        <p>Jsou povoleny jen změny, které umožní kódu kompilovanému vůči nezměněnému API nadále fungovat vůči změněnému API (například nesmí být odebrány funkce).</p>
+      </item>
+      <item>
+        <title>Dopředně kompatibilní</title>
+        <p>Jsou povoleny jen změny, které umožní kódu kompilovanému vůči změněnému API fungovat i vůči nezměněnému API (například nesmí být přidány funkce).</p>
+      </item>
+      <item>
+        <title>Zcela stabilní</title>
+        <p>Nejsou umožněny žádné změny v API, jen v implementaci.</p>
+      </item>
+    </terms>
+
+    <p>Když nějaký projekt o svém API řekne, že je stabilní, můžete si to vyložit jako zpětnou kompatibilitu. Jen velmi málo projektů se řadí mezi úplně stabilní, protože by to bránilo skoro všem budoucím změnám v projektu.</p>
+  </section>
+
+  <section id="versioning">
+    <title>Číslování verzí</title>
+
+    <p>Záruky stability API jsou úzce svázány s číslováním verze projektu, jak s číslováním balíčku, tak s číslováním pro libtool. Číslování verzí pro libtool existuje čistě pro účely sledování stability ABI a podrobně je vysvětleno v článku <link href="https://autotools.io/libtool/version.html">Autotools Mythbuster</link> nebo v kapitole <link xref="versioning"/>.</p>
+
+    <p>Číslování verzí balíčků (<em>hlavní.vedlejší.setinkové</em>) má úzkou souvislost se stabilitou API: typicky se hlavní číslo verze zvyšuje, když dojde ke změně ve zpětné kompatibilitě (například, když je přejmenována funkce, změněn parametr nebo odstraněna funkce). Vedlejší číslo verze se zvyšuje, když dojde ke změnám v dopředné kompatibilitě (například, když je přidáno nové veřejné API). Setinkové číslo verze se zvyšuje, když změny v kódu nijak neovlivnily API. Další informace viz <link xref="versioning"/>.</p>
+
+    <p>Číslování verzí API není důležité jen pro C, ale i pro D-Bus a schémata GSettings (pokud je předpoklad, že se budou měnit). Podrobnosti viz <link href="http://dbus.freedesktop.org/doc/dbus-api-design.html#api-versioning">dokumentace k číslování verzí API pro D-Bus</link>.</p>
+
+    <p>U API pro GIR se jejich stabilita obvykle řídí stabilitou API v C, protože je z něj generováno. Jedinou komplikací je, že jeho stabilita závisí navíc na verzi gobject-introspection použité při generování GIR. Ta se ale v posledních verzích příliš nemění, takže to není až tak důležité.</p>
+  </section>
+
+  <section id="external-links">
+    <title>Externí odkazy</title>
+
+    <p>Tématem stability API se zabývají následující články:</p>
+    <list>
+      <item><p><link href="https://cs.wikipedia.org/wiki/API">Stránka o API na Wikipedii</link></p></item>
+      <item><p><link href="https://cs.wikipedia.org/wiki/ABI">Stránka o ABI na Wikipedii</link></p></item>
+      <item><p><link href="http://dbus.freedesktop.org/doc/dbus-api-design.html#api-versioning">Dokumentace k číslování verzí D-Bus</link></p></item>
+    </list>
+  </section>
+</page>

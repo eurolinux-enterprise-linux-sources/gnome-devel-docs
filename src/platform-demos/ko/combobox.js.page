@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox.js" xml:lang="ko">
+  <info>
+  <title type="text">ComboBox(JavaScript)</title>
+    <link type="guide" xref="beginner.js#menu-combo-toolbar"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="comboboxtext.js"/>
+    <link type="seealso" xref="messagedialog.js"/>
+    <link type="seealso" xref="treeview_simple_liststore.js"/>
+    <revision version="0.1" date="2012-07-09" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>개별 설정 가능한 드롭 다운 메뉴</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ComboBox</title>
+  <media type="image" mime="image/png" src="media/combobox_multicolumn.png"/>
+  <p>ComboBox는 완전 지멋대로 고칠 수 있는 드롭다운 메뉴입니다. 드롭다운 메뉴를 누르면 <link xref="treeview_simple_liststore.js">TreeView</link> 위젯을 나타내고, 행열에 무엇이 들어있는지 알려주는 ListStore(기본적인 스프레드시트) 위젯으로 끝내는 것과 동일한 구조를 지닙니다. 이 예제에서 ListStore에는 한 칸에 각 옵션의 이름을 넣고 스톡 아이콘 이름을 다른 곳에 넣으며, 각 콤보박스에서 각 옵션의 아이콘을 나타내게 하겠습니다.</p>
+  <p>우선 한번에 수평 줄 하나를 선택하기에 아이콘은 개별 옵션으로 취급하지 않습니다. 아이콘과 텍스트 한 묶음이 여러분이 누를 수 있는 옵션 하나를 이룹니다.</p>
+  <note style="tip"><p>ListStrore를 다루는 과정은 시간이 좀 걸릴 수 있습니다. 간단하게 텍스트만 있는 드롭다운 메뉴를 원하면 <link xref="comboboxtext.js">ComboBoxText</link> 사용을 고려하십시오. 구성에 시간이 별로 오래 걸리지 않을 뿐더러 다루기도 쉽습니다.</p></note>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>가져올 라이브러리</title>
+    <code mime="application/javascript"><![CDATA[
+#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+]]></code>
+    <p>이 프로그램을 실행할 때 가져올 라이브러리입니다. 시작 부분에 항상 gjs가 필요함을 알리는 줄을 작성해야 함을 기억하십시오.</p>
+  </section>
+
+  <section id="applicationwindow">
+    <title>프로그램 창 만들기</title>
+    <code mime="application/javascript"><![CDATA[
+class ComboBoxExample {
+
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jscombobox'});
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present ();
+    }
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI ();
+    }
+]]></code>
+    <p>이 예제의 모든 코드는 ComboBoxExample 클래스에 넣었습니다. 위 코드에서는 위젯과 창을 담아둘 <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link>을 만들었습니다.</p>
+    <code mime="application/javascript"><![CDATA[
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Welcome to GNOME",
+            default_width: 200,
+            border_width: 10 });
+]]></code>
+    <p>_buildUI 함수는 프로그램 사용자 인터페이스를 만드는 모든 코드를 넣는 곳입니다. 첫 단계에서는 모든 위젯을 우겨넣을 새 <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link>를 만듭니다.</p>
+  </section>
+
+  <section id="liststore">
+    <title>ListStore 만들기</title>
+    <code mime="application/javascript">
+        // Create the liststore to put our options in
+        this._listStore = new Gtk.ListStore();
+        this._listStore.set_column_types ([
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING]);
+</code>
+    <p>ListStore는 <link xref="treeview_simple_liststore.js">TreeView</link> 예제에서 사용했던 것과 비슷하게 동작합니다. ListStore에 문자열을 저장하는 두 칸을 확보했는데요, 이 중 하나는 <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">스톡 gtk 아이콘</link> 이름이 들어갑니다.</p>
+    <p>그놈에 내장하지 않은 자체 보유 아이콘을 사용한다면, 대신 <file>gtk.gdk.Pixbuf</file> 형식을 사용해야합니다. 여러분이 사용할 수 있는 몇가지 기타 형식을 알려드리겠습니다:</p>
+    <list>
+      <item><p><file>GObject.TYPE_BOOLEAN</file> -- 참/거짓</p></item>
+      <item><p><file>GObject.TYPE_FLOAT</file> -- 소수(소수점 하나 들어감)</p></item>
+      <item><p><file>GObject.TYPE_STRING</file> -- 문자, 숫자로 이루어진 문장</p></item>
+    </list>
+    <note style="tip"><p>GObject 형식을 사용할 수 있게 하려면, 우리가 예제에서 했던 것처럼 프로그램 코드 시작 부분에 <file>const GObject = imports.gi.GObject;</file> 를 넣으세요.</p></note>
+
+    <code mime="application/javascript">
+        // This array holds our list of options and their icons
+        let options = [{ name: "Select" },
+            { name: "New", icon: Gtk.STOCK_NEW },
+            { name: "Open", icon: Gtk.STOCK_OPEN },
+            { name: "Save", icon: Gtk.STOCK_SAVE }];
+
+        // Put the options in the liststore
+        for (let i = 0; i &lt; options.length; i++ ) {
+            let option = options[i];
+            let iter = this._listStore.append();
+            this._listStore.set (iter, [0], [option.name]);
+            if ('icon' in option)
+                this._listStore.set (iter, [1], [option.icon]);
+        }
+</code>
+    <p>여기서 각각의 아이콘과 텍스트 옵션에 대한 배열을 만들고, <link xref="treeview_simple_liststore.js">TreeView</link>  ListStore와 매우 동일한 방식으로 ListStore에 배열을 넣겠습니다. 옵션 배열에 실제로 아이콘이 있을 경우에만 아이콘을 넣을테니 우선 확인부터 해보겠습니다.</p>
+    <note style="tip"><p>"선택"은 ComboBox에서 마우스로 누르게 하는 것인 만큼 진짜 옵션은 아니니까, 아이콘이 필요가 없습니다.</p></note>
+  </section>
+
+  <section id="combobox">
+    <title>ComboBox 만들기</title>
+    <code mime="application/javascript">
+        // Create the combobox
+        this._comboBox = new Gtk.ComboBox({
+            model: this._listStore});
+</code>
+    <p>각 ComboBox에는 자체 옵션을 가진 기반 "모델"이 있습니다. ComboBox에 별개 분기 옵션을 넣고 싶다면 TreeStore를 사용할 수 있죠. 지금 같은 경우는, 그냥 이미 만든 ListStore를 사용하겠습니다.</p>
+    <code mime="application/javascript">
+        // Create some cellrenderers for the items in each column
+        let rendererPixbuf = new Gtk.CellRendererPixbuf();
+        let rendererText = new Gtk.CellRendererText();
+
+        // Pack the renderers into the combobox in the order we want to see
+        this._comboBox.pack_start (rendererPixbuf, false);
+        this._comboBox.pack_start (rendererText, false);
+
+        // Set the renderers to use the information from our liststore
+        this._comboBox.add_attribute (rendererText, "text", 0);
+        this._comboBox.add_attribute (rendererPixbuf, "stock_id", 1);
+에
+</code>
+    <p>이 부분에서는 다시 말하지만, CellRenderer를 만들고 <link xref="treeview_simple_liststore.js">TreeView</link>의 칸에 넣는 식으로 손이 많이 가고 있죠. 큰 차이점이 있다면 ComboBox의 칸을 별개 객체로 만들 필요가 없다는겁니다. 그냥 CellRenderer를 보여주고 싶은 대로 감싸넣고, ListStore에서 정보를 가져오게 하는거죠(그리고 기대하던 정보 형식도요).</p>
+    <p>텍스트를 보여줄 때 CellRendererText를 사용하고, CellRendererPixbuf로 아이콘을 보여주겠습니다. 아이콘 스톡 이름은 문자열로 입력하여 저장할 수 있지만은, 화면에 표시할 때는 그림을 보여주도록 설계한 CellRenderer가 필요합니다.</p>
+    <note style="tip"><p>TreeView처럼, "모델"(이 경우, ListStore)과 "뷰"(이 경우, ComboBox)를 따로 분리합니다. ListStore에서 한가지 순서를 갖춘 열으로 뭔가를 할 수 있고, ComboBox에 다른 순서로 넣은 각각의 열을  CellRenderer에 감싸두기 때문입니다. ListStore에 정보를 저장해서 보여줄 때 ComboBox에 영향을 주지 않고도 TreeView를 만들거나 다른 위젯을 만들 수 있습니다.</p></note>
+
+    <code mime="application/javascript"><![CDATA[
+        // Set the first row in the combobox to be active on startup
+        this._comboBox.set_active (0);
+
+        // Connect the combobox's 'changed' signal to our callback function
+        this._comboBox.connect ('changed', this._onComboChanged.bind(this));
+]]></code>
+    <p>우선 여러 사람이 "선택" 텍스트를 먼저 보게한 후 ComboBox를 누르게 하려고 합니다. 그렇게 해서 "선택"을 활성 항목으로 설정했습니다. 또한 ComboBox의 <file>changed</file> 시그널을 콜백 함수에 연결해서 누군가가 새 옵션을 누를 때, 어떤 일이 일어나게 했습니다. 지금 같은 경우, 간단한 시구를 보여주겠습니다.</p>
+
+    <code mime="application/javascript"><![CDATA[
+        // Add the combobox to the window
+        this._window.add (this._comboBox);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+]]></code>
+    <p>마지막으로 ComboBox를 창에 추가하고, 창에 창 자신과 창에 들어간 위젯을 보여주게 했습니다.</p>
+  </section>
+
+  <section id="function">
+    <title>선택을 처리하는 함수</title>
+    <code mime="application/javascript"><![CDATA[
+    _selected() {
+
+        // The silly pseudohaiku that we'll use for our messagedialog
+        let haiku = ["",
+            "You ask for the new\nwith no thought for the aged\nlike fallen leaves trod.",
+            "Like a simple clam\nrevealing a lustrous pearl\nit opens for you.",
+            "A moment in time\na memory on the breeze\nthese things can't be saved."];
+]]></code>
+    <p>선택한 배포판 이름에 따라 시구 아무거나 보여주는 <link xref="messagedialog.js">MessageDialog</link> 팝업을 만들고 있죠. 우선, 사용할 시구의 배열을 만들고. ComboBox에 처음 나타날 문자열은 "선택" 메시지니, 배열의 첫번째 문자열은 비워두겠습니다.</p>
+
+    <code mime="application/javascript"><![CDATA[
+        // Which combobox item is active?
+        let activeItem = this._comboBox.get_active();
+
+        // No messagedialog if you choose "Select"
+        if (activeItem != 0) {
+            this._popUp = new Gtk.MessageDialog ({
+                transient_for: this._window,
+                modal: true,
+                buttons: Gtk.ButtonsType.OK,
+                message_type: Gtk.MessageType.INFO,
+                text: haiku[activeItem]});
+
+            // Connect the OK button to a handler function
+            this._popUp.connect ('response', this._onDialogResponse.bind(this));
+
+            // Show the messagedialog
+            this._popUp.show();
+        }
+
+    }
+]]></code>
+    <p>MessageDialog를 보여주기 전에요, "선택" 메시지를 선택하지 못하게 했는지 일단 확인하겠습니다. 그 다음 ComboBoxText의 활성 항목에 따른 배열에 시구 텍스트를 넣겠습니다. 선택 항목의 숫자 ID를 반환하는 <file>get_active</file> 메서드를 사용하여 처리할거구요.</p>
+    <note style="tip"><p>사용할 수 있는 또다른 메서드는 <file>append</file>로 할당한 텍스트 ID를 반환하는 <file>get_active_id</file> 메서드하고, 선택 항목 텍스트 전체를 반환하는 <file>get_active_text</file> 메서드가 있습니다.</p></note>
+    <p>MessageDialog를 만들고 나면, _onDialogResponse 함수에 반응 시그널을 연결하고 MessageDialog를 나타내게 하겠습니다.</p>
+
+    <code mime="application/javascript"><![CDATA[
+    _onDialogResponse() {
+
+        this._popUp.destroy ();
+
+    }
+
+};
+]]></code>
+    <p>MessageDialog에는 확인 단추만 있기 때문에 response_id에서 어떤 단추를 눌렀는지 굳이 확인할 필요가 없습니다. 그냥 띄운 창을 닫기만 하면 됩니다.</p>
+
+    <code mime="application/javascript">
+// Run the application
+let app = new ComboBoxExample ();
+app.application.run (ARGV);
+</code>
+    <p>끝으로, ComboBoxExample 클래스의 새 인스턴스를 만들고요, 프로그램 실행을 구성하겠습니다.</p>
+  </section>
+
+  <section id="complete">
+    <title>완전한 코드 예제</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const GObject = imports.gi.GObject;
+const Gtk = imports.gi.Gtk;
+
+class ComboBoxExample {
+
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jscombobox'});
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present ();
+    }
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Welcome to GNOME",
+            default_width: 200,
+            border_width: 10 });
+
+        // Create the liststore to put our options in
+        this._listStore = new Gtk.ListStore();
+        this._listStore.set_column_types ([
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING]);
+
+        // This array holds our list of options and their icons
+        let options = [{ name: "Select" },
+            { name: "New", icon: Gtk.STOCK_NEW },
+            { name: "Open", icon: Gtk.STOCK_OPEN },
+            { name: "Save", icon: Gtk.STOCK_SAVE }];
+
+        // Put the options in the liststore
+        for (let i = 0; i &lt; options.length; i++ ) {
+            let option = options[i];
+            let iter = this._listStore.append();
+            this._listStore.set (iter, [0], [option.name]);
+            if ('icon' in option)
+                this._listStore.set (iter, [1], [option.icon]);
+        }
+
+        // Create the combobox
+        this._comboBox = new Gtk.ComboBox({
+            model: this._listStore});
+
+        // Create some cellrenderers for the items in each column
+        let rendererPixbuf = new Gtk.CellRendererPixbuf();
+        let rendererText = new Gtk.CellRendererText();
+
+        // Pack the renderers into the combobox in the order we want to see
+        this._comboBox.pack_start (rendererPixbuf, false);
+        this._comboBox.pack_start (rendererText, false);
+
+        // Set the renderers to use the information from our liststore
+        this._comboBox.add_attribute (rendererText, "text", 0);
+        this._comboBox.add_attribute (rendererPixbuf, "stock_id", 1);
+
+        // Set the first row in the combobox to be active on startup
+        this._comboBox.set_active (0);
+
+        // Connect the combobox's 'changed' signal to our callback function
+        this._comboBox.connect ('changed', this._onComboChanged.bind(this));
+
+        // Add the combobox to the window
+        this._window.add (this._comboBox);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+
+    _onComboChanged() {
+
+        // The silly pseudohaiku that we'll use for our messagedialog
+        let haiku = ["",
+            "You ask for the new\nwith no thought for the aged\nlike fallen leaves trod.",
+            "Like a simple clam\nrevealing a lustrous pearl\nit opens for you.",
+            "A moment in time\na memory on the breeze\nthese things can't be saved."];
+
+        // Which combobox item is active?
+        let activeItem = this._comboBox.get_active();
+
+        // No messagedialog if you choose "Select"
+        if (activeItem != 0) {
+            this._popUp = new Gtk.MessageDialog ({
+                transient_for: this._window,
+                modal: true,
+                buttons: Gtk.ButtonsType.OK,
+                message_type: Gtk.MessageType.INFO,
+                text: haiku[activeItem]});
+
+            // Connect the OK button to a handler function
+            this._popUp.connect ('response', this._onDialogResponse.bind(this));
+
+            // Show the messagedialog
+            this._popUp.show();
+        }
+
+    }
+
+    _onDialogResponse() {
+
+        this._popUp.destroy ();
+
+    }
+
+};
+
+// Run the application
+let app = new ComboBoxExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>자세한 문서</title>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererPixbuf.html">Gtk.CellRendererPixbuf</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererText.html">Gtk.CellRendererText</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ComboBox.html">Gtk.ComboBox</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ListStore.html">Gtk.ListStore</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.MessageDialog.html">Gtk.MessageDialog</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.TreeIter.html">Gtk.TreeIter</link></p></item>
+</list>
+  </section>
+</page>

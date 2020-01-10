@@ -1,57 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="tech-atk" xml:lang="cs">
-<info>
-  <link type="guide" xref="tech" group="atk"/>
-  <desc>Accessibility toolkit to implement support for screen readers and other tools</desc>
-  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
-</info>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-atk" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="tech" group="atk"/>
+
+    <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email its:translate="no">shaunm@gnome.org</email>
+      <years>2011 – 2012</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Nástrojové sada přístupnosti sloužící k implementaci podpory čteček obrazoky a dalších nástrojů</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Lucas Lommer</mal:name>
+      <mal:email>llommer@svn.gnome.org</mal:email>
+      <mal:years>2009.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Marek Černocký</mal:name>
+      <mal:email>marek@manet.cz</mal:email>
+      <mal:years>2015.</mal:years>
+    </mal:credit>
+  </info>
 
 <title>ATK</title>
 
-<p>Accessibility is the process of ensuring your application can be
-used by people with various disabilities.  Disabilities come in many forms:
-visual impairments, movement impairments, hearing impairments, cognitive
-and language impairments, and seizure disorders.  Many people have some
-sort of disability, and making your application accessible will allow
-more people to use it effectively, even if they are not disabled.</p>
+<p>Přístupnost je proces, který zajistí, že vaši aplikaci mohou používat lidé s různým postižením. Poštižení může mít různé formy: zrakové, pohybové, sluchové, rozpoznávací a jazykové, poruhy chápání. Mnoho lidí má některou z nich a tím, že svoji aplikaci zpřístupníte, bude ji moci účinně využívat více lidí, ať už postižení jsou nebo ne.</p>
 
-<p>GNOME provides support for accessibility devices using the ATK framework,
-which stands for Accessibility Tool Kit.  This framework defines a set of
-interfaces to which graphical interface components adhere.  This allows, for
-instance, screen readers to read the text of an interface and interact with its
-controls.  ATK support is built into GTK+ and the rest of the GNOME platform,
-so any application using GTK+ will have reasonable accessibility support for
-free.</p>
+<p>GNOME poskytuje podporu zařízení vylepšujících přístupnost pomocí konstrukce ATK (Accessibility Tool Kit). Ta definuje sadu rozhraní, kteru komponenty grafického rozhraní mají dodržovat. To umožňuje například čtečkám obrazovky číst text rohraní a komunikovat s ovládacími prvky. Podpora ATK je vestavěna do GTK+ a zbytku platformy GNOME, takže aplikace používající GTK+ mají rozumnou podporu přístupnosti volně k dispozici.</p>
 
-<p>ATK solves the problem of plugging many different kinds of widgets (text
-entries, text areas, buttons, menus) with many different types of accessibility
-technologies (screen readers, braille displays, sip-and-puff control devices).
-Instead of writing NxM interfaces, from each widget to each accessibility
-device, one just has to expose a widget through ATK's interfaces.
-Accessibility devices will in turn use these interfaces to query accessible
-widgets.  For example, an aural screen reader and a braille display will both
-use a standard "get the text contents" interface in ATK for all widgets with
-textual information.</p>
+<p>ATK řeší problém zapojení mnoha rozdílných druhů widgetů (textová pole, textové oblasti, tlačítka, nabídky) mnoha různými typy technologií přístupnosti (čtečky obrazovky, braillovy terminály, zařízení pro ovládání dechem). Namísto psaní N × M rozhraní, z každého widgetu ke každému zařízení pro zpřístupnění, stačí widget propojit přes rozhraní ATK. Zařízení pro zpřístupnění budou následně používat toto rozhraní k dotazovaní zpřístupněných widgetů. Například poslechová čtečka obrazovky a braillův terminál budou oba používat standardní rozhraní „získat obsažený text“ v ATK pro všechny widgety, které obsahují textové informace.</p>
 
-<p>Nonetheless, you should be aware of accessibility issues when
-when developing your applications.  Although GTK+ interfaces provide
-reasonable accessibility by default, you can often improve how well
-your program behaves with accessibility tools by providing additional
-information to ATK.  If you develop custom widgets, you should ensure
-that they expose their properties to ATK.  You should also avoid using
-sound, graphics, or color as the sole means of conveying information
-to the user; have redundant ways of providing this information instead of
-relying on the user being able to perceive a particular medium.</p>
+<p>Nicméně, měli byste při vývoji svých aplikací mít povědomí o záležitostech přístupnosti. Ačkoliv rozhraní GTK+ poskytuje rozumnou přístupnost již ve výchozím stavu, můžete často zdokonali chování svého programu ve spolupráci s nástroji zpřístupnění tím, že ATK poskytnete dodatečné informace. Když vyvíjíte vlastní widgety, měli byste se ujistit, že předávají své vlastnosti do ATK. Měli byste se také vyhnout zvukům, grafice nebo barvám jako jedinému způsobu předávání informací uživateli. Mějte záložní způsoby, jak poskytnout tyto informace a nespoléhejte na to, že uživatel bude schopen vnímat konkrétní médium.</p>
 
-<p>The GNOME desktop ships with a number of accessibility tools which enable
-users with disabilities to take full advantage of their desktop and
-applications.  Applications that fully implement ATK will be able to work with
-the accessibility tools.  These include a screen reader, a screen magnifier, an
-on-screen keyboard, and <app>Dasher</app>, an innovative predictive text entry
-tool.</p>
+<p>Pracovní prostředí GNOME je šířeno s řadou nástrojů zpřístupnění, které umožňují uživatelům s postižením plně si užívat svůj počítač a aplikace v něm. Aplikace, které zcela implementují ATK budou schopné pracovat s nástroji pro zpřístupnění. Ty zahrnují čtečky obrazovky, lupu obrazovky, klávesnici na obrazovce a <app>Dasher</app>, což je novátorský nástroj pro zadávání textu s pomocí předvídání.</p>
 
 <list style="compact">
-  <item><p><link href="http://developer.gnome.org/accessibility-devel-guide/">GNOME Accessibility for Developers</link></p></item>
-  <item><p><link href="https://developer.gnome.org/atk/stable/">ATK Reference</link></p></item>
+  <item><p><link href="http://developer.gnome.org/accessibility-devel-guide/">Přístupnost GNOME pro vývojáře</link></p></item>
+  <item><p><link href="https://developer.gnome.org/atk/stable/">Referenční příručka ATK</link></p></item>
 </list>
 </page>

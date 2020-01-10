@@ -25,7 +25,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -43,7 +43,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -190,9 +190,9 @@ Gtk.main ();</code>
     this.connection.open ();
 
     try {
-      var dm = Gda.execute_select_command (this.connection, "select * from demo");
+      var dm = this.connection.execute_select_command ("select * from demo");
     } catch (e) {
-      Gda.execute_non_select_command (this.connection, "create table demo (id integer, name varchar(100))");
+      this.connection.execute_non_select_command ("create table demo (id integer, name varchar(100))");
     }
   },</code>
   <list>
@@ -214,7 +214,7 @@ Gtk.main ();</code>
     <item><p>Γραμμή 4: άνοιγμα της σύνδεσης. Στον πάροχο SQLite, εάν η βάση δεδομένων δεν υπάρχει, θα δημιουργηθεί σε αυτό το βήμα.</p></item>
     <item>
       <p>Γραμμές 6-10: Προσπαθήστε να κάνετε μια απλή επιλογή για έλεγχο ύπαρξης του πίνακα (γραμμή 7). Εάν δεν υπάρχει (επειδή η βάση δεδομένων μόλις δημιουργήθηκε), αυτή η εντολή θα εγείρει μια εξαίρεση, που επεξεργάζεται από την ομάδα <code>try</code>...<code>catch</code>. Εάν συμβαίνει αυτό, τρέχουμε τη δημιουργία πρότασης πίνακα (γραμμή 9).</p>
-      <p>Για την εκτέλεση των παραπάνω εντολών SQL χρησιμοποιούμε τις γενικές συναρτήσεις GDA, <code>execute_select_command</code> και <code>execute_non_select_command</code>. Είναι απλές στη χρήση και απαιτούν μόνο δύο ορίσματα: Το αντικείμενο <code>Connection</code> και την εντολή SQL να αναλυθεί.</p>
+      <p>Για να εκτελέσουμε εντολές SQL στο παραπάνω παράδειγμα χρησιμοποιούμε τις μεθόδους σύνδεσης GDA <code>execute_select_command</code> και <code>execute_non_select_command</code>. Είναι εύκολες στη χρήση, και απαιτούν μόνο δύο ορίσματα: Το αντικείμενο <code>Connection</code> και την εντολή SQL.</p>
     </item>
   </list>
 
@@ -226,7 +226,7 @@ Gtk.main ();</code>
   <p>Μετά την σύνδεση με τη βάση δεδομένων, ο κατασκευαστής της παρουσίασής μας καλεί τη μέθοδο<code>selectData</code>. Είναι υπεύθυνη για τη λήψη όλων των εγγραφών στον πίνακα και την εμφάνισή τους στο γραφικό στοιχείο <code>TextView</code>. Ας ρίξουμε μια ματιά σε αυτό:</p>
   <code mime="application/javascript" style="numbered">
   selectData: function () {
-    var dm = Gda.execute_select_command (this.connection, "select * from demo order by 1, 2");
+    var dm = this.connection.execute_select_command  ("select * from demo order by 1, 2");
     var iter = dm.create_iter ();
 
     var text = "";
@@ -242,7 +242,7 @@ Gtk.main ();</code>
     this.count_label.label = "&lt;i&gt;" + dm.get_n_rows () + " record(s)&lt;/i&gt;";
   },</code>
   <list>
-    <item><p>Γραμμή 2: Η εντολή <code>SELECT</code>. Χρησιμοποιούμε τη γενική συνάρτηση του GDA <code>execute_select_command</code> για αυτό. Επιστρέφει ένα αντικείμενο <code>DataModel</code>, που χρησιμοποιείται αργότερα για ανάκτηση των γραμμών.</p></item>
+    <item><p>Γραμμή 2: Η εντολή <code>SELECT</code>. Χρησιμοποιούμε την μέθοδο σύνδεσης του GDA <code>execute_select_command</code>. Επιστρέφει ένα αντικείμενο <code>DataModel</code>, το οποίο χρησιμοποιείτε για να ανακτηθούν οι σειρές.</p></item>
     <item><p>Γραμμή 3: Δημιουργία αντικειμένου <code>Iter</code>, που χρησιμοποιείται για επανάληψη στις εγγραφές του <code>DataModel</code>.</p></item>
     <item><p>Γραμμή 7: Βρόχος μέσα από όλες τις εγγραφές, φέρνοντας τες με τη βοήθεια του αντικειμένου <code>Iter</code>. Σε αυτό το σημείο, η μεταβλητή <code>iter</code> περιέχει τα ενεργά ανακτημένα δεδομένα. Η μέθοδος του <code>move_next</code> επιστρέφει <code>false</code> όταν φτάνει την τελευταία εγγραφή.</p></item>
     <item>
@@ -279,7 +279,7 @@ Gtk.main ();</code>
     this._clearFields ();
     this.selectData ();
   },</code>
-  <p>Μάθαμε τη χρήση των συναρτήσεων ευκολίας του GDA <code>execute_select_command</code> και <code>execute_non_select_command</code> για γρήγορη εκτέλεση εντολών SQL στη βάση δεδομένων. Το GDA επιτρέπει την κατασκευή μιας πρότασης SQL έμμεσα, χρησιμοποιώντας το αντικείμενο του <code>SqlBuilder</code>. Ποια είναι τα οφέλη του; GDA θα παράξει την πρόταση SQL δυναμικά και θα επικυρωθεί για τον χρησιμοποιούμενο πάροχο σύνδεσης (θα χρησιμοποιήσει την ίδια διάλεκτο SQL που χρησιμοποιεί ο πάροχος). Ας μελετήσουμε τον κώδικα:</p>
+  <p>Μάθαμε πως να χρησιμοποιούμε τις μεθόδους σύνδεσης GDA <code>execute_select_command</code> και <code>execute_non_select_command</code> για την εκτέλεση εντολών SQL σε μια βάση δεδομένων. Το GDA σας επιτρέπει να δημιουργήσετε μια εντολή SQL έμμεσα, χρησιμοποιώντας το αντικείμενο <code>SqlBuilder</code>. Ποια είναι τα πλεονεκτήματα; Το GDA θα δημιουργήσει δυναμικά μια εντολή SQL, και θα είναι έγκυρη για τον πάροχο σύνδεσης που θα χρησιμοποιηθεί (θα χρησιμοποιήσει την ίδια σύνταξη SQL που θα ορίσει ο πάροχος). Ας μελετήσουμε τον κώδικα:</p>
   <list>
     <item><p>Γραμμές 2-3: Ελέγξτε εάν ο χρήστης συμπλήρωσε όλα τα πεδία. Ο κώδικας για την ιδιωτική μέθοδο <code>_validateFields</code> είναι πραγματικά απλός και μπορείτε να τον διαβάσετε στην πλήρη παρουσίαση πηγαίου κώδικα.</p></item>
     <item><p>Γραμμή 5: Ο γρηγορότερος τρόπος για εκτέλεση του <code>INSERT</code>. Σχολιάζεται, καθώς θέλουμε να εμφανίσουμε τη χρήση του αντικειμένου <code>SqlBuilder</code> για κατασκευή μιας πρότασης SQL φορητής μέσα από τις βάσεις δεδομένων.</p></item>

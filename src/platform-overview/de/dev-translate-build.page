@@ -18,13 +18,13 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Mario Blättermann</mal:name>
       <mal:email>mario.blaettermann@gmail.com</mal:email>
-      <mal:years>2009-2012</mal:years>
+      <mal:years>2009-2012, 2016</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Christian Kirbach</mal:name>
       <mal:email>christian.kirbach@gmail.com</mal:email>
-      <mal:years>2011, 2012.</mal:years>
+      <mal:years>2011, 2012, 2015, 2017, 2018</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,27 +34,23 @@
     </mal:credit>
   </info>
 
-  <title>Set up your build system for translation</title>
+  <title>Einrichten Ihres Buildsystems für Übersetzungen</title>
 
   <links type="series" style="floatend">
-    <title>Set up translations</title>
+    <title>Übersetzungen einrichten</title>
   </links> 
 
-  <p>You will need to set up your project and build system to work with
-  translations.</p>
+  <p>Sie sollten das Buildsystem Ihres Projekts so einrichten, dass es mit Übersetzungen umgehen kann.</p>
 
-  <p>Create a <file>po/</file> subdirectory in your project directory and list
-  the files which have translatable strings in <file>po/POTFILES.in</file>.
-  List files <em>without</em> translatable strings in
-  <file>po/POTFILES.skip</file>.</p>
+  <p>Erstellen Sie einen Unterordner namens <file>po/</file> in Ihrem Projektordner und listen Sie in der Datei <file>po/POTFILES.in</file> jene Dateien auf, die übersetzbare Zeichenketten enthalten. Dateien <em>ohne</em> übersetzbare Zeichenketten listen Sie in <file>po/POTFILES.skip</file> auf.</p>
 
-  <p>Add the following lines to your <file>configure.ac</file>:</p>
+  <p>Fügen Sie die folgenden Zeilen zur Datei <file>configure.ac</file> hinzu:</p>
   <code>
 IT_PROG_INTLTOOL([0.50.0])
 AC_SUBST([GETTEXT_PACKAGE], [$PACKAGE_TARNAME])
 AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Package name for gettext])</code>
 
-  <p>Add the following lines to your <file>Makefile.am</file>:</p>
+  <p>Fügen Sie die folgenden Zeilen zur Datei <file>Makefile.am</file> hinzu:</p>
   <code>
 SUBDIRS = po
 </code>
@@ -68,32 +64,26 @@ desktop_in_files = data/<input>applicationname</input>.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 </code>
 
-  <p>Run <cmd>intltoolize</cmd> to copy the intltool build infrastructure to
-  the build tree before running <cmd>autoreconf</cmd>.</p>
+  <p>Führen Sie <cmd>intltoolize</cmd> aus, um die Build-Infrastruktur von intltool zum Build-Tree hinzuzufügen, bevor Sie <cmd>autoreconf</cmd> aufrufen.</p>
 
-  <p>Now that your build system and your source strings are ready for
-  translation, you need to tell <app>gettext</app> three things:</p>
+  <p>Ihre Buildsystem ist und Ihre Quellzeichenketten sind nun bereit für die Übersetzung. Sie müssen noch <app>gettext</app> über drei Dinge informieren:</p>
 
   <list>
-    <item><p>the <em>translation domain</em>, generally the same as the
-    application name</p></item>
-    <item><p>the location where the built translations are installed</p></item>
-    <item><p>the character encoding of the translations, generally
-    UTF-8</p></item>
+    <item><p>die <em>translation domain</em>, im Allgemeinen der Name der Anwendung</p></item>
+    <item><p>den Ort, wo die erstellten Übersetzungen installiert werden sollen</p></item>
+    <item><p>und die Zeichenkodierung der Übersetzungen, allgemein UTF-8</p></item>
   </list>
 
   <example>
   <note>
-    <p>This example assumes that your application is written in C. It will be
-    slightly different for other programming languages.</p>
+    <p>Das Beispiel nimmt an, dass Ihre Anwendung in C geschrieben ist. Für andere Programmiersprachen wird es etwas abweichen.</p>
   </note>
 
-  <p>Add the following line to the source file which contains your
-  <code>main()</code> function:</p>
+  <p>Fügen Sie die folgende Zeile zu der Quelldatei hinzu, die Ihre <code>main()</code>-Funktion enthält:</p>
 
   <code>#include "config.h"</code>
 
-  <p>Then, add the following lines to your <code>main()</code> function:</p>
+  <p>Dann fügen Sie folgende Zeilen zur <code>main()</code>-Funktion hinzu:</p>
 
   <code>
 bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALEDIR);
@@ -102,8 +92,6 @@ textdomain (GETTEXT_PACKAGE);
 </code>
   </example>
 
-  <p>Run <cmd>make <input>projectname</input>.pot</cmd> in the <file>po</file>
-  directory. This runs <cmd>intltool-extract</cmd> to extract the translatable
-  strings and put them in a po template (POT) file.</p>
+  <p>Rufen Sie <cmd>make <input>Projektname</input>.pot</cmd> im Ordner <file>po</file> auf. Dadurch extrahiert <cmd>intltool-extract</cmd> die übersetzbaren Zeichenketten und schreibt diese in eine po-Vorlage (POT-Datei).</p>
 
 </page>

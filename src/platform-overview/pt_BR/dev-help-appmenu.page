@@ -26,43 +26,43 @@
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Rafael Ferreira</mal:name>
-      <mal:email>rafael.f.f1@gmail.com</mal:email>
-      <mal:years>2013</mal:years>
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2013, 2014, 2016, 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Isaac Ferreira Filho</mal:name>
+      <mal:email>isaacmob@riseup.net</mal:email>
+      <mal:years>2018</mal:years>
     </mal:credit>
   </info>
 
-  <title>Add <gui>Help</gui> to the application menu</title>
+  <title>Adicionando <gui>Ajuda</gui> ao menu de aplicativo</title>
 
   <links type="series" style="floatend">
-    <title>Set up help</title>
+    <title>Configure a ajuda</title>
   </links>
 
-  <p>Most GNOME applications should have an application menu. The
-  <gui style="menuitem">Help</gui> menu item should go above the
-  <gui style="menuitem">About</gui> menu item.</p>
+  <p>A maioria dos aplicativos do GNOME deveria ter um menu aplicativo. O item de menu <gui style="menuitem">Ajuda</gui> deveria estar em cima do item de menu <gui style="menuitem">Sobre</gui>.</p>
 
   <example>
   <note>
-    <p>This example, based on
-    <app href="https://git.gnome.org/browse/cheese/tree/src/cheese-main.vala">Cheese</app>,
-    assumes that your application is written in Vala. It will be slightly
-    different for other programming languages.</p>
+    <p>Esse exemplo, baseado no <app href="https://git.gnome.org/browse/cheese/tree/src/cheese-main.vala">Cheese</app>, supõe que seu aplicativo esteja escrito em Vala. Ele vai ser um pouco diferente para outras linguagens de programação.</p>
   </note>
 
-  <p>Add the <gui style="menuitem">Help</gui> item to the list of actions:</p>
+  <p>Adiciona o item <gui style="menuitem">Ajuda</gui> à lista de ações:</p>
   <code>
    private const GLib.ActionEntry action_entries[] = {
-        <input>{ "help", on_help },</input>
-        { "about", on_about },
-        { "quit", on_quit }
+        <input>{ "ajuda", on_help },</input>
+        { "sobre", on_about },
+        { "sair", on_quit }
     };
 
    add_action_entries (action_entries, my_Gtk_Application);
 </code>
 
-  <p>Add the <gui style="menuitem">Help</gui> menu item to the application
-  menu:</p>
+  <p>Adiciona o item de menu <gui style="menuitem">Help</gui> ao menu de aplicativo:</p>
 
 <code>
   var menu = new GLib.Menu ();
@@ -73,8 +73,7 @@
   section.append_item (item);</input>
 </code>
 
-  <p>View the help with <app>Yelp</app> when the
-  <gui style="menuitem">Help</gui> menu item is clicked:</p>
+  <p>Vê a ajuda com o <app>Yelp</app> quando o item de menu <gui style="menuitem">Help</gui> for clicado:</p>
 
 <code>
   private void on_help ()
@@ -86,13 +85,12 @@
     }
     catch (Error err)
     {
-      message ("Error opening help: %s", err.message);
+      message ("Erro ao abrir a ajuda: %s", err.message);
     }
   }
 </code>
 
-  <p>To link to a section on the <file>index.page</file>, use
-  <code>"help:<input>applicationname</input>/index#<input>sectionid</input>"</code>.</p>
+  <p>Para fazer ligação com uma seção no <file>index.page</file>, use <code>"help:<input>nome-aplicativo</input>/index#<input>id-seção</input>"</code>.</p>
 
   </example>
 </page>

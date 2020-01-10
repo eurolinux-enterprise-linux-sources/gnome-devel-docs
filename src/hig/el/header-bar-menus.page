@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="header-bar-menus" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="header-bar-menus" xml:lang="el">
 
   <info>
-    <link type="guide" xref="patterns" group="header-bar-menus"/>   
+    <link type="guide" xref="patterns#primary"/>
+    <desc>Συνηθισμένα μενού εμφανίζονται στα δεξιά της γραμμή κεφαλίδας</desc>
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
@@ -12,7 +13,13 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -28,16 +35,16 @@
 
 <p>Οι <link xref="header-bars">γραμμές κεφαλίδας</link> μπορούν να περιλαμβάνουν ένα μενού το οποίο να περιέχει ενέργειες και επιλογές για τη τρέχουσα προβολή. Αυτά τα μενού βρίσκονται στα τέρμα δεξί μέρος της γραμμής κεφαλίδας.</p>
 
-<p>While the most frequently used actions for a view should be placed directly in the header bar, a header bar menu provides access to lesser-used actions. This ensures that the header bar isn’t overwhelmed with less interesting or useful controls.</p>
+<p>Ενώ οι πιο συχνά χρησιμοποιούμενες ενέργειες για μια προβολή πρέπει να τοποθετούνται στη γραμμή κεφαλίδας, ένα μενού της γραμμής κεφαλίδας παρέχει πρόσβαση σε λιγότερο χρησιμοποιούμενες ενέργειες. Αυτό εξασφαλίζει το γεγονός ότι η γραμμή κεφαλίδας δεν είναι γεμάτη με λιγότερο ενδιαφέροντα ή χρήσιμα στοιχεία ελέγχου.</p>
 
-<p>In this way, the header bar menus help to create focused views that guide the user towards the most interesting and useful functionality.</p>
+<p>Με αυτόν τον τρόπο, τα μενού γραμμής κεφαλίδων βοηθούν στη δημιουργία εστιασμένων προβολών που οδηγούν τον χρήστη προς τις πιο ενδιαφέρουσες και χρήσιμες λειτουργίες.</p>
 
 <section id="when-to-use">
 <title>Πότε χρησιμοποιούνται</title>
 
-<p>Use a header bar menu to present additional actions or options for the current view. They are best used when those actions or options are not used the majority of the time - if there is a set of actions which deserve more prominence in the view, an <link xref="action-bars">action bar</link> might be a better choice.</p>
+<p>Χρησιμοποιήστε ένα μενού γραμμής κεφαλίδας για να παρουσιάσετε πρόσθετες ενέργειες ή επιλογές για την τρέχουσα προβολή. Χρησιμοποιούνται καλύτερα όταν αυτές οι ενέργειες ή επιλογές δεν χρησιμοποιούνται στην πλειοψηφία του χρόνου - αν υπάρχει ένα σύνολο ενεργειών που αξίζει περισσότερη διάκριση στην προβολή. μια <link xref="action-bars">γραμμή ενεργειών</link> μπορεί να είναι μια καλύτερη επιλογή.</p>
 
-<p>Header bar menus are not a good choice for performing actions on selected content: when content hasn’t been selected, the menu will contain unhelpful insensitive menu items, and when content has been selected, possible actions will not be advertised. <link xref="selection-mode">Selection mode</link> or <link xref="popovers">popovers</link> are a better choice for this situation.</p>
+<p>Τα μενού γραμμής κεφαλίδων δεν είναι καλή επιλογή για την εκτέλεση ενεργειών σε επιλεγμένο περιεχόμενο: όταν το περιεχόμενο δεν έχει επιλεγεί, το μενού θα περιέχει άχρηστα αδιάφορα στοιχεία μενού και όταν το περιεχόμενο έχει επιλεγεί, οι δυνατές ενέργειες δεν θα κοινοποιηθούν. <link xref="selection-mode">Κατάσταση επιλογής</link> ή <link xref="popovers">αναδυόμενα παράθυρα</link> είναι μια καλύτερη επιλογή για αυτήν την κατάσταση.</p>
 
 </section>
 
@@ -47,8 +54,18 @@
 <list>
 <item><p>Η γραμμή κεφαλίδας πρέπει να περιέχει μόνο ενέργειες της τρέχουσας προβολής ή παραθύρου - αυτό ξεχωρίζει το περιεχόμενο τους από τα μενού της εφαρμογής.</p></item>
 <item><p>Ακολουθήστε τις <link xref="menus">τυπικές οδηγίες για τα μενού</link>.</p></item>
-<item><p>A header bar menu is contained within a <link xref="popovers">popover</link>. As such, a header bar menu can include a variety of controls, such as groups of buttons.</p></item>
-<item><p>Header bar menus shouldn’t include a close menu item, since this action is already provided by the header bar. It can also be ambiguous as to what a close menu item refers to.</p></item>
+<item><p>Ένα μενού γραμμής κεφαλίδων περιέχεται μέσα σε ένα <link xref="popovers">αναδυόμενο παράθυρο</link>. Ως τέτοιο, ένα μενού γραμμής κεφαλίδων μπορεί να περιλαμβάνει μια ποικιλία στοιχείων ελέγχου, όπως ομάδες κουμπιών.</p></item>
+<item><p>Τα μενού γραμμής κεφαλίδων δεν πρέπει να περιλαμβάνουν ένα στοιχείο μενού κλεισίματος, αφού αυτή η ενέργεια παρέχεται ήδη από την γραμμή κεφαλίδας. Μπορεί επίσης να είναι ασαφές ως προς το σε τι αναφέρεται ένα στοιχείο μενού κλεισίματος.</p></item>
+</list>
+
+</section>
+
+<section id="api-reference">
+<title>Αναφορά API</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuButton.html">GtkMenuButton</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkPopoverMenu.html">GtkPopoverMenu</link></p></item>
 </list>
 
 </section>

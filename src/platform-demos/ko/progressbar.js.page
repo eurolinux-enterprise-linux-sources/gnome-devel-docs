@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="progressbar.js" xml:lang="ko">
+  <info>
+  <title type="text">ProgressBar (JavaScript)</title>
+    <link type="guide" xref="beginner.js#display-widgets"/>
+    <revision version="0.1" date="2012-06-01" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>진행 상황을 움직임으로 나타내는 표시줄입니다</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ProgressBar</title>
+  <media type="video" mime="application/ogv" src="media/progressbar.ogv">
+    <tt:tt xmlns:tt="http://www.w3.org/ns/ttml">
+      <tt:body>
+        <tt:div begin="0s" end="6s">
+          <tt:p>아무 키나 눌러서 ProgressBar 동작을 멈추거나 시작합니다.</tt:p>
+        </tt:div>
+      </tt:body>
+    </tt:tt>
+  </media>
+  <p>이 ProgressBar는 어떤 키든 눌렀을 때 동작을 멈추거나 시작합니다.</p>
+
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+
+class ProgressBarExample {
+
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsprogressbar',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+            this._window = new Gtk.ApplicationWindow({ application: this.application,
+                                                       window_position: Gtk.WindowPosition.CENTER,
+                                                       default_height: 20,
+                                                       default_width: 220,
+                                                       title: "ProgressBar Example"});
+
+        // Create the progress bar
+        this.progressBar = new Gtk.ProgressBar ();
+        this._window.add(this.progressBar);
+
+        // Start the function that pulses the bar every 100 milliseconds
+        this.sourceID = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100,
+                                         this._barPulse.bind(this));
+
+        // Connect a keypress event to the function that toggles the bar to start or stop pulsing
+        this._window.connect("key-press-event", this._onKeyPress.bind(this));
+
+            // Show the window and all child widgets
+            this._window.show_all();
+    }
+
+    // Pulse the progressbar (unless it has been disabled by a keypress)
+    _barPulse() {
+        this.progressBar.pulse();
+        return true;
+    }
+
+    // Start or stop the progressbar when a key is pressed
+    _onKeyPress() {
+        if (this.sourceID == 0)
+            this.sourceID = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100,
+                                             this._barPulse.bind(this));
+        else {
+            GLib.source_remove(this.sourceID);
+            this.sourceID = 0;
+        }
+    }
+
+};
+
+// Run the application
+let app = new ProgressBarExample ();
+app.application.run (ARGV);
+</code>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/GLib.html">GLib</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+    <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.ProgressBar.html">Gtk.ProgressBar</link></p></item>
+</list>
+</page>

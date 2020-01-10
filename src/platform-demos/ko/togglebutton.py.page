@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="togglebutton.py" xml:lang="ko">
+  <info>
+    <title type="text">ToggleButton (Python)</title>
+    <link type="guide" xref="beginner.py#buttons"/>
+    <link type="next" xref="switch.py"/>
+    <revision version="0.1" date="2012-05-23" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>상태를 유지하는 단추</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ToggleButton</title>
+  <media type="image" mime="image/png" src="media/togglebutton.png"/>
+  <p>ToggleButton을 활성 상태로 두면 스피너가 돌아갑니다.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>예제 결과를 만드는 코드</title>
+
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(
+            self, title="ToggleButton Example", application=app)
+        self.set_default_size(300, 300)
+        self.set_border_width(30)
+
+        # a spinner animation
+        self.spinner = Gtk.Spinner()
+        # with extra horizontal space
+        self.spinner.set_hexpand(True)
+        # with extra vertical space
+        self.spinner.set_vexpand(True)
+
+        # a togglebutton
+        button = Gtk.ToggleButton.new_with_label("Start/Stop")
+        # connect the signal "toggled" emitted by the togglebutton
+        # when its state is changed to the callback function toggled_cb
+        button.connect("toggled", self.toggled_cb)
+
+        # a grid to allocate the widgets
+        grid = Gtk.Grid()
+        grid.set_row_homogeneous(False)
+        grid.set_row_spacing(15)
+        grid.attach(self.spinner, 0, 0, 1, 1)
+        grid.attach(button, 0, 1, 1, 1)
+
+        # add the grid to the window
+        self.add(grid)
+
+    # callback function for the signal "toggled"
+    def toggled_cb(self, button):
+        # if the togglebutton is active, start the spinner
+        if button.get_active():
+            self.spinner.start()
+        # else, stop it
+        else:
+            self.spinner.stop()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+    <title>ToggleButton 위젯에 쓸만한 메서드</title>
+    <p>22번째 줄에서 <code>"toggled"</code> 시그널은 <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code> 함수로  <code>toggled_cb()</code> 콜백 함수에 연결했습니다. 더 자세한 설명은 <link xref="signals-callbacks.py"/>를 참조하십시오.</p>
+  </section>
+
+  <section id="references">
+    <title>API 참고서</title>
+    <p>이 예제는 다음 참고자료가 필요합니다:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkToggleButton.html">GtkToggleButton</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWidget.html">GtkWidget</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkSpinner.html">GtkSpinner</link></p></item>
+    </list>
+  </section>
+</page>

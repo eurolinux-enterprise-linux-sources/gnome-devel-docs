@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="memory-management" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#general-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Správa přidělování a uvolňování paměti v C</desc>
+  </info>
+
+  <title>Správa paměti</title>
+
+  <p>Zásobník GNOME je napsán převážně v jazyce C, takže dynamicky alokovaná paměť musí být spravována ručně. S použitím usnadňujícího API z GLib je však správa triviální, přesto by měli programátoři při psaní kódu na paměť vždy myslet.</p>
+
+  <p>Předpokládá se, že čtenář je dobře seznámen s principem alokace paměti na haldě s pomocí <code>malloc()</code> a <code>free()</code> a zná příslušnou dvojici obdobných funkcí z GLib <code>g_malloc()</code> a <code>g_free()</code>.</p>
+
+  <synopsis>
+    <title>Shrnutí</title>
+
+    <p>Existují tři situace, kterým byste se měli vyhnout a které zde uvádíme podle důležitosti:</p>
+
+    <list type="numbered">
+      <item><p>Použití paměti po jejím uvolnění.</p></item>
+      <item><p>Požití paměti před jejím přidělením.</p></item>
+      <item><p>Neuvolnění paměti, která byla přidělena (tzv. únik).</p></item>
+    </list>
+
+    <p>Klíčové principy (bez ohledu na pořadí důležitosti):</p>
+
+    <list>
+      <item><p>U každé proměnné určete a zdokumentujte, zda je či není vlastněna. Za běhu se to pak nikdy nesmí měnit. (<link xref="#principles"/>)</p></item>
+      <item><p>Určete a zdokumentujte přenosy vlastnictví na hranicích funkcí. (<link xref="#principles"/>)</p></item>
+      <item><p>Zajistěte, aby každé přiřazení, volání funkce a návrat z funkce respektovali příslušné přenosy vlastnictví. (<link xref="#assignments"/>, <link xref="#function-calls"/>, <link xref="#function-returns"/>)</p></item>
+      <item><p>Kde je to možné, používejte raději počítání odkazů, než explicitní finalizaci. (<link xref="#reference-counting"/>)</p></item>
+      <item><p>Kde je to možné, používejte vhodné funkce z GLib, jako třeba <link xref="#g-clear-object"><code>g_clear_object()</code></link>. (<link xref="#convenience-functions"/>)</p></item>
+      <item><p>Nerozdělujte správu paměti do více cest průchodu programem. (<link xref="#principles"/>)</p></item>
+      <item><p>Používejte návrhový vzor pro jednocestné čištění pro rozsáhlé a složité funkce. (<link xref="#single-path-cleanup"/>)</p></item>
+      <item><p>Uniky by měly být kontrolovány pomocí nástroje Valgrind nebo sanitizérem adres. (<link xref="#verification"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="principles">
+    <title>Principy správy paměti</title>
+
+    <p>Normální přístup ke správě paměti spočívá pro programátora v tom, mít přehled, které proměnné ukazují na alokovanou paměť a ručně ji uvolnit v situaci, kdy již není nadále potřeba. Tak je to v pořádku, ale dá se to zpřehlednit zavedením konceptu <em>vlastnictví</em>, což je kus kódu (například funkce, struktura nebo objekt), který je zodpovědný za uvolnění kusu alokované paměti (<em>alokace</em>). Každá alokace má právě jednoho vlastníka, který se ale za dobu běhu programu může měnit tzv. <em>přenosem</em> vlastnictví na jiný kus kódu. Každá proměnná je buď <em>vlastněna</em> nebo <em>nevlastněna</em>, podle toho, jestli je rozsah působnosti, jehož je součástí, vždy jejím vlastníkem. Každý parametr funkce a návratový typ buď přenáší vlastnictví předávané hodnoty nebo nepřenáší. V případě, že kód vlastnící nějakou paměti tuto paměť nedealokuje, dojde k úniku paměti. V případě, že kód, který nevlastní určitou paměť, tuto paměť uvolní, jedná se o dvojité uvolnění. Obojí je špatně.</p>
+
+    <p>Tím, že stačí napevno určit, které proměnné jsou vlastněné, se ze správy paměti stává jednoduchý úkol spočívající v nepodmíněném uvolňování proměnných před tím, než se opustí jejich rozsah působnosti, a v <em>ne</em>uvolnění nevlastněných proměnných (viz <link xref="#single-path-cleanup"/>). Klíčovou otázkou pro kterýkoliv kus paměti tak je: která část kódu jej vlastní.</p>
+
+    <p>Je zde jedno důležité omezení: proměnné se za běhu <em style="strong">nikdy</em> nesmí změnit z vlastněných na nevlastněné (nebo naopak). Toto omezení je klíčové kvůli zjednodušení správy paměti.</p>
+
+    <p>Například mějme funkci:</p>
+
+    <code mime="text/x-csrc">gchar *generate_string (const gchar *template);
+void print_string (const gchar *str);</code>
+
+    <p>Následující kód byl opatřen anotacemi a komentáři, abyste se všimli, kde dochází k přenosu vlastnictví:</p>
+
+    <code mime="text/x-csrc">gchar *my_str = NULL;  /* owned */
+const gchar *template;  /* unowned */
+GValue value = G_VALUE_INIT;  /* owned */
+g_value_init (&amp;value, G_TYPE_STRING);
+
+/* Přenese vlastnictví řetězce z funkce do proměnné */
+template = "XXXXXX";
+my_str = generate_string (template);
+
+/* Bez přenosu vlastnictví */
+print_string (my_str);
+
+/* Přenos vlastnictví. Nadále se již nemusíme starat o uvolnění @my_str. */
+g_value_take_string (&amp;value, my_str);
+
+/* Stále vlastníme @value, takže před opuštěním této oblasti působnosti ji musíme uvolnit */
+g_value_unset (&amp;value);</code>
+
+    <p>Zastavme se u několika věcí: Za prvé, komentáře „vlastněno“ u deklarací proměnných naznačují, že tyto proměnné jsou vlastněné místním rozsahem působnosti, a proto potřebují být uvolněné před opuštěním tohoto rozsahu působnosti. Alternativou je „nevlastněno“, což znamená, že místní rozsah působnosti <em>nemá</em> vlastnictví a <em>nemusí</em> proměnnou uvolnit před opuštěním rozsahu působnosti. Obdobně, při přiřazení na něj vlastnictví <em>nemusí</em> být přeneseno.</p>
+
+    <p>Za druhé, modifikatory u proměnných odrážejí, jestli dochází k přenosu vlastnictví: protože <code>my_str</code> je vlastněna místním rozsahem působnosti, je typu <code>gchar</code>, zatímco <code>template</code> je <code>const</code>, což říká, že není vlastněna. Obdobně, parametr <code>template</code> funkce <code>generate_string()</code> a parametr <code>str</code> funkce <code>print_string()</code> jsou <code>const</code>, protože není přenášeno vlastnictví při volání těchto funkcí. Protože pro řetězcový parametr funkce <code>g_value_take_string()</code> <em>je</em> přenášeno vlastnictví, očekáváme, že její typ je <code>gchar</code>.</p>
+
+    <p>(Upozorňujeme, že toto se netýká objektu <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html"><code>GObject</code></link> a podtříd, které nemohou být nikdy <code>const</code>. Týká se to jen řetězců a jednoduchých struktur <code>struct</code>.)</p>
+
+    <p>A na konec, pár knihoven používá zvyklosti v názvech funkcí k indikaci přenosu vlastnictví, například pomocí „take“ v názvu funkce, čímž oznamují úplný přenos parametru, jako třeba u <code>g_value_take_string()</code>. Dávajte ale pozor na to, že různé knihovny používají různé konvence, jak je ukázáno níže:</p>
+
+    <table shade="rows cols">
+      <colgroup><col/></colgroup>
+      <colgroup><col/><col/><col/></colgroup>
+      <thead>
+        <tr>
+          <td><p>Název funkce</p></td>
+          <td><p>Konvence 1 (standardní)</p></td>
+          <td><p>Konvence 2 (alternativní)</p></td> <!-- get for everything -->
+          <td><p>Konvence 3 (<cmd>gdbus-codegen</cmd>)</p></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>get</p></td>
+          <td><p>Bez přenosu</p></td>
+          <td><p>Libovolný přenos</p></td>
+          <td><p>Úplný přenos</p></td>
+        </tr>
+
+        <tr>
+          <td><p>dup</p></td>
+          <td><p>Úplný přenos</p></td>
+          <td><p>Nepoužito</p></td>
+          <td><p>Nepoužito</p></td>
+        </tr>
+
+        <tr>
+          <td><p>peek</p></td>
+          <td><p>Nepoužito</p></td>
+          <td><p>Nepoužito</p></td>
+          <td><p>Bez přenosu</p></td>
+        </tr>
+
+        <tr>
+          <td><p>set</p></td>
+          <td><p>Bez přenosu</p></td>
+          <td><p>Bez přenosu</p></td>
+          <td><p>Bez přenosu</p></td>
+        </tr>
+
+        <tr>
+          <td><p>take</p></td>
+          <td><p>Úplný přenos</p></td>
+          <td><p>Nepoužito</p></td>
+          <td><p>Nepoužito</p></td>
+        </tr>
+
+        <tr>
+          <td><p>steal</p></td>
+          <td><p>Úplný přenos</p></td>
+          <td><p>Úplný přenos</p></td>
+          <td><p>Úplný přenos</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>V ideálním případě mají všechny funkce <link xref="introspection">anotaci k introspekci</link> ve formě <code>(transfer)</code> pro všechny příslušné parametry a návratovou hodnotu. Pokud tomu tak není, uvádíme zde sadu pravidel, které můžete použít k určení toho, jestli je vlastnictví návratové hodnoty přenášeno:</p>
+    <steps>
+      <item><p>Jestliže má typ uvedenou anotaci <code>(transfer)</code> k introspekci, podívejte se na ni.</p></item>
+      <item><p>V ostatních případech, když je typ konstantní (<code>const</code>), nedochází k přenosu.</p></item>
+      <item><p>Jinak, jestliže dokumentace k funkci výslovně uvádí, že návratová hodnota musí být uvolněna, jedná se o úplný nebo kontejnerový přenos.</p></item>
+      <item><p>V ostatních případech, když se funkce nazývá „dup“, „take“ nebo „steal“, dochází k úplnému nebo kontejnerovému přenosu.</p></item>
+      <item><p>V ostatních případech, když se funkce nazývá „peek“, nedochází k přenosu.</p></item>
+      <item><p>Jinak se musíte podívat do kódu funkce, abyste určili, jestli zamýšlí vlastnictví přenášet. Nahlaste také chybu vůči dokumentaci této funkce a v hlášení požádejte o přidání anotace k introspekci.</p></item>
+    </steps>
+
+    <p>Když máme vlastnictví a přenos takhle jasně dány, je správný přístup k alokaci paměti v kterékoliv situaci otázkou mechanického rozhodnutí. V každém případě, funkce <code>copy()</code> musí odpovídat datovému typu, například <code>g_strdup()</code> pro řetězec nebo <code>g_object_ref()</code> pro GObject.</p>
+
+    <p>Když se nad přenosem vlastnictví zamyslíte, jsou <code>malloc()</code>/<code>free()</code> a počítání referencí to stejné: v prvním případě je naalokování nového kusu paměti z haldy přenosem vlastnictví, ve druhém případě nové zvýšení referencí. Viz <link xref="#reference-counting"/>.</p>
+
+    <section id="assignments">
+      <title>Přiřazení</title>
+
+      <table shade="rows colgroups">
+        <colgroup><col/></colgroup>
+        <colgroup><col/><col/></colgroup>
+        <thead>
+          <tr>
+            <td><p>Přiřazení z/do</p></td>
+            <td><p>Vlastněný cíl</p></td>
+            <td><p>Nevlastněný cíl</p></td>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td><p>Vlastněný zdroj</p></td>
+            <td>
+              <p>Kopírování nebo přesun zdroje do cíle.</p>
+              <code>owned_dest = copy (owned_src)</code>
+              <code>owned_dest = owned_src; owned_src = NULL</code>
+            </td>
+            <td>
+              <p>Prosté přiřazení, předpokládá se, že nevlastněná proměnná se nepoužije po té, co je vlastněná uvolněna.</p>
+              <code>unowned_dest = owned_src</code>
+            </td>
+          </tr>
+
+          <tr>
+            <td><p>Nevlastněný zdroj</p></td>
+            <td>
+              <p>Kopírování zdroje do cíle.</p>
+              <code>owned_dest = copy (unowned_src)</code>
+            </td>
+            <td>
+              <p>Prosté přiřazení.</p>
+              <code>unowned_dest = unowned_src</code>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="function-calls">
+      <title>Volání funkcí</title>
+
+      <table shade="rows colgroups">
+        <colgroup><col/></colgroup>
+        <colgroup><col/><col/></colgroup>
+        <thead>
+          <tr>
+            <td><p>Volání z/do</p></td>
+            <td><p>Přenos úplného parametru</p></td>
+            <td><p>Žádný přenos parametru</p></td>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td><p>Vlastněný zdroj</p></td>
+            <td>
+              <p>Kopírování nebo přesun zdroje pro parametr.</p>
+              <code>function_call (copy (owned_src))</code>
+              <code>function_call (owned_src); owned_src = NULL</code>
+            </td>
+            <td>
+              <p>Prosté předání parametru.</p>
+              <code>function_call (owned_src)</code>
+            </td>
+          </tr>
+
+          <tr>
+            <td><p>Nevlastněný zdroj</p></td>
+            <td>
+              <p>Kopírování zdroje pro parametr.</p>
+              <code>function_call (copy (unowned_src))</code>
+            </td>
+            <td>
+              <p>Prosté předání parametru.</p>
+              <code>function_call (unowned_src)</code>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="function-returns">
+      <title>Návrat z funkcí</title>
+
+      <table shade="rows colgroups">
+        <colgroup><col/></colgroup>
+        <colgroup><col/><col/></colgroup>
+        <thead>
+          <tr>
+            <td><p>Návrat z/do</p></td>
+            <td><p>Přenos úplné návratové hodnoty</p></td>
+            <td><p>Žádný přenos návratové hodnoty</p></td>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr>
+            <td><p>Vlastněný zdroj</p></td>
+            <td>
+              <p>Prostý návrat proměnné.</p>
+              <code>return owned_src</code>
+            </td>
+            <td>
+              <p>Neplatné. Zdroj potřebuje být uvolněn, takže vrácená hodnota by používala volnou paměť — chyba „použití po uvolnění“.</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td><p>Nevlastněný zdroj</p></td>
+            <td>
+              <p>Kopírování zdroje pro návratovou hodnotu.</p>
+              <code>return copy (unowned_src)</code>
+            </td>
+            <td>
+              <p>Prosté předání proměnné.</p>
+              <code>return unowned_src</code>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+
+  <section id="documentation">
+    <title>Dokumentace</title>
+
+    <p>Zdokumentování přenosu vlastnictví u každého parametru funkce a návratové hodnoty a vlastnictví u každé proměnné je velmi důležité. Zatím co při psaní kódu to může být zcela jasné, o pár měsíců později to již tak jasné být nemusí. A už vůbec to nemusí být jasné uživatelům API. Proto by to mělo být vždy zdokumentováno.</p>
+
+    <p>Nejlepším způsobem zdokumentování přenosu vlastnictví je použít anotaci <link href="https://wiki.gnome.org/Projects/GObjectIntrospection/Annotations#Memory_and_lifecycle_management"><code>(transfer)</code></link>, která byla zavedena spolu s <link xref="introspection">introspekcí pro GObject</link>. Uveďte ji do dokumentačních komentářů k API pro všechny parametry a návratové typy funkcí. I když funkce není veřejným API, napište k ní dokumentační komentář a do něj zahrňte anotaci <code>(transfer)</code>. Díky tomu budo moci nástroje pro introspekci číst potřebné anotace a správně prozkoumávat API.</p>
+
+    <p>Například:</p>
+    <code mime="text/x-csrc">/**
+ * g_value_take_string:
+ * @value: (transfer none): an initialized #GValue
+ * @str: (transfer full): string to set it to
+ *
+ * Function documentation goes here.
+ */
+
+/**
+ * generate_string:
+ * @template: (transfer none): a template to follow when generating the string
+ *
+ * Function documentation goes here.
+ *
+ * Returns: (transfer full): a newly generated string
+ */</code>
+
+    <p>Vlastnictví proměnných lze dokumentovat pomocí vložených komentářů. Není to standardem a nečtou to všechny nástroje, ale může se to stát zvyklostí, pokud to bude jednotně dodržováno.</p>
+    <code mime="text/x-csrc">GObject *some_owned_object = NULL;  /* owned */
+GObject *some_unowned_object;  /* unowned */</code>
+
+    <p>Obdobně i dokumentování pro <link xref="#container-types"/> je čistě jen zvyklost. Součástí je také typ obsaženého prvku:</p>
+    <code mime="text/x-csrc">GPtrArray/*&lt;owned gchar*&gt;*/ *some_unowned_string_array;  /* unowned */
+GPtrArray/*&lt;owned gchar*&gt;*/ *some_owned_string_array = NULL;  /* owned */
+GPtrArray/*&lt;unowned GObject*&gt;*/ *some_owned_object_array = NULL;  /* owned */</code>
+
+    <p>Pamatujte také, že vlastněné proměnné by měly být vždy inicializovány, takže jejich uvolnění je pak mnohem pohodlnější. Viz <link xref="#convenience-functions"/>.</p>
+
+    <p>Poznamenejme také, že některé typy, například základní typy v C, jako je řetězec, mohou mít v případě, že nejsou vlastněny, přidán modifikátor <code>const</code>, což má výhodu, že kompilátor zobrazí varování, když se pokusíte takovouto proměnnou přiřadit do vlastněné proměnné (která modifikátor <code>const</code> použít <em>nesmí</em>). V případě použití modifikátoru je možné vynechat komentář <code>/* unowned */</code>.</p>
+  </section>
+
+  <section id="reference-counting">
+    <title>Počítání odkazů</title>
+
+    <p>Mimo tradičních typů ve stylu <code>malloc()</code>/<code>free()</code> máte v GLib k dispozici i různé typy počítání referencí — základním příkladem je <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html"> <code>GObject</code></link>.</p>
+
+    <p>Koncept vlastnictví a jeho přenosu se používá stejně jako počítání referencí, které dělají alokované typy. Rozsah působnosti <em>vlastní</em> typy s počítáním referencí, pokud drží silnou referenci na instanci (například zavoláním <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#g-object-ref"><code>g_object_ref()</code></link>. Instance se dá „zkopírovat“ opětovným zavoláním <code>g_object_ref()</code>. Vlastnictví se dá uvolnit pomocí <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#g-object-unref"><code>g_object_unref()</code></link> — i když se tím nemusí ve skutečnosti ukončit instance, uvolní se tím vlastnictví instance v aktuálním rozsahu působnosti.</p>
+
+    <p>Viz <link xref="#g-clear-object"/> ohledně vhodného způsobu zacházení s referencemi GObject.</p>
+
+    <p>V GLib existují další typy s počítáním referencí, jako je <link href="https://developer.gnome.org/glib/stable/glib-Hash-Tables.html"> <code>GHashTable</code></link> (používá <link href="https://developer.gnome.org/glib/stable/glib-Hash-Tables.html#g-hash-table-ref"> <code>g_hash_table_ref()</code></link> a <link href="https://developer.gnome.org/glib/stable/glib-Hash-Tables.html#g-hash-table-unref"> <code>g_hash_table_unref()</code></link>), nebo <link href="https://developer.gnome.org/glib/stable/glib-GVariant.html"> <code>GVariant</code></link> (<link href="https://developer.gnome.org/glib/stable/glib-GVariant.html#g-variant-ref"> <code>g_variant_ref()</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-GVariant.html#g-variant-unref"> <code>g_variant_unref()</code></link>). Některé typy, jako <code>GHashTable</code> podporují jak počítání referencí, tak vynucenou finalizaci. Použití počítání referencí by se měla vždy dávat přednost, protože umožňuje instancím se jednoduše sdílet mezi více rozsahy působnosti (každá se drží svoji vlastní referenci), bez nutnosti alokovat více kopií instance. Šetří se tím paměť.</p>
+
+    <section id="floating-references">
+      <title>Plovoucí reference</title>
+
+      <p>Třídy odvozené z <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#GInitiallyUnowned"><code>GInitiallyUnowned</code></link> mají, oproti <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#GObject-struct"><code>GObject</code></link>, počáteční referenci, která je <em>plovoucí</em>, což znamená, že ji nevlastní žádný kód. Jakmile je zavolána funkce <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#g-object-ref-sink"><code>g_object_ref_sink()</code></link>, změní se plovoucí reference na silnou referenci a volající kód je pokládán za vlastníka objektu.</p>
+
+      <p>Plovoucí reference jsou vhodné pro použití v jazyce C v takových API, jako je GTK+, kde je zapotřebí vytvářet a organizovat do hierarchie velké množství objektů. V takových případech by zavolání <code>g_object_unref()</code> kvůli zachození všech silných referencí vedlo na velké množství kódu.</p>
+
+      <example>
+        <p>Plovoucí reference umožňují následující kód zjednodušit:</p>
+        <code mime="text/x-csrc" style="invalid">GtkWidget *new_widget;
+
+new_widget = gtk_some_widget_new ();
+gtk_container_add (some_container, new_widget);
+g_object_unref (new_widget);</code>
+
+        <p>Místo toho můžete použít následující kód s <code>GtkContainer</code> předpokládajícím vlastnictví plovoucí reference:</p>
+        <code mime="text/x-csrc" style="valid">
+gtk_container_add (some_container, gtk_some_widget_new ());</code>
+      </example>
+
+      <p>Plovoucí reference používá jen pár API, zejména to je <code>GtkWidget</code> a všechny jeho podtřídy. Musíte si zjistit, která API je podporují a která API je umějí přijímat a používat je jen dohromady.</p>
+
+      <p>Všimněte si, že <code>g_object_ref_sink()</code> se chová stejně jako <code>g_object_ref()</code>, když je zavolána na neplovoucí referenci, díky čemuž se <code>gtk_container_add()</code> neliší v takovýchto případech od jiných funkcí.</p>
+
+      <p>Více informací o plovoucích referencích najdete v <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#floating-ref">příručce k GObject</link>.</p>
+    </section>
+  </section>
+
+  <section id="convenience-functions">
+    <title>Vhodné funkce</title>
+
+    <p>GLib poskytuje řadu funkcí usnadňujících správu paměti, hlavně pro GObject. Tři z nich jsou zde rozebrány, ale existují i další — podívejte se na ně do dokumentace k API GLib. Typicky dodržují podobné schéma pojmenování, jako zmíněné tři (používají sufix „_full“ nebo sloveso „clear“ v názvu).</p>
+
+    <section id="g-clear-object">
+      <title><code>g_clear_object()</code></title>
+
+      <p><link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#g-clear-object"><code>g_clear_object()</code></link> je verzí funkce <link href="https://developer.gnome.org/gobject/stable/gobject-The-Base-Object-Type.html#g-object-unref"><code>g_object_unref()</code></link>, která zruší referenci na GObject a vymaže ukazatel nastavením na <code>NULL</code>.</p>
+
+      <p>Díky tomu je snažší napsat programový kód, který zaručuje, že ukazatel na GObject je vždy buď <code>NULL</code> nebo je vlastněn objektem GObject (ale nikdy neukazuje na GObject, který již není vlastněn).</p>
+
+      <p>Tím, že inicializujete všechny vlastněné ukazatel na GObject na <code>NULL</code>, je jejich uvolnění na konci oblasti působnosti možné pouhým zavoláním <code>g_clear_object()</code> bez jakýchkoliv kontrol, tak jak je to probráno v <link xref="#single-path-cleanup"/>:</p>
+      <code mime="text/x-csrc" style="valid">void
+my_function (void)
+{
+  GObject *some_object = NULL;  /* owned */
+
+  if (rand ())
+    {
+      some_object = create_new_object ();
+      /* zde se s objektem něco udělá */
+    }
+
+  g_clear_object (&amp;some_object);
+}</code>
+    </section>
+
+    <section id="g-list-free-full">
+      <title><code>g_list_free_full()</code></title>
+
+      <p><link href="https://developer.gnome.org/glib/stable/glib-Doubly-Linked-Lists.html#g-list-free-full"> <code>g_list_free_full()</code></link> uvolní všechny prvky v zřetězeném seznamu <em>a všechna jejich data</em>. To je mnohem pohodlnější, než procházet celý seznam, abyste uvolnily data jednotlivých prvků a následně zavolat <link href="https://developer.gnome.org/glib/stable/glib-Doubly-Linked-Lists.html#g-list-free"> <code>g_list_free()</code></link>, aby se uvolnily vlastní prvky seznamu <code>GList</code>.</p>
+    </section>
+
+    <section id="g-hash-table-new-full">
+      <title><code>g_hash_table_new_full()</code></title>
+
+      <p><link href="https://developer.gnome.org/glib/stable/glib-Hash-Tables.html#g-hash-table-new-full"> <code>g_hash_table_new_full()</code></link> je novou verzí funkce <link href="https://developer.gnome.org/glib/stable/glib-Hash-Tables.html#g-hash-table-new"><code>g_hash_table_new()</code></link>, která umožňuje nastavit funkce pro likvidaci jednotlivých klíčů a hodnot hašovací tabulky při jejím odstranění. Tyto funkce jsou pak automaticky volány pro všechny klíče a hodnoty, když je hašovací tabulka likvidována nebo když je odstraněna položka pomocí <code>g_hash_table_remove()</code>.</p>
+
+      <p>V podstatě to zjednodušuje správu paměti s klíči a hodnotami na otázku, jestli se nacházejí v hašovací tabulce. Vlastnictví prvku v kontejnerových typech je rozebráno v <link xref="#container-types"/>.</p>
+
+      <p>Obdobná funkce existuje pro <code>GPtrArray</code>: <link href="https://developer.gnome.org/glib/stable/glib-Pointer-Arrays.html#g-ptr-array-new-with-free-func"><code>g_ptr_array_new_with_free_func()</code></link>.</p>
+    </section>
+  </section>
+
+  <section id="container-types">
+    <title>Typy kontejnerů</title>
+
+    <p>Při používání kontejnerových typů, jako je <code>GPtrArray</code> nebo <code>GList</code>, vzniká další úroveň vlastnictví: kromě vlastnictví instance kontejneru je také vlasněn nebo nevlastněn každý z prvků v kontejneru. Při vnoření kontejnerů pak musí být sledováno více úrovní vlastnictví. Vlastnictví vlastněných prvků náleží kontejneru a vlastnictví kontejneru náleží rozsahu působnosti kódu, ve kterém se nachází (což může být i další kontejner).</p>
+
+    <p>Klíčovým principem pro zjednodušení toho celého je, zajistit, aby všechny prvky v kontejneru měly stejného vlastníka: buď jsou všechny vlastněny nebo nejsou. To se děje automaticky, když jsou použity normální <link xref="#convenience-functions"/> pro typy, jako jsou <code>GPtrArray</code> a <code>GHashTable</code>.</p>
+
+    <p>Když kontejner prvky <em>vlastní</em>, pak je jejich přidání do kontejneru v podstatě přenosem vlastnictví. Například, pro pole řetězců, pokud jsou prvky vlastněny, je definice <code>g_ptr_array_add()</code> ve skutečnosti:</p>
+    <code mime="text/x-csrc">/**
+ * g_ptr_array_add:
+ * @array: a #GPtrArray
+ * @str: (transfer full): string to add
+ */
+void
+g_ptr_array_add (GPtrArray *array,
+                 gchar     *str);</code>
+
+    <p>Takže například konstantní (nevlastněný) řetězec musí být přidán do pole pomocí <code>g_ptr_array_add (array, g_strdup ("constant string"))</code>.</p>
+
+    <p>Zatímco, když prvek není vlastněn, je definice ve skutečnosti:</p>
+    <code mime="text/x-csrc">/**
+ * g_ptr_array_add:
+ * @array: a #GPtrArray
+ * @str: (transfer none): string to add
+ */
+void
+g_ptr_array_add (GPtrArray   *array,
+                 const gchar *str);</code>
+
+    <p>Zde může být konstantní řetězec přidán bez jeho kopírování: <code>g_ptr_array_add (array, "constant string")</code>.</p>
+
+    <p>Příklady komentářů, které se přidávají ke definicím proměnných kvůli anotacím k typu a vlastnictví, viz <link xref="#documentation"/>.</p>
+  </section>
+
+  <section id="single-path-cleanup">
+    <title>Jednocestné čištění</title>
+
+    <p>Vhodným návrhovým vzorem pro složitější funkce je mít v jediné cestě průchodu vyčištění (uvolnění) alokací a návrat k volajícímu. Tím se nesmírně zjednoduší sledování alokací, protože není nadále nutné přemýšlet na tím, které alokace již byly v jednotlivých cestách průchodu uvolněny – všechny cesty průchodu končí ve stejném bodě, za kterým teprve provádíte uvolnění. Výhody tohoto přístupu se rychle projeví u rozsáhlých funkcí s více vlastněnými lokálními proměnnými. Pro menší funkce tento návrhový vzor smysluplný být nemusí.</p>
+
+    <p>Tento přístup má dva předpoklady:</p>
+    <list type="numbered">
+      <item><p>Návrat z funkce je v jediném bodě a pro dosažení tohoto bodu z jiných míst se používá <code>goto</code>.</p></item>
+      <item><p>Všechny vlastněné proměnné jsou při inicializaci nebo při přenosu vlastnictví pryč nastaveny na <code>NULL</code>.</p></item>
+    </list>
+
+    <p>Příklad níže je pro malou funkci (kvůli stručnosti), ale měl by ukázat principy i pro aplikaci, které chce tento vzor použít pro rozsáhlé funkce:</p>
+
+    <listing>
+      <title>Příklad jednocestného číštění</title>
+      <desc>Příklad implementace jednocestného čištění pro jednoduchou funkci</desc>
+      <code mime="text/x-csrc">GObject *
+some_function (GError **error)
+{
+  gchar *some_str = NULL;  /* owned */
+  GObject *temp_object = NULL;  /* owned */
+  const gchar *temp_str;
+  GObject *my_object = NULL;  /* owned */
+  GError *child_error = NULL;  /* owned */
+
+  temp_object = generate_object ();
+  temp_str = "example string";
+
+  if (rand ())
+    {
+      some_str = g_strconcat (temp_str, temp_str, NULL);
+    }
+  else
+    {
+      some_operation_which_might_fail (&amp;child_error);
+
+      if (child_error != NULL)
+        {
+          goto done;
+        }
+
+      my_object = generate_wrapped_object (temp_object);
+    }
+
+done:
+  /* Zde je proměnná @some_str buď NULL nebo řetězec, který má být uvolněn, takže
+   * může být předána do g_free() nepodmíněně.
+   *
+   * Obdobně, @temp_object je buď NULL nebo objekt, na nějž má být zrušena reference,
+   * takže může být předána do g_clear_object() nepodmíněně. */
+  g_free (some_str);
+  g_clear_object (&amp;temp_object);
+
+  /* Tento vzor může být použit také zajištění, že funcke vždy vrátí
+   * buď nějakou chybu nebo návratovou hodnotu (ale nikdy obojí). */
+  if (child_error != NULL)
+    {
+      g_propagate_error (error, child_error);
+      g_clear_object (&amp;my_object);
+    }
+
+  return my_object;
+}</code>
+    </listing>
+  </section>
+
+  <section id="verification">
+    <title>Ověření</title>
+
+    <p>Úniky paměti mohou být kontrolovány dvěma způsoby: statickou analýzou a kontrolou úniků za běhu.</p>
+
+    <p>Statická analýza pomocí nástrojů, jako je <link xref="tooling#coverity">Coverity</link>, <link xref="tooling#clang-static-analyzer">statický analyzátor Clang</link> nebo <link xref="tooling#tartan">Tartan</link>, může zachytit některé úniky, ale potřebuje k tomu znalost přenosu vlastnictví u všech funkcí volaných v kódu. Statické analyzátory zaměřené na určitou oblast, jako Tartan (který zná alokaci paměti a přenosy knihovny GLib) si mohou vést lépe. Ale zrovna Tartan je poněkud mladý projekt a stále postrádá některé věci (nízkou četnost pravdivých hlášení). Ze zmíněných důvodů je doporučováno projít kód statickým analyzátorem, ale jako hlavní nástroj pro zjišťování úniků by měla být kontrola za běhu.</p>
+
+    <p>Kontrola úniků za běhu se provádí pomocí <link xref="tooling#valgrind">Valgrind</link>, konkrétně nástrojem <link xref="tooling#memcheck">memcheck</link>. Kterýkoliv únik, který je detekován jako „trvalá ztráta paměti“, by měl být opraven. Řada úniků, které jsou „potenciální ztráta paměti“ ve skutečnosti žádné uniky nejsou a měly by být přidány do souboru pro potlačení.</p>
+
+    <p>Pokud kompilujete pomocí nejnovějších verzí Clang nebo GCC, můžete místo toho zapnout <link xref="tooling#address-sanitizer">sanitizér adres</link>, který bude za běhu detekovat problémy s úniky paměti a přetečením, ale bez složitosti běhu nástrojů Valgrind ve správném prostředí. Upozorňujeme ale, že se jedná stále o nevyzrálý nástroj, takže v některých případech může selhat.</p>
+
+    <p>Další informace ohledně použití aplikace Valgrind viz <link xref="tooling#valgrind"/>.</p>
+  </section>
+</page>

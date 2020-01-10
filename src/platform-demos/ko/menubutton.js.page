@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubutton.js" xml:lang="ko">
+  <info>
+  <title type="text">MenuButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-07-18" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Anna Zacchi</name>
+      <email its:translate="no">azzurroverde@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>누르면 메뉴를 보여주는 위젯입니다</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MenuButton</title>
+  <media type="image" mime="image/png" src="media/menubutton.png"/>
+  <p>GtkMenuButton 위젯은 눌렀을 때 메뉴를 띄울 목적으로 활용합니다. 이 메뉴는 GtkMenu로 또는 GMenuModel로도 제공합니다. GtkMenuButton 위젯은 제대로 된 하위 위젯을 지니고 있을 수 있습니다. 즉, GtkMenuButton으로 대부분의 다른 표준 GtkWidget을 붙들어둘 수 있습니다. 가장 널리 활용하는 하위 요소는 GtkArrow입니다.</p>
+
+<note><p>MenuButton을 동작하게 하려면 그놈 3.6 이상이 필요합니다.</p></note>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+
+class Application {
+
+    //create the application
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.myapp',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+        //connect to 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    //create the UI (in this case it's just the ApplicationWindow)
+    _buildUI() {
+        this._window = new Gtk.ApplicationWindow({ application: this.application,
+                                                   window_position: Gtk.WindowPosition.CENTER,
+                                                   title: "MenuButton Example" });
+        this._window.set_default_size(600, 400);
+        this.grid = new Gtk.Grid();
+        this._window.add(this.grid);
+
+
+        this._menuButton = new Gtk.MenuButton();
+        this.grid.attach(this._menuButton, 0, 0, 1, 1 );
+        this.menu = Gtk.Menu.new_from_model(this.menuModel);
+
+        this.menu.show();
+        this._menuButton.set_menu_model (this.menuModel);
+        this._menuButton.set_size_request(80, 35);
+        this._menuButton.show();
+
+        this._window.show_all();
+    }
+
+    _showNew() {
+        print("You clicked \"New\"");
+    }
+
+    _showAbout() {
+        print("You clicked \"About\"");
+    }
+
+    //create the menu items and connect the signals to the callback functions.
+    _initMenus() {
+        let newAction = new Gio.SimpleAction({ name: 'new' });
+        newAction.connect('activate', () =&gt; { this._showNew(); });
+        this.application.add_action(newAction);
+
+        let aboutAction = new Gio.SimpleAction({ name: 'about' });
+        aboutAction.connect('activate', () =&gt; { this._showAbout(); });
+        this.application.add_action(aboutAction);
+
+        let quitAction = new Gio.SimpleAction({ name: 'quit' });
+        quitAction.connect('activate', () =&gt; { this._window.destroy(); });
+         this.application.add_action(quitAction);
+
+        this.menuModel = new Gio.Menu();
+
+        this.menuItemNew = Gio.MenuItem.new("New", 'app.new');
+        this.menuItemAbout = Gio.MenuItem.new("About", 'app.about');
+        this.fileMenuItem = Gio.MenuItem.new("Other", null);
+
+        this.menuModel.append_item(this.menuItemNew);
+        this.menuModel.append_item(this.menuItemAbout);
+
+        //submenu
+        this.subMenu = new Gio.Menu();
+        this.fileMenuItem.set_submenu(this.subMenu);
+        this.menuItemQuit = Gio.MenuItem.new("Quit", 'app.quit');
+        this.subMenu.append_item(this.menuItemQuit);
+        this.menuModel.append_item(this.fileMenuItem);
+    }
+
+    //callback function for 'activate' signal
+    _onActivate() {
+        this._window.present();
+    }
+
+    //callback function for 'startup' signal
+    _onStartup() {
+        //You must call _initMenus() before calling _buildUI().
+        this._initMenus();
+        this._buildUI();
+    }
+};
+
+//run the application
+let app = new Application();
+app.application.run(ARGV);
+</code>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.5/gtk3-GtkMenuButton.html">MenuButton</link></p></item>
+</list>
+</page>

@@ -29,7 +29,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
-      <mal:years>2012, 2013, 2014</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -52,7 +52,7 @@
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:email>tomtryf@gnome.org</mal:email>
       <mal:years>2014</mal:years>
     </mal:credit>
   </info>
@@ -66,29 +66,31 @@
 
   <p>Η Gtk έχει ένα σύνολο προκαθορισμένων συμβάντων που μπορείτε να χρησιμοποιήσετε στην εφαρμογή σας.</p>
   <example>
-    <p>Δηλώστε το <code>HelloWorld</code> ως μια νέα κλάση <code>Lang</code>. Η Gjs απαιτεί οι κλάσεις να έχουν ορισμένη ιδιότητα ονόματος.</p>
+    <p>Declare <code>HelloWorld</code> as a new class.</p>
 
-    <code>
-const HelloWorld = new Lang.Class({
-    Name: 'HelloWorld',
-</code>
+    <code><![CDATA[
+class HelloWorld {
+]]></code>
 
-    <p>Το <code>_init</code> καλείται όταν δημιουργείται ένα νέο στιγμιότυπο. Δημιουργήστε μια <code>GtkApplication</code>, έπειτα συνδέστε το <code>activate</code> στο υπάρχον Gtk συμβάν <code>_onActivate</code> και το <code>startup</code> στο <code>_onStartup</code>:</p>
+    <p><code>constructor</code> is called when a new instance is created. Create a
+    <code>GtkApplication</code>, then connect <code>activate</code> to the
+    existing Gtk event <code>_onActivate</code> and <code>startup</code> to
+    <code>_onStartup</code>:</p>
 
-    <code>
-    _init: function() {
+    <code><![CDATA[
+    constructor() {
         this.application = new Gtk.Application();
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
-</code>
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+]]></code>
 
     <p>Εμφανίστε το παράθυρο με την ενεργοποίηση της εφαρμογής:</p>
-    <code>
-    _onActivate: function(){
+    <code><![CDATA[
+    _onActivate() {
         this._window.show_all();
-    },
-</code>
+    }
+]]></code>
   </example>
   <links type="prevnext"/>
 </page>

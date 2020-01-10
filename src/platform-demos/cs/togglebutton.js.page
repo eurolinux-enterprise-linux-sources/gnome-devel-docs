@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="togglebutton.js" xml:lang="cs">
+  <info>
+  <title type="text">ToggleButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-06-16" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Zůstane zmáčknuté, dokud na něj znovu nekliknete</desc>
+  </info>
+
+  <title>ToggleButton</title>
+  <media type="image" mime="image/png" src="media/togglebutton.png"/>
+  <p><code>ToggleButton</code> (přepínací tlačítko) je podobné jako normální tlačítko (<link xref="button.js">Button</link>), jen s tím rozdílem, že po kliknutí zůstane zmáčknuté. Můžete jej používat ve funkci zapnuto/vypnuto pro řízení věcí, jako třeba káči (<link xref="spinner.js">Spinner</link>) v tomto příkladu.</p>
+  <p>Metoda <code>get_active</code> přepínacího tlačítka vrací <code>true</code>, když je zmáčknuté, a <code>false</code>, když není. Metoda <code>set_active</code> se používá, když chcete změnit jeho stav programově, bez klikání. Když se jeho stav změní ze zmáčknutého na nezmáčknuté nebo naopak, vyšle signál <code>"toggled"</code>, který můžete napojit na funkci, která něco udělá.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Importované knihovny</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Toto jsou knihovny, které potřebujeme naimportovat, aby aplikace běžela. Pamatujte si, že řádek, který GNOME říká, že používáme Gjs, musí být vždy na začátku.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Vytvoření okna aplikace</title>
+    <code mime="application/javascript">
+const ToggleButtonExample = new Lang.Class({
+    Name: 'ToggleButton Example',
+
+    // Vytvoří vlastní aplikaci
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jstogglebutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Napojí signály "activate" a "startup" k funkcím zpětného volání
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Všechen kód této ukázky je ve třídě <code>RadioButtonExample</code>. Výše uvedený kód vytvoří <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pro naše widgety a okno, ve kterém budou.</p>
+    <code mime="application/javascript">
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI: function() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 300,
+            default_width: 300,
+            border_width: 30,
+            title: "ToggleButton Example"});
+</code>
+    <p>Funkce <code>_buildUI</code> je místo, ze kterého voláme všechen kód, který vytváří uživatelské rozhraní aplikace. Prvním krokem je vytvoření nového <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link>, do kterého vložíme všechny naše widgety.</p>
+  </section>
+
+  <section id="togglebutton">
+    <title>Vytvoření ToggleButton a dalších widgetů</title>
+    <code mime="application/javascript">
+        // Vytvoří káču, kterou přepínací tlačítko zastavuje a spouští
+        this._spinner = new Gtk.Spinner ({hexpand: true, vexpand: true});
+</code>
+
+    <p>Chceme, aby se tento widget <link xref="spinner.js">Spinner</link> roztáhl svisle i vodorovně a zabral co nejvíce místa uvnitř okna.</p>
+
+    <code mime="application/javascript">
+        // Vytvoří ToggleButton, které spouští a zastavuje káču
+        this._toggleButton = new Gtk.ToggleButton ({label: "Start/Stop"});
+        this._toggleButton.connect ('toggled', Lang.bind (this, this._onToggle));
+</code>
+
+    <p>Vytváření <code>ToggleButton</code> není tak úplně stejné, jako vytváření widgetu <link xref="button.js">Button</link>. Největší rozdíl je v tom, že obsluhujete signál <code>"toggled"</code> místo <code>"clicked"</code>. Tento kód napojí funkci <code>_onToggle</code> na tento signál, takže bude zavolána pokaždé, když se přepínací tlačítko přepne.</p>
+
+    <code mime="application/javascript">
+        // Vytvoří mřížku a vše do ní vloží
+        this._grid = new Gtk.Grid ({
+            row_homogeneous: false,
+            row_spacing: 15});
+        this._grid.attach (this._spinner, 0, 0, 1, 1);
+        this._grid.attach (this._toggleButton, 0, 1, 1, 1);
+</code>
+    <p>Zde vytvoříme jednoduchý widget <link xref="grid.js">Grid</link> pomocí kterého vše uspořádáme. Následně do něj připojíme káču a přepínací tlačítko.</p>
+
+    <code mime="application/javascript">
+        // Přidá mřížku do okna
+        this._window.add (this._grid);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    },
+</code>
+    <p>Nyní přidáme mřížku do okna a řekneme oknu, aby zobrazilo sebe a své synovské widgety, až se spustí aplikace.</p>
+    </section>
+
+    <section id="toggled">
+    <title>Zajištění, že se něco stane, když je ToggleButton přepnut</title>
+
+    <code mime="application/javascript">
+    _onToggle: function() {
+
+        // Spustí nebo zastaví káču
+        if (this._toggleButton.get_active ())
+            this._spinner.start ();
+        else this._spinner.stop ();
+
+    }
+
+});
+</code>
+    <p>Kdykoliv někdo přepínací tlačítko přepne, tato funkce zkontroluje jeho stav a pak použije <code>get_active</code> a příslušně spustí nebo zastaví káču. Chceme, aby se otáčela, jen když je tlačítko zmáčknuté, tj. <code>get_active</code> vrátí <code>true</code>. V opačném případě ji řekneme, aby se zastavila.</p>
+
+    <code mime="application/javascript">
+// Spustí aplikaci
+let app = new ToggleButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>Nakonec vytvoříme novou instanci konečné třídy RadioButtonExample a aplikaci spustíme.</p>
+  </section>
+
+  <section id="complete">
+    <title>Úplný kód ukázky</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+
+class ToggleButtonExample {
+
+    // Vytvoří vlastní aplikaci
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jstogglebutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+        // Napojí signály "activate" a "startup" k funkcím zpětného volání
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 300,
+            default_width: 300,
+            border_width: 30,
+            title: "ToggleButton Example"});
+
+        // Vytvoří káču, kterou přepínací tlačítko zastavuje a spouští
+        this._spinner = new Gtk.Spinner ({hexpand: true, vexpand: true});
+
+        // Vytvoří ToggleButton, které spouští a zastavuje káču
+        this._toggleButton = new Gtk.ToggleButton ({label: "Start/Stop"});
+        this._toggleButton.connect ('toggled', this._onToggle.bind(this));
+
+        // Vytvoří mřížku a vše do ní vloží
+        this._grid = new Gtk.Grid ({
+            row_homogeneous: false,
+            row_spacing: 15});
+        this._grid.attach (this._spinner, 0, 0, 1, 1);
+        this._grid.attach (this._toggleButton, 0, 1, 1, 1);
+
+        // Přidá mřížku do okna
+        this._window.add (this._grid);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    }
+
+    _onToggle() {
+
+        // Spustí nebo zastaví káču
+        if (this._toggleButton.get_active ())
+            this._spinner.start ();
+        else this._spinner.stop ();
+
+    }
+};
+
+// Spustí aplikaci
+let app = new ToggleButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Dokumentace jdoucí do hloubky</title>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Spinner.html">Gtk.Spinner</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ToggleButton.html">Gtk.ToggleButton</link></p></item>
+</list>
+  </section>
+</page>

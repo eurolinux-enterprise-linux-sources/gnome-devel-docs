@@ -2,7 +2,7 @@
 <page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.c" xml:lang="el">
   <info>
     <title type="text">Καταχώριση (C)</title>
-    <link type="guide" xref="beginner.c#entry"/>
+    <link type="guide" xref="c#entry"/>
     <revision version="0.1" date="2012-06-14" status="draft"/>
 
     <credit type="author copyright">
@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -48,9 +48,9 @@
 
 
 
-/*Αυτή είναι η συνάρτηση επανάκλησης. Είναι μια συνάρτηση χειριστή 
-που αντιδρά στο σήμα. Σε αυτήν την περίπτωση, θα συλλάβει την 
-είσοδο κειμένου από το πλαίσιο καταχώρισης και εκτυπώνει μια γραμμή στον χρήστη.*/
+/*This is the callback function. It is a handler function 
+which reacts to the signal. In this case, it will grab the 
+text input from the entry box and print out a line to the user.*/
 static void
 on_activate (GtkEntry *entry,
              gpointer  user_data)
@@ -70,18 +70,18 @@ activate (GtkApplication *app,
   GtkWidget *window;
   GtkWidget *entry_box;
 
-  /*Δημιουργία παραθύρου με τίτλο, προεπιλεγμένο μέγεθος, 
-  και ορισμό πλάτους περιγράμματος*/
+  /*Create a window with a title, a default size, 
+  and a set border width*/
   window = gtk_application_window_new (app);
   gtk_window_set_title (GTK_WINDOW (window), "What is your name?");
   gtk_window_set_default_size (GTK_WINDOW (window), 300, 100);
   gtk_container_set_border_width (GTK_CONTAINER (window), 10);
 
-  /*Δημιουργία νέου πλαισίου καταχώρισης, και προσθήκη του στο παράθυρο*/
+  /*Create a new entry box, and add it to the window*/
   entry_box = gtk_entry_new ();
   gtk_container_add (GTK_CONTAINER (window), entry_box);
 
-  /*Σύνδεση του ενεργού σήματος με την επανάκληση*/
+  /*Connecting the activate signal to the callback*/
   g_signal_connect (GTK_ENTRY (entry_box), "activate", 
                     G_CALLBACK (on_activate), NULL);
 

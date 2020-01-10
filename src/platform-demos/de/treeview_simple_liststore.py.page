@@ -64,7 +64,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # a treeview to see the data stored in the model
         view = Gtk.TreeView(model=listmodel)
         # for each column
-        for i in range(len(columns)):
+        for i, column in enumerate(columns):
             # cellrenderer to render the text
             cell = Gtk.CellRendererText()
             # the text in the first column should be in boldface
@@ -72,7 +72,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 cell.props.weight_set = True
                 cell.props.weight = Pango.Weight.BOLD
             # the column is created
-            col = Gtk.TreeViewColumn(columns[i], cell, text=i)
+            col = Gtk.TreeViewColumn(column, cell, text=i)
             # and it is appended to the treeview
             view.append_column(col)
 
@@ -125,7 +125,7 @@ sys.exit(exit_status)
   </section>
 
   <section id="references">
-    <title>API References</title>
+    <title>API-Referenzen</title>
     <p>In this sample we used the following:</p>
     <list>
       <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeView.html">GtkTreeView</link></p></item>
@@ -134,7 +134,7 @@ sys.exit(exit_status)
       <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCellRendererText.html">GtkCellRendererText</link></p></item>
       <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeViewColumn.html">GtkTreeViewColumn</link></p></item>
       <item><p><link href="http://git.gnome.org/browse/pygobject/tree/gi/overrides/Gtk.py">pygobject - Python bindings for GObject Introspection</link></p></item>
-      <item><p><link href="http://developer.gnome.org/pango/stable/pango-Fonts.html">Fonts</link></p></item>
+      <item><p><link href="http://developer.gnome.org/pango/stable/pango-Fonts.html">Schriften</link></p></item>
     </list>
   </section>
 </page>

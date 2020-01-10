@@ -15,7 +15,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -33,7 +33,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -214,37 +214,37 @@ app.application.run (ARGV);
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 const Webkit = imports.gi.WebKit;
 
-const HelloGNOME = new Lang.Class ({
-    Name: 'Hello GNOME',
+class HelloGNOME {
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
-    _init: function () {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application ();
 
-        // Σύνδεση των σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
-    _onActivate: function () {
-        this._window.present ();
-    },
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function () {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function () {
+    // Build the application's UI
+    _buildUI() {
 
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow  ({
             application: this.application,
             title: "Welcome to GNOME",
@@ -252,23 +252,23 @@ const HelloGNOME = new Lang.Class ({
             default_width: 400,
             window_position: Gtk.WindowPosition.CENTER });
 
-        // Δημιουργία μιας προβολής ιστού για προβολή της εφαρμογής  ιστού
+        // Create a webview to show the web app
         this._webView = new Webkit.WebView ();
 
-        // Το ποθέτηση της εφαρμογής ιστού στην προβολή ιστού
+        // Put the web app into the webview
         this._webView.load_uri (GLib.filename_to_uri (GLib.get_current_dir() +
             "/hellognome.html", null));
 
-        // Τοποθέτηση της προβολής ιστού στο παράθυρο
+        // Put the webview into the window
         this._window.add (this._webView);
 
-        // Εμφάνιση του παραθύρου κι όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
-});
+};
 
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new HelloGNOME ();
 app.application.run (ARGV);
 </code>

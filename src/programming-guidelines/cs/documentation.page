@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="documentation" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#general-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Federico Mena-Quintero</name>
+      <email its:translate="no">federico@gnome.org</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Tým GTK+</name>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Doplnění dokumentace ke knihovnám a k API</desc>
+  </info>
+
+  <title>Dokumentace</title>
+
+  <synopsis>
+    <title>Shrnutí</title>
+
+    <list>
+      <item><p>Pro dokumentaci API používejte gtk-doc s nastavením pro udržování aktuální podoby. (<link xref="#gtk-doc"/>)</p></item>
+      <item><p>Používejte prvky XML pro zahrnutí externích symbolů do dokumentace. (<link xref="#build-system"/>)</p></item>
+      <item><p>Používejte jednotný standardní obsah ve všech dokumentacích k API, aby šla udržovat podle běžných zvyklostí. (<link xref="#standard-layout"/>)</p></item>
+      <item><p>Používejte <cmd>gdbus-codegen</cmd> k vygenerování dokumentace k API pro D-Bus, která se zahrne do sestavení gtk-doc. (<link xref="#dbus-api"/>)</p></item>
+      <item><p>Do veškeré dokumentace k API přidejte anotace k introspekci. (<link xref="#introspection-annotations"/>)</p></item>
+      <item><p>Do všech dokumentací k API doplňte řádky <code>Since</code>. (<link xref="#symbol-versioning"/>)</p></item>
+      <item><p>Povolte testy gtk-doc. (<link xref="#keeping-up-to-date"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="gtk-doc">
+    <title>gtk-doc</title>
+
+    <p>Upřednostňovaným systémem pro dokumentovaní knihoven GNOME je <link href="http://www.gtk.org/gtk-doc/">gtk-doc</link>, který získává vložené komentáře z kódu, aby z nich sestavil dokument <link href="http://docbook.org/">DocBook</link> a sadu stránek HTML. Ty je pak možné číst v aplikaci <link href="https://wiki.gnome.org/Apps/Devhelp">Devhelp</link>. Velká část infrastruktury GNOME je postavena tak, aby pracoval s dokumentací napsanou pomocí gtk-doc.</p>
+  </section>
+
+  <section id="build-system">
+    <title>Systém sestavení</title>
+
+    <p>Při začleňování gtk-doc do systému sestavení u projektu <link href="https://developer.gnome.org/gtk-doc-manual/stable/settingup.html.en">se řiďte instrukcemi v příručce k gtk-doc</link>. Přípomínáme, že soubor <file>sections.txt</file> je sice vygenerován automaticky, ale jen při prvním spuštění gtk-doc. Následně již generován není a musí být udržován ručně. Proto by měl být také <link href="https://developer.gnome.org/gtk-doc-manual/stable/settingup_vcs.html.en">v systému pro správu verzí</link>.</p>
+
+    <p>Měli byste používat variantu gtk-doc <code>no-tmpl</code> a režim XML namísto SGML. (Režim tmpl a SGML jsou zastaralé a pomalejší než XML.)</p>
+    <p>Když je zapotřebí vložit číslo balíčku do textu dokumentace, vytvořte soubor s názvem <file>docs/version.xml.in</file>, který bude obsahovat:</p>
+    <code>@PACKAGE_VERSION@</code>
+    <p>Přidejte jej do <code>AC_CONFIG_FILES</code> v <file>configure.ac</file> a pak jej vložte do hlavního souboru dokumentace (<file>*-docs.xml</file>) pomocí: <code>&lt;!ENTITY version SYSTEM "version.xml"&gt;</code> v <code>DOCTYPE</code> na začátku dokumentu. Verzi balíčku pak můžete vkládat pomocí <code>&amp;version;</code>.</p>
+  </section>
+
+  <section id="standard-layout">
+    <title>Standardní uspořádání</title>
+
+    <p>Použití standardního uspořádání pro obsah, oddíly, dodatky atd. znamená, že stejnou šablonu <file><var>název-projektu</var>-docs.xml</file> můžete znovu použít s minimálními změnami pro různé projekty. A rovněž to znamená, že uspořádání dokumentace bude obdobné napříč všemi projekty, takže se v ní vývojáři budou lépe orientovat.</p>
+
+    <p>Je doporučováno následující uspořádání:</p>
+    <listing>
+      <title><file><var>název-projektu</var>-docs.xml</file></title>
+      <desc>Soubor gtk-doc s šablonou nejvyšší úrovně pro projekt</desc>
+      <code mime="application/docbook+xml"><xi:include href="example-docs.xml" parse="text"/></code>
+    </listing>
+  </section>
+
+  <section id="licensing">
+    <title>Licencování</title>
+    <p>Je důležité, aby licence použitá pro referenční příručku k API, byla čistá, hlavně když je součástí dokumentace i ukázkový kód, který je možné kopírovat.</p>
+
+    <p>Typicky používá projekt pro svoji referenční příručku tu stejnou licenci, jako pro vlastní kód projektu, aby se předešlo nejasnostem. Některé projekty zase používají pro veškerou svoji dokumentaci CC-BY-SA 3.0. Volba je čistě na vás.</p>
+
+    <p>Jak je ukázáno ve <link xref="#standard-layout">Standardním uspořádání</link>, měli byste do souboru gtk-doc DocBook nejvyšší úrovně vložit <file>licence.xml</file>, který poskytne úplný text licence vaší dokumentace.</p>
+  </section>
+
+  <section id="public-api">
+    <title>Veřejná API</title>
+
+    <p>Veškerá veřejná API musí mít komentáře gtk-doc. Pro funkce by měly být umístěny ve zdrojovém souboru, přímo nad funkcí.</p>
+
+    <code mime="text/x-csrc" style="valid">/**
+ * gtk_get_flow:
+ * @widget: a #GtkWidget
+ *
+ * Gets the flow of a widget.
+ *
+ * Note that flows may be laminar or turbulent...
+ *
+ * Returns: (transfer none): the flow of @widget
+ */
+GtkFlow *
+gtk_get_flow (GtkWidget *widget)
+{
+
+  ...
+
+}</code>
+
+    <p>Dokumentační komentáře pro makra, typy funkcí, struktury tříd atd. by měly být umístěny vedle definici, typicky v hlavičkových souborech.</p>
+
+    <p>Úvody k jednotlivým oddílům by měly být umístěné ve zdrojových souborech, které popisují, za hlavičkou s licencí:</p>
+
+    <code mime="text/x-csrc" style="valid">/**
+ * SECTION:gtksizerequest
+ * @Short_Description: Height-for-width geometry management
+ * @Title: GtkSizeRequest
+ *
+ * The GtkSizeRequest interface is GTK+'s height-for-width (and
+ * width-for-height) geometry management system.
+ * ...
+ */</code>
+
+    <p>Mějte na paměti, že aby se funkce, makro, typ funkce nebo typ struktura byly součástí, je zapotřebí je uvést v souboru <file>modulename-sections.txt</file> vaší dokumentace.</p>
+
+    <p>Správné zdokumentování nové třídy vyžaduje poskytnutí jejího vlastního oddílu v <file>modulename-sections.txt</file>, musí být vložená v vašem <file>modulename-docs.sgml</file> nejvyšší úrovně a funkce <code>get_type()</code> pro vaši třídu musí být uvedená v <file>modulename.types</file>.</p>
+  </section>
+
+  <section id="introspection-annotations">
+    <title>Poznámky k introspekci</title>
+
+    <p>Každý komentář gtk-doc by měl mít příslušné <link href="https://wiki.gnome.org/Projects/GObjectIntrospection/Annotations">anotace k introspekci GObject</link>. To je užitečné ze dvou důvodů:</p>
+    <list type="numbered">
+      <item><p>Přidá to důležitou informaci o typech parametrů, možných prázdných hodnotách a správě paměti do dokumentace k API C vygenerované pomocí gtk-doc.</p></item>
+      <item><p>Umožní to veřejným API navázat se automaticky na další jazyky, jako třeba Python nebo JavaScript.</p></item>
+    </list>
+
+    <p>Anotace k introspekci přidává do API (funkce, parametry funkcí, návratové hodnoty funkcí, struktury, vlastnosti GObject, signály GObject) informace, které ve strojově čitelné podobě API v C nejsou jinak dostupné a existují jen ve formě čitelné člověkem v dokumentaci nebo jako zvyklosti. Proto jsou velmi důležité.</p>
+
+    <p>V komentářích gtk-doc by se měla dávat přednost anotacím před variantou čitelnou pro člověka. Například, když dokumentujete parametr funkce, který může nabývat hodnoty <code>NULL</code>, použijte namísto nějakého textu raději anotaci <code>(nullable)</code>:</p>
+    <code mime="text/x-csrc" style="valid">/**
+ * my_function:
+ * @parameter: (nullable): some parameter which affects something
+ *
+ * Body of the function documentation.
+ */</code>
+
+    <p>Použijte namísto:</p>
+    <code mime="text/x-csrc" style="invalid">/**
+ * my_bad_function:
+ * @parameter: some parameter which affects something, or %NULL to ignore
+ *
+ * Bad body of the function documentation.
+ */</code>
+
+    <p>Více informací k introspekci najdete v <link xref="introspection">pokynech k introspekci</link>.</p>
+  </section>
+
+  <section id="symbol-versioning">
+    <title>Číslování verzí symbolů</title>
+
+    <p>Kdykoliv je do veřejného API přidán nějaký symbol, měl by pro něj být přidán i dokumentační komentář. Ten by měl vždy obsahovat řádek <code>Since</code> s číslem verze vydání balíčku, který poprvé obsahuje nové API. Mělo by se jednat o číslo verze, které se právě nachází v <file>configure.ac</file>, za předpokladu, že používáte <link xref="versioning#release-process">zvyšování čísla verze po vydání</link>.</p>
+
+    <p>Například:</p>
+    <code mime="text/x-csrc" style="valid">/**
+ * my_function:
+ * @param: some parameter
+ *
+ * Body of the function documentation.
+ *
+ * Since: 0.5.0
+ */</code>
+
+    <p>gtk-doc používá tyto informace k vygenerování rejstříku API přidaných v jednotlivých vydáních. Do <file>*-docs.xml</file> by jako dodatek mělo být přidáno následující:</p>
+    <code mime="application/docbook+xml">&lt;part&gt;
+	&lt;title&gt;Appendices&lt;/title&gt;
+	&lt;index id="api-index-full"&gt;
+		&lt;title&gt;API Index&lt;/title&gt;
+		&lt;xi:include href="xml/api-index-full.xml"&gt;&lt;xi:fallback/&gt;&lt;/xi:include&gt;
+	&lt;/index&gt;
+	&lt;index id="api-index-deprecated"&gt;
+		&lt;title&gt;Index of deprecated symbols&lt;/title&gt;
+		&lt;xi:include href="xml/api-index-deprecated.xml"&gt;&lt;xi:fallback/&gt;&lt;/xi:include&gt;
+	&lt;/index&gt;
+	&lt;index role="0.1.0"&gt;
+		&lt;title&gt;Index of new symbols in 0.1.0&lt;/title&gt;
+		&lt;xi:include href="xml/api-index-0.1.0.xml"&gt;&lt;xi:fallback/&gt;&lt;/xi:include&gt;
+	&lt;/index&gt;
+	&lt;!-- More versions here. --&gt;
+	&lt;xi:include href="xml/annotation-glossary.xml"&gt;&lt;xi:fallback /&gt;&lt;/xi:include&gt;
+&lt;/part&gt;</code>
+  </section>
+
+  <section id="dbus-api">
+    <title>API pro D-Bus</title>
+
+    <p>Popisy rozhraní D-Bus obsahují dokumentační komentáře a ty je možné získat z XML pomocí <cmd>gdbus-codegen</cmd> a nasměrovat do souborů DocBook, aby byly začleněny pomocí gtk-doc.</p>
+
+    <p>Soubory DocBook mohou být vloženy do souboru <file>*-docs.xml</file> pomocí:</p>
+    <code mime="application/docbook+xml">&lt;chapter&gt;
+  &lt;title&gt;C Interfaces&lt;/title&gt;
+  &lt;partintro&gt;
+    &lt;para&gt;C wrappers for the D-Bus interfaces.&lt;/para&gt;
+  &lt;/partintro&gt;
+
+  &lt;xi:include href="xml/SomeDBusService.xml"/&gt;
+  &lt;xi:include href="xml/SomeOtherService.xml"/&gt;
+&lt;/chapter&gt;</code>
+
+    <p>Vygenerované soubory XML musí být zahrnuté v proměnné <code>content_files</code> ve vašem <file>Makefile.am</file> pro gtk-doc, jinak sestavení selže. (Je to kvůli nápravě situací, kdy složka <code>builddir</code> není shodná se <code>srcdir</code>.)</p>
+  </section>
+
+  <section id="keeping-up-to-date">
+    <title>Udržování dokumentace v aktuálním stavu</title>
+
+    <p>gtk-doc obsahuje podporu pro kontrolu dokumentace pomocí pár základních testů. Mimo jiných věcí se zkontroluje, jestli jsou všechny verze indexů vložené v hlavním souboru <file>*-docs.xml</file> a jestli jsou zdokumentované všechny symboly.</p>
+
+    <p>Tyto testy by měly být vždy povolené přidáním následujícího do <file>Makefile.am</file> pro váš gtk-doc:</p>
+    <code>TESTS = $(GTKDOC_CHECK)</code>
+
+    <p>Budou pak spouštěny jako součást <cmd>make check</cmd>.</p>
+  </section>
+</page>

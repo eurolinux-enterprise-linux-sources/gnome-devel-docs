@@ -12,7 +12,7 @@
       <email its:translate="no">tiffany.antopolski@gmail.com</email>
       <years>2012</years>
     </credit>
-    <credit type="author coyright">
+    <credit type="author copyright">
       <name>Marta Maria Casetti</name>
       <email its:translate="no">mmcasetti@gmail.com</email>
       <years>2012</years>
@@ -23,7 +23,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -41,7 +41,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -113,7 +113,7 @@ class MyApplication(Gtk.Application):
         try:
             builder.add_from_file("menubar_basis.ui")
         except:
-            print "file not found"
+            print("file not found")
             sys.exit()
 
         # we use the method Gtk.Application.set_menubar(menubar) to add the menubar
@@ -199,7 +199,7 @@ self.add_action(new_action)</code>
 
     <p>Μερικές ενέργειες, όπως "copy" και "paste" αντιμετωπίζουν το παράθυρο, όχι την εφαρμογή. Οι ενέργειες παραθύρου πρέπει να δημιουργηθούν ως μέρος της κλάσης παραθύρου.</p>
 
-    <p>Τα πλήρη αρχεία του παραδείγματος περιέχουν και τις ενέργειες εφαρμογής και τις ενέργειες παραθύρου. Οι ενέργειες παραθύρου είναι αυτές που συνήθως συμπεριλαμβάνονται στο <link xref="gmenu.py">μενού εφαρμογής</link> επίσης. Δεν είναι καλή πρακτική να συμπεριλαμβάνετε ενέργειες παραθύρου στο μενού της εφαρμογής. Για σκοπούς επίδειξης, τα πλήρη αρχεία του παραδείγματος που ακολουθεί περιέχουν XML στο αρχείο UI που δημιουργεί το μενού εφαρμογής που περιλαμβάνει τα στοιχεία "New" και "Open" και αυτά συνδέονται με τις ίδιες ενέργειες όπως τα στοιχεία της γραμμής μενού του ίδιου ονόματος.</p>
+    <p>Τα πλήρη αρχεία του παραδείγματος περιέχουν και τις ενέργειες εφαρμογής και παραθύρου. Οι ενέργειες παραθύρου είναι αυτές που συνήθως συμπεριλαμβάνονται στο <link xref="gmenu.py">μενού εφαρμογής</link>. Δεν είναι καλή πρακτική να συμπεριλαμβάνετε ενέργειες παραθύρου στο μενού της εφαρμογής. Για σκοπούς επίδειξης, τα πλήρη αρχεία του παραδείγματος που ακολουθεί περιέχουν XML στο αρχείο UI που δημιουργεί το μενού εφαρμογής που περιλαμβάνει τα στοιχεία "New" και "Open" και αυτά συνδέονται με τις ίδιες ενέργειες όπως τα στοιχεία της γραμμής μενού του ίδιου ονόματος.</p>
   </section>
 
   <section id="choices">
@@ -374,15 +374,15 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback function for copy_action
     def copy_callback(self, action, parameter):
-        print "\"Copy\" activated"
+        print("\"Copy\" activated")
 
     # callback function for paste_action
     def paste_callback(self, action, parameter):
-        print "\"Paste\" activated"
+        print("\"Paste\" activated")
 
     # callback function for shape_action
     def shape_callback(self, action, parameter):
-        print "Shape is set to", parameter.get_string()
+        print("Shape is set to", parameter.get_string())
         # Note that we set the state of the action!
         action.set_state(parameter)
 
@@ -464,7 +464,7 @@ class MyApplication(Gtk.Application):
         try:
             builder.add_from_file("menubar.ui")
         except:
-            print "file not found"
+            print("file not found")
             sys.exit()
 
         # we use the method Gtk.Application.set_menubar(menubar) to add the menubar
@@ -474,25 +474,25 @@ class MyApplication(Gtk.Application):
 
     # callback function for new
     def new_callback(self, action, parameter):
-        print "You clicked \"New\""
+        print("You clicked \"New\"")
 
     # callback function for quit
     def quit_callback(self, action, parameter):
-        print "You clicked \"Quit\""
+        print("You clicked \"Quit\"")
         sys.exit()
 
     # callback function for state
     def state_callback(self, action, parameter):
-        print "State is set to", parameter.get_string()
+        print("State is set to", parameter.get_string())
         action.set_state(parameter)
 
     # callback function for awesome
     def awesome_callback(self, action, parameter):
         action.set_state(GLib.Variant.new_boolean(not action.get_state()))
         if action.get_state().get_boolean() is True:
-            print "You checked \"Awesome\""
+            print("You checked \"Awesome\"")
         else:
-            print "You unchecked \"Awesome\""
+            print("You unchecked \"Awesome\"")
 
 
 app = MyApplication()

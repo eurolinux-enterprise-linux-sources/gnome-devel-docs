@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="logging" xml:lang="ko">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>라이브러리 및 프로그램의 디버깅 및 정보 출력을 기록합니다</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016, 2017.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>기록</title>
+
+  <synopsis>
+    <title>요약</title>
+
+    <p>라이브러리 및 프로그램의 디버깅 출력 내지는 정보 출력 문제는 널리 알려진 문제이며, 개별 표준 입출력 및 표준 오류 스트림을 대상으로, 로그 출력을 다중 스트림으로 변환하는 다양한 방법이 있습니다. 몇가지 로그 처리 구현 방식을 제안해드리겠습니다. 그러나 가장 중요한건 로깅이 일관된 모양새를 지니도록 하여, 최소한의 노력으로 로그 데이터에 접근하고 검색하는게 목적대로 할 수 있어야합니다. 프로젝트별로 다른 로깅 기법 및 형식을 활용하는건 바람직한 접근 방식이 아닙니다.</p>
+
+    <list>
+      <item><p>표준 오류 스트림 및 표준 출력 스트림으로 로그를 바로 내보내는 대신, GLib 로깅 프레임워크를 활용하십시오(<link xref="#glib-logging-framework"/>).</p></item>
+      <item><p>systemd를 프로젝트에 붙일 수 있다면 journal로 직접 로깅해보십시오(<link xref="#journald-integration"/>).</p></item>
+      <item><p>로그 순환 및 삭제를 (따로) 구현하지 마시고 시스템 서비스가 알아서 하게 두십시오(<link xref="#log-rotation"/>).</p></item>
+    </list>
+  </synopsis>
+
+  <section id="glib-logging-framework">
+    <title>GLib 기록 프레임워크</title>
+
+    <p>GLib에서는 <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-log"><code>g_log()</code></link> 함수를 기반으로 <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-debug"><code>g_debug()</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-message"><code>g_message()</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-warning"><code>g_warning()</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-error"><code>g_error()</code></link> 편의 래퍼 함수로 이루어진 <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html">기록 프레임워크</link>를 제공합니다. 기록 프레임워크에는 몇가지 쓸 만한 기능이 있습니다:</p>
+    <list>
+      <item><p><link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#g-log-set-handler"><code>g_log_set_handler()</code></link> 함수를 활용한 프로그램에서의 기록 메시지 처리 대상 전환.</p></item>
+      <item><p>따로 처리할 수 있는 다중 기록 도메인.</p></item>
+      <item><p>따로 처리할 수 있는 다중 기록 단계. 실행 시간 도중에 디버깅 메시지를 켜거나 끌 수 있습니다.</p></item>
+      <item><p>‘fatal’ 메시지 출력시 자동 중단 지원.</p></item>
+    </list>
+
+    <p>유연성 개선을 목적으로 <code>printf()</code>,<link href="https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-print"><code>g_print()</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-printerr"><code>g_printerr()</code></link>와 같은 함수를 취향에 따라 사용해야합니다. 로깅 처리 함수는 단순화 목적으로 외부 쉘 스크립트에서 보다는, 코드 자체에서 로그를 처리할 수 있습니다.</p>
+
+    <p>로깅 프레임워크를 사용하는 주된 이유는 GLib와 기타 관련 라이브러리에서 이미 사용하기 때문입니다. 로깅 프레임워크를 사용하면, 모든 로깅 메시지를 동일한 체계로 넘기며, 비슷하게 처리할 수 있습니다.</p>
+
+    <p>GLib 로깅 프레임워크를 활용하려면 모든 기타 프로젝트와 분명히 구분할 수 있도록 프로젝트에 <link href="https://developer.gnome.org/glib/stable/glib-Message-Logging.html#G-LOG-DOMAIN:CAPS"><code>G_LOG_DOMAIN</code></link>를 정의하십시오. 디버깅 메시지 기록을 남기려면 <code>g_debug("Message")</code> 함수 코드를 호출하십시오.</p>
+
+    <p>예를 들어 로그 메시지를 남길 때 자체 형식이 필요하거나 <link xref="#journald-integration">journald 통합</link>이 필요하여 기본 GLib 로그 처리자로 충분히 만족스럽지 않으면, 다음 코드로 로그 처리자를 설정하십시오:</p>
+    <code mime="text/x-csrc">
+static const gchar *
+log_level_to_string (GLogLevelFlags level)
+{
+  switch (level)
+    {
+      case G_LOG_LEVEL_ERROR: return "ERROR";
+      case G_LOG_LEVEL_CRITICAL: return "CRITICAL";
+      case G_LOG_LEVEL_WARNING: return "WARNING";
+      case G_LOG_LEVEL_MESSAGE: return "MESSAGE";
+      case G_LOG_LEVEL_INFO: return "INFO";
+      case G_LOG_LEVEL_DEBUG: return "DEBUG";
+      default: return "UNKNOWN";
+    }
+}
+
+static void
+log_handler_cb (const gchar    *log_domain,
+                GLogLevelFlags  log_level,
+                const gchar    *message,
+                gpointer        user_data)
+{
+  const gchar *log_level_str;
+
+  /* Ignore debug messages if disabled. */
+  if (!debug_enabled &amp;&amp; (log_level &amp; G_LOG_LEVEL_DEBUG))
+    {
+      return;
+    }
+
+  log_level_str = log_level_to_string (log_level &amp; G_LOG_LEVEL_MASK);
+
+  /* Use g_printerr() for warnings and g_print() otherwise. */
+  if (flags &lt;= G_LOG_LEVEL_WARNING)
+    {
+      g_printerr ("%s: %s: %s\n", log_domain, log_level_str, message);
+    }
+  else
+    {
+      g_print ("%s: %s: %s\n", log_domain, log_level_str, message);
+    }
+}
+
+g_log_set_handler ("log-domain",
+                   G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL | G_LOG_FLAG_RECURSION,
+                   log_handler_cb, NULL);</code>
+
+    <section id="exceptions">
+      <title>예외</title>
+
+      <list>
+        <item><p>일반 코드에 <code>g_message()</code> 함수를 출력 용도로 사용하지 마십시오. 내용 출력은 명령행 프로그램과 같이 프로그램의 최상단 출력에 한해서만 <code>g_print()</code>로  드물게 처리해야합니다.</p></item>
+        <item><p>라이브러리 코드에서 <code>g_warning()</code> 함수를 사용하지 마십시오. <link xref="gerror"><code>GError</code>s</link>를 대신 활용하십시오.</p></item>
+        <item><p>이와 비슷하게, 라이브러리 코드에서 로그 처리자를 설정하지 마십시오. 로그 메시지는 라이브러리 코드에서 전달하고 로그 처리자가 프로그램의 최상단으로 전달해야 합니다.</p></item>
+      </list>
+    </section>
+  </section>
+
+  <section id="journald-integration">
+    <title>journald 통합</title>
+
+    <p>기존의 syslog 방식 로그에 비해, journald에서는 로그의 이후 분석을 쉽게 해주는 구조적 로그 데이터 저장소를 지원합니다. 프로젝트의 의존 로그 처리자로 <code>systemd-journal</code>를 추가할 수 있다면, <code>g_print()</code> 함수와 <code>g_printerr()</code> 함수 대신 <link href="http://0pointer.de/public/systemd-man/sd_journal_send.html"><code>sd_journal_print()</code> 함수와 <code>sd_journal_send()</code></link>  함수로 프로젝트의 로그 처리 함수 활용 범위를 확장할 수 있습니다.</p>
+
+    <p>자세한 내용은 <link href="http://0pointer.de/blog/projects/journal-submit.html">저널 기록 방법</link> 링크를 참고하십시오.</p>
+  </section>
+
+  <section id="log-rotation">
+    <title>기록 전환</title>
+
+    <p>기록 파일 전환은 GLib 리고 시스템의 범위를 벗어나는 기능 입니다. <cmd>logrotate</cmd> 또는 <cmd>systemd-journald</cmd>와 같은 일반 시스템 기록 매커니즘으로 처리합니다.</p>
+  </section>
+</page>

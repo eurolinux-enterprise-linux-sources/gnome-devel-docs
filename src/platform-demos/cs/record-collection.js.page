@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="record-collection.js" xml:lang="cs">
+
+  <info>
+  <title type="text">Sbírka alb (JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+
+    <desc>Jak vytvořit malou databázovou aplikaci pro roztřídění vaší hudební sbírky.</desc>
+
+    <revision pkgversion="0.1" version="0.1" date="2011-02-22" status="review"/>
+    <credit type="author">
+      <name>Dokumentační projekt GNOME</name>
+      <email its:translate="no">gnome-doc-list@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Johannes Schmid</name>
+      <email its:translate="no">jhs@gnome.org</email>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasettii@gmail.com</email>
+      <years>2013</years>
+    </credit>
+  </info>
+
+<title>Sbírka alb</title>
+
+<synopsis>
+  <p>V této lekci se seznámíme s následujícími věcmi:</p>
+  <list>
+    <item><p>Jak se připojit k databázi pomocí libgda.</p></item>
+    <item><p>Jak vložit záznam do databázové tabulky a jak záznamy procházet.</p></item>
+  </list>
+</synopsis>
+
+<section id="intro">
+  <title>Úvod</title>
+  <p>Tato ukázka používá programovací jazyk JavaScript. Budeme předvádět připojení k databázi a její použití z programu GTK pomocí knihovny GDA (GNOME Data Access). Z toho důvodu potřebujete mít tuto knihovnu nainstalovanou.</p>
+  <p>GNOME Data Access (GDA) je knihovna, jejímž učelem je poskytovat univerzální přístup do různých druhů a typů datových zdrojů. Ty sahají od tradičních relačních databázových systémů až po jakékoliv představitelné datové zdroje, jako je poštovní server nebo adresář LDAP. Více informací a ucelenou dokumentaci k API najdete na <link href="http://library.gnome.org/devel/libgda/stable/">webových stránkách GDA</link>.</p>
+  <p>Přestože velká část kódu souvisí s uživatelským rozhraním, hodláme zaměřit tuto lekci na databázovou část (i když jiné části můžeme též zmínit, pokud uvidíme nějakou souvislost). Jestli se chcete dozvědět více o programování v jazyce JavaScript v GNOME, podívejte se na lekci <link xref="image-viewer.js">Prohlížeč obrázků</link>.</p>
+</section>
+
+<section id="anjuta">
+  <title>Vytvoření projektu ve studiu Anjuta</title>
+  <p>Než začnete s kódováním, musíte ve studiu Anjuta vytvořit nový projekt. Tím se vytvoří všechny soubory, které budete později potřebovat k sestavení a spuštění kódu. Je to také užitečné kvůli udržení všeho pohromadě.</p>
+  <steps>
+    <item>
+    <p>Spusťte IDE Anjuta a klikněte na <guiseq><gui>Soubor</gui> <gui>Nový</gui> <gui>Projekt</gui></guiseq>, aby se otevřel průvodce projektem.</p>
+    </item>
+    <item>
+    <p>Na kartě <gui>JS</gui> zvolte <gui>Obecný JavaScript</gui>, klikněte na <gui>Pokračovat</gui> a na několika následujících stránkách vyplňte své údaje. Jako název projektu a složky použijte <file>record-collection</file>.</p>
+   	</item>
+    <item>
+    <p>Klikněte na <gui>Dokončit</gui> a vytvoří se vám projekt. Otevřete <file>src/main.js</file> na kartě <gui>Projekt</gui> nebo <gui>Soubor</gui>. Měl by obsahovat úplně základní příklad kódu.</p>
+    </item>
+  </steps>
+</section>
+
+<section id="structure">
+  <title>Struktura programu</title>
+  <media type="image" mime="image/png" src="media/record-collection.png"/>
+  <p>Tato ukázka je jednoduchou aplikací GTK (s jedním oknem) se schopností vkládat záznamy do databázové tabulky a procházet je. Tabulka má dvě pole: <code>id</code> (celé číslo) a <code>name</code> (varchar). V první části aplikace (nahoře) můžete vkládat záznamy do tabulky. V poslední části (dole) můžete vidět všechny záznamy v tabulce. Zobrazení obsahu se aktualizuje pokaždé, když je vložen nový záznam a při spuštění aplikace.</p>
+</section>
+
+<section id="start">
+  <title>Začíná zábava</title>
+  <p>Začněme prozkoumáním kostry programu:</p>
+  <code mime="application/javascript" style="numbered">
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Gda = imports.gi.Gda;
+const Lang = imports.lang;
+
+function Demo () {
+  this._init ();
+}
+
+Demo.prototype = {
+
+  _init: function () {
+    this.setupWindow ();
+    this.setupDatabase ();
+    this.selectData ();
+  }
+}
+
+Gtk.init (null, null);
+
+var demo = new Demo ();
+
+Gtk.main ();</code>
+  <list>
+    <item><p>Řádek 1 – 4: Inicializační importy. Zvláštní pozornost věnujte řádku 3, který říká, aby JavaScript naimportovat knihovnu GDA, na kterou se tato lekce zaměřuje.</p></item>
+    <item><p>Řádek 6 – 17: Definuje naši třídu <code>Demo</code>. Zvláštní pozornost věnujte řádkům 13 – 15, kde se volají 3 metody, které udělají celou práci. Podrobněji to bude vysvětleno dále.</p></item>
+    <item><p>Řádek 19 – 23: Spuštění aplikace.</p></item>
+  </list>
+</section>
+
+<section id="design">
+  <title>Návrh aplikace</title>
+  <p>Podívejme se na metodu <code>setupWindow</code>. Ta zodpovídá za vytvoření uživatelského rozhraní. Protože uživatelským rozhraním se teď nezabýváme, vysvětlíme si jen podstatné části.</p>
+  <code mime="application/javascript" style="numbered">
+  setupWindow: function () {
+    this.window = new Gtk.Window ({title: "Data Access Demo", height_request: 350});
+    this.window.connect ("delete-event", function () {
+      Gtk.main_quit();
+      return true;
+      });
+
+    // Hlavní box
+    var main_box = new Gtk.Box ({orientation: Gtk.Orientation.VERTICAL, spacing: 5});
+    this.window.add (main_box);
+
+    // První popisek
+    var info1 = new Gtk.Label ({label: "&lt;b&gt;Insert a record&lt;/b&gt;", xalign: 0, use_markup: true});
+    main_box.pack_start (info1, false, false, 5);
+
+    // Vodorovný box pro "Insert a record"
+    var insert_box = new Gtk.Box ({orientation: Gtk.Orientation.HORIZONTAL, spacing: 5});
+    main_box.pack_start (insert_box, false, false, 5);
+
+    // Pole ID
+    insert_box.pack_start (new Gtk.Label ({label: "ID:"}), false, false, 5);
+    this.id_entry = new Gtk.Entry ();
+    insert_box.pack_start (this.id_entry, false, false, 5);
+
+    // Pole Name
+    insert_box.pack_start (new Gtk.Label ({label: "Name:"}), false, false, 5);
+    this.name_entry = new Gtk.Entry ({activates_default: true});
+    insert_box.pack_start (this.name_entry, true, true, 5);
+
+    // Tlačítko Insert
+    var insert_button = new Gtk.Button ({label: "Insert", can_default: true});
+    insert_button.connect ("clicked", Lang.bind (this, this._insertClicked));
+    insert_box.pack_start (insert_button, false, false, 5);
+    insert_button.grab_default ();
+
+    // TextView pro prohlížení
+    var info2 = new Gtk.Label ({label: "&lt;b&gt;Browse the table&lt;/b&gt;", xalign: 0, use_markup: true});
+    main_box.pack_start (info2, false, false, 5);
+    this.text = new Gtk.TextView ({editable: false});
+    var sw = new Gtk.ScrolledWindow ({shadow_type:Gtk.ShadowType.IN});
+    sw.add (this.text);
+    main_box.pack_start (sw, true, true, 5);
+
+    this.count_label = new Gtk.Label ({label: "", xalign: 0, use_markup: true});
+    main_box.pack_start (this.count_label, false, false, 0);
+
+    this.window.show_all ();
+  },</code>
+  <list>
+    <item><p>Řádky 22 a 27: Vytvoří 2 vstupní pole (pro dvě databázová pole), do kterých uživatel bude psát to, co chce do databáze vložit.</p></item>
+    <item><p>Řádek 31 – 34: Vytvoří tlačítko „Insert“. Jeho signál <code>"clicked"</code> napojíme na soukromou metodu <code>_insertClicked</code> třídy. Tato metoda je podrobněji rozebrána níže.</p></item>
+    <item><p>Řádek 39: Vytvoří widget (<code>TextView</code>), ve kterém budeme zobrazovat obsah tabulky.</p></item>
+    <item><p>Řádek 44: Vytvoří popisek, ve kterém budeme zobrazovat počet záznamů v tabulce. Na začátku je prázdný, později bude aktualizován.</p></item>
+  </list>
+</section>
+
+<section id="connect">
+  <title>Připojení k databázi a její inicializace</title>
+  <p>Kód, který provádí připojení do databáze je v metodě <code>setupDatabase</code> níže:</p>
+  <code mime="application/javascript" style="numbered">
+  setupDatabase: function () {
+    this.connection = new Gda.Connection ({provider: Gda.Config.get_provider("SQLite"),
+                                          cnc_string:"DB_DIR=" + GLib.get_home_dir () + ";DB_NAME=gnome_demo"});
+    this.connection.open ();
+
+    try {
+      var dm = this.connection.execute_select_command ("select * from demo");
+    } catch (e) {
+      this.connection.execute_non_select_command ("create table demo (id integer, name varchar(100))");
+    }
+  },</code>
+  <list>
+    <item>
+      <p>Rádky 2 – 3: Vytvoří objekt <code>Connection</code> z knihovny GDA. Jeho konstruktoru musíme poskytnout některé vlastnosti:</p>
+      <list>
+        <item>
+          <p><code>provider</code>: Jeden z podporovaných poskytovatelů v knihovně GDA. Podporovány jsou SQLite, MySQL, PostgreSQL, Oracle a řada dalších. Pro předváděcí účely použijeme databázi SQLite, protože je standardně předinstalovaná ve většině distribucí a je jednoduchá na používání (prostě používá soubor jako databázi).</p>
+        </item>
+        <item>
+          <p><code>cnc_string</code>: Připojovací řetězec. Může si lišit poskytovatel od poskytovatele. Pro SQLite je syntax: <code>DB_DIR=<var>CESTA</var>;DB_NAME=<var>NÁZEV_SOUBORU</var></code>. V této ukázce přistupujeme k databázi s názvem gnome_demo v domovské složce uživatele (všimněte si volání funkce <code>get_home_dir</code>).</p>
+        </item>
+      </list>
+      <note>
+        <p>V případě, že poskytovatel není v GDA podporován nebo že v připojovacím řetězci schází nějaká část, vyvolá řádek 2 výjimku. V reálném použití bychom ji měli obsloužit konstrukcí <code>try</code> … <code>catch</code> jazyka JavaScript.</p>
+      </note>
+    </item>
+
+    <item><p>Řádek 4: Otevře připojení. U poskytovatele SQLite, když databáze neexistuje, dojde v tomto kroku k jejímu vytvoření.</p></item>
+    <item>
+      <p>Řádky 6 – 10: Zkusí udělat jednoduchý dotaz, aby se ověřilo, že tabulka existuje (řádek 7). Pokud neexistuje (protože databáze byla teprve vytvořena), vyvolá tento příkaz výjimku, která se obslouží v bloku <code>try</code> … <code>catch</code>. V tomto případě provedeme příkaz, který tabulku vytvoří (řádek 9).</p>
+      <p>Ke spuštění příkazů SQL výše používáme metody připojení GDA s názvem <code>execute_select_command</code> a <code>execute_non_select_command</code>. Ty jsou jednoduché na použití a požadují jen dva argumenty: objekt <code>Connection</code> a příkaz SQL, který se má zpracovat.</p>
+    </item>
+  </list>
+
+  <p>V tuto chvíli máme vytvořenu databázi a jsme připraveni ji použít.</p>
+</section>
+
+<section id="select">
+  <title>Vybírání</title>
+  <p>Po připojení do databáze konstruktor v naší ukázce zavolá metodu <code>selectData</code>. Ta zodpovídá za získání všech záznamů z tabulky a jejich zobrazení ve widgetu <code>TextView</code>. Pojďme se na to podívat:</p>
+  <code mime="application/javascript" style="numbered">
+  selectData: function () {
+    var dm = this.connection.execute_select_command  ("select * from demo order by 1, 2");
+    var iter = dm.create_iter ();
+
+    var text = "";
+
+    while (iter.move_next ()) {
+      var id_field = Gda.value_stringify (iter.get_value_at (0));
+      var name_field = Gda.value_stringify (iter.get_value_at (1));
+
+      text += id_field + "\t=&gt;\t" + name_field + '\n';
+    }
+
+    this.text.buffer.text = text;
+    this.count_label.label = "&lt;i&gt;" + dm.get_n_rows () + " record(s)&lt;/i&gt;";
+  },</code>
+  <list>
+    <item><p>Řádek 2: Příkaz <code>SELECT</code>. K tomu používáme metodu připojení GDA s názvem <code>execute_select_command</code>. Vrací objekt <code>DataModel</code>, který je později použit k získání řádků.</p></item>
+    <item><p>Řádek 3: Vytvoří objekt <code>Iter</code>, který se používá k procházení záznamů v <code>DataModel</code>.</p></item>
+    <item><p>Řádek 7: Ve smyčce prochází všechny záznamy, které získává pomocí objektu <code>Iter</code>. V totmo místě proměnná <code>iter</code> obsahuje aktuálně získaná data. Jeho metoda <code>move_next</code> vrací <code>false</code>, když je dosažen poslední záznam.</p></item>
+    <item>
+      <p>Řádek 8 – 9: Na každém řádku děláme dvě věci:</p>
+      <list>
+        <item><p>Použijeme metodu <code>get_value_at</code> třídy <code>Iter</code>, která požaduje jen jeden argument: číslo sloupce, který se má získat, počítáno od 0. Náš příkaz <code>SELECT</code> vrací dva sloupce, takže získáváme sloupce 0 a 1.</p></item>
+        <item><p>Metoda <code>get_value_at</code> vrací pole ve formátu <code>GValue</code> knihovny GLib. Jednoduchým způsobem, jak převést tento formát na řetězec, je použít globální funkci knihovny GLib <code>value_stringify</code>. Což je přesně to, co zde děláme a výsledky pak uložíme do proměnných <code>id_field</code> a <code>name_field</code>.</p></item>
+      </list>
+    </item>
+    <item><p>Řádek 11: Spojí dvě pole, aby vytvořila jeden textový řádek, přičemž jsou oddělená pomocí <code>"=&gt;"</code>, a uloží je do proměnné <code>text</code>.</p></item>
+    <item><p>Řádek 14: Když je smyčka dokončená, máme všechny záznamy naformátované v proměnné <code>text</code>. V tomto řádku pomocí ní nastavíme obsah widgetu <code>TextView</code>.</p></item>
+    <item><p>Řádek 15: Zobrazí počet záznamů v tabulce pomocí metody <code>get_n_rows</code> objektu <code>DataModel</code>.</p></item>
+  </list>
+</section>
+
+<section id="insert">
+  <title>Vkládání</title>
+  <p>Nuže, nyní víme, jak se připojit k databázi a jak vybrat řádky z tabulky. Nyní je čas na vkládání do tabulky pomocí <code>INSERT</code>. Pamatujete si z dřívějška, jak jsem v metodě <code>setupWindow</code> napojili signál <code>"clicked"</code> od tlačítka <gui>Insert</gui> na metodu <code>_insertClicked</code>? Pojďme se podívat na implementaci této metody.</p>
+  <code mime="application/javascript" style="numbered">
+  _insertClicked: function () {
+    if (!this._validateFields ())
+      return;
+
+    // Gda.execute_non_select_command (this.connection,
+    //   "insert into demo values ('" + this.id_entry.text + "', '" + this.name_entry.text + "')");
+
+    var b = new Gda.SqlBuilder ({stmt_type:Gda.SqlStatementType.INSERT});
+    b.set_table ("demo");
+    b.add_field_value_as_gvalue ("id", this.id_entry.text);
+    b.add_field_value_as_gvalue ("name", this.name_entry.text);
+    var stmt = b.get_statement ();
+    this.connection.statement_execute_non_select (stmt, null);
+
+    this._clearFields ();
+    this.selectData ();
+  },</code>
+  <p>Naučili jsme se, jako používat metody připojení GDA s názvy <code>execute_select_command</code> a <code>execute_non_select_command</code>, které slouží k rychlému provedení příkazů SQL v databázi. GDA umožňuje vytvořit výraz SQL nepřímo, pomocí jejího objektu <code>SqlBuilder</code>. Jaké to přináší výhody? GDA vygeneruje výraz SQL dynamicky a ten bude platný pro použitého poskytovatele připojení (použije se varianta SQL, kterou používá onen poskytovatel). Pojďme se podívat na kód:</p>
+  <list>
+    <item><p>Řádky 2 – 3: Zkontroluje se, jestli uživatel vyplnil všechna pole. Kód soukromé metody <code>_validateFields</code> je opravdu jednoduchý a můžete si jej přečíst v kompletním kódu této ukázky.</p></item>
+    <item><p>Řádek 5: Rychlejší způsob, jak provést <code>INSERT</code>. Zde je zakomentováno, protože chceme ukázat, jak použít objekt <code>SqlBuilder</code> k sestavení výrazu SQL přenositelného mezi databázemi.</p></item>
+    <item><p>Řádek 7: Vytvoří objekt <code>SqlBuilder</code>. Musíme předat typ výrazu, který se chystáme sestavit. Může to být <code>SELECT</code>, <code>UPDATE</code>, <code>INSERT</code> nebo <code>DELETE</code>.</p></item>
+    <item><p>Řádek 8: Nastaví název tabulky, nad kterou bude sestavený výraz operovat (vygeneruje <code>INSERT INTO demo</code>)</p></item>
+    <item><p>Řádek 9 – 10: Nastaví pole a jejich hodnoty, které budou součástí výrazu. První argument je název pole (tak, jak je v tabulce). Druhý je hodnota pro toto pole.</p></item>
+    <item><p>Řádek 11: Získá dynamicky vygenerovaný objekt <code>Statement</code>, který představuje výraz SQL.</p></item>
+    <item><p>Řádek 12: Nakonec se provede výraz SQL (<code>INSERT</code>).</p></item>
+    <item><p>Řádek 14: Smaže pole id a name na obrazovce. Kód pro soukromou metodu <code>_clearFields</code> je opravdu jednoduchý a můžete si jej přečíst v kompletním zdrojovém kódu ukázky.</p></item>
+    <item><p>Řádek 15: Aktualizuje zobrazení na obrazovce provedením jiného výrazu <code>SELECT</code>.</p></item>
+  </list>
+  <note><p>Můžete také použít parametrické sestavení výrazu. Pomocí objektů <code>SqlBuilder</code> a parametrů budu výrazy méně náchylné k útokům, jako je SQL injection. Na další informace o parametrech se podívejte do <link href="http://library.gnome.org/devel/libgda/stable/">dokumentace k GDA</link>.</p></note>
+</section>
+
+<section id="run">
+  <title>Spuštění aplikace</title>
+  <p>Všechen kód, který potřebujete, je již na svém místě, takže jej pojďme zkusit spustit. Nyní máte databázi pro svoji sbírku alb.</p>
+</section>
+
+<section id="impl">
+ <title>Ukázková implementace</title>
+ <p>Pokud v této lekci narazíte na nějaké problémy, porovnejte si svůj kód s tímto <link href="record-collection/record-collection.js">ukázkovým kódem</link>.</p>
+</section>
+</page>

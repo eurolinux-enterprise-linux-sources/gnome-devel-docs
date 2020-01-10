@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="progressbar.py" xml:lang="ko">
+  <info>
+    <title type="text">ProgressBar (Python)</title>
+    <link type="guide" xref="beginner.py#display-widgets"/>
+    <link type="next" xref="spinbutton.py"/>    
+    <revision version="0.2" date="2012-06-12" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>진행 상황을 눈으로 알 수 있게 나타냅니다.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>ProgressBar</title>
+  <media type="video" mime="application/ogv" src="media/progressbar.ogv">
+    <tt:tt xmlns:tt="http://www.w3.org/ns/ttml">
+      <tt:body>
+        <tt:div begin="0s" end="6s">
+          <tt:p>아무 키나 눌러서 ProgressBar 동작을 멈추거나 시작합니다.</tt:p>
+        </tt:div>
+      </tt:body>
+    </tt:tt>
+  </media>
+  <p>이 ProgressBar는 어떤 키든 눌렀을 때 동작을 멈추거나 시작합니다.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>예제 결과를 만드는 코드</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import GLib
+from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+    # a window
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="ProgressBar Example", application=app)
+        self.set_default_size(220, 20)
+
+        # a progressbar
+        self.progress_bar = Gtk.ProgressBar()
+        # add the progressbar to the window
+        self.add(self.progress_bar)
+
+        # the method self.pulse is called each 100 milliseconds
+        # and self.source_id is set to be the ID of the event source
+        # (i.e. the bar changes position every 100 milliseconds)
+        self.source_id = GLib.timeout_add(100, self.pulse)
+
+    # event handler
+    # any signal from the keyboard controls if the progressbar stops/starts
+    def do_key_press_event(self, event):
+        # if the progressbar has been stopped (therefore source_id == 0 - see
+        # "else" below), turn it back on
+        if (self.source_id == 0):
+            self.source_id = GLib.timeout_add(100, self.pulse)
+        # if the bar is moving, remove the source with the ID of source_id
+        # from the main context (stop the bar) and set the source_id to 0
+        else:
+            GLib.source_remove(self.source_id)
+            self.source_id = 0
+        # stop the signal emission
+        return True
+
+    # source function
+    # the progressbar is in "activity mode" when this method is called
+    def pulse(self):
+        self.progress_bar.pulse()
+        # call the function again
+        return True
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+  <title>ProgressBar 위젯에 쓸만한 메서드</title>
+  <list>
+    <item><p>표시줄을 앞뒤로 왔다갔다 하게 하는 <code>pulse()</code> 대신, ProgressBar를 표시줄 비율(<code>0.0</code>과 <code>1.0</code> 값도 해당하는 사이 <code>float</code> 값)만큼 완료 의미로 "채워 넣는"다면, <code>set_fraction(fraction)</code>을 사용하십시오.</p></item>
+    <item><p>텍스트를 설정하고 보여주려면 (표시줄에 겹쳐 나타남) <code>set_text(<var>"text"</var>)</code>와 <code>set_show_text(True)</code>를 사용하십시오. 텍스트를 설정하지 않았고 <code>set_show_text(True)</code> 함수를 호출하면 나타나는 텍스트는 작업 완료 백분율입니다.</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>API 참고서</title>
+  <p>이 예제는 다음 참고자료가 필요합니다:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkProgressBar.html">GtkProgressBar</link></p></item>
+    <item><p><link href="http://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html">GLib - 메인 이벤트 루프</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gdk/stable/gdk-Keyboard-Handling">Gdk - 키 값</link></p></item>
+  </list>
+  </section>
+</page>

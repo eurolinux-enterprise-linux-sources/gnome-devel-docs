@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox_multicolumn.py" xml:lang="cs">
+  <info>
+    <title type="text">ComboBox (Python)</title>
+    <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
+    <link type="next" xref="treeview_advanced_liststore.py"/>
+    <revision version="0.1" date="2012-06-03" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Widget, který se používá k výběru položek ze seznamu.</desc>
+  </info>
+
+  <title>ComboBox (dva sloupce)</title>
+  <media type="image" mime="image/png" src="media/combobox_multicolumn.png"/>
+  <p>Tento rozbalovací seznam vypíše do terminálu, co jste si vybrali, když provedete změnu.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Kód použitý k vygenerování tohoto příkladu</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+actions = [["Select", None],
+           ["New", Gtk.STOCK_NEW],
+           ["Open", Gtk.STOCK_OPEN],
+           ["Save", Gtk.STOCK_SAVE]]
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(200, -1)
+        self.set_border_width(10)
+
+        # Data v modelu, typu string ve dvou sloupcích
+        listmodel = Gtk.ListStore(str, str)
+        # Naplní data do modelu
+        for i in range(len(actions)):
+            listmodel.append(actions[i])
+
+        # Rozbalovací seznam pro zobrazení dat uložených v modelu
+        combobox = Gtk.ComboBox(model=listmodel)
+
+        # CellRenderer pro vykreslování dat
+        renderer_pixbuf = Gtk.CellRendererPixbuf()
+        renderer_text = Gtk.CellRendererText()
+
+        # Zabalí buňku do začátku rozbalovacího seznamu, nepřiděluje
+        # více místa, než je zapotřebí
+        # První je obrázek, potom text
+        # Uvědomte si, že nezáleží na pořadí, ve jakém jsou v modelu,
+        # vizualizace je dána pořadím vykreslovačů buněk
+        combobox.pack_start(renderer_pixbuf, False)
+        combobox.pack_start(renderer_text, False)
+
+        # Přiřadí vlastnost vykreslovače buňky sloupci v modelu
+        # použitém rozbalovacím seznamem
+        combobox.add_attribute(renderer_text, "text", 0)
+        combobox.add_attribute(renderer_pixbuf, "stock_id", 1)
+
+        # První řádek je ve výchozím stavu na začátku aktivní
+        combobox.set_active(0)
+
+        # Napojí signál vyslaný při vybrání řádku na funkci zpětného
+        # volání
+        combobox.connect("changed", self.on_changed)
+
+        # Přidá rozbalovací seznam do okna
+        self.add(combobox)
+
+    def on_changed(self, combo):
+        # Pokud vybraný řádek není prvním řádkem, vypíše se hodnota prvního
+        # sloupce v modelu
+        if combo.get_active() != 0:
+            print("You chose " + str(actions[combo.get_active()][0]) + "\n")
+        return True
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+    <title>Užitečné metody pro widget ComboBox</title>
+    <p>Widget <code>ComboBox</code> je vytvořen okolo návrhu <em>Model/Zobrazení/Ovládání</em>: <em>Model</em> uchovává data, <em>Zobrazení</em> dodává upozornění na změny a zobrazuje obsah modelu a konečně <em>Ovládání</em> mění stav modelu a upozorňuje zobrazení na tyto změny. Více informací a seznam použitelných metod pro <code>ComboBox</code> najdete v <link xref="model-view-controller.py"/>.</p>
+    <p>Na řádku 45 je signál <code>"changed"</code> napojen na funkci zpětného volání <code>on_changed()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce zpětného volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+  </section>
+
+  <section id="references">
+    <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkComboBox.html">GtkComboBox</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkListStore.html">GtkListStore</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCellRendererText.html">GtkCellRendererText</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCellRendererPixbuf.html">GtkCellRendererPixbuf</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Stock-Items.html">Standardní položky</link></p></item>
+      <item><p><link href="http://git.gnome.org/browse/pygobject/tree/gi/overrides/Gtk.py">pygobject – vazba jazyka Python pro GObject Introspection</link></p></item>
+    </list>
+  </section>
+</page>

@@ -2,7 +2,7 @@
 <page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="aboutdialog.c" xml:lang="el">
   <info>
     <title type="text">AboutDialog (C)</title>
-    <link type="guide" xref="beginner.c#windows"/>
+    <link type="guide" xref="c#windows"/>
     <link type="seealso" xref="dialog.c"/>
     <link type="seealso" xref="messagedialog.c"/>
     <revision version="0.2" date="2012-08-07" status="draft"/>
@@ -18,7 +18,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -36,7 +36,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -47,70 +47,63 @@
   <note><p><em style="bold">You need to be running Gtk3.4 or later for this to work</em></p></note>
 
       <code mime="text/x-csrc" style="numbered">
-#περιλαμβάνει &lt;gtk/gtk.h&gt;
+#include &lt;gtk/gtk.h&gt;
 
-
-
-/* Η συνάρτηση επανάκλησης στην οποία αντιδρά το σήμα "response" από τον χρήστη
- * στο παράθυρο διαλόγου του μηνύματος.
- * Αυτή η συνάρτηση χρησιμοποιείται για την καταστροφή του παραθύρου διαλόγου.
+/* Callback function in which reacts to the "response" signal from the user in
+ * the message dialog window.
+ * This function is used to destroy the dialog window.
  */
 static void
 on_close (GtkDialog *dialog,
           gint       response_id,
           gpointer   user_data)
 {
-  /*Αυτό θα προκαλέσει την καταστροφή του διαλόγου*/
+  /* This will cause the dialog to be destroyed */
   gtk_widget_destroy (GTK_WIDGET (dialog));
-
 }
 
-
-
-/* Η συνάρτηση επανάκλησης για το σήμα απάντησης "activate" που σχετίζεται με την απλή ενέργεια
+/* Callback function for the response signal "activate" related to the SimpleAction
  * "about_action".
- * Αυτή η συνάρτηση χρησιμοποιείται για να προκαλέσει την ανάδυση του παραθύρου διαλόγου περί.
+ * This function is used to cause the about dialog window to popup.
  */
 static void
 about_cb (GSimpleAction *simple,
           GVariant      *parameter,
           gpointer       user_data)
 {
-   GtkWidget *about_dialog;
+  GtkWidget *about_dialog;
 
-   about_dialog = gtk_about_dialog_new ();
+  about_dialog = gtk_about_dialog_new ();
 
-   /* Λίστες των συγγραφέων/τεκμηριωτών που θα χρησιμοποιηθούν αργότερα, πρέπει να αρχικοποιηθούν
-    * σε έναn πίνακα που τελειώνει σε μηδέν συμβολοσειρές.
-    */
-   const gchar *authors[] = {"GNOME Documentation Team", NULL};
-   const gchar *documenters[] = {"GNOME Documentation Team", NULL};
+  /* Lists of authors/ documentators to be used later, they must be initialized
+   * in a null terminated array of strings.
+   */
+  const gchar *authors[] = {"GNOME Documentation Team", NULL};
+  const gchar *documenters[] = {"GNOME Documentation Team", NULL};
 
-   /* Συμπλήρωση των πληροφοριών για τον διάλογο περί */
-   gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (about_dialog), "AboutDialog Example");
-   gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_dialog), "Copyright \xc2\xa9 2012 GNOME Documentation Team");
-   gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (about_dialog), authors);
-   gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (about_dialog), documenters);
-   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_dialog), "GNOME Developer Website");
-   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_dialog), "http://developer.gnome.org");
+  /* We fill in the information for the about dialog */
+  gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (about_dialog), "AboutDialog Example");
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_dialog), "Copyright \xc2\xa9 2012 GNOME Documentation Team");
+  gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (about_dialog), authors);
+  gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (about_dialog), documenters);
+  gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_dialog), "GNOME Developer Website");
+  gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_dialog), "http://developer.gnome.org");
 
-  /* Δεν θέλουμε να εμφανίσουμε τον τίτλο, που σε αυτήν την περίπτωση θα είναι 
-   * "AboutDialog Example". Πρέπει να επαναφέουμε τον τίτλο του παραθύρου 
-   * του μηνύματος διαλόγου μετά τον ορισμό του ονόματος του προγράμματος.
+  /* We do not wish to show the title, which in this case would be
+   * "AboutDialog Example". We have to reset the title of the messagedialog
+   * window after setting the program name.
    */
   gtk_window_set_title (GTK_WINDOW (about_dialog), "");
 
-  /* Για το κλείσιμο του διαλόγου περί όταν πατιέται "close", συνδέουμε
-   * το σήμα της απάντησης στο on_close
+  /* To close the aboutdialog when "close" is clicked we connect the response
+   * signal to on_close
    */
-  g_signal_connect (GTK_DIALOG (about_dialog), "response", 
+  g_signal_connect (GTK_DIALOG (about_dialog), "response",
                     G_CALLBACK (on_close), NULL);
 
-  /* Εμφάνιση του διαλόγου περί */
-  gtk_widget_show (about_dialog); 
+  /* Show the about dialog */
+  gtk_widget_show (about_dialog);
 }
-
-
 
 static void
 activate (GtkApplication *app,
@@ -120,37 +113,35 @@ activate (GtkApplication *app,
 
   GSimpleAction *about_action;
 
-  /* Δημιουργία παραθύρου με τίτλο και προεπιλεγμένο μέγεθος */
+  /* Create a window with a title and a default size */
   window = gtk_application_window_new (app);
   gtk_window_set_title (GTK_WINDOW (window), "AboutDialog Example");
   gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
 
-  /* Δημιουργία μιας νέας απλής ενέργειας, που της δίνει έναν τύπο παραμέτρου NULL. 
-   * Θα είναι πάντα NULL για ενέργειες που καλούνται από ένα μενού. (π.χ.  
-   * πατώντας σε ένα κουμπί "ok" ή "cancel")
+  /* Create a new simple action, giving it a NULL parameter type. It will
+   * always be NULL for actions invoked from a menu. (e.g clicking on an "ok"
+   * or "cancel" button)
    */
-  about_action = g_simple_action_new ("about", NULL); 
+  about_action = g_simple_action_new ("about", NULL);
 
-  /* Σύνδεση του σήματος "activate" στην κατάλληλη συνάρτηση επανάκλησης. 
-   * Θα δείξει ότι η ενέργεια μόλις ενεργοποιήθηκε.
+  /* Connect the "activate" signal to the appropriate callback function.
+   * It will indicate that the action was just activated.
    */
-  g_signal_connect (about_action, "activate", G_CALLBACK (about_cb), 
+  g_signal_connect (about_action, "activate", G_CALLBACK (about_cb),
                     GTK_WINDOW (window));
 
-  /* Προσθέτει την about_action στην συνολική απεικόνηση ενέργειας. Μια απεικόνιση
-   * ενέργειας είναι μια διεπαφή που περιέχει έναν αριθμό επώνυμων στιγμιοτύπων
-   *  GAction (όπως about_action) 
+  /* Adds the about_action to the overall action map. An Action map is an
+   * interface that contains a number of named GAction instances
+   * (such as about_action)
    */
   g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (about_action));
 
   gtk_widget_show_all (window);
 }
 
-
-
-/* Η συνάρτηση επανάκλησης για το σήμα απάντησης "activate" από την ενέργεια "quit" 
- * βρίσκεται στην αμέσως παρακάτω συνάρτηση.
- */ 
+/* Callback function for the response signal "activate" from the "quit" action
+ * found in the function directly below.
+ */
 static void
 quit_cb (GSimpleAction *simple,
          GVariant      *parameter,
@@ -161,9 +152,7 @@ quit_cb (GSimpleAction *simple,
   g_application_quit (application);
 }
 
-
-
-/* Η συνάρτηση έναρξης για το μενού που δημιουργούμε σε αυτό το παράδειγμα */
+/* Startup function for the menu we are creating in this sample */
 static void
 startup (GApplication *app,
          gpointer      user_data)
@@ -171,34 +160,31 @@ startup (GApplication *app,
   GMenu *menu;
   GSimpleAction *quit_action;
 
-  /* Αρχικοποίηση του GMenu και προσθήκη ενός στοιχείου μενού με ετικέτα "About" 
-   * και ενέργεια "win.about". Επίσης, προσθήκη ενός άλλου στοιχείου μενού 
-   * με ετικέτα "Quit" και ενέργεια "app.quit" 
+  /* Initialize the GMenu, and add a menu item with label "About" and action
+   * "win.about". Also add another menu item with label "Quit" and action
+   * "app.quit"
    */
   menu = g_menu_new ();
   g_menu_append (menu, "About", "win.about");
   g_menu_append (menu, "Quit", "app.quit");
 
-  /* Δημιουργία μιας νέας απλής ενέργειας για την εφαρμογή. (Σε αυτήν την περίπτωση 
-   * είναι η ενέργεια "quit".
+  /* Create a new simple action for the application. (In this case it is the
+   * "quit" action.
    */
   quit_action = g_simple_action_new ("quit", NULL);
 
-  /* Εξασφαλίστε ότι το μενού που μόλις έχουμε δημιουργήσει ορίζεται για τη συνολική εφαρμογή */
+  /* Ensure that the menu we have just created is set for the overall application */
   gtk_application_set_app_menu (GTK_APPLICATION (app), G_MENU_MODEL (menu));
 
-  g_signal_connect (quit_action, 
-                    "activate", 
-                    G_CALLBACK (quit_cb), 
+  g_signal_connect (quit_action,
+                    "activate",
+                    G_CALLBACK (quit_cb),
                     app);
 
   g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (quit_action));
-
 }
 
-
-
-/* Η συνάρτηση έναρξης για την εφαρμογή */
+/* Startup function for the application */
 int
 main (int argc, char **argv)
 {

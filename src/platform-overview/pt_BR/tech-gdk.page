@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="tech-gdk" xml:lang="pt-BR">
-<info>
-  <link type="guide" xref="tech" group="gdk"/>
-  <desc>Low-level abstraction for the windowing system</desc>
-  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-gdk" xml:lang="pt-BR">
 
+  <info>
+    <link type="guide" xref="tech" group="gdk"/>
+    <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email its:translate="no">shaunm@gnome.org</email>
+      <years>2011–2012</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Abstração de baixo nível para sistema de janela</desc>
+  
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Enrico Nicoletto</mal:name>
       <mal:email>liverig@gmail.com</mal:email>
@@ -12,48 +22,31 @@
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Rafael Ferreira</mal:name>
-      <mal:email>rafael.f.f1@gmail.com</mal:email>
-      <mal:years>2013</mal:years>
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2013, 2014, 2016, 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Isaac Ferreira Filho</mal:name>
+      <mal:email>isaacmob@riseup.net</mal:email>
+      <mal:years>2018</mal:years>
     </mal:credit>
   </info>
 
 <title>GDK</title>
 
-  <p>GDK is the low-level library used by <link xref="tech-gtk">GTK+</link> to
-  interact with the windowing system for graphics and input devices. Although
-  you will rarely use GDK directly in application code, it contains all the
-  necessary functionality to create low-level windows in the the screen and to
-  interact with the user with various input devices. GDK acts as an abstraction
-  over various windowing systems, so that GTK+ can be portable to all of them:
-  the X Window System (X11), Microsoft Windows, Mac OS X Quartz.</p>
+  <p>GDK é a biblioteca de baixo nível utilizada pelo <link xref="tech-gtk">GTK+</link> para interagir com o sistema de janela por gráficos e dispositivos de entrada. Embora você raramente usará a GDK diretamente no código do aplicativo, ela contém todas as funcionalidades necessárias para criar janelas de baixo nível na tela e para interagir com o usuário com vários dispositivos de entrada. GDK age como uma abstração sobre vários sistemas de janela, de forma que GTK+ pode ser portável para todas elas: o X Window System (X11), Microsoft Windows, Mac OS X Quartz.</p>
 
-<p>GDK enables you to access events from keyboards, mice, and other
-input devices.  Implementations of widgets in GTK+ use this functionality, and
-translate the events into higher-level signals that can in turn be used from
-application code.  For example, a <code>GtkButton</code> widget will track
-<code>GDK_BUTTON_PRESS</code> and <code>GTK_BUTTON_RELEASE</code> events,
-which come from the mouse, and translate them as appropriate into a
-<code>GtkButton::clicked</code> signal when the user presses and releases
-the button in the right location.</p>
+<p>GDK permite que você acesse eventos de teclados, mouses e outros dispositivos de entrada. Implementações de widgets no GTK+ usam essa funcionalidade e traduzem os eventos em sinais de alto nível que podem, por sua vez, ser usados a partir do código do aplicativo. Por exemplo, um widget <code>GtkButton</code> vai rastrear eventos <code>GDK_BUTTON_PRESS</code> e <code>GTK_BUTTON_RELEASE</code>, que vêm do mouse e os traduz como apropriado em um sinal <code>GtkButton::clicked</code> quando o usuário pressiona e solta o botão na localização correta.</p>
 
-<p>GDK also provides low-level routines to access drag and drop
-and clipboard data from the system.  When implementing custom controls,
-you may need to access these features to implement proper user interaction
-behavior.</p>
+<p>GDK também oferece rotinas de baixo nível para acessar dados do arrastar-e-soltar e da área de transferência do sistema. Quando implementados controles customizados, você poderá precisar acessar esses recursos para implementar um próprio comportamento de interação com o usuário.</p>
 
 <p>GDK oferece outra funcionalidade que é necessária para a implementação de um kit completo de ferramentas gráficas como o GTK+. Como GDK atua como uma abstração de plataforma, que permite ao GTK+ ser executado em vários ambientes, ele fornece uma API para todas as funcionalidades do sistema que precisem do GTK+. Isto inclui informações sobre exibição de multi-monitores, resolução, profundidade da cor, mapas de cores e cursores.</p>
 
-  <p>You should use GDK whenever you need low-level access to the underlying
-  windowing system, including low-level access to events, windows, and the
-  clipboard. Using GDK for these tasks ensures that your code is portable and
-  integrates with the rest of your GTK+ code. The simple drawing routines in
-  GDK should generally not be used; these are a left-over from when GDK simply
-  wrapped the windowing system's drawing primitives. Instead, you should use
-  the extensive functionality provided by <link xref="tech-cairo">Cairo</link>
-  to draw high-quality 2D graphics.</p>
+  <p>Você deve usar GDK toda vez que precise acesso de baixo nível para o sistema de janelas subjacente, incluindo acesso de baixo nível para eventos, janelas e para a área de transferência. Usar GDK para estas tarefas garante que seu código é portável e integra-se com o resto do seu código GTK+. Geralmente rotinas simples de desenho no GDK não devem ser usadas; essas são restos de quando GDK simplesmente interfaceava as primitivas de desenho do sistema de janela. Ao invés disso você deve usar a funcionalidade extensiva fornecida pelo <link xref="tech-cairo">Cairo</link> para desenhar gráficos 2D de alta qualidade.</p>
 
 <list style="compact">
-  <item><p><link href="https://developer.gnome.org/gdk3/stable/">GDK Reference Manual</link></p></item>
+  <item><p><link href="https://developer.gnome.org/gdk3/stable/">Manual de referência do GDK</link></p></item>
 </list>
 </page>

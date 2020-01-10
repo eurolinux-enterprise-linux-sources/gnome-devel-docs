@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="progress-bars" xml:lang="cs">
+
+  <info>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <credit>
+      <name>Calum Benson</name>
+    </credit>
+    <credit>
+      <name>Adam Elman</name>
+    </credit>
+    <credit>
+      <name>Seth Nickell</name>
+    </credit>
+    <credit>
+      <name>Colin Robertson</name>
+    </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/progress-bars.svg"/>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+  </info>
+
+<title>Ukazatele průběhu</title>
+
+<p>Ukazatel průběhu dává najevo, že je prováděna nějaká úloha, a zároveň i jak velká její část je již hotová.</p>
+
+<media type="image" mime="image/svg" src="figures/ui-elements/progress-bars.svg"/>
+
+<section id="when-to-use">
+<title>Kdy použít</title>
+
+<p>Dát najevo, že probíhá nějaká úloha, je zapotřebí, když daná operace zabírá více jak zhruba tři vteřiny. Zajistí se tím, aby uživatel pochopil, že má čekat a nemyslel si, že došlo k nějaké chybě.</p>
+
+<p>Když dáváte najevo průběh úlohy, padá základní volba na ukazatel průběhu nebo <link xref="progress-spinners">káču</link>. Ukazatel průběhu ukazuje, jak velká část úlohy je dokončená. Proto je vhodnější pro úlohy, které trvají dlouho. Podle nepsaných pravidel by se měl použít jen pro úlohy, které překročí 30 vteřin. Pro úlohy, které mají kratší trvání, je vhodnější <link xref="progress-spinners">káča</link>.</p>
+
+</section>
+
+<section id="types">
+<title>Typy</title>
+
+<p>Existují tři typy ukazatelů průběhu:</p>
+
+<list>
+<item><p>Zbývající čas: ukazuje, kolik přesně času zbývá do konce operace.</p></item>
+<item><p>Typický čas: ukazuje, kolik času zbývá, ale jen jako odhad založený na očekávané době.</p></item>
+<item><p>Neznámý čas: ukazuje pouze, že operace probíhá, ale ne, kolik času zabere.</p></item>
+</list>
+
+<p>U ukazatelů průběhu se dává přednost přesnosti. Když je to možné, použijte ukazatel průběhu se zbývajícím časem, případně s typickým časem. Snažte se vyhnout použití neurčitých ukazatelů průběhu.</p>
+
+</section>
+
+<section id="progress-text">
+<title>Text k průběhu</title>
+
+<p>Každý ukazatel průběhu může obsahovat také textový popis. Ten by měl poskytnou nějakou představu, jak velká část úlohy je hotová. Když se rozhodujete o textu ukazatele průběhu:</p>
+
+<list>
+<item><p>Vždy zvažte, co je pro uživatele nejpodstatnější a co jej zajímá.</p></item>
+<item><p>Často je lepší poskytnou konkrétní informaci, než procenta bez jednotek. Například <gui>13 of 19 images rotated</gui> (<gui>Otočeno 13 z 19 obrázků</gui>) nebo <gui>12.1 of 30 MB downloaded</gui> (<gui>Staženo 12,1 z 30 MB</gui>) je lepší, než <gui>13 % complete</gui> (<gui>Dokončeno 13 %</gui>).</p></item>
+<item><p>U dlouho trvajících úloh může být žádoucí zobrazit v textu ukazatele průběhu odhad zbývajícího času. Pokud nejsou třeba žádné jiné důležité informace, může se jedna přímo o jeho vlastní text. Jinou možností je zobrazení podél ukazatele. Snažte se ale, když to děláte, nezahltit uživatele příliš mnoha informacemi a použijte <link xref="typography">typografické zvyklosti</link> k odlišení důležitějších informací.</p></item>
+<item><p>Když je zbývající čas jen odhadem, použijte slovíčko <gui>about</gui> (v českých překladech <gui>přibližně</gui>). například <gui>About 3 minutes left</gui> (<gui>Zbývají přibližně 3 minuty</gui>).</p></item>
+</list>
+
+</section>
+
+<section id="task-stages">
+<title>Fáze úlohy</title>
+
+<p>Některé úlohy mohou sestávat z postupné řady fází, kdy každá z nich má jiné možnosti pro odhad času. Například může být možné odhadnout zbývající čas pro část úlohy a nemusí to být možné pro jinou. V těchto situacích:</p>
+
+<list>
+<item><p>Různé fáze úlohy oznamujte uživateli, jen když to má pro uživatele význam. Obecně řečeno, není žádoucí a nutné nebo vhodné sdělovat samotné fáze úlohy.</p></item>
+<item><p>Pokud úloha zahrnuje fáze se zbývajícím časem i s typickým časem, zkuste vytvořit jeden společný ukazatel průběhu s typickým časem.</p></item>
+<item><p>Pokud úloha zahrnuje nějakou neurčitelnou fázi, může ukazatel průběhu zobrazit neurčitou část průběhu úlohy. Ale neměli byste tak činit příliš dlouho a měli byste se snažit o co nejmenší počet změn v ukazateli průběhu. Raději se neurčitelným fázím vyhněte, pokud to jen trochu jde.</p></item>
+</list>
+
+</section>
+
+<section id="sub-tasks">
+<title>Dílčí úlohy</title>
+
+<p>Když se úloha skládá z více dílčích úloh (jako je stahován několika souborů současně), je obecně vhodné zobrazit jeden ukazatel průběhu, který ukazuje smíšený průběh pro všechny úlohy. Existují ale některé situace, kdy tomu tak být nemusí:</p>
+
+<list>
+<item><p>Jestliže je opravdu vhodné, aby uživatel znal průběh jednotlivých dílčích úloh. (Jako alternativa ke stavu dokončení jednotlivých dílčích úloh může sloužit textové označení průběhu.)</p></item>
+<item><p>Jestliže může být zapotřebí pozastavit nebo zastavit dílčí úlohu (viz níž <link xref="#general-guidelines">obecná pravidla</link>).</p></item>
+<item><p>Jestliže jsou dílčí úlohy tak jako tak již zobrazené v uživatelském rozhraní aplikace. Pak může být méně rušivé zobrazit průběh přímo u jednotlivých úloh.</p></item>
+</list>
+
+<p>Když zobrazujete průběh dílčí úlohy:</p>
+
+<list>
+<item><p>Každá dílčí úloha by měla splňovat pravidla pro ukazatele průběhu (viz víš <link xref="#when-to-use">kdy použít</link>).</p></item>
+<item><p>Obecně platí, že není nutné zobrazit zároveň ukazatel průběhu pro celkový průběh celé sady úloh.</p></item>
+</list>
+
+</section>
+
+<section id="progress-windows">
+<title>Okna s ukazatelem průběhu</title>
+
+<p>V minulosti byla pro zobrazení ukazatelů průběhu oblíbená okna. Takové podřízené okno se objevilo po dobu průběhu úlohy a obsahovalo jeden nebo více ukazatelů průběhu. Obecně dnes nejsou samostatná okna pro ukazatele průběhu doporučována, protože následek zavření takového okna je nejasný a okno může zakrýt užitečné ovládací prvky a obsah.</p>
+
+<p>Když je to možné, měl by být ukazatel průběhu zobrazen jako vložený a měl by být vizuálně blízko k položce obsahu nebo ovládacím prvkům, které reprezentují probíhající úlohu.</p>
+
+</section>
+
+<section id="general-guidelines">
+<title>Obecné rady</title>
+
+<list>
+<item><p>V případě, že je probíhající operace destruktivní nebo náročná na prostředky, zvažte umístit vedle ukazatele průběhu tlačítko pro pozastavení nebo zrušení úlohy.</p></item>
+<item><p>Postarejte se, aby zbývající čas a typický čas v ukazateli průběhu měřil celkový čas operace nebo práce a ne jen pro jednu fázi.</p></item>
+<item><p>Aktualizujte údaj o zbývajícím čase na ukazateli průběhu, kdykoliv se objeví změna, která způsobí, že operace se dokončí rychleji nebo naopak pomaleji.</p></item>
+<item><p>Když používáte ukazatel průběhu s typickým časem a vaše aplikace celkové množství práce přecení, může délka ukazatele hlásit <gui>almost complete</gui> (<gui>téměř dokončeno</gui>), dokud není operace hotová. Pokud aplikace celkové množství práce podcení, po dokončení operace zbývající část ukazatele doplní.</p></item>
+</list>
+
+</section>
+
+<section id="api-reference">
+<title>Referenční příručka API</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkProgressBar.html">GtkProgressBar</link></p></item>
+</list>
+</section>
+
+</page>

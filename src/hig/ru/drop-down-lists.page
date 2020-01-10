@@ -1,54 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="drop-down-lists" xml:lang="ru">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="drop-down-lists" xml:lang="ru">
 
   <info>
     <credit type="author">
-      <name>Allan Day</name>
+      <name>Алан Дэй (Allan Day)</name>
       <email>aday@gnome.org</email>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/drop-down-list.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Drop-down lists</title>
+<title>Выпадающие списки</title>
 
-<p>A drop-down list is a user interface element which allows the user to select from a list of mutually exclusive options. It appears as a button which, when clicked, reveals a list.</p>
+<p>Выпадающий список — это элемент интерфейса, который служит для выбора взаимоисключающих параметров из списка. Выпадающий список выглядит, как обычная кнопка, но при нажатии на неё появляется список.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/drop-down-list.svg"/>
 
-<p>Radio buttons or a list will often be preferable to a drop-down list, as they present all the available options at once without any further interaction. At the same time, a drop-down list might be a better choice when:</p>
+<p>Вместо выпадающих списков часто применяются радиокнопки или списки, поскольку они предоставление доступных параметров не требует никаких действий от пользователя. В то же время выпадающие списки применяются, когда:</p>
 
 <list>
-<item><p>The number of options is large.</p></item>
-<item><p>There is little available space.</p></item>
-<item><p>The list of options may change over time.</p></item>
-<item><p>The contents of the hidden part of the menu are obvious from its label and the one selected item. For example, if you have an option menu labelled “Month:” with the item “January” selected, the user might reasonably infer that the menu contains the 12 months of the year without having to look.</p></item>
+<item><p>количество параметров достаточно велико;</p></item>
+<item><p>мало свободной области;</p></item>
+<item><p>список параметров может изменяться в течение некоторого времени;</p></item>
+<item><p>по текстовой метке и выбранному элементу можно понять, что находится в скрытой части. Например, если имеется текстовая метка «Месяц:», и выбран элемент «январь», то пользователь не открывая меню может догадаться, что в нём будут находиться 12 месяцев.</p></item>
 </list>
 
 <section id="general-guidelines">
 <title>Общие рекомендации</title>
 
 <list>
-<item><p>While GTK+ does provide a specific combobox widget, it is recommended that drop-down lists are constructed using a combination of a button and a popover. This allows more comfortable scrolling for long lists, and allows search to be integrated into the list. Using this approach also allows the current selected item to always be displayed.</p></item>
-<item><p>If the number of items is very large, provide a search function that filters the list.</p></item>
-<item><p>Label the drop-down list button with a text label above it or to its left, using <link xref="writing-style#capitalization">sentence capitalization</link>. Provide an access key in the label that allows the user to give focus directly to the drop-down list.</p></item>
-<item><p>Use <link xref="writing-style#capitalization">sentence capitalization</link> for drop-down list items, for example <gui>Switched movement</gui>.</p></item>
+<item><p>Выпадающие списки рекомендуется создавать из кнопки и всплывающего виджета. Такая комбинация позволяет обеспечить удобную прокрутку длинных списков и интегрировать в список функцию поиска, кроме того, выбранный элемент всегда виден в интерфейсе.</p></item>
+<item><p>В случае большого количества элементов желательно предоставить функцию поиска для фильтрации списка.</p></item>
+<item><p>Текстовая метка для списка должна располагаться выше или левее кнопки выпадающего меню. При использовании английского языка прописные буквы используются, как в <link xref="writing-style#capitalization">обычном предложении</link>. Добавьте ускоритель, чтобы пользователь с помощью клавиатуры мог перевести фокус на выпадающий список.</p></item>
+<item><p>При использовании английского языка для элементов выпадающего меню прописные буквы используются, как в <link xref="writing-style#capitalization">обычном предложении</link>.</p></item>
 </list>
 
 </section>
 
 <section id="custom-values">
-<title>Custom values</title>
+<title>Добавление значений</title>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/drop-down-list-custom-values.svg"/>
 
-<p>A drop-down list can allow custom values to be added to a number of presets, or can be used to enter and select from custom values alone.</p>
+<p>В выпадающий список можно пополнять новые значениями, причём добавлять и выбирать новые значения можно с помощью самого же списка.</p>
 
 <list>
-<item><p>Ensure that custom values are ordered in a way that is most useful to users. Alphabetical or recency ordering is common.</p></item>
-<item><p>When a drop-down list includes both preset and custom values, separate them into separate groups within the list.</p></item>
-<item><p>Allow custom values to be removed from the list.</p></item>
-<item><p>Validate custom values as they are entered, in order to prevent errors.</p></item>
-<item><p>If the drop-down only accepts custom values, and no values have been entered previously, present the custom value entry when the drop-down is opened, instead of showing an empty list.</p></item>
+<item><p>Убедитесь, что добавленные значения упорядочены так, чтобы пользователю было удобно работать с ними. Часто применяется алфавитный порядок или порядок, в котором элементы были добавлены в список.</p></item>
+<item><p>Когда в выпадающем списке имеются и начальные, и добавленные значения, разделите их в списке на группы.</p></item>
+<item><p>Пользователь должен иметь возможность удалять добавленные значения.</p></item>
+<item><p>Проверяйте на корректность добавленные значения по мере их ввода, чтобы предотвратить ошибки.</p></item>
+<item><p>Если выпадающий список принимает только добавляемые значения и в нём отсутсвуют начальные значения, при открытии списка не показывайте пустой список, а добавьте поле для ввода значения.</p></item>
 </list>
 
 </section>

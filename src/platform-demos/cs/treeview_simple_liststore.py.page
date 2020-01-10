@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_simple_liststore.py" xml:lang="cs">
+  <info>
+    <title type="text">Jednoduchý TreeView s ListStore (Python)</title>
+    <link type="guide" xref="beginner.py#treeview"/>
+    <link type="seealso" xref="model-view-controller.py"/>
+    <link type="next" xref="treeview_treestore.py"/>
+    <revision version="0.2" date="2012-06-30" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>TreeView zobrazující ListStore (jednodušší příklad)</desc>
+  </info>
+
+  <title>Jednoduchý TreeView s ListStore</title>
+  <media type="image" mime="image/png" src="media/treeview_simple_liststore.png"/>
+  <p>Tento TreeView zobrazuje jednoduchý ListStore s napojeným signálem <code>"changed"</code> (změna výběru).</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Kód použitý k vygenerování tohoto příkladu</title>
+
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Pango
+import sys
+
+columns = ["First Name",
+           "Last Name",
+           "Phone Number"]
+
+phonebook = [["Jurg", "Billeter", "555-0123"],
+             ["Johannes", "Schmid", "555-1234"],
+             ["Julita", "Inca", "555-2345"],
+             ["Javier", "Jardon", "555-3456"],
+             ["Jason", "Clinton", "555-4567"],
+             ["Random J.", "Hacker", "555-5678"]]
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="My Phone Book", application=app)
+        self.set_default_size(250, 100)
+        self.set_border_width(10)
+
+        # Datový model (tři řetězce pro každý řádek, jeden na každý
+        # slupec)
+        listmodel = Gtk.ListStore(str, str, str)
+        # Nasype do modelu hodnoty
+        for i in range(len(phonebook)):
+            listmodel.append(phonebook[i])
+
+        # Stromové zobrazení pro zobrazení dat uložených v modelu
+        view = Gtk.TreeView(model=listmodel)
+        # Pro každý sloupec
+        for i, column in enumerate(columns):
+            # Vykreslovač buňky vykreslí text
+            cell = Gtk.CellRendererText()
+            # Text v prvním sloupci má být tučný
+            if i == 0:
+                cell.props.weight_set = True
+                cell.props.weight = Pango.Weight.BOLD
+            # Vytvoří sloupec
+            col = Gtk.TreeViewColumn(column, cell, text=i)
+            # Připojí sloupec do stromového zobrazení
+            view.append_column(col)
+
+        # Když je vybrán řádek, je vyslán signál
+        view.get_selection().connect("changed", self.on_changed)
+
+        # Popisek, který se používá k zobrazení výběru
+        self.label = Gtk.Label()
+        self.label.set_text("")
+
+        # Mřížka pro připojení widgetů
+        grid = Gtk.Grid()
+        grid.attach(view, 0, 0, 1, 1)
+        grid.attach(self.label, 0, 1, 1, 1)
+
+        # Připojí mřížku do okna
+        self.add(grid)
+
+    def on_changed(self, selection):
+        # Získá model a iterátor, který ukazuje na data v modelu
+        (model, iter) = selection.get_selected()
+        # Nastaví popisek na novou hodnotu podle výběru
+        self.label.set_text("\n %s %s %s" %
+                            (model[iter][0],  model[iter][1], model[iter][2]))
+        return True
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Užitečné metody pro widget TreeView</title>
+    <p>Widget <code>TreeView</code> je vytvořen okolo návrhu <em>Model/Zobrazení/Ovládání</em>: <em>Model</em> uchovává data, <em>Zobrazení</em> dodává upozornění na změny a zobrazuje obsah modelu a konečně <em>Ovládání</em> mění stav modelu a upozorňuje zobrazení na tyto změny. Více informací a seznam použitelných metod pro <code>TreeModel</code> najdete v <link xref="model-view-controller.py"/>.</p>
+    <p>Na řádku 44 je signál <code>"changed"</code> napojen na funkci zpětného volání <code>on_changed()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce zpětného volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+  </section>
+
+  <section id="references">
+    <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeView.html">GtkTreeView</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeModel.html">GtkTreeModel</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkListStore.html">GtkListStore</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkCellRendererText.html">GtkCellRendererText</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkTreeViewColumn.html">GtkTreeViewColumn</link></p></item>
+      <item><p><link href="http://git.gnome.org/browse/pygobject/tree/gi/overrides/Gtk.py">pygobject – vazba jazyka Python pro GObject Introspection</link></p></item>
+      <item><p><link href="http://developer.gnome.org/pango/stable/pango-Fonts.html">Písma</link></p></item>
+    </list>
+  </section>
+</page>

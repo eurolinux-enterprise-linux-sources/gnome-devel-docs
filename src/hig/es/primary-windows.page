@@ -2,7 +2,8 @@
 <page xmlns="http://projectmallard.org/1.0/" type="topic" id="primary-windows" xml:lang="es">
 
   <info>
-    <link type="guide" xref="patterns" group="primary-windows"/>   
+    <link type="guide" xref="patterns#primary"/>
+    <desc>Las ventanas principales de su aplicación</desc> 
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
@@ -12,7 +13,13 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2014</mal:years>
+      <mal:years>2011 - 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alex Puchades</mal:name>
+      <mal:email>alex94puchades@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -42,7 +49,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Oscar Rafael Arachi</mal:name>
       <mal:email>arachi910@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014 - 2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -104,60 +111,89 @@
       <mal:email>garciag.omar91@gmail.com</mal:email>
       <mal:years>2015</mal:years>
     </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Edilberto Huerta Niño</mal:name>
+      <mal:email>edilberto.huerta0290@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
+    </mal:credit>
   </info>
 
-<title>Primary windows</title>
+<title>Ventanas primarias</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/primary-windows.svg"/>
 
-<p>Primary windows are the basic high-level container for your application user interface, and should present the core functionality of your application.</p>
+<p>Las ventanas primarias son el contenedor básico de más alto nivel para la interfaz de usuario de su aplicación, y debe mostrar la funcionalidad principal de su aplicación.</p>
 
 <section id="when-to-use">
 <title>Cuándo usarlas</title>
 
-<p>Every application should have at least one primary window associated with it.</p>
+<p>Cada aplicación debe tener al menos una ventana primaria asociada.</p>
 
 </section>
 
 <section id="application-types">
-<title>Application types</title>
+<title>Tipos de aplicaciones</title>
 
-<p>There are two main models for primary windows:</p>
+<p>Hay dos modelos principales de ventanas primarias:</p>
 
 <section id="single-instance-applications">
-<title>Single instance applications</title>
+<title>Aplicaciones con una única instancia</title>
 
-<p>Single instance applications have a single primary window. This model is common for messaging applications, such as email, chat, or contacts.</p>
+<p>Las aplicaciones de una sola instancia tienen una sola ventana primaria. Este modelo es común en aplicaciones de mensajería tales como correo-e, chat o contactos.</p>
 
 </section>
 
 <section id="multiple-instance-applications">
-<title>Multiple instance applications</title>
+<title>Aplicaciones con varias instancias</title>
 
-<p>Multiple instance applications can have multiple primary windows. Typically, each primary window will be identical. Multi-instance applications are frequently viewers or editors, such as for documents or images.</p>
+<p>Las aplicaciones con varias instancias pueden tener varias ventanas primarias. Normalmente, cada ventana primaria será idéntica. Las aplicaciones con varias instancias son frecuentemente visores o editores, bien para documentos o para imágenes.</p>
 
-<p>Both single and multiple instance applications can allow multiple content items to be opened, either through the use of <link xref="tabs">tabs</link> or browser-style navigation. However, multiple windows do offer additional capabilities, which include:</p>
+<p>Las aplicaciones con una o varias instancias permiten abrir varios elementos de contenido, bien mediante el uso de <link xref="tabs">pestañas</link> o con un estilo de navegación tipo navegador. Sin embargo, las ventanas múltiples ofrecen opciones adicionales, entre las que se incluyen:</p>
 
 <list>
-<item><p>Viewing several content items alongside each other.</p></item>
-<item><p>Placing content on different workspaces.</p></item>
-<item><p>Organizing sets of content into different windows (if using tabs).</p></item>
+<item><p>Ver varios elementos de contenido unos junto a otros.</p></item>
+<item><p>Colocar contenido en distintas áreas de trabajo.</p></item>
+<item><p>Organizar conjuntos de contenido en diferentes ventanas (si se usan pestañas).</p></item>
 </list>
+
+<section id="parent-child-primary-windows">
+<title>Ventanas primarias padre/hijas</title>
+
+<p>Las aplicaciones con varias instancias normalmente tienen ventanas primarias idénticas (en el caso de varias ventanas del navegador web, por ejemplo). Sin embargo, esto no es siempre así.</p>
+
+<p>Las ventanas primarias pueden tener una relación padre/hijo. En este tipo de aplicaciones, sólo hay una ventana padre, que normalmente contiene una vista general de los elementos de contenido que se pueden abrir en la ventana padre o en una ventana hija aparte. Esto permite abrir a la vez varios elementos de contenido.</p>
+
+<p>Aunque las ventanas hijas sólo se puede abrir mediante una ventana padre, no dependen de ella para permanecer abiertas: cerrar la ventana padre no cierra necesariamente las ventanas hijas de la aplicación.</p>
+
+<p>La aplicación <app>Notas</app> de GNOME es un buen ejemplo de ventanas primarias padre/hijas.</p>
+
+</section>
 
 </section>
 </section>
 
 <section id="general-guidelines">
-<title>General guidelines</title>
+<title>Guías Generales</title>
 
 <list>
-<item><p>If your application isn’t running and its launcher is activated, a single primary window should be displayed. Do not show multiple windows when your application is initially launched.</p></item>
-<item><p>If your application launcher is selected while your application is running, all its primary windows should be displayed.</p></item>
+<item><p>Siempre se debe mostrar una ventana primaria cuando se lance la aplicación.</p></item>
+<item><p>Si se activa el lanzador de la aplicación cuando está en ejecución, se deben mostrar todas sus ventanas primarias.</p></item>
 <item><p>La ventana principal debe contener la principal funcionalidad de su aplicación. No se base en diálogos o ventanas secundarias con el fin de preservar funcionalidades básicas.</p></item>
-<item><p>Primary windows should be independent - closing one primary window should not result in other primary windows being closed.</p></item>
-<item><p>Dialog windows should always be dependent on a primary window. See the <link xref="dialogs">dialogs page</link> guidelines.</p></item>
-<item><p>Your application should cease to run when all its primary windows have been closed.</p></item>
-<item><p><gui>Quit</gui> should close all primary windows.</p></item>
+<item><p>Las ventanas primarias deben ser independientes; cerrar una ventana primaria no debe provocar que se cierren las demás ventanas primarias.</p></item>
+<item><p>Las ventanas de diálogo deben depender siempre de una ventana padre. Consulte la guía de <link xref="dialogs">páginas de diálogos</link>.</p></item>
+<item><p>La guía de <link xref="display-compatibility">compatibilidad de la pantalla</link> es especialmente relevante para las ventanas primarias: asegúrese de que sigue los consejos sobre tamaños mínimos de pantallas, orientación y ajuste a media pantalla.</p></item>
+<item><p><gui>Salir</gui> debe cerrar todas las ventanas primarias.</p></item>
+</list>
+
+</section>
+
+<section id="api-reference">
+<title>Referencia de la API</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkWindow.html">GtkWindow</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">GtkApplicationWindow</link></p></item>
 </list>
 
 </section>

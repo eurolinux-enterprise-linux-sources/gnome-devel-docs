@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="notifications" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="notifications" xml:lang="es">
 
   <info>
-    <link type="guide" xref="patterns" group="notifications"/>   
+    <link type="guide" xref="patterns#primary"/>
+    <desc>Notificaciones de eventos del sistema</desc>
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
@@ -12,7 +13,13 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2014</mal:years>
+      <mal:years>2011 - 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alex Puchades</mal:name>
+      <mal:email>alex94puchades@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -42,7 +49,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Oscar Rafael Arachi</mal:name>
       <mal:email>arachi910@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014 - 2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -104,23 +111,29 @@
       <mal:email>garciag.omar91@gmail.com</mal:email>
       <mal:years>2015</mal:years>
     </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Edilberto Huerta Niño</mal:name>
+      <mal:email>edilberto.huerta0290@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
+    </mal:credit>
   </info>
 
 <title>Notificaciones</title>
 
-<p>Notifications enable you to inform the users about events when they are not using your application. They also provide the ability for users to quickly respond to those events, using notification actions.</p>
+<p>Las notificaciones le permiten informar a los usarios sobre eventos cuando no están usando su aplicación. También proporcionan la posibilidad de permitir a los usuarios responder rápidamente a estos eventos, usando las acciones de la notificación.</p>
 
 <section id="when-to-use">
 <title>Cuándo usarlas</title>
 
-<p>Use notifications to inform the user about events they will be interested in while they are not using your application. This can include new messages in messaging applications, the completion of long-running tasks, reminders for calendars, and so on.</p>
+<p>Use las notificaciones para informar al usuario sobre eventos que le puedan interesar mientras no use la aplicación. Esto puede incluir nuevos mensajes en las aplicaciones de mensajería, la terminación de tareas largas, recordatorios de calendarios y similares.</p>
 
-<p>Notifications shouldn’t be used as a substitute for feedback that is provided by your application windows, which should be able to inform the user about events without the need for notifications.</p>
+<p>Las notificaciones no se deben usar como un sustituto de la información proporcionada por las ventanas de la aplicación, que debe ser capaz de informar al usuario sobre eventos sin necesidad de usar las notificaciones.</p>
 
 </section>
 
 <section id="notification-elements">
-<title>Notification elements</title>
+<title>Elementos de la notificación</title>
 
 <p>Las notificaciones en GNOME 3 tienen un número estándar de componentes:</p>
 
@@ -132,10 +145,10 @@
 </thead>
 <tbody>
 <tr>
-<td><p>Application Icon</p></td><td><p>Indicates which application sent the notification.</p></td>
+<td><p>Icono de la aplicación</p></td><td><p>Indica qué aplicación envía la notificación</p></td>
 </tr>
 <tr>
-<td><p>Título</p></td><td><p>The heading for the notification.</p></td>
+<td><p>Título</p></td><td><p>El encabezado de la notificación</p></td>
 </tr>
 <tr>
 <td><p>Cuerpo</p></td><td><p>Un bloque de texto opcional que da detalles adicionales acerca de la notificación. El cuerpo de la notificación puede incluir múltiples párrafos. Por ejemplo: un fragmento del inicio de un correo electrónico.</p></td>
@@ -164,33 +177,41 @@
 </section>
 
 <section id="actions">
-<title>Notification actions</title>
+<title>Acciones de la notificación</title>
 
-<p>You can provide useful functionality by embedding buttons in notifications. This allows users to quickly and easily respond to the notification.</p>
+<p>Puede proporcionar información útil incluyendo botones en las notificaciones. Esto permite a los usuarios responder fácil y rápidamente a la notificación.</p>
 
 <list>
-<item><p>Notification actions should be related to the content of the notification, and should not provide generic actions for your application. This ensures that each notification has a clear focus and purpose.</p></item>
-<item><p>Only use notification actions when the functionality that they provide is commonly required.</p></item>
-<item><p>Actions shold not replace user interface controls elsewhere - it should be possible to take the same actions from your application’s windows.</p></item>
-<item><p>It is not necessary to always use notification actions, and many notifications will not require them.</p></item>
-<item><p>Notification actions should not duplicate the default action. For example, a new email notification does not need to include an Open button, since the default action should already perform this action.</p></item>
+<item><p>Las acciones de notificación deben estar relacionadas con el contenido de la notificación, y no deben proporcionar acciones genéricas para su aplicación. Esto asegura que cada notificación tenga un propósito claro.</p></item>
+<item><p>Use sólo las acciones de las notificaciones cuando la funcionalidad que proporcionen se solicite habitualmente.</p></item>
+<item><p>Las acciones no deben reemplazar a ningún control de la interfaz de usuario. Debe de ser posible realizar las mismas acciones desde la ventana de su aplicación.</p></item>
+<item><p>No siempre es necesario usar las acciones de las notificaciones, y muchas no las necesitan.</p></item>
+<item><p>Las acciones de las notificaciones no deben duplicar la acción predeterminada. Por ejemplo, una notificación de correo nuevo no necesita incluir un botón «Abrir», ya que la acción predeterminada debería ser realizar esta acción.</p></item>
 </list>
 
 </section>
 </section>
 
 <section id="general-guidance">
-<title>General guidance</title>
+<title>Guía general</title>
 
 <list>
-<item><p>It is important not to needlessly distract users with notifications. This can easily become annoying and frustrating, and will not incline users to like your application. Therefore, always be critical when using notifications, and question whether users really need to be informed about the events you want to communicate.</p></item>
-<item><p>Applications that deal with lots of events, such as email or social media messages, run a particular risk of distracting users with too many notifications. These applications should place restrictions on how frequently they send notification messages. Instead of showing a notification for each new message, it is a good idea for each notification to provide a summary of new messages.</p></item>
-<item><p>Notifications in GNOME 3 persist after they have been initially displayed. It is therefore important to remove notification messages that are no longer relevant to the user.</p>
+<item><p>Es importante no distraer innecesariamente al usuario con notificaciones. Esto puede ser molesto y frustrante y no invitará a los usuarios a usar su aplicación. Por lo tanto, sea siempre crítico al usar las notificaciones, y pregúntese si los usuarios necesitan realmente estar informados de los eventos que quiere comunicar.</p></item>
+<item><p>Las aplicaciones que trabajan con muchos eventos, tales como las de correo-e o de mensajes de redes sociales, corren un particular riesgo de distraer al usuarios con muchas notificaciones. Estas aplicaciones debería usar restricciones sobre la frecuencia con que envían notificaciones al usuario. En lugar de mostrar una notificación para cada mensaje, es una buena idea proporcionar en cada notificación un resumen de los mensajes nuevos.</p></item>
+<item><p>Las notificaciones en GNOME 3 permanecen después de haberlas mostrado inicialmente. Por lo tanto, es importante eliminar los mensajes de notificación que ya no sean relevantes al usuario.</p>
 <list>
-<item><p>Your application window should provide feedback on all the events that have been communicated by notifications. As a result, when your application window is focused, notification messages should be treated as having been read, and should be removed.</p></item>
-<item><p>Ensure that your application removes notifications that are no longer valid. For example, a notification for a weather warning that has been revoked should be removed.</p></item>
+<item><p>La ventana de su aplicación debe proporcionar información sobre los eventos que se han comunicado mediante notificaciones. El resultado es que, cuando su aplicación recibe el foco, los mensajes de notificación se deben tratar como si se hubieran leído, y se deben eliminar.</p></item>
+<item><p>Asegúrese de que su aplicación elimina las notificaciones que ya no son válidas. Por ejemplo, una notificación sobre una advertencia del clima que se ha revocado se debería eliminar.</p></item>
 </list></item>
 </list>
 
 </section>
+
+<section id="api-reference">
+<title>Referencia de la API</title>
+<list>
+<item><p><link href="https://developer.gnome.org/gio/stable/GNotification.html">GNotification</link></p></item>
+</list>
+</section>
+
 </page>

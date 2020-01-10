@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="preconditions" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Kontraktové programování s kontrolami na vstupu a výstupu funkcí</desc>
+  </info>
+
+  <title>Úvodní a závěrečné podmínky</title>
+
+  <section id="pre-and-post-conditions">
+    <title>Úvodní a závěrečné podmínky</title>
+
+    <p>Důležitou zásadou bezpečného kódu je, že se nesprávná data nebudou programem dále šířit – čím dále se vadný vstup může dostat, tím větší částí kódu projde a potenciálně se zvyšuje možnost využít je k útoku.</p>
+
+    <p>Standardním způsobem předcházení šíření neplatných dat je kontrolovat všechny vstupy do a výstupy ze všech veřejně viditelných funkcí v knihovně nebo modulu. Existují dvě úrovně kontroly:</p>
+    <terms>
+      <item>
+        <title>Aserce</title>
+        <p>Kontrolují programové chyby a při selhání program přeruší.</p>
+      </item>
+      <item>
+        <title>Validace</title>
+        <p>Kontrolují neplatný vstup a při selhání vhodně vracejí chybu.</p>
+      </item>
+    </terms>
+
+    <p>Validace je náročná záležitost, která se řeší pomocí <link xref="gerror">GErrors</link>. Zbývající část tohoto oddílu rozebírá úvodní a koncové podmínky asercí, které jsou určené čistě pro odhalování chyb programátora. Programátorskou chybou je, když je funkce zavolána způsobem, který je v dokumentaci uvedený jako zakázaný. Například když je předána hodnota <code>NULL</code> v parametru, pro který je uvedeno, že vyžaduje hodnotu, která není <code>NULL</code>, nebo když je předána záporná hodnota v parametru, který vyžaduje kladnou hodnotu. Programátorské chyby mohou nastat i na výstupu, například návratová hodnota <code>NULL</code>, když není uvedená v dokumentaci, nebo když není nastaven výstup GError při selhání.</p>
+
+    <p>Přidání úvodních a koncových podmínek asercí do kódu je hlavně o zajištění správného chování a jeho podrobného uvedení v dokumentaci, než o vlastním přidání asercí. Všechny aserce by měly být zdokumentované, nejlépe pomocí příslušné <link xref="introspection">anotace k introspekci</link>, jako je <code>(nullable)</code>.</p>
+
+    <p>Úvodní a závěrečné podmínky asercí jsou implementovány pomocí <link href="https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-return-if-fail"><code>g_return_if_fail()</code></link> a <link href="https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-return-val-if-fail"><code>g_return_val_if_fail()</code></link>.</p>
+
+    <p>Úvodní podmínky by měly kontrolovat jednotlivé parametry hned na začátku funkce, dříve než je proveden jakýkoliv další kód (i třeba načtení privátní datové struktury z GObject, protože by například mohl mít ukazatel na GObject hodnotu <code>NULL</code>). Koncové podmínky by měly kontrolovat návratovou hodnotu a případné výstupní parametry na konci funkce, což vyžaduje jediný výraz <code>return</code> a použití příkazu <code>goto</code> pro sloučení ostatních průchodových cest do něj. Příklad viz <link xref="memory-management#single-path-cleanup"/>.</p>
+  </section>
+</page>

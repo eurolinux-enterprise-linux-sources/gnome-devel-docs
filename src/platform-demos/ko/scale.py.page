@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scale.py" xml:lang="ko">
+  <info>
+    <title type="text">Scale (Python)</title>
+    <link type="guide" xref="beginner.py#entry"/>
+    <link type="seealso" xref="grid.py"/>
+    <link type="next" xref="textview.py"/>
+    <revision version="0.2" date="2012-06-23" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>일정 범위 내에서 값을 선택하는 슬라이더 위젯</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Scale</title>
+  <media type="image" mime="image/png" src="media/scale.png"/>
+  <p>Scale 손잡이를 잡고 끌어봅시다!</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>예제 결과를 만드는 코드</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Scale Example", application=app)
+        self.set_default_size(400, 300)
+        self.set_border_width(5)
+
+        # two adjustments (initial value, min value, max value,
+        # step increment - press cursor keys to see!,
+        # page increment - click around the handle to see!,
+        # page size - not used here)
+        ad1 = Gtk.Adjustment(0, 0, 100, 5, 10, 0)
+        ad2 = Gtk.Adjustment(50, 0, 100, 5, 10, 0)
+
+        # an horizontal scale
+        self.h_scale = Gtk.Scale(
+            orientation=Gtk.Orientation.HORIZONTAL, adjustment=ad1)
+        # of integers (no digits)
+        self.h_scale.set_digits(0)
+        # that can expand horizontally if there is space in the grid (see
+        # below)
+        self.h_scale.set_hexpand(True)
+        # that is aligned at the top of the space allowed in the grid (see
+        # below)
+        self.h_scale.set_valign(Gtk.Align.START)
+
+        # we connect the signal "value-changed" emitted by the scale with the callback
+        # function scale_moved
+        self.h_scale.connect("value-changed", self.scale_moved)
+
+        # a vertical scale
+        self.v_scale = Gtk.Scale(
+            orientation=Gtk.Orientation.VERTICAL, adjustment=ad2)
+        # that can expand vertically if there is space in the grid (see below)
+        self.v_scale.set_vexpand(True)
+
+        # we connect the signal "value-changed" emitted by the scale with the callback
+        # function scale_moved
+        self.v_scale.connect("value-changed", self.scale_moved)
+
+        # a label
+        self.label = Gtk.Label()
+        self.label.set_text("Move the scale handles...")
+
+        # a grid to attach the widgets
+        grid = Gtk.Grid()
+        grid.set_column_spacing(10)
+        grid.set_column_homogeneous(True)
+        grid.attach(self.h_scale, 0, 0, 1, 1)
+        grid.attach_next_to(
+            self.v_scale, self.h_scale, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach(self.label, 0, 1, 2, 1)
+
+        self.add(grid)
+
+    # any signal from the scales is signaled to the label the text of which is
+    # changed
+    def scale_moved(self, event):
+        self.label.set_text("Horizontal scale is " + str(int(self.h_scale.get_value())) +
+                            "; vertical scale is " + str(self.v_scale.get_value()) + ".")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Scale 위젯에 쓸만한 메서드</title>
+    <p>Gtk.Adjustment는 Gtk.Scale을 만들떄 필요합니다. 상한 값, 하한 값, 단계 및 페이지 증가 값을 저장하며, <code>Gtk.Adjustment(value, lower, upper, step_increment, page_increment, page_size)</code>로 구성합니다. 여기서 각 값은 <code>float</code>형식입니다. <code>step_increment</code>는 커서 키를 활용할 때 가져올 증가 감소 값이며, <code>page_increment</code>는 Scale 자체를 눌렀을 떄 가져올 값입니다. 참고로 지금과 같은 경우는 <code>page_size</code> 값을 활용하지 않으므로 <code>0</code> 값으로 설정해야합니다.</p>
+    <p>28번째 줄에서 <code>"value-changed"</code> 시그널은 <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code> 함수로  <code>scale_moved()</code> 콜백 함수에 연결했습니다. 더 자세한 설명은 <link xref="signals-callbacks.py"/>를 참조하십시오.</p>
+    <list>
+      <item><p><code>get_value()</code> 함수는 Scale의 현재 값을 가져옵니다. <code>set_value(value)</code> 함수는 Scale 값을 설정합니다(<code>float</code> 형식의 <code>value</code> 값이 최소 최대 값 범위를 벗어나면, 범위내 값으로 바뀝니다). 이 메서드는 Gtk.Range 클래스에 있습니다.</p></item>
+      <item><p>슬라이더 옆에 현재 값을 나타나지 않게 하려면 <code>set_draw_value(False)</code> 함수를 사용하십시오.</p></item>
+      <item><p>초기 값과 현재 값 사이의 Scale 부분을 강조하려면:</p>
+        <code mime="text/x-python">
+self.h_scale.set_restrict_to_fill_level(False)
+self.h_scale.set_fill_level(self.h_scale.get_value())
+self.h_scale.set_show_fill_level(True)</code>
+        <p>"value-changed" 시그널의 콜백 함수에서는 값이 바뀔 때마다 새로 채워넣습니다. 이 메서드는 Gtk.Range 클래스에 있습니다.</p>
+      </item>
+      <item><p><code>add_mark(value, position, markup)</code> 함수는 <code>value</code> 값 위치에, <code>position</code> 방향(<code>Gtk.PositionType.LEFT, Gtk.PositionType.RIGHT, Gtk.PositionType.TOP, Gtk.PositionType.BOTTOM</code>)으로,  <code>Null</code> 또는 팡고 마크업 언어인 <code>markup</code> 값 텍스트를 붙여 표시를 추가합니다(Scale에서 허용하는 값일 경우 <code>float</code>형 또는 <code>int</code>형). 마크를 지우려면 <code>clear_marks()</code> 함수를 사용하십시오.</p></item>
+      <item><p><code>set_digits(digits)</code> 함수는 Scale 정밀도 자리수를 <code>digits</code> 자리로 설정합니다.</p></item>
+    </list>
+  </section>
+
+  <section id="references">
+    <title>API 참고서</title>
+    <p>이 예제는 다음 참고자료가 필요합니다:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkScale.html">GtkScale</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkAdjustment.html">GtkAdjustment</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">표준 서수형 값 목록</link></p></item>
+    </list>
+  </section>
+</page>

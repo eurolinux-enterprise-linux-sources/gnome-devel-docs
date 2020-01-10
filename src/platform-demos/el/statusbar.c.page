@@ -2,7 +2,7 @@
 <page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.c" xml:lang="el">
   <info>
     <title type="text">Γραμμή κατάστασης (C)</title>
-    <link type="guide" xref="beginner.c#buttons"/>
+    <link type="guide" xref="c#buttons"/>
     <link type="seealso" xref="grid.c"/>
     <link type="seealso" xref="button.c"/>
 
@@ -20,7 +20,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -38,7 +38,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -48,29 +48,29 @@
   <p>Αυτή η γραμμή κατάστασης χρησιμοποιείται για να εμφανίσει πόσα μηνύματα στοιβάζονται σε μια σειρά τελευταίο προς πρώτο. Το μήνυμα στην κορυφή της στοίβας είναι πάντα αυτό που εμφανίζεται.</p>
 
       <code mime="text/x-csrc" style="numbered">
-#περιλαμβάνει &lt;gtk/gtk.h&gt;
+#include &lt;gtk/gtk.h&gt;
 
 
 
-/*Η συνάρτηση επανάκλησης στην οποία προωθεί ένα στοιχείο στη γραμμή κατάστασης*/
+/*Callback function in which pushes an item onto the statusbar*/
 static void 
 push_item (GtkWidget *widget,
            gpointer   data)
 {
   GtkWidget *status_bar = data;
 
-  /*Δημιουργία ενός αναγνωριστικού περιεχομένου, που χρησιμοποιείται για μοναδική αναγνώριση 
+  /*Create a context id, which is used to uniquely identify 
    *the source of a message*/
   guint context_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (status_bar), 
                                                    "Statusbar example");
 
-  /*Η μέτρηση χρησιμοποιείται για παρακολούθηση του αριθμού των στοιχείων 
+  /*Count is used to keep track of the amount of items 
   the user is pushing/popping*/
   static int count = 1;
   char hold_output[20];
   
-  /*Αυτή είναι μια ασφαλέστερη μορφή της τυπικής συνάρτησης sprintf (). Η έξοδος 
-  εγγυάται στην περίπτωση που δεν ξεπερνά τους 20 χαρακτήρες και το αποτέλεσμα αποθηκεύεται 
+  /*This is a safer form of the standard sprintf () function. The output is 
+  guaranteed in this case to not exceed 20 characters, and the result is stored
   into the 'hold_output' variable*/
   g_snprintf (hold_output, 20, "Item %d", count++);
   gtk_statusbar_push (GTK_STATUSBAR (status_bar), 
@@ -80,7 +80,7 @@ push_item (GtkWidget *widget,
 
 
 
-/*Η συνάρτηση επανάκλησης που χρησιμοποιείται για ανάδυση ενός στοιχείου από τη γραμμή κατάστασης*/
+/*Callback function that is used to pop an item off the statusbar*/
 static void 
 pop_item (GtkWidget *widget,
           gpointer   data )
@@ -104,32 +104,32 @@ activate (GtkApplication *app,
     GtkWidget *pop_button;
     GtkWidget *push_button;
 
-    /*Δημιουργία παραθύρου με τίτλο, πλάτος περιγράμματος και προεπιλεγμένο μέγεθος**/
+    /*Create a window with a title, border width, and a default size**/
     window = gtk_application_window_new (app);
     gtk_window_set_default_size (GTK_WINDOW (window), 220, 100);
     gtk_window_set_title (GTK_WINDOW (window), "Statusbar Example");
     gtk_container_set_border_width (GTK_CONTAINER(window), 10);
     
-    /*Δημιουργία της γραμμής κατάστασης, που κρατιέται στην καθολική μεταβλητή*/
+    /*Create the status bar, which is held in the global variable*/
     status_bar = gtk_statusbar_new ();      
     
-    /*Δημιουργίαν των πλήκτρων με ετικέτες*/
+    /*Create the buttons with labels*/
     push_button = gtk_button_new_with_label ("push item");
     pop_button = gtk_button_new_with_label ("pop last item");
     
-    /*Δημιουργία του πλέγματος και κατάλληλη προσάρτηση των πλήκτρων/γραμμής κατάστασης */
+    /*Create the grid, and attach the buttons/statusbar accordingly*/
     grid = gtk_grid_new ();
     gtk_grid_attach (GTK_GRID (grid), push_button, 0,1,1,1);
     gtk_grid_attach (GTK_GRID (grid), pop_button, 0,2,1,1);
     gtk_grid_attach (GTK_GRID (grid), status_bar, 0,3,1,1);
     
-    /*Σύνδεση των πατημένων σημάτων με τις αντίστοιχες συναρτήσεις επανάκλησης*/
+    /*Connecting the clicked signals to the corresponding callback functions*/
     g_signal_connect (GTK_BUTTON (push_button), "clicked", 
                       G_CALLBACK (push_item), status_bar);
     g_signal_connect (GTK_BUTTON (pop_button), "clicked", 
                       G_CALLBACK (pop_item), status_bar);
     
-    /*Προσάρτηση του πλέγματος που κρατά τα θυγατρικά γραφικά στοιχεία στο παράθυρο και εμφάνιση όλων*/
+    /*Attach the grid holding the child widgets onto the window, and show all*/
     gtk_container_add (GTK_CONTAINER (window), grid);
     gtk_widget_show_all (window);
 }

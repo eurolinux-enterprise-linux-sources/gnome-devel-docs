@@ -19,6 +19,7 @@ HELP_FILES = \
 	dev-translate-setup.page \
 	dev-translate-tools.page \
 	index.page \
+	legal.xml \
 	license.page \
 	overview-communication.page \
 	overview-io.page \
@@ -34,7 +35,6 @@ HELP_FILES = \
 	tech-clutter.page \
 	tech-d-bus.page \
 	tech-eds.page \
-	tech-enchant.page \
 	tech-folks.page \
 	tech-gda.page \
 	tech-gdk.page \
@@ -59,6 +59,7 @@ HELP_FILES = \
 	tech-pulseaudio.page \
 	tech-secret.page \
 	tech-soup.page \
+	tech-spell-checking.page \
 	tech-telepathy.page \
 	tech-tracker.page \
 	tech-webkit.page \
@@ -79,4 +80,4 @@ HELP_MEDIA = \
 	media/glade-set-values.png \
 	media/totem-screenshot.png
 
-HELP_LINGUAS = ca cs de el es fr gl it ja oc pt_BR ru uk sl sv zh_CN
+HELP_LINGUAS = ca cs de el es fr gl it ja ko oc pt_BR ru uk sl sv zh_CN

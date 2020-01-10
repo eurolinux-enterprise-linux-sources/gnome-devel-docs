@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="window.js" xml:lang="cs">
+  <info>
+  <title type="text">Window (JavaScript)</title>
+    <link type="guide" xref="beginner.js#windows"/>
+    <revision version="0.1" date="2012-04-14" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Základní okno, které může obsahovat ostatní widgety</desc>
+  </info>
+
+  <title>Window</title>
+<table>
+  <tr>
+    <td>
+      <media type="image" mime="image/png" src="media/window.png"/>
+      <p>Minimální GtkApplication</p>
+    </td>
+    <td>
+      <p>Pokud potřebujete podporu GMenu, použijte <link xref="GtkApplicationWindow.js">Aplikační okno</link>.</p>
+    </td>
+  </tr>
+</table>
+      <code mime="application/javascript" style="numbered">
+#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+
+class Application {
+    // Vytvoří aplikaci
+    constructor() {
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.myapp',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+       this.application.connect('activate', this._onActivate.bind(this));
+    }
+
+    // Funkce zpětného volání pro signál "activate"
+    _onActivate() {
+        let myWindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+        myWindow.title = "Welcome to GNOME";
+
+       /* Zde je pár způsobů, jak si okno přizpůsobit.
+          Zkuste zrušit jeji zakomentování a jejich hodnoty! */
+        //myWindow.set_default_size (400,200);
+        //myWindow.set_has_resize_grip (false);
+        //myWindow.set_opacity (0.5);
+        //myWindow.maximize ();
+
+        // Zobrazí okno a všechny jeho synovské widgety (v tomto případě žádné)
+        myWindow.show_all();
+        this.application.add_window(myWindow);
+    }
+};
+
+// Spustí aplikaci
+let app = new Application ();
+app.application.run (ARGV);
+</code>
+<p>V tomto příkladu se používá následující:</p>
+<list>
+<item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+<item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Window.html">Gtk.Window</link></p></item>
+</list>
+
+</page>

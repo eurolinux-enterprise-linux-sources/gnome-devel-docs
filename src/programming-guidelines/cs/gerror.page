@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="gerror" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Obsluha a hlášení běhových chyb</desc>
+  </info>
+
+  <title>GError</title>
+
+  <section id="gerror-usage">
+    <title>Použití GError</title>
+
+    <p><link href="https://developer.gnome.org/glib/stable/glib-Error-Reporting.html"><code>GError</code></link> je standardní mechanizmus hlášení chyb pro kód používající GLib a může na něj být pohlíženo jako na implementaci <link href="https://cs.wikipedia.org/wiki/V%C3%BDjimka_(programov%C3%A1n%C3%AD)">výjimek</link> v jazyce C.</p>
+
+    <p>Libovolný druh selhání za běhu (cokoliv, co není <link xref="preconditions">programová chyba</link>) musí být obslouženo vložením parametru <code>GError**</code> do funkce a před návratem z funkce nastavením vhodného a smysluplného popisu selhání v GError. Programové chyby se naopak pomocí GError obsluhovat nesmí: místo toho použijte assertion a podmíněné testy před a po.</p>
+
+    <p>Použití GError byste měli dávat přednost před prostým návratem kódu, protože poskytuje více informací a navíc je podporován všemi nástroji GLib. Například <link xref="introspection">introspekce API</link> bude automaticky detekovat všechny parametry GError, protože je pak umí převést na výjimky v jiných jazycích.</p>
+
+    <p>Výpis varování do konzole se nesmí provádět v programovém kódu knihovny. Použijte GError a volající kód jej může propagovat dále, rozhodnout se jej zpracovat nebo se rozhodnout jej vypsat do konzole. V ideálním případě je jediným kódem, který vypisuje do konzole, programový kód nejvyšší úrovně aplikace a ne kód knihovny.</p>
+
+    <p>Volání kterékoliv funkce, které přebírá <code>GError**</code>, <em>by mělo</em> takovýto parametr poskytnout a pak příslušně obsloužit vrácený GError. Je jen velmi málo situací, kdy je přijatelné potenciální chybu ignorovat předáním <code>NULL</code> do parametru <code>GError**</code>.</p>
+
+    <p>Dokumentace k API knihovny GLib obsahuje <link href="https://developer.gnome.org/glib/stable/glib-Error-Reporting.html#glib-Error-Reporting.description">uceleného průvodce použitím GError</link>.</p>
+  </section>
+</page>

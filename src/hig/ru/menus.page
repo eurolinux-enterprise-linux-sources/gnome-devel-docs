@@ -1,52 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="menus" xml:lang="ru">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="menus" xml:lang="ru">
 
   <info>
     <credit type="author">
-      <name>Allan Day</name>
+      <name>Алан Дэй (Allan Day)</name>
       <email>aday@gnome.org</email>
     </credit>
     <credit>
-      <name>Calum Benson</name>
+      <name>Калум Бенсон (Calum Benson)</name>
     </credit>
     <credit>
-      <name>Adam Elman</name>
+      <name>Адам Элман (Adam Elman)</name>
     </credit>
     <credit>
-      <name>Seth Nickell</name>
+      <name>Сэт Никел (Seth Nickell)</name>
     </credit>
     <credit>
-      <name>Colin Robertson</name>
+      <name>Колин Робертсон (Colin Robertson)</name>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/menu.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Menus</title>
+<title>Меню</title>
 
-<p>A menu is a list of actions and/or options which is revealed by pressing a heading or button. In the case of context menus, the menu is opened through a secondary action (such as secondary click with a mouse, or long press with a touch screen) on an item of content.</p>
+<p>Меню — это список действий и параметров, который появляется при нажатии на заголовок или кнопку. Если меню является контекстным, то меню открывается посредством вспомогательного действия (нажатие вспомогательной кнопки мыши или длительное нажатие на сенсорный экран), выполняемого над элементом содержимого.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/menu.svg"/>
 
 <section id="when-to-use">
-<title>When to use</title>
+<title>Когда использовать</title>
 
-<p>Menus can appear as a part of a <link xref="menu-bars">menu bar</link>, as context menus (see <link xref="selection-mode">selection mode</link>), or as part of a <link xref="button-menus">button menu</link>. Refer to the relevant pages for advice on when to use these elements.</p>
+<p>Меню может быть частью <link xref="menu-bars">панели меню</link>, контекстным меню (см. <link xref="selection-mode">режим выделения</link>) или <link xref="button-menus">кнопочным меню</link>. На страницах, посвящённым указанным выше типам меню, объясняется, когда использовать тот или иной тип меню.</p>
 
 </section>
 
 <section id="size-and-structure">
-<title>Size and structure</title>
+<title>Размер и структура</title>
 
-<p>Menus should contain between three and 12 top-level items. If a menu contains more than 12 items, evaluate whether all the items are necessary and belong in the menu. If you are unable to reduce the size, submenus can be used. However, they should be avoided if at all possible, as they are physically difficult to use.</p>
+<p>Меню должно содержать от трёх до двенадцати элементов верхнего уровня. Если элементов больше двенадцати, попробуйте сократить их количество, в противном случае расположите часть элементов в подменю. Однако старайтесь не использовать подменю, поскольку они затрудняют использование приложения.</p>
 
-<p>Submenus should contain between three and six items, and should never contain other submenus.</p>
+<p>Подменю должно содержать от трёх до шести элементов. Подменю не должно содержать других подменю.</p>
 
-<p>Organize similar menu items into groups using dividers - this will make them easier to understand and quicker to use. When creating groups:</p>
+<p>Группируйте похожие элементы при помощи разделителей. Группировка элементов упрощает использование меню. При группировке:</p>
 
 <list>
-<item><p>Order groups and group items logically, either by importance, task order, or expected frequency of use. Items at the top and bottom of the menu are more noticable and easily targetted, so reserve these locations for particularly important or interesting functionality.</p></item>
-<item><p>Place single-item groups at the top or bottom of the menu, or group them together with other single items.</p></item>
-<item><p>Do not mix different types of menu item within each group - actions, check box and radio button items should be kept separate.</p></item>
+<item><p>Order groups and group items logically, either by importance, task order, or expected frequency of use. Items at the top and bottom of the menu are more noticeable and easily targetted, so reserve these locations for particularly important or interesting functionality.</p></item>
+<item><p>Размещайте группы из одного элемента в нижней или верхней части меню или группируйте из с другими одиночными группами.</p></item>
+<item><p>Не смешивайте различные типы элементов в одной группе: действия, флажки и радиокнопки должны располагаться отдельного друг от друга.</p></item>
 </list>
 
 </section>
@@ -55,11 +59,27 @@
 <title>Общие рекомендации</title>
 
 <list>
-<item><p>Provide an <link xref="keyboard-input#access-keys">access key</link> for every menu item. You may use the same access key on different menus in your application, but avoid duplicating access keys on the same menu. Note that unlike other controls, once a menu is displayed, its access keys may be used by just typing the letter; it is not necessary to press the Alt key at the same time.</p></item>
-<item><p>Label menu items with verbs for commands and adjectives for settings, using <link xref="writing-style#capitalization">header capitalization</link>.</p></item>
-<item><p>Use <link xref="writing-style#ellipses">ellipses</link> when a menu item requires further input from the user to complete an action.</p></item>
-<item><p>Two linked actions can be combined into a single menu item, by changing the label when the item is selected. For example, a <gui>Play</gui> item may change to <gui>Pause</gui>. However, only use this type of item when actions are logical opposites which are obvious to users. Likewise, do not use this technique for settings - use check boxes or radio buttons instead.</p></item>
+<item><p>Добавьте <link xref="keyboard-input#access-keys">ускорители</link> для всех элементов меню. В приложении можно можно использовать для различных меню один и тот же ускоритель, но избегайте дублирования ускорителей в одном и том же меню. Помните, что в отличие от других элементов управления, после появления меню ускорители в нём можно использовать, просто нажав на букву, клавишу Alt нажимать необязательно.</p></item>
+<item><p>В качестве меток в меню используйте глаголы, если это команда, или существительные, если это параметр. При использовании английского языка текстовые метки должны записываться согласно <link xref="writing-style#capitalization">правилу использования прописных букв в заголовках</link>.</p></item>
+<item><p>Применяйте <link xref="writing-style#ellipses">многоточие</link>, если для выполнения действия элементу меню требуется ввод от пользователя.</p></item>
+<item><p>Два связанных действия можно объединить в один элемент меню, изменяя текст метки при выборе элемента. Например, элемент <gui>Воспроизвести</gui> можно изменять на <gui>Приостановить</gui>. Применяйте подобные элементы только в тех случаях, когда оба действия по смыслу противоположны друг другу и очевидны для пользователя. В противном случае применяйте флажки или радио-кнопки.</p></item>
 </list>
 
 </section>
+
+<section id="api-reference">
+<title>API reference</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenu.html">GtkMenu</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuBar.html">GtkMenuBar</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuButton.html">GtkMenuButton</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuItem.html">GtkMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkRadioMenuItem.html">GtkRadioMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkCheckMenuItem.html">GtkCheckMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkSeparatorMenuItem.html">GtkSeparatorMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkPopoverMenu.html">GtkPopoverMenu</link></p></item>
+</list>
+</section>
+
 </page>

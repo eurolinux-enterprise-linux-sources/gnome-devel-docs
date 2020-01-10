@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="pointer-and-touch-input" xml:lang="cs">
+
+  <info>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <credit type="author">
+      <name>Jakub Steiner</name>
+    </credit>
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+    <desc>Obsluha myší, touchpadem a dotykovou obrazovkou.</desc>  
+  </info>
+
+<title>Vstup z ukazovacích a dotykových zařízení</title>
+
+<p>Vstupy z ukazovacích a dotykových zařízení jsou dva hlavní způsoby, kterými uživatelé ovládají své aplikace.</p>
+
+<section id="pointer-input">
+<title>Vstup z ukazovacího zařízení</title>
+
+<p>Ukazovací zařízení je kterékoliv vstupní zařízení, které umožňuje pracovat s ukazatelem, typicky představovaným šipkou, na obrazovce. Někdy bývá ukazatel nesprávně nazýván kurzor, ale kurzor je správně grafický prvek zobrazující zaměření klávesnice při vkládání textu. Mezi běžná ukazovací zařízení patří myši a touchpady (dotykové plošky), ale existuje celá řada jiných typů, jako například grafické tablety, trackbally, trackpointy a pákové ovladače (joysticky).</p>
+
+<section id="primary-and-secondary-buttons">
+<title>Hlavní a druhé tlačítko</title>
+
+<p>Myši a touchpady mají často dvě tlačítka (někdy i více). Jedno z nich vystupuje jako hlavní (první) a další jako druhé. Typicky levé bývá hlavní a pravé druhé. Toto pořadí je ale nastavitelné uživatelem a neovlivňuje vstup z dotykové obrazovky. Proto se na ně tato příručka odkazuje jako na hlavní a druhé tlačítko</p>
+
+<p>Hlavní tlačítko používejte pro výběr položek a aktivaci ovládacích prvků. Druhé tlačítko můžete použít pro přístup k dodatečným volbám, typicky přes kontextovou nabídku.</p>
+
+<p>Nevytvářejte závislosti na vstupu z druhého nebo dalších tlačítek. Mimo to, že je fyzicky obtížnější jimi kliknout, tak některá ukazovací zařízení a řada zařízení pro asistenčních technologie podporuje nebo emuluje pouze hlavní tlačítko.</p>
+
+<p>Pro simulaci druhého tlačítka na zařízení s jen jedním tlačítkem by mělo být použito zmáčknutí a držení. Proto nepoužívejte zmáčknutí a držení k jiným účelům.</p>
+
+</section>
+
+<section id="general-guidelines">
+<title>Obecné rady</title>
+
+<list>
+<item><p>Dvojité kliknutí by se nemělo používat, protože se dá jen těžko objevit a špatně se převádí na dotykový vstup.</p></item>
+<item><p>V případě, že má myš kolečko, mělo by provádět posuv obsahu okna nebo ovládacího prvku pod ukazatelem, pokud posuv podporují. Provádění posuvu tímto způsobem by nemělo přesouvat zaměření klávesnice v okně nebo ovládacím prvku, ve kterých k posuvu dochází.</p></item>
+<item><p>U žádné operace po uživateli nežádejte, aby hrál na varhany (mačkal několik tlačítek současně).</p></item>
+<item><p>U žádné operace nepožadujte vícenásobné (trojité nebo čtyřnásobné) kliknutí, ledaže poskytnete i alternativní postup, jak tu samou činnost provést.</p></item>
+<item><p>U všech operací myší umožněte jejich zrušení před dokončením. Zmáčknátí <key>Esc</key> by mělo přerušit kteroukoliv probíhající operaci myší, jako je táhnutí a upuštění souboru ve správci souborů nebo tažení tvaru v kreslící aplikaci.</p></item>
+<item><p>Pokud to není absolutně nutné, neodkazujte se v uživatelském rozhraní na konkrétní tlačítka myši. Ne všichni používají běžnou myš s levým, prostředním a pravým tlačítkem, takže text nebo nákres odkazující na tyto tlačítka by byl matoucí.</p></item>
+</list>
+
+</section>
+
+<section id="mouse-and-keyboard-equivalents">
+<title>Ekvivalenty u myši a klávesnice</title>
+
+<p>Dbejte na to, aby každá operace ve vaší aplikaci, která jde udělat myší, šla udělat i z klávesnice. Jedinou výjimkou jsou činnosti, u kterých je podstatné jemné motorické ovládání. Například ovládání pohybu v některých typech her nebo při volném malování v grafickém editoru.</p>
+
+<p>Jestli vaše aplikace umožňuje vybrat položky, měly by být k dispozici následující rovnocenné činnosti.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Činnosti</p></td>
+<td><p>Myš</p></td>
+<td><p>Klávesnice</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p>Otevřít položku</p></td>
+<td><p>Hlavní tlačítko</p></td>
+<td><p><key>Space</key></p></td>
+</tr>
+<tr>
+<td><p>Přidat položku do/odstranit položku z výběru</p></td>
+<td><p><key>Ctrl</key> a hlavní tlačítko</p></td>
+<td><p><keyseq><key>Ctrl</key><key>mezerník</key></keyseq></p></td>
+</tr>
+<tr>
+<td><p>Rozšířit výběr</p></td>
+<td><p><key>Shift</key> a hlavní tlačítko</p></td>
+<td><p><key>Shift</key> v kombinaci s následujícími klávesami: <key>mezerník</key> <key>Home</key> <key>End</key> <key>PageUp</key> <key>PageDown</key></p></td>
+</tr>
+<tr>
+<td><p>Změna výběru</p></td>
+<td><p>Hlavní tlačítko</p></td>
+<td><p>Některá z následujících: <key>←</key> <key>↑</key> <key>→</key> <key>↓</key> <key>Home</key> <key>End</key> <key>PageUp</key> <key>PageDown</key></p></td>
+</tr>
+<tr>
+<td><p>Vybrat vše</p></td>
+<td><p>Kliknutí hlavním tlačítkem na první položku, pak kliknutí hlavním tlačítkem spolu s klávesou <key>Shift</key> na poslední položku</p></td>
+<td><p><keyseq><key>Ctrl</key><key>A</key></keyseq></p></td>
+</tr>
+<tr>
+<td><p>Zrušit všechen výběr</p></td>
+<td><p>Kliknutí hlavním tlačítkem na pozadí kontejneru</p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>A</key></keyseq></p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section id="touch-input">
+<title>Vstup z dotykového zařízení</title>
+
+<p>Dotykové obrazovky jsou stále běžnější součástí moderního počítačového vybavení a je tak pravděpodobnější, že aplikace vytvoření s GTK+ budou požívané s hardwarem, který zahrnuje dotykovou obrazovku. Aby byl tento hardware co nejlépe využit a aby to odpovídalo očekávání uživatelů, je důležité zvážit dotykové ovládání jako součást návrhu aplikace.</p>
+
+<section id="application-touch-conventions">
+<title>Zvyklosti dotykového ovládání v aplikacích</title>
+
+<p>Používejte dotykový vstup jednotně s ostatními aplikacemi, aby se uživatel snadno naučil, jak vaši aplikaci používat s dotykovou obrazovkou. Kde to má význam, jsou doporučovány následující zvyklosti.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Činnosti</p></td>
+<td><p>Popis</p></td>
+<td><p>Výsledek</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="3"><p><em style="strong">Klepnutí</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/png" src="figures/touch/tap.svg"/></td>
+<td><p>Klepněte na položku.</p></td>
+<td><p>Hlavní činnosti. Položka se otevře – fotografie se zobrazí v plné velikosti, aplikace se spustí, u písničky se spustí přehrávání.</p></td>
+</tr>
+<tr>
+<td colspan="3"><p><em style="strong">Přiložení a držení</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/png" src="figures/touch/tap-and-hold.svg"/></td>
+<td><p>Zmáčkněte a držte vteřinu, dvě.</p></td>
+<td><p>Druhotná činnost. Vybere položku a vypíše činnosti, které lze provést.</p></td>
+</tr>
+<tr>
+<td colspan="3"><p><em style="strong">Tažení</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/png" src="figures/touch/drag.svg"/></td>
+<td><p>Táhněte prstem po povrchu.</p></td>
+<td><p>Posouvá oblast na obrazovce.</p></td>
+</tr>
+<tr>
+<td colspan="3"><p><em style="strong">Štípnutí nebo rozevření</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/png" src="figures/touch/pinch-or-stretch.svg"/></td>
+<td><p>Dotýkejte se povrchu dvěma prsty a posouvejte je při tom blíže k sobě nebo dál od sebe.</p></td>
+<td><p>Změna úrovně přiblížení v zobrazení (např. Mapy, Fotografie).</p></td>
+</tr>
+<tr>
+<td colspan="3"><p><em style="strong">Dvojité klepnutí</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/png" src="figures/touch/double-tap.svg"/></td>
+<td><p>Klepněte dvakrát v rychlém sledu.</p></td>
+<td><p>Krok přiblížení.</p></td>
+</tr>
+<tr>
+<td colspan="3"><p><em style="strong">Máchnutí</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/png" src="figures/touch/flick.svg"/></td>
+<td><p>Velmi rychle táhněte a, aniž byste zpomalili, opusťte kontakt s povrchem.</p></td>
+<td><p>Odebere položku.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="system-touch-conventions">
+<title>Zvyklosti dotykového ovládání v systému</title>
+
+<p>V GNOME 3 je několik dotykových gest rezervováno pro použití systémem. Měli byste se jim vyhnout v aplikacích.</p>
+
+<table>
+<tr>
+<td colspan="3"><p><em style="strong">Táhnutí od hrany</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/svg" src="figures/touch/edge-drag.svg"/></td>
+<td><p>Táhněte prstem počínaje na kraji obrazovky.</p></td>
+<td><p>Levá horní hrana otevře nabídku aplikace.</p>
+<p>Pravá horní hrana otevře stavovou nabídku systému.</p>
+<p>Levá hrana otevře přehled činností se zobrazením aplikací.</p></td>
+</tr>
+<tr>
+<td colspan="3"><p><em style="strong">Štípnutí třemi prsty</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/svg" src="figures/touch/3-finger-pinch.svg"/></td>
+<td><p>Posouvejte tři nebo více prstů položených na povrchu blíže k sobě.</p></td>
+<td><p>Otevře přehled činností.</p></td>
+</tr>
+<tr>
+<td colspan="3"><p><em style="strong">Tažení čtyřmi prsty</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/svg" src="figures/touch/4-finger-drag.svg"/></td>
+<td><p>Táhněte nahoru nebo dolů se čtyřmi prsty položenými na povrchu.</p></td>
+<td><p>Přepíná pracovní plochy.</p></td>
+</tr>
+<tr>
+<td colspan="3"><p><em style="strong">Držení třemi prsty a klepání</em></p></td>
+</tr>
+<tr>
+<td><media type="image" mime="image/svg" src="figures/touch/3-finger-hold-and-tap.svg"/></td>
+<td><p>Tři prsty držte na povrchu a čtvrtým při tom poklepávejte.</p></td>
+<td><p>Přepíná aplikace.</p></td>
+</tr>
+</table>
+
+</section>
+</section>
+</page>

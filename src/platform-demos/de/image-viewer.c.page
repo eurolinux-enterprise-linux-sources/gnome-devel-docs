@@ -42,7 +42,7 @@
 <media type="image" mime="image/png" src="media/image-viewer.png"/>
 
 <section id="anjuta">
-  <title>Create a project in Anjuta</title>
+  <title>Erstellen eines Projekts in Anjuta</title>
   <p>Before you start coding, you'll need to set up a new project in Anjuta. This will create all of the files you need to build and run the code later on. It's also useful for keeping everything together.</p>
   <steps>
     <item>
@@ -58,9 +58,9 @@
     </item>
     <item>
     <p>Click <gui>Apply</gui> and the project will be created for you. Open <file>src/main.c</file> from the <gui>Project</gui> or <gui>File</gui> tabs. You should see some code which starts with the lines:</p>
-    <code mime="text/x-csrc"><![CDATA[
-#include <config.h>
-#include <gtk/gtk.h>]]></code>
+    <code mime="text/x-csrc">
+#include &lt;config.h&gt;
+#include &lt;gtk/gtk.h&gt;</code>
     </item>
   </steps>
 </section>
@@ -94,7 +94,7 @@
 <p>Now we will bring life into the empty window. GTK organizes the user interface
 with <code>GtkContainer</code>s that can contain other widgets and even other containers. Here we
 will use the simplest available container, a <code>GtkBox</code>:</p>
-<code mime="text/x-csrc"><![CDATA[
+<code mime="text/x-csrc">
 static GtkWidget*
 create_window (void)
 {
@@ -126,7 +126,7 @@ create_window (void)
 
 	return window;
 }
-]]></code>
+</code>
   <steps>
     <item>
     <p>The first lines create the widgets we want to use: a button for opening up an image, the image view widget itself and
@@ -159,7 +159,7 @@ create_window (void)
 <p>We will now define the signal handler for the <em>clicked</em> signal or the
 button we mentioned before. Add this code before the <code>create_window()</code>
 method.</p>
-<code mime="text/x-csrc"><![CDATA[
+<code mime="text/x-csrc">
 static void
 on_open_image (GtkButton* button, gpointer user_data)
 {
@@ -191,7 +191,7 @@ on_open_image (GtkButton* button, gpointer user_data)
 	}
 	gtk_widget_destroy (dialog);
 }
-]]></code>
+</code>
   <p>This is a bit more complicated than anything we've attempted so far, so let's break it down:</p>
   <list>
     <item><p>The first argument of the signal is always the widget that sent the signal. Sometimes
@@ -245,7 +245,7 @@ on_open_image (GtkButton* button, gpointer user_data)
    </item>
    <item>
    <p>Allow the user to load images from network shares, scanners, and other more complicated sources.</p>
-   <p>You can use <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> to handle network file tranfers and the like, and <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> to handle scanning.</p>
+   <p>You can use <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> to handle network file transfers and the like, and <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> to handle scanning.</p>
    </item>
   </list>
 </section>

@@ -18,18 +18,18 @@
 
     <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
 
-    <desc>Bind functions to events using Lang.</desc>
+    <desc>Binden Sie mit Lang Funktionen an Events.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Mario Blättermann</mal:name>
       <mal:email>mario.blaettermann@gmail.com</mal:email>
-      <mal:years>2009-2012</mal:years>
+      <mal:years>2009-2012, 2016</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Christian Kirbach</mal:name>
       <mal:email>christian.kirbach@gmail.com</mal:email>
-      <mal:years>2011, 2012.</mal:years>
+      <mal:years>2011, 2012, 2015, 2017, 2018</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -46,34 +46,29 @@
     <title>Erste Schritte mit GNOME</title>
   </links>
 
-  <p>Gtk has a set of predefined events that you can use in your application.</p>
+  <p>Gtk verfügt über eine Reihe von vordefinierten Events, die Sie in Ihrer Anwendung nutzen können.</p>
   <example>
-    <p>Declare <code>HelloWorld</code> as a new <code>Lang</code> class.
-    Gjs requires classes to have the Name property defined.</p>
+    <p>Deklarieren Sie <code>HelloWorld</code> als eine neue Klasse.</p>
 
     <code>
-const HelloWorld = new Lang.Class({
-    Name: 'HelloWorld',
+class HelloWorld {
 </code>
 
-    <p><code>_init</code> is called when a new instance is created. Create a
-    <code>GtkApplication</code>, then connect <code>activate</code> to the
-    existing Gtk event <code>_onActivate</code> and <code>startup</code> to
-    <code>_onStartup</code>:</p>
+    <p><code>constructor</code> wird aufgerufen, wenn eine neue Instanz erzeugt wird. Erstellen Sie eine <code>GtkApplication</code> und verbinden Sie dann <code>activate</code> mit dem existierenden Gtk-Event <code>_onActivate</code> und <code>startup</code>, um mit <code>_onStartup</code> zu starten:</p>
 
     <code>
-    _init: function() {
+    constructor() {
         this.application = new Gtk.Application();
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 </code>
 
-    <p>Show the window upon application activation:</p>
+    <p>Zeigen Sie das Fenster nach der Aktivierung der Anwendung anzeigen:</p>
     <code>
-    _onActivate: function(){
+    _onActivate() {
         this._window.show_all();
-    },
+    }
 </code>
   </example>
   <links type="prevnext"/>

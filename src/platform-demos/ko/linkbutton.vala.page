@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="linkbutton.vala" xml:lang="ko">
+  <info>
+  <title type="text">LinkButton (Vala)</title>
+  <link type="guide" xref="beginner.vala#buttons"/>
+    <revision version="0.1" date="2012-06-06" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>URL로 넘어가는 단추를 만듭니다</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>LinkButton</title>
+  <media type="image" mime="image/png" src="media/linkbutton.png"/>
+  <p>이 단추에 그놈 라이브를 연결했습니다.</p>
+
+<code mime="text/x-csharp" style="numbered">/* This is the application. */
+public class MyApplication : Gtk.Application {
+	/* Override the 'activate' signal of GLib.Application. */
+	protected override void activate () {
+
+		/* Create the window of this application and child widget and show all the things. */
+		var window = new Gtk.ApplicationWindow (this);
+		window.set_default_size (250, 50);
+		window.title = "GNOME LinkButton";
+
+		var linkbutton = new Gtk.LinkButton.with_label ("http://live.gnome.org", "Link to GNOME live!");
+
+		window.add (linkbutton);
+		window.show_all ();
+	}
+}
+
+/* main creates and runs the application. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.LinkButton.html">Gtk.LinkButton</link></p></item>
+</list>
+</page>

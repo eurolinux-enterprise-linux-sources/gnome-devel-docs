@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.js" xml:lang="cs">
+  <info>
+  <title type="text">SpinButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#entry"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="grid.js"/>
+    <link type="seealso" xref="label.js"/>
+    <revision version="0.1" date="2012-06-24" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Číselné vstupní pole, které má tlačítka + a -</desc>
+  </info>
+
+  <title>SpinButton</title>
+  <media type="image" mime="image/png" src="media/spinbuttonkittens.png"/>
+  <p>SpinButton (číselník) nemá žádnou souvislost s widgetem <link xref="spinner.js">Spinner</link> (káča). Jedná se o textové vstupní pole, které přijímá jen čísla a má tlačítka plus a mínus, která umožňují měnit hodnout, aniž byste museli psát.</p>
+  <p>Je nejlepší pro použití v situacích, kdy je potřeba zadávat čistě číselné hodnoty. V tomto příkladu jsou dva číselníky použity pro počet koček a počet tuňákových konzerv pro ně.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Importované knihovny</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Toto jsou knihovny, které potřebujeme naimportovat, aby aplikace běžela. Pamatujte si, že řádek, který GNOME říká, že používáme Gjs, musí být vždy na začátku.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Vytvoření okna aplikace</title>
+    <code mime="application/javascript">
+const SpinButtonExample = new Lang.Class({
+    Name: 'SpinButton Example',
+
+    // Vytvoří vlastní aplikaci
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsspinbutton'
+        });
+
+    // Připojí signály "activate" a "startup" k funkcím zpětného volání
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Všechen kód této ukázky je ve třídě <code>SpinButtonExample</code>. Výše uvedený kód vytvoří <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pro naše widgety a okno, ve kterém budou.</p>
+    <code mime="application/javascript">
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI: function() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Kitten Feeder"});
+</code>
+    <p>Funkce <code>_buildUI</code> je místo, ze kterého voláme všechen kód, který vytváří uživatelské rozhraní aplikace. Prvním krokem je vytvoření nového <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link>, do kterého vložíme všechny naše widgety.</p>
+  </section>
+
+  <section id="spinbutton">
+    <title>Vytvoření widgetů SpinButton</title>
+    <code mime="application/javascript">
+        // Pomocí funkce vytvoří první číselník
+        this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
+        this._kittens.connect ("value-changed", Lang.bind (this, this._newValue));
+</code>
+
+    <p>K rychlému vytvoření číselníku můžeme použít funkci <code>new_with_range</code>. Prvním parametrem je počáteční hodnota číselníku, druhým maximální hodnota a třetím velikost kroku použitého při mačkání tlačítek plus nebo mínus.</p>
+    <p>Po vytvoření prvního číselníku napojíme jeho signál "value-changed" k funkci, která zpracovává, co se má stát, když se číslo uvnitř číselníku změní.</p>
+
+    <code mime="application/javascript">
+        // Vytvoří přizpůsobení, které se použije pro druhý číselník
+        this._adjustment = new Gtk.Adjustment ({
+            value: 1,
+            lower: 0,
+            upper: 9001,
+            step_increment: 1,
+            page_increment: 10 });
+
+        // Vytvoří druhý číselník
+        this._tuna = new Gtk.SpinButton ({ adjustment: this._adjustment });
+        this._tuna.connect ("value-changed", Lang.bind (this, this._newValue));
+
+        // this._tuna.set_digits (1);
+        // this._tuna.set_wrap (true);
+</code>
+
+    <p>Jestli chcete jemnější kontrolu nad widgetem <code>SpinButton</code> nebo chcete vytvořit spoustu číselníků, které budou mít stejné parametry, můžete vytvořit objekt <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Adjustmen</link> (přizpůsobení). Pak můžete použít tento objekt jako vlastnost <code>adjustment</code> pro nový číselník a tím ji nastavit všechny vlastnosti naráz. Později můžete změnit všechny číselníky, které používají toto přizpůsobení naráz pouhou změnou některé vlastnosti objektu <code>Adjustment</code>.</p>
+    <p>Řádky zde zakomentované ukazují věci, které si můžete u číselníků přizpůsobit. Můžete například nastavit počet číslic za desetinnou čárkou nebo říci, aby se při dosažení nastavené horní nebo dolní meze cyklicky přešlo na opačný konec.</p>
+    <note><p>V zájmu zdraví koček nepoužívejte prosím metodu <code>set_digits</code>, která by umožnila necelé počty koček.</p></note>
+  </section>
+
+  <section id="UI">
+    <title>Vytvoření zbytku uživatelského rozhraní</title>
+
+    <code mime="application/javascript">
+        // Vytvoří textové popisky, které budou u číselníků
+        this._startLabel = new Gtk.Label ({ label: "There are " });
+        this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
+        this._tunaLabel = new Gtk.Label ({ label: " can(s) of tuna."});
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
+        this._lastLabel = new Gtk.Label ({
+            label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
+</code>
+    <p>Každý widget <link xref="label.js">Label</link> vytvoříme samostatně a pak je spojíme dohromady s jednotlivými číselníky. Poslední popisek potřebujeme na zobrazování počtu konzerv tuňáka na kočku, takže má uprostřed proměnnou odpovídající výpočtu, který používá funkce <code>get_value</code> u číselníků k zjištění, co je v nich nastaveno. Funkce <code>floor</code> z objektu <code>Math</code> jazyka JavaScript se použije k zaokrouhlení počtu konzerv tuňáka na kočku na nejbližší nižší celé číslo.</p>
+
+    <code mime="application/javascript">
+        // Vytvoří mřížku pro vložení číselníků a jejich popisků
+        this._spinGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_bottom: 20 });
+
+        // Připojí vše do mřížky
+        this._spinGrid.attach (this._startLabel, 0, 0, 1, 1);
+        this._spinGrid.attach (this._kittens, 1, 0, 1, 1);
+        this._spinGrid.attach (this._kittenLabel, 2, 0, 1, 1);
+        this._spinGrid.attach (this._tuna, 3, 0, 1, 1);
+        this._spinGrid.attach (this._tunaLabel, 4, 0, 1, 1);
+
+        // Vytvoří hlavní mřížku, která bude obsahovat tu předchozí a poslední popisek
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Připojí menší mřížku a posledního popisek do hlavní mřížky
+        this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
+        this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
+</code>
+
+    <p>Zde používáme widgety <link xref="grid.js">Grid</link>, které vše udržují správně rozložené. Jedna mřížka obsahuje ve správném pořadí popisky a číselníky, zatímco následující obsahuje na hoře ji a dole konečný popisek.</p>
+    <p>Rozhodně není špatný způsob, hrát si s uspořádáním věcí do mřížek tak dlouho, až získáte to, co si přejete. V tomto případě má horní mřížka dole okraj, aby se uchoval odstup od spodního popisku a spodní popisek je uvnitř další mřížky, aby byl vystředěn relativně vůči popiskům a číselníkům nahoře.</p>
+
+    <code mime="application/javascript">
+        // Přidá mřížku do okna
+        this._window.add (this._mainGrid);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    },
+</code>
+    <p>Nakonec přidáme větší mřížku do okna a oknu řekneme, že má zobrazit sebe a všechny widgety uvnitř sebe.</p>
+    </section>
+
+    <section id="spinbutton-handler">
+    <title>Funkce, která obsluhuje změny číselných hodnot widgetů SpinButton</title>
+
+    <code mime="application/javascript">
+    _newValue: function () {
+
+        // Aktualizuje popisek, který zobrazuje, kolik konzerv připadá na jednu kočku
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()))
+        this._lastLabel.set_label ("That's " + this.perKitten + " can(s) of tuna per kitten.");
+
+    }
+
+});
+</code>
+    <p>Zde aktualizujeme proměnnou <var>perKitten</var> vycházející z nových hodnot v číselnících a použijeme vlastnost <code>set_label</code> k občerstvení údaje, který zobrazuje <code>_lastLabel</code>. Protože mají oba číselníky své signály <code>"value-changed"</code> napojené na tuto funkci, aktualizuje tato funkce popisek pokaždé, když se změní některá z hodnot.</p>
+
+    <code mime="application/javascript">
+// Spustí aplikaci
+let app = new SpinButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>Nakonec vytvoříme novou instanci konečné třídy SpinButtonExample a aplikaci spustíme.</p>
+  </section>
+
+  <section id="complete">
+    <title>Úplný kód ukázky</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+
+class SpinButtonExample {
+
+    // Vytvoří vlastní aplikaci
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsspinbutton'
+        });
+
+    // Napojí signály "activate" a "startup" k funkcím zpětného volání
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Kitten Feeder"});
+
+        // Vytvoří pomocí funkce první číselník
+        this._kittens = Gtk.SpinButton.new_with_range (1, 9001, 1);
+        this._kittens.connect ("value-changed", this._newValue.bind(this));
+
+        // Vytvoří přizpůsobení, které se použije pro druhý číselník
+        this._adjustment = new Gtk.Adjustment ({
+            value: 1,
+            lower: 0,
+            upper: 9001,
+            step_increment: 1,
+            page_increment: 10 });
+
+        // Vytvoří druhý číselník
+        this._tuna = new Gtk.SpinButton ({ adjustment: this._adjustment });
+        this._tuna.connect ("value-changed", this._newValue.bind(this));
+
+        // this._tuna.set_digits (1);
+        // this._tuna.set_wrap (true);
+
+        // Vytvoří textový popisek, který bude u číselníku
+        this._startLabel = new Gtk.Label ({ label: "There are " });
+        this._kittenLabel = new Gtk.Label ({ label: " kitten(s), and "});
+        this._tunaLabel = new Gtk.Label ({ label: " can(s) of tuna."});
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()));
+        this._lastLabel = new Gtk.Label ({
+            label: "That's " + this.perKitten + " can(s) of tuna per kitten." });
+
+        // Vytvoří mřížku, do které se vloží číselníky a jejich popisky
+        this._spinGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_bottom: 20 });
+
+        // Připojí vše do mřížky
+        this._spinGrid.attach (this._startLabel, 0, 0, 1, 1);
+        this._spinGrid.attach (this._kittens, 1, 0, 1, 1);
+        this._spinGrid.attach (this._kittenLabel, 2, 0, 1, 1);
+        this._spinGrid.attach (this._tuna, 3, 0, 1, 1);
+        this._spinGrid.attach (this._tunaLabel, 4, 0, 1, 1);
+
+        // Vytvoří hlavní mřížku, která bude obsahovat poddružnou mřížku a poslední popisek
+        this._mainGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER });
+
+        // Připojí poddružnou mříku a poslední popisek do hlavní mřížky
+        this._mainGrid.attach (this._spinGrid, 0, 0, 1, 1);
+        this._mainGrid.attach (this._lastLabel, 0, 1, 1, 1);
+
+        // Přidá hlavní mřížku do okna
+        this._window.add (this._mainGrid);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    }
+
+    _newValue() {
+        // Aktualizuje popisek, který zobrazuje kolik konzerv připadá na jednu kočku
+        this.perKitten = Math.floor((this._tuna.get_value() / this._kittens.get_value()))
+        this._lastLabel.set_label ("That's " + this.perKitten + " can(s) of tuna per kitten.");
+    }
+};
+
+// Spustí aplikaci
+let app = new SpinButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Dokumentace jdoucí do hloubky</title>
+<list>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Gtk.Adjustment</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.SpinButton.html">Gtk.SpinButton</link></p></item>
+</list>
+  </section>
+</page>

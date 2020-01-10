@@ -3,7 +3,8 @@
       id="primary-windows">
 
   <info>
-    <link type="guide" xref="patterns" group="primary-windows"/>   
+    <link type="guide" xref="patterns#primary"/>
+    <desc>The main window(s) for your application</desc> 
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
@@ -49,6 +50,19 @@
 <item><p>Organizing sets of content into different windows (if using tabs).</p></item>
 </list>
 
+<section id="parent-child-primary-windows">
+<title>Parent/child primary windows</title>
+
+<p>Multiple instance applications typically have identical primary windows (in the case multiple web browser windows, for example). However, this is not always the case.</p>
+
+<p>Primary windows can have a parent/child relationship. In this type of application, there is only ever one parent window. This typically contains an overview of content items which can be opened in the parent window, or in a separate child window. This allows multiple content items to be simultaneously open.</p>
+
+<p>While child windows can only be opened through a parent window, they are not dependent on them in order to stay open: closing the parent window does not result in the closure of the application's child windows.</p>
+
+<p>GNOME's <app>Notes</app> application is a good example of parent/child primary windows.</p>
+
+</section>
+
 </section>
 </section>
 
@@ -56,13 +70,23 @@
 <title>General guidelines</title>
 
 <list>
-<item><p>If your application isn’t running and its launcher is activated, a single primary window should be displayed. Do not show multiple windows when your application is initially launched.</p></item>
-<item><p>If your application launcher is selected while your application is running, all its primary windows should be displayed.</p></item>
+<item><p>A single primary window should always be displayed when your application is launched.</p></item>
+<item><p>If your application launcher is activated while your application is running, all its primary windows should be displayed.</p></item>
 <item><p>Primary windows should host the main functionality of your application. Do not rely on dialogs or secondary windows in order to present basic functionality.</p></item>
 <item><p>Primary windows should be independent - closing one primary window should not result in other primary windows being closed.</p></item>
 <item><p>Dialog windows should always be dependent on a primary window. See the <link xref="dialogs">dialogs page</link> guidelines.</p></item>
-<item><p>Your application should cease to run when all its primary windows have been closed.</p></item>
+<item><p>The guidelines on <link xref="display-compatibility">display compatibility</link> are particularly relevant for primary windows: be careful to ensure that they follow the advice on minimum display sizes, display orientation, and half-screen snap.</p></item>
 <item><p><gui>Quit</gui> should close all primary windows.</p></item>
+</list>
+
+</section>
+
+<section id="api-reference">
+<title>API reference</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkWindow.html">GtkWindow</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">GtkApplicationWindow</link></p></item>
 </list>
 
 </section>

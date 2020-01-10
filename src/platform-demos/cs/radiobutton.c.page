@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="radiobutton.c" xml:lang="cs">
+  <info>
+    <title type="text">RadioButton (C)</title>
+    <link type="guide" xref="c#buttons"/>
+    <link type="seealso" xref="togglebutton.c"/>
+    <link type="seealso" xref="grid.c"/>
+    <revision version="0.2" date="2012-06-22" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Volba z více zaškrtávacích políček</desc>
+  </info>
+
+  <title>RadioButton</title>
+
+  <media type="image" mime="image/png" src="media/radiobutton.png"/>
+  <p>Tyto skupinové přepínače oznamují svojí aktivitu v terminálu.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+
+
+/* Obsluha signálu „toggled“ od widgetu RadioButton */
+static void
+button_toggled_cb (GtkWidget *button,
+                   gpointer   user_data)
+{
+  char *b_state;
+  const char *button_label;
+
+  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button)))
+          b_state = "on";
+  else {
+          b_state = "off";
+          g_print ("\n");
+  }
+
+  button_label = gtk_button_get_label (GTK_BUTTON (button));
+
+  g_print ("%s was turned %s\n", button_label, b_state);
+}
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *grid;
+  GtkWidget *window;
+
+  GtkWidget *button1;
+  GtkWidget *button2;
+  GtkWidget *button3;
+
+  /* Vytvoří okno s nastaveným názvem a výchozí velikostí.
+     Rovněž se nastaví šířka okraje, aby bylo uvnitř okna ponecháno
+     více místa */
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "RadioButton Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 250, 100);
+  gtk_container_set_border_width (GTK_CONTAINER(window), 20);
+
+
+  /* Vytvoří první skupinový přepínač */
+  button1 = gtk_radio_button_new_with_label (NULL, "Button 1");
+
+  /* Vytvoří druhý skupinový přepínač a přidá jej do stejné skupiny jako
+     Button 1 */
+  button2 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button1), 
+                                                         "Button 2");
+
+  /* Vytvoří třetí skupinový přepínač a přidá jej do stejné skupiny jako
+     Button 1 */
+  button3 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button1), 
+                                                         "Button 3");
+
+
+  /* Vytvoří mřížku, připojí přepínače a správně je umístí */
+  grid = gtk_grid_new ();
+  gtk_grid_attach (GTK_GRID (grid), button1, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid), button2, 0, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid), button3, 0, 2, 1, 1);
+
+  /* Zajistí správné nastavení počátečního stavu každého z přepínačů */
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button2), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button1), FALSE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button3), FALSE);
+
+  /* Připojí obsluhu signálu (neboli funkcí zpětného volání) k přepínačům */
+  g_signal_connect (GTK_TOGGLE_BUTTON (button1), "toggled", 
+                    G_CALLBACK (button_toggled_cb), window);
+  g_signal_connect (GTK_TOGGLE_BUTTON (button2), "toggled", 
+                    G_CALLBACK (button_toggled_cb), window);
+  g_signal_connect (GTK_TOGGLE_BUTTON (button3), "toggled", 
+                    G_CALLBACK (button_toggled_cb), window);
+
+  gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET (grid));
+
+  gtk_widget_show_all (window);
+}
+
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkLabel.html">GtkLabel</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkGrid.html">GtkGrid</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkSwitch.html">GtkSwitch</link></p></item>
+
+</list>
+</page>

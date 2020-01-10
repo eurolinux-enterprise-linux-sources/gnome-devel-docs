@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="progress-bars" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="progress-bars" xml:lang="el">
 
   <info>
     <credit type="author">
@@ -18,12 +18,22 @@
     <credit>
       <name>Colin Robertson</name>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/progress-bars.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014-2015</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Δημήτρης Σπίγγος</mal:name>
+      <mal:email>dmtrs32@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -35,87 +45,87 @@
 
 <title>Γραμμές προόδου</title>
 
-<p>Progress bars indicate that a task is being carried out, along with how much progress has been made through the task.</p>
+<p>Οι γραμμές προόδου δείχνουν ότι εκτελείται η εργασία, μαζί με τον βαθμό προόδου της εργασίας.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/progress-bars.svg"/>
 
 <section id="when-to-use">
 <title>Πότε χρησιμοποιούνται</title>
 
-<p>It is usually necessary to indicate that progress is taking place whenever an operation takes more than around three seconds. This ensures that users understand that they have to wait, and that an error has not occurred.</p>
+<p>Είναι συνήθως απαραίτητο να δείχνετε ότι η πρόοδος λαμβάνει χώρα όποτε μια λειτουργία παίρνει περισσότερο από περίπου τρία δευτερόλεπτα. Αυτό διασφαλίζει ότι οι χρήστες καταλαβαίνουν ότι πρέπει να περιμένουν και ότι δεν υπάρχει σφάλμα.</p>
 
-<p>When indicating progress, the primary choice is between a progress bar or a <link xref="progress-spinners">progress spinner</link>. Progress bars indicate how much of a task has been completed. They are therefore useful for tasks that take a long time. As a rule of thumb, only use a progress bar for tasks that take over 30 seconds. For tasks that have shorter periods, <link xref="progress-spinners">progress spinners</link> are often a better choice.</p>
+<p>Κατά την υπόδειξη της προόδου, η πρωτεύουσα επιλογή είναι μεταξύ μιας γραμμής προόδου ή ενός <link xref="progress-spinners">στροβίλου προόδου</link>. Οι γραμμές προόδου δείχνουν τον βαθμό ολοκλήρωσης μιας εργασίας. Είναι συνεπώς χρήσιμες για εργασίες που παίρνουν πολύ χρόνο. Ως πρόχειρος κανόνας, χρησιμοποιήστε μόνο μια γραμμή προόδου για εργασίες που παίρνουν πάνω από 30 δευτερόλεπτα. Για εργασίες με πιο σύντομες περιόδους, οι <link xref="progress-spinners">στρόβιλοι προόδου</link> είναι συχνά μια καλύτερη επιλογή.</p>
 
 </section>
 
 <section id="types">
-<title>Types</title>
+<title>Τύποι</title>
 
-<p>There are three types of progress bar:</p>
+<p>Υπάρχουν τρεις τύποι γραμμής προόδου:</p>
 
 <list>
-<item><p>Time-remaining: these indicate how much time remains in an operation.</p></item>
-<item><p>Typical-time: these indicate how much time remains, based on an estimate of the expected duration.</p></item>
-<item><p>Indeterminate: these only indicate that an operation is ongoing, not how long it will take.</p></item>
+<item><p>Υπολειπόμενου χρόνου: αυτό δείχνει πόσος χρόνος υπολείπεται για μια λειτουργία.</p></item>
+<item><p>Τυπικού χρόνου: αυτό δείχνει πόσος χρόνος απομένει, με βάση την εκτίμηση της αναμενόμενης διάρκειας.</p></item>
+<item><p>Ενδιάμεσος: αυτό δείχνει μόνο ότι μια λειτουργία συνεχίζεται, όχι πόσο θα πάρει.</p></item>
 </list>
 
-<p>Accuracy is preferable for progress bars. Where possible, use a time-remaining progress bar, followed by typical-time. Try to avoid using indeterminate progress bars.</p>
+<p>Η ακρίβεια προτιμάται για γραμμές προόδου. Όπου είναι δυνατό, χρησιμοποιήστε μια γραμμή προόδου υπολειπόμενου χρόνου, ακολουθούμενη από τυπικό χρόνο. Προσπαθήστε να αποφύγετε τη χρήση ενδιάμεσων γραμμών προόδου.</p>
 
 </section>
 
 <section id="progress-text">
-<title>Progress text</title>
+<title>Κείμενο προόδου</title>
 
-<p>Each progress bar can include a text description. This text should provide an idea of how much of the task has been completed. When deciding on progress text:</p>
+<p>Κάθε γραμμή προόδου μπορεί να περιλαμβάνει μια περιγραφή κειμένου. Αυτό το κείμενο πρέπει να δίνει μια ιδέα του βαθμού ολοκλήρωσης της εργασίας. Κατά την απόφαση για το κείμενο προόδου:</p>
 
 <list>
-<item><p>Always consider what is most relevant and interesting for the user.</p></item>
-<item><p>It is often better to provide specific information rather than a unitless percentage. For example, <gui>13 of 19 images rotated</gui> or <gui>12.1 of 30 MB downloaded</gui> rather than <gui>13% complete</gui>.</p></item>
-<item><p>For long-running tasks, it can be desirable to show an estimate of the time remaining in the progress bar text. If other relevant information isn't available, this can be shown on its own. Alternatively, it can appear alongside text about task progress; however, be careful not to overwhelm the user with too much information when doing this, and use <link xref="typography">typographic conventions</link> to differente the most useful information.</p></item>
-<item><p>If the time remaining is an estimate, use the word <gui>about</gui>. For example: <gui>About 3 minutes left</gui>.</p></item>
+<item><p>Να λαμβάνετε υπόψη πάντα τι είναι πιο κατάλληλο και ενδιαφέρον για τον χρήστη.</p></item>
+<item><p>Είναι συχνά καλύτερο να δίνετε συγκεκριμένες πληροφορίες και όχι ένα αδιάστατο ποσοστό. Παραδείγματος χάρη, <gui> 13 από 19 περιεστραμμένες εικόνες</gui> ή <gui>12.1 από 30 MB έχουν μεταφορτωθεί</gui> αντί για <gui> 13% ολοκληρώθηκε</gui>.</p></item>
+<item><p>Για χρονοβόρες εργασίες, μπορεί να είναι επιθυμητή η εμφάνιση μιας εκτίμησης του υπολειπόμενου χρόνου στο κείμενο της γραμμής προόδου. Αν άλλη σχετική πληροφορία δεν είναι διαθέσιμη, αυτό μπορεί να εμφανιστεί από μόνο του. Εναλλακτικά, μπορεί να εμφανιστεί δίπλα σε κείμενο για την πρόοδο της εργασίας· όμως, προσέξτε να μην κατακλύσετε τον χρήστη με υπερβολικά πολλές πληροφορίες όταν το κάνετε και να χρησιμοποιείτε <link xref="typography">τυπογραφικές συμβάσεις</link> για να διαφοροποιείτε τις πιο χρήσιμες πληροφορίες.</p></item>
+<item><p>Αν ο υπολειπόμενος χρόνος είναι μια εκτίμηση, χρησιμοποιήστε τη λέξη <gui>περίπου</gui>. Παραδείγματος χάρη: <gui>Περίπου 3 λεπτά απέμειναν</gui>.</p></item>
 </list>
 
 </section>
 
 <section id="task-stages">
-<title>Task stages</title>
+<title>Στάδια εργασίας</title>
 
-<p>Some tasks can be made up of a sequential series of stages, each of which have different options for time estimation. It might be possible to estimate the time remaining for part of a task, but not another part, for example. In these situations:</p>
+<p>Μερικές εργασίες μπορούν να δημιουργηθούν με μια διαδοχική σειρά σταδίων, καθένα από τα οποία έχει διαφορετικές επιλογές για την εκτίμηση του χρόνου. Μπορεί να είναι δυνατή η εκτίμηση του υπολειπόμενου χρόνου για ένα τμήμα μιας εργασίας, αλλά όχι ενός άλλου τμήματος, παραδείγματος χάρη. Σε αυτές τις περιπτώσεις:</p>
 
 <list>
-<item><p>Only communicate the different stages in a task when they are relevant to a user. Generally speaking, this will not be required, and it is not necessary or desirable to communicate separate stages in a task.</p></item>
-<item><p>If a task includes time-remaining and typical-time stages, try to create a single composite typical-time progress bar.</p></item>
-<item><p>If a task includes an indeterminate progress stage, the progress bar can show indeterminate progress for part of the task. However, you should avoid showing indeterminate progress bars for long periods of time, and should attempt to keep the number of progress bar mode changes to an absolute minimum. Avoid indeterminate progress wherever possible.</p></item>
+<item><p>Να γνωστοποιείτε μόνο τα διαφορετικά στάδια σε μια εργασία όταν είναι κατάλληλα για τον χρήστη. Μιλώντας γενικά, αυτό δεν απαιτείται και δεν είναι απαραίτητο ή επιθυμητό να ανακοινώνετε τα ξεχωριστά στάδια σε μια εργασία.</p></item>
+<item><p>Αν μια εργασία περιλαμβάνει υπολειπόμενο χρόνο και στάδια τυπικού χρόνου, προσπαθήστε να δημιουργήσετε μια μοναδική σύνθετη γραμμή προόδου τυπικού χρόνου.</p></item>
+<item><p>Αν μια εργασία περιλαμβάνει ένα ενδιάμεσο στάδιο προόδου, η γραμμή προόδου μπορεί να εμφανίσει την ενδιάμεση πρόοδο για μέρος της εργασίας. Όμως, θα πρέπει να αποφύγετε την εμφάνιση ενδιάμεσων γραμμών προόδου για μεγάλους περιόδους χρόνου και πρέπει να προσπαθήσετε να διατηρήσετε τον αριθμό των αλλαγών κατάστασης της γραμμής προόδου σε ένα απολύτως ελάχιστο. Αποφύγετε μια ενδιάμεση πρόοδο όπου είναι δυνατό.</p></item>
 </list>
 
 </section>
 
 <section id="sub-tasks">
-<title>Sub-tasks</title>
+<title>Υποεργασίες</title>
 
-<p>If a task is comprised of multiple sub-tasks (such as downloading several files simultaneously), it is generally advisable to show a single progress bar which indicates composite progress for the overall task. However, there are some situations where this might not be the case:</p>
+<p>Αν μια εργασία αποτελείται από πολλές υποεργασίες (όπως μεταφόρτωση αρκετών αρχείων ταυτοχρόνως), είναι καλό γενικά να εμφανίζετε μια μοναδική γραμμή προόδου που δείχνει τη σύνθετη πρόοδο για όλη την εργασία. Όμως, υπάρχουν κάποιες καταστάσεις όπου αυτό μπορεί να μην ισχύει:</p>
 
 <list>
-<item><p>If it is genuinely useful for the user to know progress within each individual sub-task. (As an alternative, completion of each sub-task can be indicated with progress text.)</p></item>
-<item><p>If it might be necessary to pause or stop a sub-task (see the <link xref="#general-guidelines">general guidelines</link> on this, below).</p></item>
-<item><p>If sub-tasks are already indicated in your application's user interface. In this case, it can be less disruptive to show a progress for each item inline.</p></item>
+<item><p>Αν είναι πραγματικά χρήσιμο να γνωρίζει ο χρήστης την πρόοδο σε κάθε ξεχωριστή υποεργασία. (Ως μια εναλλακτική λύση, η ολοκλήρωση κάθε υποεργασίας μπορεί να εμφανιστεί με κείμενο προόδου.)</p></item>
+<item><p>Αν μπορεί να είναι απαραίτητη η παύση ή διακοπή μιας υποεργασίας (δείτε τις <link xref="#general-guidelines">γενικές οδηγίες</link> για αυτό, παρακάτω).</p></item>
+<item><p>Αν οι υποεργασίες εμφανίζονται ήδη στη διεπαφή χρήστη της εφαρμογής σας. Σε αυτήν την περίπτωση, μπορεί να είναι λιγότερο αποδιοργανωτική η εμφάνιση της προόδου για κάθε ενσωματωμένο στοιχείο.</p></item>
 </list>
 
-<p>When showing progress bars for sub-tasks:</p>
+<p>Όταν εμφανίζονται οι γραμμές προόδου για υποεργασίες:</p>
 
 <list>
-<item><p>Each sub-task should conform to the usage guidelines for progress bars (see <link xref="#when-to-use">when to use</link>, above).</p></item>
-<item><p>Generally speaking, it is not necessary to show a progress bar for overall progress through the set of tasks.</p></item>
+<item><p>Κάθε υποεργασία πρέπει να εναρμονίζεται με τις οδηγίες χρήσης για τις γραμμές προόδου (δείτε <link xref="#when-to-use">πότε να χρησιμοποιείτε</link>, παραπάνω).</p></item>
+<item><p>Μιλώντας γενικά, δεν είναι απαραίτητη η εμφάνιση μιας γραμμής προόδου για τη γενική πρόοδο μέσα από το σύνολο των εργασιών.</p></item>
 </list>
 
 </section>
 
 <section id="progress-windows">
-<title>Progress windows</title>
+<title>Παράθυρα προόδου</title>
 
-<p>In the past, progress windows were a popular way to present progress bars. These secondary windows would appear for the duration of a task, and would contain one or more progress bars. In general, progress windows are not recommended, since the consequence of closing the window can be unclear and they can obscure useful controls and content.</p>
+<p>Στο παρελθόν, τα παράθυρα προόδου ήταν ένας δημοφιλής τρόπος εμφάνισης γραμμών προόδου. Αυτά τα δευτερεύοντα παράθυρα εμφανίζονται κατά τη διάρκεια μιας εργασίας και μπορούν να περιέχουν μία ή περισσότερες γραμμές προόδου. Γενικά, τα παράθυρα προόδου δεν συνιστώνται, επειδή η συνέπεια κλεισίματος του παραθύρου μπορεί να είναι ασαφής και μπορούν να καλύψουν χρήσιμα στοιχεία ελέγχου και περιεχομένου.</p>
 
-<p>Where possible, progress bars should be displayed inline, and should have a close visual relationship with the content items or controls which represent the ongoing task.</p>
+<p>Όπου είναι δυνατό, οι γραμμές προόδου πρέπει να εμφανίζονται ενσωματωμένες και πρέπει να έχουν μια στενή οπτική σχέση με τα στοιχεία του περιεχομένου ή τα στοιχεία ελέγχου που απεικονίζονται στη συνεχιζόμενη εργασία.</p>
 
 </section>
 
@@ -123,11 +133,20 @@
 <title>Γενικές οδηγίες</title>
 
 <list>
-<item><p>If the operation in progress is potentially destructive or resource intensive, consider placing a pause and/or cancel button close to the progress bar.</p></item>
-<item><p>Ensure that time-remaining and typical-time progress bars measure an operation’s total time or total work, not just that of a single step.</p></item>
-<item><p>Update time-remaining progress bars when changes occur that will cause the operation to finish more quickly or more slowly.</p></item>
-<item><p>When using a typical-time progress bar, if your application overestimates the completed amount of work, the length of the bar can indicate <gui>almost complete</gui> until the operation is complete. If your application underestimates how much work is complete, fill the remaining portion of the bar when the operation is complete.</p></item>
+<item><p>Αν η λειτουργία σε εξέλιξη είναι δυνητικά καταστροφική ή εντατικός πόρος, εξετάστε την τοποθέτηση ενός κουμπιού παύσης και/ή ακύρωσης στη γραμμή προόδου.</p></item>
+<item><p>Εξασφαλίστε ότι ο υπολειπόμενος χρόνος και οι γραμμές προόδου τυπικού χρόνου μετρούν συνολικό χρόνο της λειτουργίας ή συνολική εργασία και όχι απλά ενός μόνο βήματος.</p></item>
+<item><p>Ενημερώστε τις γραμμές προόδου υπολειπόμενου χρόνου όταν συμβαίνουν αλλαγές που θα προκαλέσουν την πιο γρήγορη ή πιο αργή ολοκλήρωση της λειτουργίας.</p></item>
+<item><p>Κατά τη χρήση γραμμής προόδου τυπικού χρόνου, αν η εφαρμογή σας υπερεκτιμά το ποσό της ολοκληρωμένης εργασίας, το μήκος της γραμμής μπορεί να δείχνει <gui>σχεδόν ολοκληρώθηκε</gui> μέχρι η λειτουργία να ολοκληρωθεί. Αν η εφαρμογή σας υποτιμά την ολοκλήρωση της εργασίας, συμπληρώστε το υπολειπόμενο τμήμα της γραμμής όταν η λειτουργία ολοκληρωθεί.</p></item>
 </list>
 
 </section>
+
+<section id="api-reference">
+<title>Αναφορά API</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkProgressBar.html">GtkProgressBar</link></p></item>
+</list>
+</section>
+
 </page>

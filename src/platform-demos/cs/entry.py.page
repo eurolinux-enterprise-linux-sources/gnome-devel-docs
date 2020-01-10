@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.py" xml:lang="cs">
+  <info>
+    <title type="text">Entry (Python)</title>
+    <link type="guide" xref="beginner.py#entry"/>
+    <link type="seealso" xref="strings.py"/>
+    <link type="next" xref="scale.py"/>
+    <revision version="0.2" date="2012-06-23" status="draft"/>
+
+    <credit type="author copyright editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no"/>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Sebastian Pölsterl</name>
+      <email its:translate="no">sebp@k-d-w.org</email>
+      <years>2011</years>
+    </credit>
+    <desc>Jednořádkové textové vstupní pole</desc>
+  </info>
+
+  <title>Entry</title>
+  <media type="image" mime="image/png" src="media/entry.png"/>
+  <p>Tato aplikace vás přivítá v terminálu jménem, které zadáte.</p>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Kód použitý k vygenerování tohoto příkladu</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="What is your name?", application=app)
+        self.set_default_size(300, 100)
+        self.set_border_width(10)
+
+        # Jednořádkové vstupní pole
+        name_box = Gtk.Entry()
+        # Vyšle signál, když je zmáčknuta klávesa Enter, napojený na
+        # funkci zpětného volání cb_activate
+        name_box.connect("activate", self.cb_activate)
+
+        # Přidá Gtk.Entry do okna
+        self.add(name_box)
+
+    # the content of the entry is used to write in the terminal
+    def cb_activate(self, entry):
+        # Získá obsah widgetu
+        name = entry.get_text()
+        # Vypíše jej v hezké podobě do terminálu
+        print("Hello " + name + "!")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Užitečné metody pro widget Entry</title>
+    <p>Na řádku 14 je signál <code>"activate"</code> napojen na funkci zpětného volání <code>cb_activate()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce_zpětného_volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>. Mezi signály, které widget <code>Gtk.Entry</code> umí vyslat patří: <code>"activate"</code> (vyšle, když uživatel použije klávesu Enter); <code>"backspace"</code> (vyšle, když uživatel použije klávesu Backspace nebo Shift-Backspace); <code>"copy-clipboard"</code> (Ctrl-c a Ctrl-Insert); <code>"paste-clipboard"</code> (Ctrl-v a Shift-Insert); <code>"delete-from-cursor"</code> (Delete pro mazání znaku; Ctrl-Delete pro mazání slova); <code>"icon-press"</code> (vyšle, když uživatel klikne na aktivovatelné ikoně); <code>"icon-release"</code> (vyšle při uvolnění tlačítka z kliknutí myší na aktivovatelné ikoně); <code>"insert-at-cursor"</code> (vyšle, když uživatel začne vkládat pevný řetězec na pozici kurzoru); <code>"move-cursor"</code> (vyšle, když uživatel začne posouvat kurzor); <code>"populate-popup"</code> (vyšle před zobrazením kontextové nabídky pole; může být použito k přidání položek do ní).</p>
+    <list>
+      <item><p><code>get_buffer()</code> a <code>set_buffer(vyrovnávací_paměť)</code>, kde <code>vyrovnávací_paměť</code> je objekt Gtk.EntryBuffer, můžete použít k získání a nastavení vyrovnávací paměti pro vstupní pole.</p></item>
+      <item><p><code>get_text()</code> a <code>set_text("nějaký text")</code> můžete použít k získání a nastavení obsahu vstupního pole.</p></item>
+      <item><p><code>get_text_length()</code> vrací délku textu.</p></item>
+      <item><p><code>get_text_area()</code> vrací oblast, ve které je textové vstupní pole vykreslováno.</p></item>
+      <item><p>Když nastavíme <code>set_visibility(False)</code>, jsou znaky v poli zobrazovány pomocí „neviditelného“ znaku. Je zvolen nejlépe dostupný v aktuálním písmu, ale můžete jej změnit na jiný pomocí <code>set_invisible_char(zn)</code>, kde <code>zn</code> je znak v Unikódu. Později lze změnu zvrátit použitím <code>unset_invisbile_char()</code>.</p></item>
+      <item><p><code>set_max_length(int)</code>, kde <code>int</code> je celé číslo, zkrátí každý vstup delší než <code>int</code> na požadovanou maximální délku.</p></item>
+      <item><p>Ve výchozím stavu, když zmáčknete klávesu <key>Enter</key>, vyšle Gtk.Entry signál <code>"activate"</code>. Pokud byste chtěli aktivovat výchozí widget okna (nastavený pomocí metody <code>set_default(widget)</code> okna), použijte <code>set_activates_default(True)</code>.</p></item>
+      <item><p>Pro nastavení rámečku okolo vstupního pole: <code>set_has_frame(True)</code>.</p></item>
+      <item><p><code>set_placeholder_text("nějaký text")</code> nastavuje text, který má být zobrazen ve vstupním poli, když je prázdné a nezaměřené.</p></item>
+      <item><p><code>set_overwrite_mode(True)</code> a <code>set_overwrite_mode(False)</code> zapíná/vypíná režim přepisování.</p></item>
+      <item><p>Když je nastaveno <code>set_editable(False)</code>, nemůže uživatel upravovat text ve widgetu.</p></item>
+      <item><p><code>set_completion(doplňování)</code>, kde <code>doplňování</code> je <link href="http://developer.gnome.org/gtk3/unstable/GtkEntryCompletion.html"><code>Gtk.EntryCompletion</code></link>, nastaví doplňování, nebo jej naopak zakáže, když je <code>doplňování</code> nastaveno na <code>None</code>.</p></item>
+      <item><p>Widget <code>Entry</code> může na pozadí textu zobrazovat průběh nebo aktivitu. K vyplnění zadané části pruhu používáme <code>set_progress_fraction(část)</code>, <code>část</code> je číslo typu <code>float</code> v rozmezí <code>0.0</code> až <code>1.0</code> včetně. <code>set_progress_pulse_step()</code> používáme k nastavení části celkové délky pole, která se má pohybovat jako poletující blok ukazatele průběhu při každém zavolání <code>progress_pulse()</code>. Poslední zmíněná metoda dává najevo, že byl učiněn nějaký pokrok a způsobí, že indikátor ukazatele průběhu vstoupí do aktivního režimu, kdy blok poletuje tam a zpět. Každé zavolání <code>progress_pulse()</code> způsobí, že se blok o kousek posune (o kolik přesně je určeno, jak již bylo řečeno, pomocí <code>set_progress_pulse_step()</code>).</p></item>
+      <item><p>Widget <code>Entry</code> může také zobrazovat ikony. Tyto ikony, které lze aktivovat kliknutí, mohou být nastaveny jako zdroj pro přetahování a mohou mít vysvětlivky. Pro přidání ikony použijte <code>set_icon_from_stock(pozice_ikony, standardní_id)</code> nebo některou z funkcí <code>set_icon_from_pixbuf(pozice_ikony, pixbuf)</code>, <code>set_icon_from_icon_name(pozicei_kony, název_ikony)</code>, kde <code>pozice_ikony</code> je něco z <code>Gtk.EntryIconPosition.PRIMARY</code> (vytvoří ikonu na začátek vstupního pole) nebo <code>Gtk.EntryIconPosition.SECONDARY</code> (vytvoří ikonu na konci vstupního pole). Pro nastavení vysvětlivky ikoně použijte <code>set_icon_tooltip_text("text vysvětlivky")</code> nebo <code>set_icon_tooltip_markup("text vysvětlivky ve značkovacím jazyce Pango")</code>.</p></item>
+    </list>
+  </section>
+
+  <section id="references">
+    <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkEntry.html">GtkEntry</link></p></item>
+    </list>
+  </section>
+</page>

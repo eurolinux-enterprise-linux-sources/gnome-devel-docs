@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.vala" xml:lang="cs">
+  <info>
+  <title type="text">MenuBar (Vala)</title>
+  <link type="guide" xref="beginner.vala#menu-combo-toolbar"/>
+  <link type="seealso" xref="aboutdialog.vala"/>
+  <link type="seealso" xref="gmenu.vala"/>
+    <revision version="0.1" date="2012-05-25" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Widget, který sdružuje widgety GtkMenuItem.</desc>
+  </info>
+
+  <title>MenuBar</title>
+  <media type="image" mime="image/png" src="media/menubar.png"/>
+  <p>MenuBar vytvořený pomocí XML a GtkBuilder.</p>
+
+  <links type="section"/>
+
+  <section id="xml"> <title>Vytvoření MenuBar pomocí XML</title>
+   <p>Abyste vytvořili nabídkovou lištu pomocí XML:</p>
+   <steps>
+     <item><p>Pomocí svého oblíbeného textového editoru vytvořte <file>menubar.ui</file>.</p></item>
+     <item><p>Na začátek souboru vložte následující řádek:</p>
+           <code mime="application/xml">
+&lt;?xml version="1.0"? encoding="UTF-8"?&gt;</code>
+     </item>
+    <item><p>Chceme vytvořit rozhraní, které bude obsahovat naši nabídkovou lištu a její podnabídky. Naše nabídková lišta bude obsahovat podnabídky <gui>Soubor</gui>, <gui>Upravit</gui>, <gui>Volby</gui> a <gui>Nápověda</gui>. Do souboru přidáme následující kód XML:</p>
+    <code mime="application/xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+     </item>
+     <item><p>Nyní vytvoříme soubor .vala a použijeme GtkBuilder k importu souboru <file>menubar.ui</file>, který jsem před chvílí vytvořili.</p></item>
+   </steps>
+   </section>
+   <section id="basis"> <title>Přidání MenuBar do okna pomocí GtkBuilder</title>
+<code mime="text/x-csharp">public class MyWindow : Gtk.ApplicationWindow {
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "MenuBar Example");
+		this.set_default_size (200, 200);
+	}
+}
+
+class MyApplication: Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+	protected override void startup () {
+		base.startup ();
+
+		/* Nastaví nabídkovou lištu. */
+		/* Získá soubor UI. */
+		var builder = new Gtk.Builder ();
+		try {
+			builder.add_from_file ("menubar_basis.ui");
+		/* Obsloužení výjimky. */
+		} catch (Error e) {
+			error ("Unable to load file: %s", e.message);
+		}
+
+		/* Získá nabídkovou lištu z objektu builder. */
+		this.menubar = builder.get_object ("menubar") as MenuModel;
+	}
+}
+
+/* main vytvoří a spustí aplikaci. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>Nyní soubor .vala zkompilujte a spusťte. Aplikace by měla vypadat podobně, jako na obrázku na začátku této stránky.</p>
+</section>
+
+
+
+<section id="xml2"> <title>Přidání položek do nabídky</title>
+<p>Začneme přidáním dvou položek nabídky do nabídky <gui>File</gui>: <gui>New</gui> a <gui>Quit</gui>. Provedeme to přidáním <code>oddílu</code> s těmito položkami do podnabídky <code>File</code>. Soubor <file>menubar.ui</file> by měl vypadat jako tento (řádky 6 až 13 včetně obsahují nově přidaný oddíl):</p>
+      <code mime="application/xml" style="numbered">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name ="label"&gt;Quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;</code>
+
+<p>Podle tohoto vzoru nyní můžete přidat položky <gui>Copy</gui> a <gui>Paste</gui> do podnabídky <gui>Edit</gui> a položku <gui>About</gui> do podnabídky <gui>Help</gui>. Zatím se vyhneme přidání položek do <link xref="menubar.vala#choices">podnabídky <gui>Choices</gui></link>, tomu se budeme věnovat později v této lekci.</p>
+
+<note style="tip"><p>Když provedete změny v souboru s uživatelským rozhraním, nemusíte znovu kompilovat program. Stačí již dříve zkompilovaná aplikace a změny v uživatelském rozhraní se projeví.</p></note>
+</section>
+
+<section id="actions"><title>Nastavení akcí</title>
+<p>Jde o postup se třemi kroky.</p>
+<steps>
+  <item><p>Nejprve vytvoříme pole <code>ActionEntry</code> ve třídě <code>MyApplication</code>. To se bude skládat z:</p>
+  <list>
+    <item><p>názvu akce <code>"action name"</code> (povinné)</p></item>
+    <item><p>funkce zpětného volání napojené na signál <code>"activate"</code> akce (pokud to je použitelné)</p></item>
+    <item><p>typu parametru, který musí být předán aktivační funkci pro akci (pokud je to použitelné)</p></item>
+    <item><p>počáteční stav této akce (pokud je to použitelné)</p></item>
+    <item><p>zpětné volání napojené na signál <code>"change-state"</code> (pokud je to použitelné)</p></item>
+  </list>
+   <code mime="text/x-csharp">
+const ActionEntry[] actions = {
+    { "new", new_cb }, // {"action name", callback_function}
+    { "quit", quit_cb }
+};</code>
+
+  </item>
+  <item><p>Zadruhé vytvoříme funkce zpětného volání, na které jsou akce napojené.</p>
+  <code mime="text/x-csharp">
+void new_cb (SimpleAction action, Variant? parameter) {
+    print ("You clicked \"New\"\n");
+    //new MyWindow (this).show ();
+}
+
+void quit_cb (SimpleAction action, Variant? parameter) {
+    print ("You clicked \"Quit\"\n");
+    this.quit ();
+}</code>
+ </item>
+  <item><p>A nakonec v souboru XML napojíme položku nabídky na akci přidáním atributu <code>"action"</code>:</p>
+    <code mime="application/xml">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+&lt;/item&gt;
+&lt;item&gt;
+  &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+&lt;/item&gt;</code>
+ </item>
+</steps>
+</section>
+
+
+<section id="choices"><title>Podnabídka „Choices“ a položky se stavem</title>
+  <media type="image" mime="image/png" src="media/menubar_choices.png"/>
+  <p>Řádky 30 až 80 včetně v <link xref="menubar.vala#xml-code"/> předvádí kód XML použitý k vytvoření uživatelského rozhraní nabídky <gui>Choices</gui>.</p>
+</section>
+
+<section id="win-app"><title>Akce: Aplikace nebo okno?</title>
+  <p>Výše jsme vytvořili akce <code>"new"</code> a <code>"open"</code> jako součást třídy <code>MyApplication</code>. Akce, které ovládají přímo aplikaci, jako je <code>"quit"</code> by se vytvořily podobně.</p>
+
+  <p>Některé akce, jako je <code>"copy"</code> (kopírovat) nebo <code>"paste"</code> (vložit) se vztahují k oknu a ne k aplikaci. Akce okna by měly být vytvářeny jako součást třídy okna.</p>
+
+  <p>Soubor s celým příkladem obsahuje jak akce aplikace, tak akce okna. Akce okna jsu obvykle zároveň i součástí <link xref="gmenu.vala">aplikační nabídky</link>. Není dobrým zvykem vkládat akce okna do aplikační nabídky. Pro předváděcí účely zahrnuje soubor s celým příkladem, který následuje, kód XML v souboru <file>.ui</file>, který vytvoří aplikační nabídku včetně položek <code>"New"</code> a <code>"Open"</code> a ty jsou zavěšeny na stejnou akci, jako položky nabídkové lišty se stejným názvem.</p>
+
+
+</section>
+
+  <section id="xml-code"><title>Celý soubor s uživatelským rozhraním ve formátu XML pro tento příklad</title>
+<code mime="application/xml" style="numbered">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Copy&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.copy&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Paste&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.paste&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+      &lt;submenu&gt;
+        &lt;attribute name="label"&gt;Shapes&lt;/attribute&gt;
+          &lt;section&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Line&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;line&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Triangle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;triangle&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Square&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;square&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Polygon&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;polygon&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Circle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;circle&lt;/attribute&gt;
+            &lt;/item&gt;
+          &lt;/section&gt;
+      &lt;/submenu&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;On&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;on&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Off&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;off&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Awesome&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.awesome&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;About&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.about&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+  &lt;menu id="appmenu"&gt;
+    &lt;section&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+      &lt;/item&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+      &lt;/item&gt;
+    &lt;/section&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+  </section>
+  <section id="vala-code"><title>Kompletní soubor v jazyce Vala pro tento příklad</title>
+<code mime="text/x-csharp" style="numbered">public class MyWindow : Gtk.ApplicationWindow {
+
+	/* Funkce zpětného volání pro akce okna */
+	void copy_cb (SimpleAction action, Variant? parameter) {
+		print ("\"Copy\" activated\n");
+	}
+
+	void paste_cb (SimpleAction action, Variant? parameter) {
+		print ("\"Paste\" activated\n");
+	}
+
+	void shape_cb (SimpleAction action, Variant? parameter) {
+		print ("shape is set to %s\n", parameter.get_string(null));
+		action.set_state (parameter);
+	}
+
+	/* Vytvoří akce okna */
+	const ActionEntry[] actions = {
+		/*{ "název akce", zpětné volání pro přípojení signálu "activate", 
+		    typ parametru, počáteční stav, zpětné volání pro připojení 
+		    signálu "change-state" } */
+		{ "copy", copy_cb },
+		{ "paste", paste_cb },
+		{ "shape", shape_cb, "s", "'line'"}
+	};
+
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "MenuBar Example");
+		this.set_default_size (200, 200);
+
+		/* Nastaví akce oknu */
+		this.add_action_entries (actions, this);
+	}
+}
+
+class MyApplication: Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+
+	/* Funkce zpětného volání pro akce aplikace */
+	void new_cb (SimpleAction action, Variant? parameter) {
+		//new MyWindow (this).show ();
+		print ("You clicked \"New\"\n");
+	}
+
+	void quit_cb (SimpleAction action, Variant? parameter) {
+		print ("You clicked \"Quit\"\n");
+		this.quit ();
+	}
+
+	void awesome_cb (SimpleAction action, Variant? parameter) {
+		var active = action.get_state ().get_boolean ();
+		action.set_state (new Variant.boolean (!active));
+		if (active)
+			print ("You unchecked \"Awesome\"\n");
+		else
+			print ("You checked \"Awesome\"\n");
+	}
+
+	void state_cb (SimpleAction action, Variant? parameter) {
+		print ("state is set to %s\n", parameter.get_string(null));
+		action.set_state (parameter);
+	}
+
+	/* Vytvoří akce aplikace */
+	const ActionEntry[] actions = {
+		{ "new", new_cb },
+		{ "quit", quit_cb },
+		{ "awesome", awesome_cb, null, "false" },
+		{ "state", state_cb, "s", "'off'" }
+	};
+
+	protected override void startup () {
+		base.startup ();
+
+		/* Nastaví akce aplikaci */
+		this.add_action_entries (actions, this);
+
+		/* Nastaví nabídkovou lištu a aplikační nabídku */
+		/* Získá soubor s uživatelským rozhraním */
+		var builder = new Gtk.Builder ();
+		try {
+			builder.add_from_file ("menubar.ui");
+		} catch (Error e) {
+			error ("Unable to load file: %s", e.message);
+		}
+
+		/* Získá nabídkovou lištu od objektu builder */
+		this.menubar = builder.get_object ("menubar") as MenuModel;
+
+		/* Získá aplikační nabídku od objektu builder */
+		this.app_menu = builder.get_object ("appmenu") as MenuModel;
+	}
+}
+
+/* main vytvoří a spustí aplikaci */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+  </section>
+
+  <section id="mnemonics"><title>Horké klávesy</title>
+    <p>Popisky mohou obsahovat horké (mnemotechnické) klávesy. Mají podobu podtržených písmen v popiscích a používají se pro ovládání z klávesnice. Horké klávesy se vytváří umístěním podtržítka před příslušný znak. Například <code>"_File"</code> namísto <code>"File"</code> v atributu <code>label</code> v <file>menubar.ui</file>.</p>
+   <p>Horké klávesy jsou vidět, když zmáčknete klávesu <key>Alt</key>. Zmáčknutím <keyseq><key>Alt</key> <key>F</key></keyseq> otevřete nabídku <gui>File</gui>.</p>
+  </section>
+
+  <section id="accelerators"><title>Klávesové zkratky</title>
+    <p>Klávesové zkratky mohou být přidány přímo do definicí uživatelského rozhraní. Například je běžné, že aplikaci lze ukončit zmáčknutím <keyseq><key>Ctrl</key><key>Q</key></keyseq>, nebo že lze uložit soubor zmáčknutím <keyseq><key>Ctrl</key><key>S</key></keyseq>. Pro přidání klávesové zkratky do definice uživatelského rozhraní stačí akorát přidat do položky atribut <code>"accel"</code>.</p>
+<p><code mime="application/xml">&lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;</code> vytvoří sekvenci <keyseq><key>Ctrl</key><key>Q</key></keyseq> při přidávání položky <code>Quit</code>. „Primary“ má zde význam klávesy <key>Ctrl</key> na počítačích PC nebo klávesy <key>⌘</key> na počítačích Mac.</p>
+
+  <code mime="application/xml">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;_Quit&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+  &lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;
+&lt;/item&gt;</code>
+  </section>
+
+  <section id="translatable"><title>Přeložitelné řetězce</title>
+   <p>Protože aplikace GNOME jsou překládány do <link href="http://l10n.gnome.org/languages/">mnoha jazyků</link>, je důležité, aby řetězce ve vaší aplikaci byly přeložitelné. U popisku to zajistíte jednoduše nastavením <code>translatable="yes"</code>:</p>
+   <p><code mime="application/xml">&lt;attribute name="label" translatable="yes"&gt;Quit&lt;/attribute&gt;</code></p>
+  </section>
+  <section id="documentation"><title>Příslušná dokumentace k API</title>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://valadoc.org/gio-2.0/GLib.ActionEntry.html">Glib.ActionEntry</link></p></item>
+  <item><p><link href="http://valadoc.org/gio-2.0/Gtk.Builder.html">Gtk.Builder</link></p></item>
+</list>
+</section>
+
+
+<section id="exercises"><title>Cvičení</title>
+  <xi:include href="exercises/menubar.vala.exercises"><xi:fallback/></xi:include>
+</section>
+</page>

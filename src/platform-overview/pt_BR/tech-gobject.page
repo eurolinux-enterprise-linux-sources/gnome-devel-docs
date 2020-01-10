@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="tech-gobject" xml:lang="pt-BR">
-<info>
-  <link type="guide" xref="tech" group="gobject"/>
-  <desc>C-based object and type system with signals and slots</desc>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-gobject" xml:lang="pt-BR">
+  <info>
+    <link type="guide" xref="tech" group="gobject"/>
 
+    <credit type="author copyright">
+      <name>Federico Mena Quintero</name>
+      <email its:translate="no">federico@gnome.org</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Sistema de objetos e tipos baseados em C com sinais e slots</desc>
+  
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Enrico Nicoletto</mal:name>
       <mal:email>liverig@gmail.com</mal:email>
@@ -11,47 +20,30 @@
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Rafael Ferreira</mal:name>
-      <mal:email>rafael.f.f1@gmail.com</mal:email>
-      <mal:years>2013</mal:years>
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2013, 2014, 2016, 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Isaac Ferreira Filho</mal:name>
+      <mal:email>isaacmob@riseup.net</mal:email>
+      <mal:years>2018</mal:years>
     </mal:credit>
   </info>
 
 <title>GObject</title>
 
-  <p>GObject is the part of the <link xref="tech-glib">GLib</link> library that
-  provides an object and type system for C programs. Although C as a language
-  does not provide objects or classes, GObject makes it possible to write
-  object-oriented C programs.</p>
+  <p>GObject é a parte da biblioteca <link xref="tech-glib">GLib</link> que fornece um sistema de objetos e tipos para programas C. Apesar de C como um linguagem não fornece objetos ou classes, GObject possibilita escrever programas C orientados a objetos.</p>
 
-  <p>
-    GObject provides a fundamental GType, the base for the whole type system,
-    from which types such as ints and strings are derived.  Then, there is
-    GObject itself, the base class for all other classes.  Objects can emit
-    <em>signals</em> to notify the caller when something interesting happens.
-    For example, a <code>Button</code> object could emit a <code>clicked</code>
-    signal to indicate that it has been pressed and released.
-  </p>
+  <p>GObject fornece uma GType fundamental, a base para todo o sistema de tipos, a partir do qual tipos como as ints e strings são derivadas. Então, há o GObject em si, a classe base para todas as outras classes. Objetos podem emitir <em>sinais</em> para notificar o chamador quando alguma coisa interessante acontecer. Por exemplo, um objeto de <code>Button</code> pode emitir um sinal de <code>clicked</code> para indicar que ele foi pressionado e liberado.</p>
 
-  <p>
-    GObject is <em>introspectible</em>, which means that you can ask the
-    GObject system for the class types that are defined, the methods they
-    support, their signals, etc.  GNOME's language bindings are built on top of
-    this introspection information.  Instead of writing wrappers by hand to let
-    GNOME APIs be called from other programming languages, language bindings
-    use the introspection information from GObject to auto-generate those
-    wrappers themselves.
-  </p>
+  <p>GObject é <em>introspectável</em>, o que significa que você pode pedir que o sistema GObject para os tipos de classes que estão definidas, os métodos aos quais oferece suporte, seus sinais, etc. Bindings de linguagens do GNOME são compiladas sobre essa informação de introspecção. Em vez de escrever wrappers na mão para deixar APIs do GNOME serem chamadas por outras linguagens de programas, bindings de linguagem usam as informações de introspecção do GObject para gerarem automaticamente aqueles wrappers eles mesmo.</p>
 
-  <p>
-    You normally don't need to be concerned with GObject itself if you are
-    programming for GNOME with an object-oriented language.  However, making
-    yourself familiar with GObject's concepts, such as signals and slots, will
-    make your life easier as a GNOME programmer.
-  </p>
+  <p>Você normalmente não precisa ser preocupar com GObject em si, se você está programando para GNOME com uma linguagem orientada a objeto. Porém, se familiarizar com os conceitos do GObject, tais como sinais e slots, facilitará sua vida como um programador do GNOME.</p>
 
   <list style="compact">
-    <item><p><link href="http://developer.gnome.org/gobject/stable/">GObject reference manual</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gobject/stable/">Manual de referência do GObject</link></p></item>
   </list>
 
 </page>

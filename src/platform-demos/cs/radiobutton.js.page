@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="radiobutton.js" xml:lang="cs">
+  <info>
+  <title type="text">RadioButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-06-15" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>V každý okamžik může být vybrán jej jeden</desc>
+  </info>
+
+  <title>RadioButton</title>
+  <media type="image" mime="image/png" src="media/radiobuttontravel.png"/>
+  <p>Skupinový přepínač se anglicky se nazývá „rádiové tlačítko“ podle starých autorádií, která měla tlačítka pro přepínání kanálu. Rádio může mít v kterýkoliv okamžik naladěnu jen jednu stanici, takže když jste zmáčkli libovolné tlačítko, všechny ostatní vyskočily. Tyto skupinové přepínače fungují úplně stejně.</p>
+  <p>Každý widget <code>RadioButton</code> potřebuje popisek a skupinu. V kterýkoliv okamžik lze vybrat jen jeden skupinový přepínač ve skupině. Není třeba každou skupinu pojmenovat, stačí nastavit nový <code>RadioButton</code> jako součást skupiny, která již existuje. Když vytvoříte nový mimo jakoukoliv skupinu, automaticky se pro něj nový skupina vytvoří a stane se její součástí.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Importované knihovny</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>Toto jsou knihovny, které potřebujeme naimportovat, aby aplikace běžela. Pamatujte si, že řádek, který GNOME říká, že používáme Gjs, musí být vždy na začátku.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Vytvoření okna aplikace</title>
+    <code mime="application/javascript">
+const RadioButtonExample = new Lang.Class({
+    Name: 'RadioButton Example',
+
+    // Vytvoří vlastní aplikaci
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsradiobutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Napojí signály "activate" a "startup" k funkcím zpětného volání
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>Všechen kód této ukázky je ve třídě <code>RadioButtonExample</code>. Výše uvedený kód vytvoří <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pro naše widgety a okno, ve kterém budou.</p>
+    <code mime="application/javascript">
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI: function() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Travel Planning"});
+</code>
+    <p>Funkce <code>_buildUI</code> je místo, ze kterého voláme všechen kód, který vytváří uživatelské rozhraní aplikace. Prvním krokem je vytvoření nového <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link>, do kterého vložíme všechny naše widgety.</p>
+  </section>
+
+  <section id="button">
+    <title>Vytvoření skupinových přepínačů</title>
+    <code mime="application/javascript">
+        // Vytvoří popisek pro první skupinu přepínačů
+        this._placeLabel = new Gtk.Label ({label: "Where would you like to travel to?"});
+</code>
+
+    <p>Používáme <link xref="label.js">Gtk.Label</link> k oddělení jednotlivých skupin se skupinovými přepínači. Nic vám nebrání ve vložení všech možných skupin, kam vás napadne, takže jestli chcete, aby se v nich uživatelé vyznali, musíte je rozumně uspořádat.</p>
+
+    <code mime="application/javascript">
+        // Vytvoří tři skupinové přepínače třemi různými způsoby
+        this._place1 = new Gtk.RadioButton ({label: "The Beach"});
+
+        this._place2 = Gtk.RadioButton.new_from_widget (this._place1);
+        this._place2.set_label ("The Moon");
+
+        this._place3 = Gtk.RadioButton.new_with_label_from_widget (this._place1, "Antarctica");
+        // this._place3.set_active (true);
+</code>
+
+    <p>Zde jsou tři různé způsoby, jak vytvořit skupinový přepínač. V prvním, obvyklém způsobu, vytvoříme nový <code>Gtk.RadioButton</code> a zároveň mu přiřadíme jeho vlastnosti. Druhý a třetí používá funkce, které automaticky obslouží některé vlastnosti. <code>new_from_widget</code> přebírá jeden argument, kterým je <code>RadioButton</code>, do jehož skupiny chcete zařadit i ten nový. Oproti tomu <code>new_with_label_from_widget</code> přebírá zároveň i popisek pro skupinový přepínač.</p>
+    <p>První <code>RadioButton</code> ve skupině je ten, který bude vybraný ve výchozím stavu. Zkuste zrušit zakomentování posledního řádku v tomto ukázkovém kódu, abyste viděli, jak můžete nastavit jiný jako vybraný ve výchozím stavu.</p>
+
+    <code mime="application/javascript">
+        // Vytvoří popisek pro druhou skupinu tlačítek
+        this._thingLabel = new Gtk.Label ({label: "And what would you like to bring?" });
+
+        // Vytvoří další tři skupinové přepínače
+        this._thing1 = new Gtk.RadioButton ({label: "Penguins" });
+        this._thing2 = new Gtk.RadioButton ({label: "Sunscreen", group: this._thing1 });
+        this._thing3 = new Gtk.RadioButton ({label: "A spacesuit", group: this._thing1 });
+</code>
+    <p>Zde vytvoříme popisek pro druhou skupinu přepínačů a všechny skupinové přepínače stejným způsobem vytvoříme.</p>
+    </section>
+
+    <section id="ui">
+    <title>Vytvoření zbytku uživatelského rozhraní</title>
+
+    <code mime="application/javascript">
+        // Vytvoří standardní tlačítko OK
+        this._okButton = new Gtk.Button ({
+            label: 'gtk-ok',
+            use_stock: 'true',
+            halign: Gtk.Align.END });
+
+        // Napojí tlačítko na funkci, která zpracovává kliknutí na něj
+        this._okButton.connect ('clicked', Lang.bind (this, this._okClicked));
+</code>
+    <p>Tento kód vytvoří <link xref="button.js">Gtk.Button</link> a napojí jej na funkci, která uživateli, když klikne na <gui>OK</gui>, zobrazí bláznivou zprávu podle vybraného skupinového přepínače.</p>
+    <p>Abyste zajistili, že tlačítko s popiskem <gui>OK</gui> bude správně zobrazeno ve všech národních jazycích, do kterých je GNOME přeloženo, nezapomeňte použít <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">tlačítko Gtk standardního typu</link>.</p>
+
+    <code mime="application/javascript">
+        // Vytvoří mřížku pro položky v seznamu „místa“
+        this._places = new Gtk.Grid ();
+
+        // Připojí položky seznamu „místa“ do mřížky
+        this._places.attach (this._placeLabel, 0, 0, 1, 1);
+        this._places.attach (this._place1, 0, 1, 1, 1);
+        this._places.attach (this._place2, 0, 2, 1, 1);
+        this._places.attach (this._place3, 0, 3, 1, 1);
+
+        // Vytvoří mřížku pro položky v seznamu „věci“
+        this._things = new Gtk.Grid ({ margin_top: 50 });
+
+        // Připojí položky seznamu „věci“ do mřížky
+        this._things.attach (this._thingLabel, 0, 0, 1, 1);
+        this._things.attach (this._thing1, 0, 1, 1, 1);
+        this._things.attach (this._thing2, 0, 2, 1, 1);
+        this._things.attach (this._thing3, 0, 3, 1, 1);
+
+        // Vytvoří mřížku, do které se vše vloží
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_left: 40,
+            margin_right: 50 });
+
+        // Připojí vše do mřížky
+        this._grid.attach (this._places, 0, 0, 1, 1);
+        this._grid.attach (this._things, 0, 1, 1, 1);
+        this._grid.attach (this._okButton, 0, 2, 1, 1);
+
+        // Přidá mřížku do okna
+        this._window.add (this._grid);
+</code>
+    <p>Používáme samostatné mřížky <link xref="grid.js">Gtk.Grid</link> k uspořádání skupin skupinových přepínačů. Díky tomu můžeme později měnit rozvržení bez větší námahy. Druhá mřížka má nahoře okraj, aby opticky oddělila dvě sady voleb.</p>
+    <p>Když máme skupinové přepínače uspořádané, vložíme je do třetí, hlavní, mřížky spolu s tlačítkem <gui>OK</gui>. Tu pak připojíme do okna.</p>
+
+    <code mime="application/javascript">
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    },
+</code>
+
+    <p>Nakonec řekneme oknu a všemu v něm, aby se stali viditelnými, kdy se aplikace spustí.</p>
+
+  </section>
+
+  <section id="function">
+    <title>Funkce, která zpracovává váš výběr</title>
+    <code mime="application/javascript">
+    _okClicked: function () {
+
+        // Vytvoří vyskakovací dialogové okno, které zobrazí bláznivou zprávu
+        this._travel = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            message_type: Gtk.MessageType.OTHER,
+            buttons: Gtk.ButtonsType.OK,
+            text: this._messageText() });
+
+        // Zobrazí dialogové okno
+        this._travel.show();
+
+        // Napojí tlačítko OK na funkci, která zavře vyskakovací dialogové okno
+        this._travel.connect ("response", Lang.bind (this, this._clearTravelPopUp));
+
+    },
+</code>
+    <p>Když kliknete na <gui>OK</gui>, objeví se <link xref="messagedialog.js">Gtk.MessageDialog</link>. Tato funkce vytvoří a zobrazí vyskakovací okno a napojí jeho tlačítko <gui>OK</gui> na funkci, která okno zavře. Jaký text se v okně objeví, závisí na funkci <code>_messageText()</code>, která vrací různé hodnoty podle toho, kterou sadu voleb vyberete.</p>
+
+    <code mime="application/javascript">
+    _messageText: function() {
+
+        // Vytvoří bláznivou zprávu pro dialogové okno podle toho, co jste vybrali
+        var stringMessage = "";
+
+        if (this._place1.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "Penguins love the beach, too!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "Make sure to put on that sunscreen!";
+
+            else stringMessage = "Are you going to the beach in space?";
+
+        }
+
+        else if (this._place2.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "The penguins will take over the moon!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "A lack of sunscreen will be the least of your problems!";
+
+            else stringMessage = "You'll probably want a spaceship, too!";
+        }
+
+        else if (this._place3.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "The penguins will be happy to be back home!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "Antarctic sunbathing may be hazardous to your health!";
+
+            else stringMessage = "Try bringing a parka instead!";
+        }
+
+        return stringMessage;
+
+    },
+</code>
+    <p>Metoda <code>get_active()</code> je způsob, jak zjistit, který skupinový přepínač je „zmáčknutý“. Tato funkce vrací různé bláznivé zprávy v závislosti na tom, které skupinové přepínače jsou vybrané. Vrácená hodnota se použije jako vlastnost <code>"text"</code> v dialogovém okně se zprávou.</p>
+
+    <code mime="application/javascript">
+    _clearTravelPopUp: function () {
+
+        this._travel.destroy();
+
+    }
+
+});
+</code>
+    <p>Tato funkce je volána, když je zmáčknuto tlačítko <gui>OK</gui> v dialogovém okně se zprávou. Jednoduše dialogové okno odklidí.</p>
+
+    <code mime="application/javascript">
+// Spustí aplikaci
+let app = new RadioButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>Nakonec vytvoříme novou instanci konečné třídy RadioButtonExample a aplikaci spustíme.</p>
+  </section>
+
+  <section id="complete">
+    <title>Úplný kód ukázky</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+
+class RadioButtonExample {
+
+    // Vytvoří vlastní aplikaci
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsradiobutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+        // Napojí signály "activate" a "startup" k funkcím zpětného volání
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Travel Planning"});
+
+        // Vytvoří popisek pro první skupinu přepínačů
+        this._placeLabel = new Gtk.Label ({label: "Where would you like to travel to?"});
+
+        // Vytvoří tři skupinové přepínače třemi různými způsoby
+        this._place1 = new Gtk.RadioButton ({label: "The Beach"});
+
+        this._place2 = Gtk.RadioButton.new_from_widget (this._place1);
+        this._place2.set_label ("The Moon");
+
+        this._place3 = Gtk.RadioButton.new_with_label_from_widget (this._place1, "Antarctica");
+        // this._place3.set_active (true);
+
+        // Vytvoří popisek pro druhou skupinu tlačítek
+        this._thingLabel = new Gtk.Label ({label: "And what would you like to bring?" });
+
+        // Vytvoří další tři skupinové přepínače
+        this._thing1 = new Gtk.RadioButton ({label: "Penguins" });
+        this._thing2 = new Gtk.RadioButton ({label: "Sunscreen", group: this._thing1 });
+        this._thing3 = new Gtk.RadioButton ({label: "A spacesuit", group: this._thing1 });
+
+        // Vytvoří standardní tlačítko OK
+        this._okButton = new Gtk.Button ({
+            label: 'gtk-ok',
+            use_stock: 'true',
+            halign: Gtk.Align.END });
+
+        // Napojí tlačítko na funkci, která zpracovává kliknutí na něj
+        this._okButton.connect ('clicked', this._okClicked.bind(this));
+
+        // Vytvoří mřížku pro položky v seznamu „místa“
+        this._places = new Gtk.Grid ();
+
+        // Připojí položky seznamu „místa“ do mřížky
+        this._places.attach (this._placeLabel, 0, 0, 1, 1);
+        this._places.attach (this._place1, 0, 1, 1, 1);
+        this._places.attach (this._place2, 0, 2, 1, 1);
+        this._places.attach (this._place3, 0, 3, 1, 1);
+
+        // Připojí položky seznamu „věci“ do mřížky
+        this._things = new Gtk.Grid ({ margin_top: 50 });
+
+        // Připojí položky seznamu „věci“ do mřížky
+        this._things.attach (this._thingLabel, 0, 0, 1, 1);
+        this._things.attach (this._thing1, 0, 1, 1, 1);
+        this._things.attach (this._thing2, 0, 2, 1, 1);
+        this._things.attach (this._thing3, 0, 3, 1, 1);
+
+        // Vytvoří mřížku, do které se vše vloží
+        this._grid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_left: 40,
+            margin_right: 50 });
+
+        // Připojí vše do mřížky
+        this._grid.attach (this._places, 0, 0, 1, 1);
+        this._grid.attach (this._things, 0, 1, 1, 1);
+        this._grid.attach (this._okButton, 0, 2, 1, 1);
+
+        // Přidá mřížku do okna
+        this._window.add (this._grid);
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    }
+
+    _okClicked() {
+
+        // Vytvoří vyskakovací dialogové okno, které zobrazí bláznivou zprávu
+        this._travel = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            message_type: Gtk.MessageType.OTHER,
+            buttons: Gtk.ButtonsType.OK,
+            text: this._messageText() });
+
+        // Zobrazí dialogové okno
+        this._travel.show();
+
+        // Napojí tlačítko OK na funkci, která zavře vyskakovací dialogové okno
+        this._travel.connect ("response", this._clearTravelPopUp.bind(this));
+
+    }
+
+    _messageText() {
+
+        // Vytvoří bláznivou zprávu pro dialogové okno podle toho, co jste vybrali
+        var stringMessage = "";
+
+        if (this._place1.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "Penguins love the beach, too!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "Make sure to put on that sunscreen!";
+
+            else stringMessage = "Are you going to the beach in space?";
+
+        }
+
+        else if (this._place2.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "The penguins will take over the moon!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "A lack of sunscreen will be the least of your problems!";
+
+            else stringMessage = "You'll probably want a spaceship, too!";
+        }
+
+        else if (this._place3.get_active()) {
+
+            if (this._thing1.get_active())
+                stringMessage = "The penguins will be happy to be back home!";
+
+            else if (this._thing2.get_active())
+                stringMessage = "Antarctic sunbathing may be hazardous to your health!";
+
+            else stringMessage = "Try bringing a parka instead!";
+        }
+
+        return stringMessage;
+
+    }
+
+    _clearTravelPopUp() {
+        this._travel.destroy();
+    }
+};
+
+// Spustí aplikaci
+let app = new RadioButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Dokumentace jdoucí do hloubky</title>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Button.html">Gtk.Button</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.RadioButton.html">Gtk.RadioButton</link></p></item>
+</list>
+  </section>
+</page>

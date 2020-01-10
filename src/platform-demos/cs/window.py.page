@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="window.py" xml:lang="cs">
+  <info>
+    <title type="text">Window (Python)</title>
+    <link type="guide" xref="beginner.py#windows"/>
+    <link type="seealso" xref="properties.py"/>
+    <link type="next" xref="GtkApplicationWindow.py"/>
+    <revision version="0.2" date="2012-06-09" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="author">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Okno nejvyšší úrovně, které může obsahovat další widgety</desc>
+  </info>
+
+  <title>Window</title>
+
+  <table>
+    <tr>
+      <td>
+        <media type="image" mime="image/png" src="media/window.png"/>
+        <p>Minimální aplikace GTK+: okno se záhlavím.</p>
+      </td>
+      <td>
+        <p>Pokud potřebujete podporu <link xref="gmenu.py"/>, použijte <link xref="GtkApplicationWindow.py"/>.</p>
+      </td>
+    </tr>
+  </table>
+
+  <links type="section"/>
+
+  <section id="code">
+  <title>Kód použitý k vygenerování tohoto příkladu</title>
+
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyApplication(Gtk.Application):
+
+    def do_activate(self):
+        # Vytvoří okno Gtk Window patřící vlastní aplikaci
+        window = Gtk.Window(application=self)
+        # Nastaví název pro záhlaví
+        window.set_title("Welcome to GNOME")
+        # Zobrazí okno
+        window.show_all()
+
+# Vytvoří a spustí aplikaci; skončí s návratovou hodnotou vrácenou
+# běžícím programem
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+  </section>
+
+  <section id="methods">
+  <title>Užitečné metody pro widget Window</title>
+  <list>
+    <item><p><code>set_default_size(200, 100)</code> nastaví výchozí velikost okna na šířku <code>200</code> a výšku <code>100</code>. Když místo kladného čísla předáte <code>-1</code> dostanete výchozí velikost.</p></item>
+    <item><p><code>set_position(Gtk.WindowPosition.CENTER)</code> umístí okno na střed. Další možnosti jsou <code>Gtk.WindowPosition.NONE</code> (neurčeno), <code>Gtk.WindowPosition.MOUSE</code> (pozice ukazatele myši), <code>Gtk.WindowPosition.CENTER_ALWAYS</code> (vždy na střed) a <code>Gtk.WindowPosition.CENTER_ON_PARENT</code> (na střed rodiče).</p></item>
+  </list>
+  </section>
+
+  <section id="references">
+  <title>Odkazy k API</title>
+
+  <p>V této ukázce se používá následující:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkApplication.html">GtkApplication</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+  </list>
+  </section>
+</page>

@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="parallel-installability" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#maintainer-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Havoc Pennington</name>
+      <email its:translate="no">hp@pobox.com</email>
+      <years>2002</years>
+      <!-- Heavily based off Havoc’s original article about parallel
+           installability: http://ometer.com/parallel.html.
+           Licence CC-BY-SA 3.0 confirmed by e-mail with him. -->
+    </credit>
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Jak psát knihovny, aby v budoucnu šly instalovat souběžně různé verze</desc>
+  </info>
+
+  <title>Souběžná instalace</title>
+
+  <synopsis>
+    <title>Shrnutí</title>
+
+    <p>Pokud mohou být dva balíčky nainstalovány souběžně, nesmí mít společné názvy souborů a lidé provádějící vývoj vůči balíčku vždy kompilují vůči očekávané verzi. Pro démony, pomocné programy a konfigurační soubory to platí úplně stejně, jako pro hlavičkové soubory a binární knihovny.</p>
+
+    <list>
+      <item><p>Zajistěte, aby všechny verze knihoven šly nainstalovat vedle sebe. (<link xref="#justification"/>)</p></item>
+      <item><p>Všem souborům instalovaným knihovnou přidělte číslo verze. (<link xref="#solution"/>)</p></item>
+      <item><p>Udržujte číslo verze balíčku oddělené od názvu souboru s knihovnou nebo čísla verze libtool. Je pak jasnější, která část čísla verze balíčku se mění s API. (<link xref="#version-numbers"/>)</p></item>
+      <item><p>Nainstalujte hlavičkové soubory C do <file><var>$(includedir)</var>/lib<var>library</var>-<var>version</var>/<var>library</var>/</file>. (<link xref="#header-files"/>)</p></item>
+      <item><p>Nainstalujte spustitelné soubory knihovny do <file><var>$(libdir)</var>/lib<var>library</var>-<var>version</var>.so.<var>soname</var></file>. (<link xref="#libraries"/>)</p></item>
+      <item><p>Nainstalujte soubory pkg-config do <file><var>$(libdir)</var>/pkgconfig/<var>library</var>-<var>version</var>.pc</file>. (<link xref="#pkg-config"/>)</p></item>
+      <item><p>U souborů s nastavením zajistěte zpětnou a dopřednou kompatibilitu nebo je instalujte do <file><var>$(sysconfdir)</var>/<var>knihovna</var>-<var>verze</var>/</file>. (<link xref="#configuration-files"/>)</p></item>
+      <item><p>Nastavte <code>GETTEXT_PACKAGE</code> na <code><var>library</var>-<var>version</var></code>. (<link xref="#gettext"/>)</p></item>
+      <item><p>Do všech názvů rozhraní D-Bus, názvů služeb a cest k objektům zahrňte číslo verze. Například: <code>org.domain.<var>Knihovna</var><var>Verze</var>.<var>Rozhraní</var></code>, <code>org.domain.<var>Knihovna</var><var>Verze</var></code> a <code>/org/domain/<var>Knihovna</var><var>Verze</var>/</code>. (<link xref="#dbus"/>)</p></item>
+      <item><p>Nainstalujte spustitelné soubory démonů do <file><var>$(libexecdir)</var>/<var>library</var>-daemon-<var>version</var></file>. (<link xref="#programs"/>)</p></item>
+      <item><p>Spustitelné soubory pomůcek instalujte do <file><var>$(bindir)</var>/<var>knihovna</var>-utility-<var>verze</var></file> a symbolické odkazy do <file><var>$(bindir)</var>/<var>knihovna</var>-utility</file>. (<link xref="#programs"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="justification">
+    <title>Odůvodnění</title>
+
+    <p>Všechny veřejné knihovny by měly být navržené tak, aby je šlo instalovat souběžně ve více verzích, kvůli jednoduššímu pozdějšímu porušení API po dobu existence knihovny. Pokud je knihovna používána více projekty a chcete porušit API, buď musí projekty naráz přejít na nové API, nebo některé z nich již nebude nadále možné nainstalovat souběžně s ostatními, protože závisí na konfliktní verzi této knihovny.</p>
+
+    <p>To komplikuje správu a žádat pro všech projektech, aby naráz přesly na novou verzi API je organizačně náročné a demoralizující, protože většina porušení API nepřinese mnoho nových funkcí, které by motivovaly k přechodu.</p>
+
+    <p>Řešením je zajistit, aby šly všechny verze knihoven nainstalovat naráz, takže staré i nové verze API budou nainstalované a aplikace zkompilované vůči nim souběžně, bez konfliktů. Vestavění podpory pro tento druh souběžné instalace je mnohem jednodušší udělat na začátku projektu, než to dělat zpětně.</p>
+
+    <p>Tím se odstraní problém „slepice nebo vejce“ při přechodu celé sady aplikací z jedné verze knihovny na novější a pro správce knihovny si tím velmi zjednoduší porušení API, takže mohou při vývoji mnohem rychleji reagovat na přání nových funkcí.</p>
+
+    <p>Jiným a rovněž platným řešením pro knihovny je, nikdy nenarušovat API — tímto se řídí <code>libc</code>.</p>
+  </section>
+
+  <section id="solution">
+    <title>Řešení</title>
+
+    <p>Řešením problému v podstatě je přejmenovat knihovnu a ve většině případů je nejhezčím způsobem, jak to udělat, vložit do cesty ke každému instalovanému souboru číslo verze. Díky tomu může být naráz nainstalováno více verzí knihovny.</p>
+
+    <p>Kupříkladu řekněme, že knihovna <code>Foo</code> tradičně instaluje tyto soubory:</p>
+    <list>
+      <item><p><file>/usr/include/foo.h</file></p></item>
+      <item><p><file>/usr/include/foo-utils.h</file></p></item>
+      <item><p><file>/usr/lib/libfoo.so</file></p></item>
+      <item><p><file>/usr/lib/pkgconfig/foo.pc</file></p></item>
+      <item><p><file>/usr/share/doc/foo/foo-manual.txt</file></p></item>
+      <item><p><file>/usr/bin/foo-utility</file></p></item>
+    </list>
+
+    <p>Můžete změnit verzi 4 knihovny <code>Foo</code>, aby místo toho instalovala tyto soubory:</p>
+    <list>
+      <item><p><file>/usr/include/foo-4/foo/foo.h</file></p></item>
+      <item><p><file>/usr/include/foo-4/foo/utils.h</file></p></item>
+      <item><p><file>/usr/lib/libfoo-4.so</file></p></item>
+      <item><p><file>/usr/lib/pkgconfig/foo-4.pc</file></p></item>
+      <item><p><file>/usr/share/doc/foo-4/foo-manual.txt</file></p></item>
+      <item><p><file>/usr/bin/foo-utility-4</file></p></item>
+    </list>
+
+    <p>Pak by mohly být nainstalovány souběžně s verzí 5:</p>
+    <list>
+      <item><p><file>/usr/include/foo-5/foo/foo.h</file></p></item>
+      <item><p><file>/usr/include/foo-5/foo/utils.h</file></p></item>
+      <item><p><file>/usr/lib/libfoo-5.so</file></p></item>
+      <item><p><file>/usr/lib/pkgconfig/foo-5.pc</file></p></item>
+      <item><p><file>/usr/share/doc/foo-5/foo-manual.txt</file></p></item>
+      <item><p><file>/usr/bin/foo-utility-5</file></p></item>
+    </list>
+
+    <p>To je jednoduše podporováno pomocí <link href="http://www.freedesktop.org/wiki/Software/pkg-config/"><cmd>pkg-config</cmd></link>: <file>foo-4.pc</file> by přidal do cesty <file>/usr/include/foo-4</file> a do seznamu knihoven odkaz <file>libfoo-4.so</file>; <file>foo-5.pc</file> by přidal <file>/usr/include/foo-5</file> a <file>libfoo-5.so</file>.</p>
+  </section>
+
+  <section id="version-numbers">
+    <title>Čísla verzí</title>
+
+    <p>Číslo verze které se zahrne do názvu souboru je veze <em>ABI/API</em>. Nemělo by jít o celé číslo verze balíčku, jen o část, která významěmně porušuje API. Pokud používáte pro číslování verzí projektu standartní schéma <code><var>hlavní</var>.<var>vedlejší</var>.<var>setinkové</var></code>, je verzí API typicky hlavní číslo verze.</p>
+
+    <p>Vedlejší vydání (typicky, když je přidáno API, ale <em>není</em> změněno nebo odebráno) a setinková vydání (typicky opravy chyb) neovlivňují <link xref="api-stability">zpětnou kompatibilitu API</link>, takže nevyžadují přesun všech souborů.</p>
+
+    <p>Příklady v následujícím oddíle předpokládají, že verze API a název souboru s knihovnou jsou exportovány z <file>configure.ac</file> pomocí následujícího kódu:</p>
+    <listing>
+      <title>Číslování verzí API v Autoconf</title>
+      <desc>Kód pro export verze API a názvu souboru s knihovnou z <file>configure.ac</file></desc>
+      <code># Před vydáním by se měl upravit řetězec <var>KNIHOVNA</var>_LT_VERSION, který
+# je ve formě a:r:v (aktuální:revize:věk). Postupujte podle následujících bodů:
+#
+#   1. Když od poslední aktualizace došlo ke změně zdrojového kódu knihovny
+#      jako celku, zvyšte revizi („a:r:v“ se změní na „a:r+1:v“).
+#   2. Když bylo od poslední aktualizace přidáno, odebráno nebo změněno
+#      rozhraní, zvyšte aktuální a revizi nastavte na 0.
+#   3. Když bylo od posledního veřejného vydání přidáno rozhraní, zvyšte věk.
+#   4. Když bylo od posledního veřejného vydání odebráno nebo změněno 
+#      rozhraní, nastavte věk na 0.
+AC_SUBST([<var>KNIHOVNA</var>_LT_VERSION],[1:0:0])
+
+AC_SUBST([<var>KNIHOVNA</var>_API_VERSION],[4])</code>
+    </listing>
+  </section>
+
+  <section id="header-files">
+    <title>Hlavičkové soubory C</title>
+
+    <p>Hlavičkové soubory by vždy měly být nainstalovány v podsložce s číslem verze, kterou požaduje přepínač <cmd>-I</cmd> pro kompilátor jazyka C. Například, když je hlavičkový soubor <file>foo.h</file> a aplikace udělá následující:</p>
+    <code mime="text/x-csrc">#include &lt;foo/foo.h&gt;</code>
+    <p>pak by měly být nainstalovány tyto soubory:</p>
+    <list>
+      <item><p><file>/usr/include/foo-4/foo/foo.h</file></p></item>
+      <item><p><file>/usr/include/foo-5/foo/foo.h</file></p></item>
+    </list>
+
+    <p>Aplikace by měla kompilátoru jazyka C předat přepínač <cmd>-I/usr/include/foo-4</cmd> nebo <cmd>-I/usr/include/foo-5</cmd>. Jak již bylo několikrát řečeno, to vše vám může usnadnit <cmd>pkg-config</cmd>.</p>
+
+    <p>Všimněte si zvláštní podsložky <file>foo/</file>. Funguje jako jmenný prostor pro <code mime="text/x-csrc">#include</code>, aby se předešlo kolizi názvů s jinými knihovnami. Když například dvě různé knihovny nainstalují každá hlavičkový soubor s názvem <file>utils.h</file>, který se ve skutečnosti vloží, když použijete kód <code mime="text/x-csrc">#include &lt;utils.h&gt;</code>?</p>
+
+    <p>Existuje pokušení ponechat jeden z hlavičkových souborů mimo kteroukoliv podsložku:</p>
+    <list>
+      <item><p><file>/usr/include/foo.h</file></p></item>
+      <item><p><file>/usr/include/foo-5/foo.h</file></p></item>
+    </list>
+
+    <p>Problém je v tom, že uživatel určitě vždycky omylem použije nesprávnou hlavičku, protože <cmd>-I/usr/include</cmd> si při kompilaci vždy najde nějakou cestičku do příkazového řádku. Pokud to musíte udělat, minimálně do knihovny přidejte kontrolu, která při inicializaci knihovny objeví aplikaci používající nesprávný hlavičkový soubor.</p>
+
+    <p>Hlavičkové soubory s číslem verze mohou být instalovány z automake pomocí následujícího kódu:</p>
+    <listing>
+      <title>Hlavičkové soubory v Automake</title>
+      <desc>Kód pro instalaci hlavičkových souborů s číslem verze z <file>Makefile.am</file></desc>
+      <code><var>library</var>includedir = $(includedir)/lib<var>library</var>-@<var>LIBRARY</var>_API_VERSION@/<var>library</var>
+<var>library</var>_headers = \
+	lib<var>library</var>/example1.h \
+	lib<var>library</var>/example2.h \
+	$(NULL)
+
+# The following headers are private, and shouldn't be installed:
+private_headers = \
+	lib<var>library</var>/example-private.h \
+	$(NULL)
+# The main header simply #includes all other public headers:
+main_header = lib<var>library</var>/<var>library</var>.h
+public_headers = \
+	$(main_header) \
+	$(<var>library</var>_headers) \
+	$(NULL)
+
+<var>library</var>include_HEADERS = $(public_headers)</code>
+    </listing>
+
+    <p>Kromě správného číslování verzí by měla mít všechna API v instalovaných hlavičkových souborech <link xref="namespacing">správný jmenný prostor</link>.</p>
+  </section>
+
+  <section id="libraries">
+    <title>Knihovny</title>
+
+    <p>Objektové soubory knihovny by měly mít názvy s číslem verze. Například:</p>
+    <list>
+      <item><p><file>/usr/lib/libfoo-4.so</file></p></item>
+      <item><p><file>/usr/lib/libfoo-5.so</file></p></item>
+    </list>
+
+    <p>To umožňuje aplikacím získat při kompilaci právě tu, kterou chtějí a zajistí to, že verze 4 a 5 nemají žádné soubory společné.</p>
+
+    <p>Knihovny s číslem verze mohou být sestaveny a nainstalovány z automake pomocí následujícího kódu:</p>
+    <listing>
+      <title>Knihovny v Automake</title>
+      <desc>Kód pro sestavení a instalaci knihoven s číslem verze z <file>Makefile.am</file></desc>
+      <code>lib_LTLIBRARIES = lib<var>knihovna</var>/lib<var>knihovna</var>-@<var>KNIHOVNA</var>_API_VERSION@.la
+
+lib<var>knihovna</var>_lib<var>knihovna</var>_@<var>KNIHOVNA</var>_API_VERSION@_la_SOURCES = \
+	$(private_headers) \
+	$(<var>knihovna</var>_sources) \
+	$(NULL)
+lib<var>knihovna</var>_lib<var>knihovna</var>_@<var>KNIHOVNA</var>_API_VERSION@_la_CPPFLAGS = …
+lib<var>knihovna</var>_lib<var>knihovna</var>_@<var>KNIHOVNA</var>_API_VERSION@_la_CFLAGS = …
+lib<var>knihovna</var>_lib<var>knihovna</var>_@<var>KNIHOVNA</var>_API_VERSION@_la_LIBADD = …
+lib<var>knihovna</var>_lib<var>knihovna</var>_@<var>KNIHOVNA</var>_API_VERSION@_la_LDFLAGS = \
+	-version-info $(<var>KNIHOVNA</var>_LT_VERSION) \
+	$(AM_LDFLAGS) \
+	$(NULL)</code>
+    </listing>
+
+    <section id="library-sonames">
+      <title>Názvy souborů s knihovnami</title>
+
+      <p>Názvy souborů s knihovnami (známé též jako soname nebo číslování verzí libtool) se zaměřují jen na problém linkování dříve přeložených aplikací za běhu. Neřeší záležitosti okolo kompilace aplikací, které požadují dřívější verzi, a ani nic jiného okolo knihoven.</p>
+
+      <p>Z toho důvodu byste ještě <em>navíc</em> měli používat pro knihovny názvy s číslováním verzi. Každá z těchto věcí cílí na jiný problém.</p>
+    </section>
+  </section>
+
+  <section id="pkg-config">
+    <title>Soubory pkg-config</title>
+
+    <p>Soubory pkg-config by měly mít názvy s číslem verze. Například:</p>
+    <list>
+      <item><p><file>/usr/lib/pkgconfig/foo-4.pc</file></p></item>
+      <item><p><file>/usr/lib/pkgconfig/foo-5.pc</file></p></item>
+    </list>
+
+    <p>Protože každý soubor pkg-config obsahuje informace o verzi názvu knihovny včetně cesty, měl by být kterýkoliv projekt, který závisí na knihovně, schopen se přepnout z jedné verze na jinou prostou změnou kontroly ve svém pkg-config z <file>neco-4</file> na <file>neco-5</file> (a provedením příslušného přechodu v API).</p>
+
+    <p>Soubory pkg-config s rozlišením verze mohou být instalovány z autoconf a automake pomocí následujícího kódu:</p>
+    <listing>
+      <title>Soubory pkg-config v Autoconf a Automake</title>
+      <desc>Kód pro instalaci souborů pkg-config s rozlišením verze z <file>configure.ac</file> a <file>Makefile.am</file></desc>
+
+      <code>AC_CONFIG_FILES([
+lib<var>knihovna</var>/<var>knihovna</var>-$<var>KNIHOVNA</var>_API_VERSION.pc:lib<var>knihovna</var>/<var>knihovna</var>.pc.in
+],[],
+[<var>KNIHOVNA</var>_API_VERSION='$<var>KNIHOVNA</var>_API_VERSION'])</code>
+
+      <code># Všimněte si, že soubor s šablonou se nazývá <var>library</var>.pc.in, ale generuje se
+# soubor .pc s číslem verze pomocí stejné magie, jako v AC_CONFIG_FILES.
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = lib<var>knihovna</var>/<var>knihovna</var>-$(<var>KNIHOVNA</var>_API_VERSION).pc
+
+DISTCLEANFILES += $(pkgconfig_DATA)
+EXTRA_DIST += lib<var>knihovna</var>/<var>knihovna</var>.pc.in</code>
+    </listing>
+  </section>
+
+  <section id="configuration-files">
+    <title>Soubory s nastavením</title>
+
+    <p>Z hlediska uživatele je nejlepším přístupem k souborům s nastavením udržovat formát <link xref="api-stability">dopředně i zpětně kompatibilní</link> (obě verze knihovny rozumí právě té stejné syntaxi a sémantice souboru s nastavením). Pak lze použít ten samý soubor s nastavením pro všechny verze knihovny a není potřeba žádné číslování verzí u souborů s nastavením.</p>
+
+    <p>Pokud to ale dodržet nejde, měly by být soubory s nastavením jednoduše přejmenovány a uživatel musí nastavit každou verzi knihovny zvlášť.</p>
+  </section>
+
+  <section id="gettext">
+    <title>Překlady pomocí Gettext</title>
+
+    <p>Jestli používáte pro překlady gettext v kombinaci s autoconf a automake, je normální postup nainstalovat překlady do <file>/usr/share/locale/<var>jazyk</var>/LC_MESSAGES/<var>balíček</var></file>. Údaj <var>baliček</var> musíte změnit na správný název. Podle zvyklostí používaných v GNOME se to celé vloží do <file>configure.ac</file>:</p>
+
+    <code>GETTEXT_PACKAGE=foo-4
+AC_SUBST([GETTEXT_PACKAGE])
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE],["$GETTEXT_PACKAGE"])</code>
+
+    <p>Pak použijte <code>GETTEXT_PACKAGE</code> jako název balíčku předaný do <code mime="text/x-csrc">bindtextdomain()</code>, <code mime="text/x-csrc">textdomain()</code> a <code mime="text/x-csrc">dgettext()</code>.</p>
+  </section>
+
+  <section id="dbus">
+    <title>Rozhraní D-Bus</title>
+
+    <p>Rozhraní D-Bus je další formou API a podobá se API v C s tím rozdílem, že rozlišení verze se neprovádí při kompilaci, ale za běhu. Číslování verzí rozhraní D-Bus se jinak od API v C nijak neliší: čísla verzí musí být zahrnuta v názvech rozhraní, názvech služeb a v cestách k objektům.</p>
+
+    <p>Například pro službu <code>org.example.Foo</code> vystavující rozhraní <code>A</code> a <code>B</code> na objektech <code>Controller</code> a <code>Client</code>, by verze 4 a 5 API pro D-Bus vypadala nějak takto:</p>
+    <list>
+      <title>Názvy služeb</title>
+      <item><p><code>org.example.Foo4</code></p></item>
+      <item><p><code>org.example.Foo5</code></p></item>
+    </list>
+    <list>
+      <title>Názvy rozhraní</title>
+      <item><p><code>org.example.Foo4.InterfaceA</code></p></item>
+      <item><p><code>org.example.Foo4.InterfaceB</code></p></item>
+      <item><p><code>org.example.Foo5.InterfaceA</code></p></item>
+      <item><p><code>org.example.Foo5.InterfaceB</code></p></item>
+    </list>
+    <list>
+      <title>Cesty k objektům</title>
+      <item><p><code>/org/example/Foo4/Controller</code></p></item>
+      <item><p><code>/org/example/Foo4/Client</code></p></item>
+      <item><p><code>/org/example/Foo5/Controller</code></p></item>
+      <item><p><code>/org/example/Foo5/Client</code></p></item>
+    </list>
+  </section>
+
+  <section id="programs">
+    <title>Programy, démoni a pomůcky</title>
+
+    <p>Grafické aplikace obecně nepotřebují být nainstalované ve více verzích, protože na nich nezávisí další moduly. Démoni a pomocné programy ale spolupracují s dalšími částmi systému, a tak číslování verzí v názvech potřebují.</p>
+
+    <p>Mějme démona a pomocný program:</p>
+    <list>
+      <item><p><file>/usr/libexec/foo-daemon</file></p></item>
+      <item><p><file>/usr/bin/foo-lookup-utility</file></p></item>
+    </list>
+    <p>Číslo verze pak mohou mít přidělené jako:</p>
+    <list>
+      <item><p><file>/usr/libexec/foo-daemon-4</file></p></item>
+      <item><p><file>/usr/bin/foo-lookup-utility-4</file></p></item>
+    </list>
+
+    <p>Můžete nainstalovat symbolický odkaz z <file>/usr/bin/foo-lookup-utility</file> na doporučovanou verzi kopie pomocného programu, aby se pohodlněji používal uživatelům. </p>
+  </section>
+</page>

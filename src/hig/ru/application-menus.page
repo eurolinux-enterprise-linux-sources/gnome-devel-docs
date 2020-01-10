@@ -2,24 +2,25 @@
 <page xmlns="http://projectmallard.org/1.0/" type="topic" id="application-menus" xml:lang="ru">
 
   <info>
-    <link type="guide" xref="patterns" group="application-menus"/>   
+    <link type="guide" xref="patterns#primary"/>
+    <desc>Global application menu that is accessed from the top bar</desc>
     <credit type="author">
-      <name>Allan Day</name>
+      <name>Алан Дэй (Allan Day)</name>
       <email>aday@gnome.org</email>
     </credit>
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Application menus</title>
+<title>Меню приложения</title>
 
 <media type="image" mime="image/svg" src="figures/patterns/application-menu.svg"/>
 
-<p>Application menus provide access to global, top level actions and options for your application. These include standard items for accessing documentation and information about the application.</p>
+<p>Меню приложения предоставляет доступ к важнейшим действиям и параметрам вашего приложения. Оно также включает в себя стандартные элементы для получения доступа к документации и информации о приложении.</p>
 
 <section id="when-to-use">
-<title>When to use</title>
+<title>Когда использовать</title>
 
-<p>Application menus are a standard part of GNOME 3, and every application that runs under GNOME 3 should have one.</p>
+<p>Меню приложения является стандартным элементом GNOME 3, любое запускаемое под GNOME 3 приложение должно иметь меню.</p>
 
 </section>
 
@@ -27,41 +28,47 @@
 <title>Общие рекомендации</title>
 
 <list>
-<item><p>Follow the standard <link xref="menus">guidance for menus</link>.</p></item>
-<item><p>Only include menu items that relate to the application as a whole, such as application preferences. Items that are specific to a particular window or view, or which act on content within an application window, should not be included.</p></item>
-<item><p>If an item from the application menu is frequently used, consider moving it to a more accessible location.</p></item>
+<item><p>Следуйте стандартным <link xref="menus">рекомендациям для меню</link>.</p></item>
+<item><p>Добавляйте только те элементы, которые относятся к приложению в целом, например параметры приложения. Не добавляйте элементы, которые относятся к текущему окну или документу или действуют на содержимое внутри окна приложения.</p></item>
+<item><p>Рассмотрите возможность перемещения наиболее часто используемых элементов меню в более доступное место.</p></item>
 </list>
 
 </section>
 
 <section id="standard-menu-items">
-<title>Standard menu items</title>
+<title>Стандартные элементы меню</title>
 
-<p>Common application menu items include <gui>New Window</gui>, <gui>Preferences</gui>, <gui>Help</gui>, <gui>About</gui> and <gui>Quit</gui>. <gui>Help</gui>, <gui>About</gui> and <gui>Quit</gui> should be contained within their own group at the bottom of the menu.</p>
+<p>Стандартные элементы меню включают в себя следующие элементы: <gui>Создать окно</gui>, <gui>Параметры</gui>, <gui>Справка</gui>, <gui>О приложении</gui> и <gui>Завершить</gui>. Элементы <gui>Справка</gui>, <gui>О приложении</gui> и <gui>Завершить</gui> должны помещаться в рамках собственной группы в нижней части меню.</p>
 
 <table>
 <tr>
-<td><p><gui>New Window</gui></p></td>
-<td><p>Opens a new window. Only <link xref="primary-windows#application-types">multiple instance applications</link> should include this menu item. If the new window contains a specific type of content item, or simultaneously performs an action, rename it to be less generic. For example: <gui>New Connection</gui> or <gui>New Document</gui>.</p></td>
+<td><p><gui>Создать окно</gui></p></td>
+<td><p>Открывает новое окно. Этот элемент необходимо включать только в тех приложениях, в которых поддерживается <link xref="primary-windows#application-types">несколько экземпляров содержимого</link>. Если в новом окне находится содержимое определённого типа или одновременно выполняется некоторое действие, переименуйте его. Например: <gui>Создать подключение</gui> или <gui>Создать документ</gui>.</p></td>
 </tr>
 <tr>
-<td><p><gui>Preferences</gui></p></td>
-<td><p>Opens the application's preferences dialog. Only show this menu item if your application has a preferences dialog.</p></td>
+<td><p><gui>Параметры</gui></p></td>
+<td><p>Открывает диалог с параметрами приложения. Добавляйте этот элемент только только в том случае, если у вашего приложения есть диалог параметров.</p></td>
 </tr>
 <tr>
-<td><p><gui>Help</gui></p></td>
-<td><p>Opens your application's user documentation in the <app>Help</app> application. Only show this menu item if your application has user documentation.</p></td>
+<td><p><gui>Справка</gui></p></td>
+<td><p>Открывает документацию пользователя по вашему приложению с помощью стандартного средства просмотра <app>Справки</app>. Добавляйте этот элемент только в том случае, если у вашего приложения есть документация.</p></td>
 </tr>
 <tr>
-<td><p><gui>About</gui></p></td>
-<td><p>Opens the application's about dialog. Every application menu should include this item.</p></td>
+<td><p><gui>О приложении</gui></p></td>
+<td><p>Открывает стандартный диалог с информацией о вашем приложении. Этот элемент должен присутствовать во всех приложениях, в которых есть меню.</p></td>
 </tr>
 <tr>
-<td><p><gui>Quit</gui></p></td>
-<td><p>Closes the application, including all application windows. Every application menu should include this item.</p></td>
+<td><p><gui>Завершить</gui></p></td>
+<td><p>Закрывает приложения вместе со всеми его окнами. Этот элемент должен присутствовать во всех приложениях, в которых есть меню.</p></td>
 </tr>
 </table>
 
 </section>
 
+<section id="api-reference">
+<title>API reference</title>
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkApplication.html">GtkApplication</link></p></item>
+</list>
+</section>
 </page>

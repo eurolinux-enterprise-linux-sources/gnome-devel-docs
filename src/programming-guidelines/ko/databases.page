@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="databases" xml:lang="ko">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>단순 영속 객체 저장</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016, 2017.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>데이터베이스</title>
+
+  <synopsis>
+    <title>요약</title>
+
+    <list>
+      <item><p>적당한 용도에 따라 데이터베이스를 사용하십시오. 설정 데이터(이 경우 GSettings를 사용하십시오)용이 아닙니다(<link xref="#when-to-use-databases"/>).</p></item>
+      <item><p>색인화 필요성에 따라 GOM과 GVDB 중 하나를 선택하십시오(<link xref="#when-to-use-databases"/>).</p></item>
+      <item><p>GOM을 활용하여 데이터를 올리기 전 vacuum 정책을 고려하십시오(<link xref="#when-to-use-databases"/>).</p></item>
+      <item><p>미리 준비한 SQL 구문으로 SQL 인젝션 취약성 문제를 피하십시오(<link xref="#sql-injection"/>).</p></item>
+    </list>
+  </synopsis>
+
+  <section id="when-to-use-databases">
+    <title>데이터베이스를 사용할 때</title>
+
+    <p>설정 데이터는 <link href="https://developer.gnome.org/gio/stable/GSettings.html">GSettings</link>에 저장해야합니다. 경험에 따르면, 지속적으로 저장해 둬야 하는 데이터가 프로그램의 행동 방식에 영향을 준다면 설정 데이터라 합니다. 잠재적으로 시스템 관리자가 도입한 정책일 수 있다면(이를 테면 프록시 내지는 통제 설정), 역시 설정 데이터라고 합니다. 사용자가 만든 내용인 경우 설정 데이터가 아니며 GSettings에 저장하면 안됩니다.</p>
+
+    <p>잘 구성된 사용자 데이터가 있다면 데이터베이스 저장 방식이 좋습니다. 그놈에서는 GOM과 GVDB 두가지 주요 데이터베이스 활용을 제안합니다. GOM은 SQLite 래퍼이며, 필드 색인화 처리, SQL 방식 구문을 구현했습니다. GVDB는 상당히 단순한 객체 저장소이며, 디스크를 대상으로 삼는 객체 딕셔너리의 고속 직렬화 처리를 지원합니다.</p>
+
+    <p>특히 색인화 처리 같은 고급 기능이 필요하다면 GOM을 사용해야합니다. 이 밖의 경우라면 GVDB를 사용해야합니다.</p>
+
+    <p>GOM 사용(그러니까 SQLite)을 결정하기 전에, 데이터베이스의 vacuum 정책과, 여러분의 사용 경험이 SQLite의 vacuum 처리 시스템에 익숙한지 여부를 고려해야합니다. vacuum 처리는 데이터베이스 단편화 제거 의미로 사용하는 SQLite의 실질적 용어입니다. 데이터베이스를 제대로 vacuum 처리하지 않으면, 성능이 떨어지며 데이터베이스 크기가 한없이 늘어납니다. 자자세한 vacuum 처리 내용은 <link href="http://blogs.gnome.org/jnelson/2015/01/06/sqlite-vacuum-and-auto_vacuum/">이 글</link>을 살펴보십시오. GOM 사용을 결정하기 전에  이 내용을 고려하십시오.</p>
+
+    <p>그놈에는 또 다른 데이터베이스 라이브러리 그놈 데이터 액세스(GDA)가 있습니다. 그놈 데이터 액세스는 데이터베이스 유틸리티 프로그램이나 오피스 프로그램과 같이 다양한 관계 데이터베이스로의 추상적 접근이 목표입니다. <link href="https://developer.gnome.org/gio/stable/GSettings.html">사용자 설정</link>을 저장하는덴 적합하지 않습니다.</p>
+  </section>
+
+  <section id="gom">
+    <title>GOM 활용</title>
+
+    <p>GOM 지침서 제공은 이 문서의 내용 범위를 벗어나지만, <link href="https://developer.gnome.org/gom/">참고 도움말이 있습니다</link>.</p>
+
+    <section id="sql-injection">
+      <title>SQL 인젝션</title>
+
+      <p>GOM은 저수준 SQLite 요청 API에 접근할 수 있게 합니다. 이 API를 활용할 때 요청문은 SQL 문자열을 만들어서 SQLite에게 해석하라고 던져주는 식으로 전달하기보단, <em style="strong">반드시</em> SQLite의 <link href="https://www.sqlite.org/c3ref/stmt.html">prepared 구문</link> 과 <link href="https://www.sqlite.org/c3ref/bind_blob.html">값 바인딩</link> API로 만들어야합니다. 문자열을 직접 만들면, 공격자가 데이터베이스에 있는 임의의 사용자 데이터에 접근할 수 있게 하는 <link href="http://en.wikipedia.org/wiki/SQL_injection">SQL 인젝션</link> 취약성이 나타날 가능성이 높습니다.</p>
+    </section>
+  </section>
+
+  <section id="gvdb">
+    <title>GVDB 활용</title>
+
+    <p>GVDB는 기존에 활용하던 해시 테이블을 모방한 단순 API입니다. 현재 GVDB는 복사-붙여넣기 라이브러리로만 사용합니다. 최근 코드 사본은 <link href="https://git.gnome.org/browse/gvdb">GVDB git</link>에서 가져오시고 프로젝트에 복사해 넣으십시오. LGPL v2.1 이상의 라이선스를 따릅니다.</p>
+
+    <p>GVDB의 완전한 지침 내용은 이 문서 내용의 범위를 벗어납니다.</p>
+  </section>
+</page>

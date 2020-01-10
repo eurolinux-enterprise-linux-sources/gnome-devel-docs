@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar_builder.py" xml:lang="cs">
+  <info>
+    <title type="text">Nástrojová lišta vytvořená pomocí Glade (Python)</title>
+    <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
+    <link type="seealso" xref="toolbar.py"/>
+    <link type="seealso" xref="grid.py"/>
+    <link type="next" xref="menubar.py"/>
+    <revision version="0.1" date="2012-07-17" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright edit">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <credit type="author copyright">
+      <name>Sebastian Pölsterl</name>
+      <email its:translate="no">sebp@k-d-w.org</email>
+      <years>2011</years>
+    </credit>
+
+    <desc>Lišta s tlačítky a dalšími widgety</desc>
+  </info>
+
+  <title>Toolbar (vytvořený pomocí Glade)</title>
+
+  <media type="image" mime="image/png" src="media/toolbar.png"/>
+  <p>Tento příklad je podobný příkladu <link xref="toolbar.py"/> s tím rozdílem, že k vytvoření nástrojové lišty v souboru .ui ve formátu XML použijeme návrhář Glade.</p>
+
+<links type="sections"/>
+
+<section id="glade">
+<title>Vytvoření nástrojové lišty pomocí Glade</title>
+  <p>Když chcete vytvořit nástrojovou lištu pomocí <link href="http://glade.gnome.org/">návrháře rozhraní Glade</link>:</p>
+  <steps>
+    <item><p>Otevřete Glade a uložte soubor jako <file>toolbar_builder.ui</file>.</p>
+          <p><media type="image" src="media/glade_ui.png" width="900">Snímek obrazovky s uživatelským rozhraním Glade</media></p>
+    </item>
+
+    <item><p>V <gui>Kontejnerech</gui> na levé straně klikněte pravým tlačítkem na ikonu nástrojové lišty a vyberte <gui>Přidat widget do nejvyšší úrovně</gui>.</p>
+          <p><media type="image" src="media/glade_select_toolbar.png">Snímek obrazovky s ikonou nástrojové lišty v uživatelském rozhraní Glade</media></p>
+    </item>
+
+    <item><p>Na kartě <gui>Obecné</gui> vpravo dole změňte <gui>Název</gui> na <input>toolbar</input> a <gui>Zobrazovat šipku</gui> na <gui>Ne</gui>.</p>
+          <p><media type="image" src="media/glade_toolbar_general.png">Snímek obrazovky s kartou Obecné</media></p>
+    </item>
+
+    <item><p>Na kartě <gui>Běžné</gui> nastavte <gui>Roztáhnout vodorovně</gui> na <gui>Ano</gui>.</p>
+         <p><media type="image" src="media/glade_toolbar_common.png">Snímek obrazovky s kartou Běžné</media></p>
+     </item>
+
+     <item><p>Klikněte pravým tlačítkem na „toolbar“ vpravo nahoře a vyberte <gui>Upravit</gui>. Objeví se okno <gui>Editor nástrojové lišty</gui>.</p>
+         <p><media type="image" src="media/glade_toolbar_edit.png">Snímek obrazovky, na kterém je kliknuto pravým tlačítkem kvůli úpravě nástrojové lišty</media></p>
+   </item>
+
+   <item><p>Chceme přidat 5 tlačítek ToolButton: „New“, „Open“, „Undo“, „Fullscreen“ a „Leave Fullscreen“. Nejprve přidáme ToolButton „New“.</p>
+     <steps>
+       <item><p>Na kartě <gui>Hierarchie</gui> klikněte na <gui>Přidat</gui>.</p></item>
+       <item><p>Změňte název „toolbutton1“ na „new_button“.</p></item>
+       <item><p>Posuňte se dolů a nastavte <gui>Je důležitá</gui> na <gui>Ano</gui>. To způsobí, že když je zobrazena nástrojová lišta, bude nástrojovém tlačítku zobrazen popisek.</p></item>
+       <item><p>Zadejte <gui>Název akce</gui>: <input>app.new</input>.</p></item>
+       <item><p>Změňte <gui>Popisek</gui> na <input>New</input>.</p></item>
+       <item><p>V rozbalovacím seznamu zvolte <gui>New</gui> jako <gui>Standadní ID</gui> nebo napište <input>gtk-new</input>.</p></item>
+     </steps>
+     <p>Opakujte předchozí kroky pro zbývající tlačítka ToolButton s následujícími vlastnostmi:</p>
+  <table frame="all" rules="rows">
+    <thead>
+      <tr>
+        <td><p>Name</p></td>
+        <td><p>Je důležitá</p></td>
+        <td><p>Název akce</p></td>
+        <td><p>Label</p></td>
+        <td><p>Standardní ID</p></td>
+      </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><p>open_button</p></td>
+      <td><p>Ano</p></td>
+      <td><p>app.open</p></td>
+      <td><p>Open</p></td>
+      <td><p>gtk-open</p></td>
+    </tr>
+    <tr>
+      <td><p>undo_button</p></td>
+      <td><p>Ano</p></td>
+      <td><p>win.undo</p></td>
+      <td><p>Undo</p></td>
+      <td><p>gtk-undo</p></td>
+    </tr>
+    <tr>
+      <td><p>fullscreen_button</p></td>
+      <td><p>Ano</p></td>
+      <td><p>win.fullscreen</p></td>
+      <td><p>Fullscreen</p></td>
+      <td><p>gtk-fullscreen</p></td>
+    </tr>
+    <tr>
+      <td><p>leave_fullscreen_button</p></td>
+      <td><p>Ano</p></td>
+      <td><p>win.fullscreen</p></td>
+      <td><p>Leave Fullscreen</p></td>
+      <td><p>gtk-leave-fullscreen</p></td>
+    </tr>
+    </tbody>
+</table>
+          <media type="image" src="media/glade_toolbar_editor.png">
+
+          </media>
+    </item>
+
+    <item><p>Zavřete <gui>Editor panelu nástrojů</gui>.</p>
+   </item>
+
+   <item><p>Když svůj program spustíte, nechcete aby bylo zobrazené nástrojové tlačítko <gui>Leave Fullscreen</gui>, protože aplikace není v režimu celé obrazovky. Můžete to nastavit na kartě <gui>Běžné</gui>, kde přepnete vlastnost <gui>Viditelný</gui> na <gui>Ne</gui>. Nástrojové tlačítko sice bude pořád viditelné v návrháři rozhraní, ale po načtení do vašeho programu se bude chovat podle očekávání. Upozorňujeme, že jakékoliv použití metody <code>show_all()</code> by toto nastavení přepsalo, takže v celém kódu musíme používat <code>show()</code> zvlášť pro každý prvek.</p>
+          <p><media type="image" src="media/glade_visible_no.png">Nastavení vlastnosti Viditelná na Ne</media></p>
+   </item>
+
+    <item><p>Uložte svoji práci a zavřete Glade.</p>
+   </item>
+
+   <item><p>Soubor XML vytvořený v <app>Glade</app> je zobrazen níže. Jedná se o popis nástrojové lišty. V době, kdy bylo toto psáno, neexistovala v uživatelském rozhraní <app>Glade</app> volba pro přidání třídy <code>Gtk.STYLE_CLASS_PRIMARY_TOOLBAR</code>. Můžeme ji ale do souboru XML přidat ručně. Udělá se to přidáním následujícího kódu XML na řádek 9 v <file>toolbar_builder.ui</file>:</p>
+   <code>
+  &lt;style&gt;
+     &lt;class name="primary-toolbar"/&gt;
+  &lt;/style&gt;
+  </code>
+  <p>Pokud tuto část nepřidáte, bude program i tak fungovat dobře. Akorát výsledná nástrojová lišty bude vypadat lehce odlišně než ta na snímku obrazovky na začátku této stránky.</p>
+   </item>
+</steps>
+  <code mime="application/xml" style="numbered">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;!-- interface-requires gtk+ 3.0 --&gt;
+  &lt;object class="GtkToolbar" id="toolbar"&gt;
+    &lt;property name="visible"&gt;True&lt;/property&gt;
+    &lt;property name="can_focus"&gt;False&lt;/property&gt;
+    &lt;property name="hexpand"&gt;True&lt;/property&gt;
+    &lt;property name="show_arrow"&gt;False&lt;/property&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="new_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="visible"&gt;True&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;app.new&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;New&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-new&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="open_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="visible"&gt;True&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;app.open&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;Open&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-open&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="undo_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="visible"&gt;True&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;win.undo&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;Undo&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-undo&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="fullscreen_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="visible"&gt;True&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;win.fullscreen&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;Fullscreen&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-fullscreen&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+    &lt;child&gt;
+      &lt;object class="GtkToolButton" id="leave_fullscreen_button"&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="can_focus"&gt;False&lt;/property&gt;
+        &lt;property name="use_action_appearance"&gt;False&lt;/property&gt;
+        &lt;property name="is_important"&gt;True&lt;/property&gt;
+        &lt;property name="action_name"&gt;win.fullscreen&lt;/property&gt;
+        &lt;property name="label" translatable="yes"&gt;Leave Fullscreen&lt;/property&gt;
+        &lt;property name="use_underline"&gt;True&lt;/property&gt;
+        &lt;property name="stock_id"&gt;gtk-leave-fullscreen&lt;/property&gt;
+      &lt;/object&gt;
+      &lt;packing&gt;
+        &lt;property name="expand"&gt;False&lt;/property&gt;
+        &lt;property name="homogeneous"&gt;True&lt;/property&gt;
+      &lt;/packing&gt;
+    &lt;/child&gt;
+  &lt;/object&gt;
+&lt;/interface&gt;
+</code>
+
+</section>
+
+<section id="code">
+<title>Kód použitý k vygenerování tohoto příkladu</title>
+
+  <p>Nyní vytvoříme kód zobrazený níže, který přidá nástrojovou lištu ze souboru, který jsme právě vytvořili.</p>
+<code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Toolbar Example", application=app)
+        self.set_default_size(400, 200)
+
+        # Mřížka pro připojení nástrojové lišty (viz dále)
+        grid = Gtk.Grid()
+        self.add(grid)
+        # Musí zobrazit mřížku (a tím nástrojovou lištu) pomocí show(),
+        # protože show_all() by zobrazilo a tlačítka na liště, která ale
+        # chceme skrytá (kvůli tlačítku leave_fullscreen)
+        grid.show()
+
+        # Builder pro přidání návrhu uživatelského rozhraní navrženého
+        # v Glade do mřížky:
+        builder = Gtk.Builder()
+        # Získá soubor (pokud existuje)
+        try:
+            builder.add_from_file("toolbar_builder.ui")
+        except:
+            print("file not found")
+            sys.exit()
+        # A připojí jej do mřížky
+        grid.attach(builder.get_object("toolbar"), 0, 0, 1, 1)
+
+        # Dvě tlačítka, která budo použita později v metodě
+        self.fullscreen_button = builder.get_object("fullscreen_button")
+        self.leave_fullscreen_button = builder.get_object(
+            "leave_fullscreen_button")
+
+        # Vytvoří akce, které ovládají okno, napojí jejich signály na metodu
+        # zpětného volání (viz dále), přidá akce do okna:
+
+        # Akce "undo"
+        undo_action = Gio.SimpleAction.new("undo", None)
+        undo_action.connect("activate", self.undo_callback)
+        self.add_action(undo_action)
+
+        # Akce "fullscreen"
+        fullscreen_action = Gio.SimpleAction.new("fullscreen", None)
+        fullscreen_action.connect("activate", self.fullscreen_callback)
+        self.add_action(fullscreen_action)
+
+    # Zpětné volání pro "undo"
+    def undo_callback(self, action, parameter):
+        print("You clicked \"Undo\".")
+
+    # Zpětné volání pro "fullscreen"
+    def fullscreen_callback(self, action, parameter):
+        # Zkontroluje, jestli je stav stejný jako Gdk.WindowState.FULLSCREEN,
+        # což je bitový příznak
+        is_fullscreen = self.get_window().get_state(
+        ) &amp; Gdk.WindowState.FULLSCREEN != 0
+        if is_fullscreen:
+            self.unfullscreen()
+            self.leave_fullscreen_button.hide()
+            self.fullscreen_button.show()
+        else:
+            self.fullscreen()
+            self.fullscreen_button.hide()
+            self.leave_fullscreen_button.show()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        # Zobrazí okno pomocí show(), ne show_all(), protože to by zobrazilo
+        # také tlačítko leave_fullscreen
+        win.show()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        # Akce, které ovládají aplikace: vytvoří je, napojí jejich signály na
+        # metody zpětného volání (viz dále), přidá akce do aplikace
+
+        # Akce "new"
+        new_action = Gio.SimpleAction.new("new", None)
+        new_action.connect("activate", self.new_callback)
+        app.add_action(new_action)
+
+        # Akce "open"
+        open_action = Gio.SimpleAction.new("open", None)
+        open_action.connect("activate", self.open_callback)
+        app.add_action(open_action)
+
+    # Zpětné volání pro "new"
+    def new_callback(self, action, parameter):
+        print("You clicked \"New\".")
+
+    # Zpětné volání pro "open"
+    def open_callback(self, action, parameter):
+        print("You clicked \"Open\".")
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+
+</section>
+
+<section id="methods">
+<title>Užitečné metody pro Gtk.Builder</title>
+<p>Na užitečné metody pro widget Toolbar se podívejte do kapitoly <link xref="toolbar.py"/></p>
+
+<p>Gtk.Builder sestaví uživatelské rozhraní z definice ve formátu XML.</p>
+
+<list>
+<item><p><code>add_from_file(název_souboru)</code> načte a zpracuje zadaný soubor a sloučí jej s aktuálním obsahem v Gtk.Builder.</p></item>
+<item><p><code>add_from_string(řetězec)</code> zpracuje zadaný řetězec a sloučí jej s aktuálním obsahem v Gtk.Builder.</p></item>
+<item><p><code>add_objects_from_file(název_souboru, id_objektů)</code> je stejná jako <code>add_from_file()</code>, akorát že načte jen objekty, jejichž ID je uvedeno v seznamu <code>id_objektů</code>.</p></item>
+<item><p><code>add_objects_from_string(řetězec, id_objektů)</code> je stejná jako <code>add_from_string()</code>, akorát že načte jen objekty, jejichž ID je uvedeno v seznamu <code>id_objektů</code>.</p></item>
+<item><p><code>get_object(id_objektu)</code> získá widget s ID <code>id_objektu</code> ze seznamu načtených objektů v Gtk.Builder.</p></item>
+<item><p><code>get_objects()</code> vrátí všechny načtené objekty.</p></item>
+<item><p><code>connect_signals(obsluhující_objekt)</code> napojí signál na metodu zadanou v <code>obsluhující_objekt</code>. Může se jednat o libovolný objekt obsahující klíče a atributy, které jsou volány podobně jako název obsluhy signálu zadaný v popisu rozhraní, např. třída nebo slovník. Na řádku 39 je signál <code>"activate"</code> z akce <code>undo_action</code> napojen na funkci zpětného volání <code>undo_callback()</code> pomocí <code><var>action</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+</item>
+</list>
+
+</section>
+
+<section id="references">
+<title>Odkazy k API</title>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkGrid.html">GtkGrid</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkBuilder.html">GtkBuilder</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWidget.html">GtkWidget</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gdk3/unstable/gdk3-Event-Structures.html#GdkEventWindowState">Struktury událostí</link></p></item>
+</list>
+
+</section>
+
+</page>

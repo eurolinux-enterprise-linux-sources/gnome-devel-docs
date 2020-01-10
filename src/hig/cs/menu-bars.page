@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="menu-bars" xml:lang="cs">
+
+  <info>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <credit>
+      <name>Calum Benson</name>
+    </credit>
+    <credit>
+      <name>Adam Elman</name>
+    </credit>
+    <credit>
+      <name>Seth Nickell</name>
+    </credit>
+    <credit>
+      <name>Colin Robertson</name>
+    </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/menu-bar.svg"/>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+  </info>
+
+<title>Nabídkové lišty</title>
+
+<p>Nabídková lišta obsahuje rozbalovací nabídky zobrazené v řadě. Typicky bývá umístěna v horní části hlavního okna, hned po záhlavím okna.</p>
+
+<media type="image" mime="image/svg" src="figures/ui-elements/menu-bar.svg"/>
+
+<section id="when-to-use">
+<title>Kdy použít</title>
+
+<p>Nabídkové lišty zvyšují místo zabrané na výšku uživatelským rozhraním aplikace, zatahují do rozhraní velkém množství vstupních bodů a funkcí v podobě pevných neflexibilních voleb. Z tohoto důvodu jsem spíše doporučovány <link xref="header-bars">hlavičkové lišty</link> a <link xref="header-bar-menus">nabídky v hlavičkových lištách</link> spolu s dalšími návrhovými vzory pro zobrazení ovládacích prvků na vyžádání, jako jsou <link xref="selection-mode">režim výběru</link>, <link xref="action-bars">akční lišty</link> a <link xref="popovers">rozbalovací dialogy</link>.</p>
+
+<p>U složitých aplikací, které již nabídkovou lištu obsahují, ale může být zároveň vhodné ji ponechat. Navíc některé platformy stejně ve svém uživatelském prostředí vytvoří místo pro nabídkovou lištu a nabídkový model může být žádoucí pro účely multiplatformní integrace.</p>
+
+</section>
+
+<section id="standard-menus">
+<title>Standardní nabídky</title>
+
+<p>Tento oddíl popisuje většinu běžných nabídek a položek nabídek v nabídkové liště. Podrobnosti k jednotlivým položkám, které se nachází v jednotlivých nabídkách, najdete v kapitole <link xref="keyboard-input#application-shortcuts">Vstup z klávesnice</link>.</p>
+
+<table>
+<tr>
+<td><p><gui>File</gui>
+(<gui>Soubor</gui>)</p></td>
+<td><p>Příkazy pro práci s aktuálním dokumentem nebo obsahem položky jako celkem. Jedná se o položku v nabídkové liště úplně vlevo, protože je důležitá a často používaná a protože se jedná o nabídku mající význam v mnoha aplikacích.</p>
+<p>Pokud aplikace nepracuje přímo se soubory, pojmenujte nabídku podle typu objektů, které zobrazuje. Například hudební přehrávač by ji mohl mít místo <gui>File</gui> nabídku nazvanou <gui>Music</gui> (<gui>Hudba</gui>).</p></td>
+</tr>
+<tr>
+<td><p><gui>Edit</gui>
+(<gui>Upravit</gui>)</p></td>
+<td><p>Nabídka <gui>Edit</gui> obsahuje položky vztahující se k úpravě dokumentu, jako je práce se schránkou, hledání a nahrazování a vkládání objektů.</p></td>
+</tr>
+<tr>
+<td><p><gui>View</gui>
+(<gui>Zobrazit</gui>)</p></td>
+<td><p>Součástí této nabídky jsou položky, které ovlivňují uživatelské zobrazení, jako je aktuální dokument nebo stránka, nebo jako moc položek se má zobrazovat při procházení. Neumisťujte do nabídky <gui>View</gui> položky, které ovlivňují obsah položky.</p></td>
+</tr>
+<tr>
+<td><p><gui>Insert</gui>
+(<gui>Vložit</gui>)</p></td>
+<td><p>Uvádí typy objektů, které mohou být vloženy do aktuálního dokumentu. Jako například obrázky, odkazy nebo zalomení stránky. Tuto nabídku poskytněte jen v případě, že máte více jak šest typů objektů, které lze vložit. V opačném případě umístěte jednotlivé položky pro dané typy do nabídky <gui>Edit</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Format</gui>
+(<gui>Formát</gui>)</p></td>
+<td><p>Obsahuje příkazy pro změnu vizuálního vzhledu dokumentu. Například, změnu písma, barvy nebo řádkování ve vybraném textu.</p>
+<p>Rozdíl mezi těmito příkazy a příkazy v nabídce <gui>View</gui> je v tom, že změny provedené přes nabídku <gui>Format</gui> jsou trvalé a ukládají se jako součást dokumentu.</p>
+<p>Položky, které můžete najít v nabídce Formát, se velmi liší aplikaci od aplikace.</p></td>
+</tr>
+<tr>
+<td><p><gui>Bookmarks</gui>
+(<gui>Záložky</gui>)</p></td>
+<td><p>Nabídku <gui>Bookmarks</gui> dejte k dispozici v aplikaci, ve které uživatel prochází soubory a složky, dokumenty s nápovědou, webové stránky nebo jiné rozsáhlé zdroje informací.</p></td>
+</tr>
+<tr>
+<td><p><gui>Go</gui>
+(<gui>Přejít</gui>)</p></td>
+<td><p>Nabídka <gui>Go</gui> poskytuje příkazy pro rychlý pohyb v dokumentu nebo sadě dokumentů nebo obecně v nějakém prostoru s informacemi, třeba struktuře složek nebo webu.</p>
+<p>Obsah této nabídky silně závisí na typu aplikace.</p></td>
+</tr>
+<tr>
+<td><p><gui>Windows</gui>
+(<gui>Okna</gui>)</p></td>
+<td><p>Příkazy, které se použijí na všechna otevřená okna aplikace. Tuto nabídku můžete nazvat také <gui>Dokuments</gui>, <gui>Buffers</gui> nebo podobným názvem příslušejícím typu dokumentu obsluhovanému aplikací.</p>
+<p>Posledními položkami v této nabídce je očíslovaný seznam hlavních oken aplikace, například <gui>1: shoppinglist.abw</gui>. Výběrem jedné z těchto položek se přenese příslušné okno do popředí.</p></td>
+</tr>
+</table>
+
+</section>
+
+<section id="general-guidelines">
+<title>Obecné rady</title>
+
+<list>
+<item><p>Nabídková lišta je za normálních okolností stále viditelná a je přístupná z klávesnice, takže všechny příkazy dostupné ve vaší aplikaci zpřístupněte v nabídkové liště. (Tato rada se týká pouze nabídkové lišty – ostatní nabídky by se neměly snažit opakovat funkce, které se provádí ostatními ovládacími prvky).</p></item>
+<item><p><link xref="application-menus">Nabídku aplikace</link> považujte za část nabídkové lišty – není nutné opakovat položky z nabídky aplikace v ostatních nabídkách.</p></item>
+<item><p>Neznepřístupňujte názvy nabídek. Umožněte uživateli si nabídky procházet, i kdy v danou chvíli budou v nabídce všechny položky zakázané.</p></item>
+<item><p>Názvy nabídek na hlavní liště jsou jednoslovné výrazy s prvním písmenem velkým. Nepoužívejte víceslovné výrazy s mezerami, protože se pak jeví jako dvě oddělené nabídky. Nesnažte se tyto rady ani obejít použitím složeného slova (jako například <gui>WindowOptions</gui>) nebo slova s pomlčkou (such as <gui>Window-Options</gui>).</p></item>
+<item><p>Nedávejte k dispozici mechanizmus pro skrytí nabídkové lišty, protože může být aktivován nechtěně. Někteří uživatelé by pak nedokázali v takovém případě vrátit nabídkovou lištu zpátky.</p></item>
+</list>
+
+</section>
+
+<section id="api-reference">
+<title>Referenční příručka API</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenu.html">GtkMenu</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuBar.html">GtkMenuBar</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMenuItem.html">GtkMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkRadioMenuItem.html">GtkRadioMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkCheckMenuItem.html">GtkCheckMenuItem</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkSeparatorMenuItem.html">GtkSeparatorMenuItem</link></p></item>
+</list>
+</section>
+
+</page>

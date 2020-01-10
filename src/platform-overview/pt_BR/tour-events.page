@@ -18,7 +18,7 @@
 
     <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
 
-    <desc>Bind functions to events using Lang.</desc>
+    <desc>Vincule funções a eventos usando Lang.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Enrico Nicoletto</mal:name>
@@ -27,48 +27,50 @@
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Rafael Ferreira</mal:name>
-      <mal:email>rafael.f.f1@gmail.com</mal:email>
-      <mal:years>2013</mal:years>
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2013, 2014, 2016, 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Isaac Ferreira Filho</mal:name>
+      <mal:email>isaacmob@riseup.net</mal:email>
+      <mal:years>2018</mal:years>
     </mal:credit>
   </info>
 
-  <title>Actions and signals</title>
+  <title>Ações e sinais</title>
 
   <links type="prevnext" style="top"/>
   <links type="series" style="floatend">
-    <title>Get started with GNOME</title>
+    <title>Primeiros passos com GNOME</title>
   </links>
 
-  <p>Gtk has a set of predefined events that you can use in your application.</p>
+  <p>Gtk possui um conjunto de eventos pré-definidos que você pode usar em seu aplicativo.</p>
   <example>
-    <p>Declare <code>HelloWorld</code> as a new <code>Lang</code> class.
-    Gjs requires classes to have the Name property defined.</p>
+    <p>Declare <code>HelloWorld</code> como uma nova classe.</p>
 
-    <code><![CDATA[
-const HelloWorld = new Lang.Class({
-    Name: 'HelloWorld',
-]]></code>
+    <code>
+class HelloWorld {
+</code>
 
-    <p><code>_init</code> is called when a new instance is created. Create a
-    <code>GtkApplication</code>, then connect <code>activate</code> to the
-    existing Gtk event <code>_onActivate</code> and <code>startup</code> to
-    <code>_onStartup</code>:</p>
+    <p><code>constructor</code> é chamado quando uma nova instância é criada. Crie um <code>GtkApplication</code> e, então, conecte <code>activate</code> ao evento Gtk existente <code>_onActivate</code> e <code>startup</code> para <code>_onStartup</code>:</p>
 
-    <code><![CDATA[
-    _init: function() {
+    <code>
+    constructor() {
         this.application = new Gtk.Application();
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
-]]></code>
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+</code>
 
-    <p>Show the window upon application activation:</p>
-    <code><![CDATA[
-    _onActivate: function(){
+    <p>Mostre a janela na ativação do aplicativo:</p>
+    <code>
+    _onActivate() {
         this._window.show_all();
-    },
-]]></code>
+    }
+
+</code>
   </example>
   <links type="prevnext"/>
 </page>

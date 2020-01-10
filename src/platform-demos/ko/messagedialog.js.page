@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="messagedialog.js" xml:lang="ko">
+  <info>
+  <title type="text">MessageDialog(JavaScript)</title>
+    <link type="guide" xref="beginner.js#windows"/>
+    <link type="seealso" xref="GtkApplicationWindow.js"/>
+    <link type="seealso" xref="gmenu.js"/>
+    <link type="seealso" xref="label.js"/>
+    <revision version="0.2" date="2012-06-25" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>창에 붙여 띄우는 메시지</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MessageDialog</title>
+  <media type="image" mime="image/png" src="media/messagedialog.png"/>
+  <p>MessageDialog는 모달 메시지 대화상자인데, 대화상자가 붙어 어떤 일을 하던 창으로 돌아가려면 반드시 응답해야 하는 팝업입니다. 이렇게 해서 전세계를 폭발하게 할 수 있습니다(아니면 최소한 그럴 수 있다고 해두죠). 이 예제를 실행할 때 팝업을 나타내려면, 프로그램 메뉴의 “Message”를 누르십시오. 좌측 상단 화면 구석에 있는 현재 활동 옆 프로그램 이름을 누르면 나타나는 메뉴입니다.</p>
+  <note><p>MessageDialog와 <link xref="dialog.js">Dialog</link> 의 차이점은 Dialog는 어떤 위젯이든 넣고 여러분이 넣고 싶은 컨텐트를 넣을- 수 있습니다, 다만 MessageDialog는 기본 메시지와 단추로 팝업을 띄우는 편의 수단일 뿐입니다.</p></note>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>가져올 라이브러리</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>이 프로그램을 실행할 때 가져올 라이브러리입니다. 시작 부분에 항상 gjs가 필요함을 알리는 줄을 작성해야 함을 기억하십시오.</p>
+  </section>
+
+  <section id="applicationwindow">
+    <title>프로그램 창 만들기</title>
+    <code mime="application/javascript">
+const MessageDialogExample = new Lang.Class ({
+    Name: 'MessageDialog Example',
+
+    // Create the application itself
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jsmessagedialog',
+            flags: Gio.ApplicationFlags.FLAGS_NONE });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate: function () {
+        this._window.present ();
+    },
+
+    // Callback function for 'startup' signal initializes menus and builds the UI
+    _onStartup: function () {
+        this._initMenus();
+        this._buildUI ();
+    },
+</code>
+    <p>이 예제의 모든 코드는 MessageDialogExample 클래스에 넣었습니다. 위 코드에서는 위젯과 창을 담아둘 <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link>을 만들었습니다.</p>
+    <note><p>창을 만들고 위젯을 그 안에 넣으려 _buildUI를 호출할 수 있기 전, 그놈에 메뉴를 만들어주라고 지시하는 _initMenus를 호출해야합니다. _onStartup에서 _initMenus를 우선 호출하는 동안 어떤 순서로 두는지는 중요하지 않으니, _buildUI 코드 다음에 _initMenus의 실제 코드를 둘 수 있습니다.</p></note>
+    <code mime="application/javascript">
+    // Build the application's UI
+    _buildUI: function () {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow  ({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Gtk.MessageDialog Example",
+            default_height: 200,
+            default_width: 400 });
+</code>
+    <p>_buildUI 함수는 프로그램 사용자 인터페이스를 만드는 모든 코드를 넣는 곳입니다. 첫 단계에서는 모든 위젯을 우겨넣을 새 <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link>를 만듭니다.</p>
+
+    <code mime="application/javascript">
+        // Create a silly warning message and add it to the window
+        this.warningLabel = new Gtk.Label ({
+            label: "This application goes boom! (Not really.)"});
+        this._window.add (this.warningLabel);
+</code>
+    <p>이 예제에서는 창에 모든걸 넣고, 저기에서 띄워줄 문장은 유치한 경고 <link xref="label.js">Label</link>입니다.</p>
+  </section>
+
+  <section id="menu">
+    <title>프로그램 메뉴 만들기</title>
+    <code mime="application/javascript">
+    // Build the application menu, including the button that calls the dialog
+    _initMenus: function() {
+        let menu = new Gio.Menu();
+        menu.append("Message",'app.message');
+        menu.append("Quit",'app.quit');
+        this.application.set_app_menu(menu);
+
+        // This pops up a MessageDialog when "Message" is clicked in the menu
+        let messageAction = new Gio.SimpleAction ({ name: 'message' });
+        messageAction.connect('activate', Lang.bind(this,
+            function() {
+                this._showMessageDialog();
+            }));
+        this.application.add_action(messageAction);
+
+        // This closes the window when "Quit" is clicked in the menu
+        let quitAction = new Gio.SimpleAction ({ name: 'quit' });
+        quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._window.destroy();
+            }));
+        this.application.add_action(quitAction);
+    },
+</code>
+    <p>여기서 우리가 나중에 팝업 MessageDialog를 실행할 "Message" 단추를 두는 <link xref="gmenu.js">GMenu</link>를 만들겠습니다. GMenu는 화면의 좌측 상단, 현재 활동 옆에 프로그램 이름을 눌렀을 때 프로그램 이름을 나타내는 메뉴입니다. 우리가 쓰는 메뉴는 옵션을 Message, Quit 두 개만 두었습니다.</p>
+  </section>
+
+  <section id="messagedialog">
+    <title>MessageDialog 만들기</title>
+    <code mime="application/javascript">
+    _showMessageDialog: function () {
+
+        // Create a modal MessageDialog whose parent is the window
+        this._messageDialog = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            buttons: Gtk.ButtonsType.OK_CANCEL,
+            message_type: Gtk.MessageType.WARNING,
+            text: "This action will cause the universe to stop existing." });
+
+        this._messageDialog.connect ('response', Lang.bind(this, this._response_cb));
+        this._messageDialog.show();
+    },
+</code>
+    <p>MessageDialog 팝업을 메인 창에 붙이려면, 모달 속성을 True로 설정하고 "transient_for" 창을 설정합니다. 다음 단추 종류를 설정하고 어떤 메시지를 보여줄지 설정(메시지 옆 아이콘 표시 종류를 결정)할 수 있으며, "response" 시그널을 처리할 콜백 함수에 연결하기 전에 텍스트를 넣을 수 있습니다.</p>
+    <note><p>여기에 MessageDialog를 만들 때 몇가지 참고할 자료가 있습니다:</p>
+      <list>
+        <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkMessageDialog.html#GtkButtonsType">단추 형식 목록</link></p></item>
+        <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkMessageDialog.html#GtkMessageType">메시지 형식 목록</link></p></item>
+      </list>
+    </note>
+
+    <code mime="application/javascript">
+    // Callback function (aka signal handler) for the response signal
+    _response_cb: function (messagedialog, response_id) {
+
+        // A simple switch that changes the main window's label
+        switch (response_id) {
+            case Gtk.ResponseType.OK:
+                this.warningLabel.set_label ("*BOOM*\n");
+                break;
+            case Gtk.ResponseType.CANCEL:
+                this.warningLabel.set_label ("Good choice!\n");
+                break;
+            case Gtk.ResponseType.DELETE_EVENT:
+                this.warningLabel.set_label ("Dialog closed or cancelled.\n");
+                break;
+        }
+
+        this._messageDialog.destroy();
+
+    }
+
+});
+</code>
+    <p>이 함수에는 MessageDialog와 response_id 두 매개변수가 있는데, 두 매개 변수 값은 자동으로 들어갑니다(동작하게 할 때 직접 넣을 필요는 없습니다). 여기서, 선택한 옵션에 따라 “warning label”의 텍스트를 바꾸는 간단한 스위치를 사용하겠습니다. DELETE_EVENT는 확인 또는 취소를 누르는 대신 MessageDialog 처리를 취소하려고 Escape 키를 누를 경우 발생합니다. 무얼 선택하든지간에 팝업은 나중에 해체됩니다.</p>
+
+    <code mime="application/javascript">
+// Run the application
+let app = new MessageDialogExample ();
+app.application.run (ARGV);
+</code>
+    <p>마지막으로 작성을 끝낸 MessageDialogExample 클래스의 새 인스턴스를 만들고 프로그램 실행을 설정하겠습니다.</p>
+  </section>
+
+  <section id="complete">
+    <title>완전한 코드 예제</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+
+class MessageDialogExample {
+
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsmessagedialog',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Callback function for 'startup' signal initializes menus and builds the UI
+    _onStartup() {
+        this._initMenus();
+        this._buildUI ();
+    }
+
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "Gtk.MessageDialog Example",
+            default_height: 200,
+            default_width: 400
+        });
+
+        // Create a silly warning message and add it to the window
+        this.warningLabel = new Gtk.Label({
+            label: "This application goes boom! (Not really.)"
+        });
+        this._window.add (this.warningLabel);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+
+    // Build the application menu, including the button that calls the dialog
+    _initMenus() {
+        let menu = new Gio.Menu();
+        menu.append("Message",'app.message');
+        menu.append("Quit",'app.quit');
+        this.application.set_app_menu(menu);
+
+        // This pops up a MessageDialog when "Message" is clicked in the menu
+        let messageAction = new Gio.SimpleAction ({ name: 'message' });
+        messageAction.connect('activate', () =&gt; { this._showMessageDialog(); });
+        this.application.add_action(messageAction);
+
+        // This closes the window when "Quit" is clicked in the menu
+        let quitAction = new Gio.SimpleAction ({ name: 'quit' });
+        quitAction.connect('activate', () =&gt; { this._window.destroy(); });
+        this.application.add_action(quitAction);
+    }
+
+    _showMessageDialog() {
+
+        // Create a modal MessageDialog whose parent is the window
+        this._messageDialog = new Gtk.MessageDialog ({
+            transient_for: this._window,
+            modal: true,
+            buttons: Gtk.ButtonsType.OK_CANCEL,
+            message_type: Gtk.MessageType.WARNING,
+            text: "This action will cause the universe to stop existing." });
+
+        this._messageDialog.connect ('response', this._response_cb.bind(this));
+        this._messageDialog.show();
+    }
+
+    // Callback function (aka signal handler) for the response signal
+    _response_cb(messagedialog, response_id) {
+
+        // A simple switch that changes the main window's label
+        switch (response_id) {
+            case Gtk.ResponseType.OK:
+                this.warningLabel.set_label ("*BOOM*\n");
+                break;
+            case Gtk.ResponseType.CANCEL:
+                this.warningLabel.set_label ("Good choice!\n");
+                break;
+            case Gtk.ResponseType.DELETE_EVENT:
+                this.warningLabel.set_label ("Dialog closed or cancelled.\n");
+                break;
+        }
+
+        this._messageDialog.destroy();
+
+    }
+};
+
+// Run the application
+let app = new MessageDialogExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>자세한 문서</title>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gio/unstable/GMenu.html">GMenu</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GSimpleAction.html">GSimpleAction</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.MessageDialog.html">Gtk.MessageDialog</link></p></item>
+</list>
+  </section>
+</page>

@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -44,65 +44,65 @@
 
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const ButtonExample = new Lang.Class ({
-    Name: 'Button Example',
+class ButtonExample {
 
-    /* Δημιουργία της εφαρμογής αυτής καθεαυτής
-       Αυτός ο κώδικαςχρειάζεται για τη δόμηση οποιασδήποτε εφαρμογής GTK+. */
-        _init: function () {
-            this.application = new Gtk.Application ({
-                application_id: 'org.example.jsbutton',
-                flags: Gio.ApplicationFlags.FLAGS_NONE
-            });
+    /* Create the application itself
+       This boilerplate code is needed to build any GTK+ application. */
+    constructor() {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jsbutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
 
-    // Σύνδεση σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
-    _onActivate: function () {
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
         this._window.present ();
-    },
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' αρχικοποιεί μενού και δομεί τη διεπαφή χρήστη
-    _onStartup: function () {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal initializes menus and builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function () {
+    // Build the application's UI
+    _buildUI() {
 
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
             this._window = new Gtk.ApplicationWindow  ({ application: this.application,
                                                               window_position: Gtk.WindowPosition.CENTER,
                                                               title: "GNOME Button",
                                                               default_height: 50,
                                                               default_width: 250 });
 
-        // Δημιουργία του κουμπιού
+        // Create the button
         this.Button = new Gtk.Button ({label: "Click Me"});
         this._window.add (this.Button);
 
-        // Σύνδεσή του με μια συνάρτηση που λέει τι να γίνει όταν πατιέται το κουμπί
-        this.Button.connect ("clicked", Lang.bind(this, this._clickHandler));
+        // Bind it to a function that says what to do when the button is clicked
+        this.Button.connect ("clicked", this._clickHandler.bind(this));
 
-                // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+                // Show the window and all child widgets
                 this._window.show_all();
-    },
+    }
 
-    // Ιδού η συνάρτηση που λέει τι συμβαίνει όταν πατιέται το κουμπί
-    _clickHandler: function () {
+    // Here's the function that says what happens when the button is clicked
+    _clickHandler() {
         this.Button.set_label ("Clicked!");
     }
-});
+};
 
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new ButtonExample ();
 app.application.run (ARGV);
 </code>

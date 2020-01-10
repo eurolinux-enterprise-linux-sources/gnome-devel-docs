@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="properties.py" xml:lang="ko">
+
+<info>
+  <title type="text">속성(Python)</title>
+  <link type="guide" xref="beginner.py#theory"/>
+  <link type="next" xref="grid.py"/>
+  <revision version="0.1" date="2012-06-24" status="draft"/>
+
+  <desc>속성, 게터함수, 세터함수를 설명합니다.</desc>
+  <credit type="author copyright">
+    <name>Sebastian Pölsterl</name>
+    <email its:translate="no">sebp@k-d-w.org</email>
+    <years>2011</years>
+  </credit>
+  <credit type="editor">
+    <name>Marta Maria Casetti</name>
+    <email its:translate="no">mmcasetti@gmail.com</email>
+    <years>2012</years>
+  </credit>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+<title>속성</title>
+
+<links type="section"/>
+
+<section id="overview">
+<title>개요</title>
+
+<p><em>속성</em>은 설정과 위젯 상태를 설명합니다. 각 위젯에는 몇가지 특별한 속성 모음이 있습니다. 예를 들어 단추 같은 위젯에는 위젯 텍스트를 넣을 수 있는 <code>label</code> 속성이 있습니다. 위젯 인스턴스를 만들 때 키워드 인자로 여러가지 프로퍼티의 이름과 값을 지정할 수 있습니다. 예를 들어, "Hello world" 레이블을 25도 기울여서 오른쪽 정렬 상태로 만들려면:</p>
+<code>
+label = Gtk.Label(label="Hello World", angle=25, halign=Gtk.Align.END)</code>
+
+<p>대신, 관련 메서드를 사용하여 속성을 따로 설정할 수 있습니다.</p>
+<code>
+label = Gtk.Label()
+label.set_label("Hello World")
+label.set_angle(25)
+label.set_halign(Gtk.Align.END)</code>
+
+<p>레이블 같은걸 만들고 나면 <code>label.get_label()</code> 함수로 텍스트를 가져올 수 있으며, 다른 속성에 대해서도 비슷합니다.</p>
+
+<p>게터, 세터 함수를 사용하는 대신 <code>get_property(<var>"prop-name"</var>)</code>함수와 <code>set_property(<var>"prop-name"</var>, <var>value</var>)</code>함수를 각각 사용하여 속성 값을 가져오고 설정할 수 있습니다.</p>
+
+</section>
+<section id="references">
+<title>참고 자료</title>
+
+<p>파이썬 GTK+ 3 따라하기 지침서의 <link href="http://python-gtk-3-tutorial.readthedocs.org/en/latest/basics.html">속성 기본</link></p>
+</section>
+
+</page>

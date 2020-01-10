@@ -31,7 +31,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -49,7 +49,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -287,7 +287,7 @@ class MyWindow(Gtk.ApplicationWindow):
         try:
             builder.add_from_file("toolbar_builder.ui")
         except:
-            print "file not found"
+            print("file not found")
             sys.exit()
         # and attach it to the grid
         grid.attach(builder.get_object("toolbar"), 0, 0, 1, 1)
@@ -312,7 +312,7 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback for undo
     def undo_callback(self, action, parameter):
-        print "You clicked \"Undo\"."
+        print("You clicked \"Undo\".")
 
     # callback for fullscreen
     def fullscreen_callback(self, action, parameter):
@@ -359,11 +359,11 @@ class MyApplication(Gtk.Application):
 
     # callback for new
     def new_callback(self, action, parameter):
-        print "You clicked \"New\"."
+        print("You clicked \"New\".")
 
     # callback for open
     def open_callback(self, action, parameter):
-        print "You clicked \"Open\"."
+        print("You clicked \"Open\".")
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
@@ -382,7 +382,7 @@ sys.exit(exit_status)
 <item><p>Η <code>add_from_file(filename)</code> φορτώνει και αναλύει το δεδομένο αρχείο και το συγχωνεύει με τα τρέχοντα περιεχόμενα του Gtk.Builder.</p></item>
 <item><p>Η <code>add_from_file(string)</code> φορτώνει την δεδομένη συμβολοσειρά και το συγχωνεύει με τα τρέχοντα περιεχόμενα του Gtk.Builder.</p></item>
 <item><p>Η <code>add_objects_from_file(filename, object_ids)</code> είναι η ίδια με <code>add_from_file()</code>, αλλά φορτώνει μόνο τα αντικείμενα με τις ταυτότητες που δίνονται στη λίστα <code>object_id</code>.</p></item>
-<item><p>Η <code>add_objects_from_string(filename, object_ids)</code> είναι η ίδια με <code>add_from_string()</code>, αλλά φορτώνει μόνο τα αντικείμενα με τις ταυτότητες που δίνονται στη λίστα <code>object_id</code>.</p></item>
+<item><p>Το <code>add_objects_from_string(string, object_ids)</code> είναι ίδιο με το <code>add_from_string()</code>, αλλά φορτώνει μόνο τα αντικείμενα με τα αναγνωριστικά που δόθηκαν στη λίστα <code>object_id</code>s.</p></item>
 <item><p>Η <code>get_object(object_id)</code> ανακτά το γραφικό στοιχείο με την ταυτότητα <code>object_id</code> από τα φορτωμένα αντικείμενα του δομητή.</p></item>
 <item><p>Η <code>get_objects()</code> επιστρέφει όλα τα φορτωμένα αντικείμενα.</p></item>
 <item><p>Το <code>connect_signals(handler_object)</code> συνδέει τα σήματα στις μεθόδους που δίνονται στον <code>handler_object</code>. Αυτό μπορεί να είναι οποιοδήποτε αντικείμενο περιέχει κλειδιά ή γνωρίσματα που καλούνται όπως τα ονόματα χειριστή σήματος που δίνονται στην περιγραφή διεπαφής, π.χ. μια κλάση ή ένα λεξικό. Στη γραμμή 39 το σήμα <code>"activate"</code> από την ενέργεια <code>undo_action</code> συνδέεται σε μια συνάρτηση επανάκλησης <code>undo_callback()</code> χρησιμοποιώντας <code><var>action</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>

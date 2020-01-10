@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -53,44 +53,42 @@
       <code mime="application/javascript" style="numbered">
 #!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const Application = new Lang.Class ({
-    Name: 'Application',
-
-    //Δημιουργία της εφαρμογής
-    _init: function () {
-        this.application = new Gtk.Application ({
+class Application {
+    //create the application
+    constructor() {
+        this.application = new Gtk.Application({
             application_id: 'org.example.myapp',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-       this.application.connect('activate', Lang.bind(this, this._onActivate));
-    },
-
-    //Η συνάρτηση επανάκλησης για το σήμα 'activate'
-    _onActivate: function () {
-
-        MyWindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
-        MyWindow.title = "Welcome to GNOME";
-
-       /* Ιδού μερικοί τρόποι που μπορούμε να προσαρμόσουμε το παράθυρό μας.
-       Try uncommenting them or changing their values! */
-        //MyWindow.set_default_size (400,200);
-        //MyWindow.set_has_resize_grip (false);
-        //MyWindow.set_opacity (0.5);
-        //MyWindow.maximize ();
-
-        //Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων (κανένα σε αυτήν την περίπτωση)
-        MyWindow.show_all();
-        this.application.add_window(MyWindow);
+       this.application.connect('activate', this._onActivate.bind(this));
     }
-});
 
-//Εκτέλεση της εφαρμογής
+    //callback function for 'activate' signal
+    _onActivate() {
+        let myWindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+        myWindow.title = "Welcome to GNOME";
+
+       /* Here are a few ways we can customize our window.
+       Try uncommenting them or changing their values! */
+        //myWindow.set_default_size (400,200);
+        //myWindow.set_has_resize_grip (false);
+        //myWindow.set_opacity (0.5);
+        //myWindow.maximize ();
+
+        //show the window and all child widgets (none in this case)
+        myWindow.show_all();
+        this.application.add_window(myWindow);
+    }
+};
+
+//run the application
 let app = new Application ();
 app.application.run (ARGV);
 </code>

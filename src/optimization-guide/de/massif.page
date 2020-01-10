@@ -6,7 +6,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Mario Blättermann</mal:name>
       <mal:email>mario.blaettermann@gmail.com</mal:email>
-      <mal:years>2009, 2012, 2013</mal:years>
+      <mal:years>2009, 2012, 2013, 2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -15,62 +15,35 @@
       <mal:years>2010</mal:years>
     </mal:credit>
   </info>
-      <title>Using <app>Massif</app> for Profiling Memory Use in GNOME Software</title>
+      <title>Verwendung von <app>Massif</app> zur Profilierung des Speicherverbrauchs in GNOME-Software</title>
 
-    <p>
-        This article describes how to use the <app>Massif</app> heap profiler with GNOME applications. We describe how to invoke, interpret, and act on the output of <app>Massif</app>. The <app>Swell Foop</app> game is used as an example. </p>
+    <p>Dieser Artikel beschreibt, wie Sie den Heap-Profiler <app>Massif</app> mit GNOME-Anwendungen verwenden. Wir beschreiben den Aufruf, die Interpretation und die Möglichkeiten, die Ausgaben von <app>Massif</app> richtig zu nutzen. Das Spiel <app>Swell Foop</app> wird als Beispiel verwendet.</p>
    <section id="optimization-massif-TBL-intro">
         <title>Einführung</title>
-        <p>
-            <app>Massif</app> is a member of the <link href="http://valgrind.org/">valgrind</link> suite of memory-profiling tools. Its purpose is to give a detailed view of dynamic memory usage during the lifetime of the program. Specifically it records the memory use of the heap and the stack.
-        </p>
-        <p>
-            The heap is the region of memory which is allocated with functions like malloc. It grows on demand and is usually the largest region of memory in a program. The stack is where all the local data for functions is stored. This includes the "automatic" variables in C and the return address for subroutines. The stack is typically a lot smaller and a lot more active than the heap. We won't consider the stack explicitly since <app>Massif</app> treats it as though it were just another part of the heap. <app>Massif</app> also gives information about how much memory is used to manage the heap.  </p>
-        <p>
-            <app>Massif</app> produces two output files: a graphical overview in a postscript file and a detailed breakdown in a text file.
-        </p>
+        <p><app>Massif</app> ist Teil der Programmsammlung <link href="http://valgrind.org/">valgrind</link>, die Werkzeuge zur Speicherprofilierung bereitstellt. Zweck ist die Erstellung eines detaillierten Überblicks über die dynamische Speichernutzung während der Lebensdauer eines Programms. Speziell wird der Speicherverbrauch von »heap« und »stack« aufgezeichnet.</p>
+        <p>Der Heap ist der Speicherbereich, der von Funktionen wie »malloc« belegt wird. Er wächst bei Bedarf und ist gewöhnlich der größte Speicherbereich eines Programms. Der Stapelspeicher (Stack) dient zur Speicherung der lokalen Daten von Funktionen. Dies schließt »automatische« Variablen in C und die Rückgabeadresse von Subroutinen ein. Der Stapelspeicher ist typischerweise wesentlich kleiner und deutlich aktiver als der Heap. Wir werden den Stapelspeicher nicht gesondert betrachten, weil ihn <app>Massif</app> wie einen weiteren Teil des Heap ansieht. <app>Massif</app> liefert auch Informationen darüber, wie viel Arbeitsspeicher für den Heap belegt wird.</p>
+        <p><app>Massif</app> erstellt zwei Ausgabdateien: eine grafische Übersicht in einer PostScript-Datei und eine detaillierte Ausgabe in einer Textdatei.</p>
     </section>
     <section id="optimization-massif-TBL-using-massif">
-        <title>Using <app>Massif</app> with GNOME</title>
-        <p>
-          <app>Massif</app> has very few options and for many programs does not need them. However for GNOME applications, where memory allocation might be buried deep in either glib or GTK, the number of levels down the call-stack Massif descends needs to be increased. This is achieved using the --depth parameter. By default this is 3; increasing it to 5 will guarantee the call-stack reaches down to your code. One or two more levels may also be desirable to provide your code with some context. Since the level of detail becomes quickly overwhelming it is best to start with the smaller depth parameter and only increase it when it becomes apparent that it isn't sufficient.
-        </p>
-        <p>
-            It is also useful to tell <app>Massif</app> which functions allocate memory in glib. It removes an unnecessary layer of function calls from the reports and gives you a clearer idea of what code is allocating memory. The allocating functions in glib are g_malloc, g_malloc0, g_realloc, g_try_malloc, and g_mem_chunk_alloc. You use the --alloc-fn option to tell Massif about them.
-        </p>
+        <title><app>Massif</app> mit GNOME verwenden</title>
+        <p><app>Massif</app> hat sehr wenige Optionen und für viele Programme brauchen Sie diese auch gar nicht. Für GNOME-Anwendungen jedoch muss die Anzahl der Abstiegsebenen des Aufruf-Stapelspeichers erhöht werden, weil sie bei diesen Speicheranforderungen tief in glib oder GTK+ verborgen liegen. Dies wird mit dem Parameter »--depth« erreicht. Die Voreinstellung ist 3; eine Erhöhung auf 5 stellt sicher, dass der Aufruf-Stapelspeicher bis zu Ihrem Code reicht. Ein oder zwei weitere Ebenen können auch wünschenswert sein, um weiteren Kontext zu ersehen. Weil die Detailangaben sehr schnell erdrückend werden können ist es am besten, mit dem kleineren Parameter zu beginnen und ihn nur bei Bedarf zu erhöhen.</p>
+        <p>Es ist auch nützlich, <app>Massif</app> mitzuteilen, welche Funktionen in glib Arbeitsspeicher anfordern. So wird eine unnötige Ebene Funktionsaufrufe aus den Berichten entfernt und verbessert den Einblick, welcher Code Speicher anfordert. Speicher anfordernde Funktionen in glib sind: g_malloc, g_malloc0, g_realloc, g_try_malloc und g_mem_chunk_alloc. Verwenden Sie die Option »--alloc-fn«, um Massif diese Namen mitzuteilen.</p>
         <p>Ihre Befehlszeile sollte daher so aussehen:</p>
         <code>
 valgrind --tool=massif --depth=5  --alloc-fn=g_malloc --alloc-fn=g_realloc --alloc-fn=g_try_malloc \
          --alloc-fn=g_malloc0 --alloc-fn=g_mem_chunk_alloc swell-foop
         </code>
-        <p>
-            <app>Swell Foop</app> is the program we will be using as an example. Be warned that, since valgrind emulates the CPU, it will run <em>very</em> slowly. You will also need a lot of memory. </p>
+        <p>Das Programm <app>Swell Foop</app> werden wir als Beispiel verwenden. Seien Sie gewarnt: <app>Valgrind</app> emuliert den Prozessor, wodurch es <em>äußerst</em> langsam läuft. Außerdem wird sehr viel Speicher benötigt.</p>
     </section>
     <section id="optimization-massif-TBL-interpreting-results">
         <title>Interpretieren der Ergebnisse</title>
-        <p>
-            The graphical output of <app>Massif</app> is largely self explanatory. Each band represents the memory allocated by one function over time. Once you identify which bands are using the most memory, usually the big thick ones at the top you will have to consult the text file for the details.
-        </p>
+        <p>Die grafische Ausgabe von <app>Massif</app> ist weitgehend selbsterklärend. Jedes Band stellt den einer Funktion zugewiesenen Speicher nach Zeit dar. Sobald Sie herausgefunden haben, welche Bänder den meisten Speicher verbrauchen, üblicherweise die dickeren, oberen, dann schauen Sie sich die Textausgabe für weitere Details an.</p>
         <p>Die Textdatei ist hierarchisch in Abschnitte gegliedert. Am oberen Ende finden sich die größten Speicherverbraucher, in absteigender Ordnung nach Speicherzeit. Darunter finden sich weitere Abschnitte, die je nach dem Platz im Aufruf-Stack feiner detaillierter sind. Um dies zu verdeutlichen, verwenden wir die Ausgabe des oben stehenden Befehls.</p>
         <figure>
-            <title><app>Massif</app> output for the unoptimized version of the <app>Swell Foop</app> program.</title>
+            <title><app>Massif</app>-Ausgabe für die nicht optimierte Version des Programms <app>Swell Foop</app>.</title>
             <media type="image" src="figures/massif-before.png"/>
          </figure>
-        <p>
-            <link xref="optimization-massif-FIG-output-unoptimized"/>
-            shows a typical postscript output from
-            <app>Massif</app>. This is the result you would get from
-            playing a single game of <app>Swell Foop</app> (version
-            2.8.0) and then quitting. The postscript file will have a
-            name like <file>massif.12345.ps</file> and the text file
-            will be called <file>massif.12345.txt</file>. The number
-            in the middle is the process ID of the program that was
-            examined. If you actually try this example you will find
-            two versions of each file, with slightly different
-            numbers, this is because <app>Swell Foop</app> starts a
-            second process and <app>Massif</app>
-            follows that too. We will ignore this second process, it
-            consumes very little memory.</p>
+        <p>Das Bild oben zeigt eine typische PostScript-Ausgabe von <app>Massif</app>. Dies ist das Ergebnis, wenn Sie eine einzige Runde <app>Swell Foop</app> (Version 2.8.0) spielen und dann die Anwendung schließen. Die PostScript-Datei hat einen Namen ähnlich wie <file>massif.12345.ps</file> und die Text-Datei <file>massif.12345.txt</file>. Die Zahl im Dateinamen entspricht der Prozesskennung des untersuchten Programms. Wenn Sie dieses Beispiel nachstellen, so werden Sie zwei Versionen jeder Datei mit leicht verschiedenen Nummern finden. Dies liegt daran, dass <app>Swell Foop</app> einen zweiten Prozess startet und <app>Massif</app> diesen ebenfalls protokolliert. Wie werden diesen zweiten Prozess ignorieren. Er verbraucht nur sehr wenig Speicher.</p>
         <p>Oben in der Grafik sehen Sie ein großes gelbes Band mit der Bezeichnung gdk_pixbuf_new. Dies schaut nach einem idealen Kandidaten für Optimierungsversuche aus, aber wir werden die Textdatei verwenden müssen, um herauszufinden, wo gdk_pixbuf_new aufgerufen wird. Der Anfang der Textdatei sieht in etwa so aus:</p>
         <code>
 Command: ./swell-foop
@@ -103,30 +76,19 @@ Called from:
 
   and 1 other insignificant place
         </code>
-        <p>
-            The first line tells us we are now four levels deep into the stack. Below it is a listing of the function calls that leads from here to gdk_pixbuf_new. Finally there is a list of functions that are at the next level down and call these functions. There are, of course, also entries for levels 1, 2, and 3, but this is the first level to reach right down through the GDK code to the <app>Swell Foop</app> code. From this listing, we can see instantly that the problem code is load_scenario.
-        </p>
+        <p>Die erste Zeile besagt, dass wir uns nun vier Ebenen tief im Stapelspeicher befinden. Darunter ist eine Auflistung der Funktionsaufrufe, die von hier bis  gdk_pixbuf_new reichen. Schließlich findet sich eine Liste von Funktionen, die sich eine Ebene darunter befinden und jene Funktionen aufrufen. es gibt natürlich auch Einträge für die Ebenen 1 bis 3, aber dies ist die erste Ebene, die man über den GDK-Code bis zum <app>Swell Foop</app>-Code erreichen kann. Aus der Auflistung kann man sofort erkennen, dass der problematische Code in load_scenario ist.</p>
         <p>Jetzt, wo wir wissen, welcher Teil unseres Codes alle Raumzeit belegt, können wir ihn betrachten und die Ursache herausfinden. Es stellt sich heraus, dass load_scenario einen Pixbuf aus einer Datei lädt und diesen Speicher nie mehr frei gibt. Nachdem das Problem identifiziert wurde, können wir es beheben.</p>
     </section>
     <section id="optimization-massif-TBL-acting-on-results">
         <title>Aufgrund der Ergebnisse handeln</title>
         <p>Ein Reduzieren des Verbrauches an Raumzeit ist gut, aber es gibt zwei verschiedene Wege, dies zu tun. Sie können entweder die angeforderte Speichermenge oder die Belegungszeit reduzieren. Betrachten Sie für einen Moment ein Modellsystem mit nur zwei laufenden Prozessen. Beide Prozesse belegen fast allen physikalischen Arbeitsspeicher und sobald sie sich überlappen, wird das System auslagern müssen und es wird sehr langsam. Es ist offensichtlich, dass die beiden Prozesse friedlich nebeneinander existieren können, wenn wir den Speicherverbrauch jedes Prozesses halbieren. Wenn wir statt dessen die Speicherbelegungszeit halbieren, dann können die beiden Prozesse nebeneinander existieren, aber nur solange ihre Zeiträume hoher Speicherbelegung nicht überlappen. Demnach ist es besser, die Speicherbelegung zu reduzieren.</p>
-        <p>
-            Unfortunately, the choice of optimization is also
-	    constrained by the needs of the program. The size of the
-	    pixbuf data in <app>Swell Foop</app> is determined by the
-	    size of the game's graphics and cannot be easily
-	    reduced. However, the amount of time it spends loaded into
-	    memory can be drastically reduced. <link xref="optimization-massif-FIG-output-optimized"/> shows the <app>Massif</app> analysis of <app>Swell Foop</app> after being altered to dispose of the pixbufs once the images have been loaded into the X server.
-        </p>
+        <p>Unglücklicherweise schränken die Erfordernisse des Programms die Wahl der Optimierung ein. Die Größe der Pixbuf-Daten in <app>Swell Foop</app> ist von der Größe der Grafiken im Spiel abhängig und kann nicht ohne Weiteres reduziert werden. Allerdings kann die Zeit zum Laden des Programms in den Speicher drastisch reduziert werden! Das Bild unten zeigt die <app>Massif</app>-Analyse von <app>Swell Foop</app> nach den Änderungen, die die Pixbufs entsorgen, sobald diese vom X-Server geladen wurden.</p>
         <figure>
-            <title><app>Massif</app> output for the optimized <app>Swell Foop</app> program.</title>
+            <title><app>Massif</app>-Ausgaben für das optimierte Programm <app>Swell Foop</app>.</title>
            <media type="image" src="figures/massif-after.png"/>
             </figure>
         <p>Die Raumzeit-Belegung von gdk_pixbuf_new ist nun nur noch ein dünnes Band, das nur kurzzeitig einen Spitzenwert hat (es ist nun das sechzehnte schraffierte magenta Band von oben). Als Bonus ist der Spitzenspeicherverbrauch um 200 kB gesunken, weil die Spitze vor anderen Speicheranforderungen liegt. Wenn zwei solche Prozesse zeitgleich liefen, wäre die Wahrscheinlichkeit ziemlich gering, dass der höchste Speicherverbrauch beider zusammen fällt.</p>
-        <p>
-            Can we do better ? A quick examination of <app>Massif</app>'s text output reveals: g_strdup to be the new major offender.
-        </p>
+        <p>Können wir noch zulegen? Eine schnelle Untersuchung der Textausgabe von <app>Massif</app> enthüllt: g_strdup ist der neue Hauptschuldige.</p>
         <code>
 Command: ./swell-foop
 
@@ -164,8 +126,6 @@ Called from:
     <section id="optimization-massif-TBL-caveats">
         <title>Vorbehalte</title>
         <p>Es gibt ein paar Dinge, auf die man achten muss. Erstens: Raumzeit wird nur als Prozentangabe geliefert. Sie müssen mit der Gesamtgröße des Programms vergleichen, um festzustellen, ob es sich lohnt, diese Speichermenge anzugehen. Der Graph mit der vertikalen Achse in Kilobytes eignet sich gut dafür.</p>
-        <p>
-            Secondly, <app>Massif</app> only takes into account the memory used by your own program. Resources like pixmaps are stored in the X server and aren't considered by <app>Massif</app>. In the <app>Swell Foop</app> example we have actually only moved the memory consumption from client-side pixbufs to server-side pixmaps. Even though we cheated there are performance gains. Keeping the image data in the X server makes the graphics routines quicker and removes a lot of inter-process communication. Also, the pixmaps will be stored in a native graphics format which is often more compact than the 32-bit RGBA format used by gdk_pixbuf. To measure the effect of pixmaps, and other X resources use the <link href="http://www.freedesktop.org/Software/xrestop">xrestop</link> program.
-        </p>
+        <p>Zweitens: <app>Massif</app> erfasst nur die Speicherbelegung durch Ihr eigenes Programm. Ressourcen wie Pixmaps werden im X-Server gespeichert und werden nicht durch <app>Massif</app> berücksichtigt. In dem Beispiel mit <app>Swell Foop</app> haben wir tatsächlich nur den Speicherverbrauch von client-seitigen Pixbufs zu server-seitigen Pixmaps verlagert. Obwohl dies nur nach Schummeln aussieht, gab es dennoch Geschwindigkeitsgewinne. Bilddaten im X-Server beschleunigen die Grafik-Routinen und verhindert viele Inter-Prozess-Kommunikation. Ebenso werden die Pixmaps in nativem Grafikformat gespeichert, welches oft kompakter ist als das 32-bit RGBA-Format von gdk_pixbuf. Um den Effekt von Pixmaps und anderen Ressourcen des X-Servers zu messen, sollten Sie das Programm <link href="http://www.freedesktop.org/Software/xrestop">xrestop</link> verwenden.</p>
     </section>
 </page>

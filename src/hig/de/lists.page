@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="lists" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" xmlns:itst="http://itstool.org/extensions/" type="topic" id="lists" xml:lang="de">
 
   <info>
-    <link type="guide" xref="patterns" group="lists"/>   
+    <link type="guide" xref="patterns#primary"/>
+    <desc>Rows of information or content items.</desc>
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
@@ -14,41 +15,47 @@
       <mal:email>christian.kirbach@gmail.com</mal:email>
       <mal:years>2014</mal:years>
     </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2016</mal:years>
+    </mal:credit>
   </info>
 
 <title>Listen</title>
 
-<p>Lists are a basic user interface element that can be used to present information, content items, or controls. There are two primary types of list in GNOME 3: standard lists and tables.</p>
+<p>Listen sind ein grundlegendes Element der Benutzeroberfläche. Sie können zum Darstellen von Informationen, Inhaltsobjekten oder Bedienelementen verwendet werden. In GNOME 3 gibt es zwei primäre Typen: Standardlisten und Tabellen.</p>
 
-<p><link xref="sidebar-lists">Sidebar lists</link> are a separate design pattern which also make use of a list.</p>
+<p><link xref="sidebar-lists">Listen in der Seitenleiste</link> sind ein separates Designmuster, das ebenfalls eine Listenansicht verwendet.</p>
 
 <section id="when-to-use">
-<title>When to use</title>
+<title>Anwendungsfälle</title>
 
 <p>A list is an appropriate way to present content items that have a distinct name as their primary identifier. If the content is visual in nature, such as with photos or videos, you might want to consider using a <link xref="grids">grid</link> instead.</p>
 
-<p>In some cases, it is advantageous to show both a list and a grid view for the same content items. Used in this way, a list view allows additional information to be displayed about the content through columns of information.</p>
+<p>In einigen Fällen ist es vorteilhaft, für die gleichen Inhaltsobjekte sowohl eine Listen- als auch eine Gitteransicht zu ermöglichen. Auf diese Weise erlaubt eine Listenansicht die Darstellung zusätzlicher Informationen zum Inhalt mittels Informationsspalten.</p>
 
 </section>
 
 <section id="standard-lists">
-<title>Standard lists</title>
+<title>Standardlisten</title>
 
-<p>Standard lists are most common list type, and should generally be used in favor of tables.</p>
+<p>Standardlisten sind der häufigste Listentyp und sollten generell gegenüber Tabellen bevorzugt werden.</p>
 
-<p>In standard lists, each row is divided by separators, and changing the sort order is acheived by using a control outside the list itself.</p>
+<p>In Standardlisten werden die Zeilen durch Trenner abgegrenzt. Die Änderung der Sortierreihenfolge geschieht durch ein Bedienelement außerhalb der eigentlichen Liste.</p>
 
 <section id="styles">
 <title>Stile</title>
 
-<p>Standard lists have two styles: full-width and embedded. Full-width lists fill their container, while embedded lists are surrounded by padding.</p>
+<p>Standardlisten haben zwei Stile: volle Breite oder eingebettet. Listen voller Breite füllen ihren umgebenden Container, während eingebettete Listen von der Auffüllung umrandet werden.</p>
 
-<p>Full-width lists are visually simpler, and therefore more elegant. They should be used where possible. At the same time, it is not always possible to use a full-width list, and there are some situations where embedded lists are a better choice:</p>
+<p>Listen voller Breite sind visuell einfacher und daher eleganter. Sie sollten verwendet werden, wo immer es möglich ist. Allerdings ist es nicht immer möglich, eine Liste voller Breite zu implementieren. Es gibt einige Situationen, in denen eine eingebettete Liste die bessere Wahl ist:</p>
 
 <list>
-<item><p>When the list contains columns of information that need to be kept close together for readability purposes, and there is a need to have the list inside a wide container.</p></item>
-<item><p>When a window contains several lists.</p></item>
-<item><p>When the list needs to be aligned with other controls inside the window.</p></item>
+<item><p>Wenn die Liste Informationsspalten enthält, die zwecks besserer Lesbarkeit nahe beieinander dargestellt werden müssen und daher die Liste in einen breiten Container eingebettet werden muss.</p></item>
+<item><p>Wenn ein Fenster verschiedene Listen enthält.</p></item>
+<item><p>Wenn die Liste an anderen Bedienelementen im Fenster ausgerichtet werden muss.</p></item>
 </list>
 
 <media type="image" mime="image/svg" src="figures/patterns/list-styles.svg"/>
@@ -56,11 +63,11 @@
 </section>
 
 <section id="editable-lists">
-<title>Editable lists</title>
+<title>Bearbeitbare Listen</title>
 
 <p>Editable lists allow a user to add or remove items from the list (for this reason, they are sometimes known as add/remove lists). Both full-width and embedded lists can be editable.</p>
 
-<p>Each row contains a remove button. If the number of items is short, the final list row should be used as an add button. Alternatively, if the list is long, the add button can be placed in a <link xref="header-bars">header bar</link> or or <link xref="action-bars">action bar</link>.</p>
+<p>Each row contains a remove button. If the number of items is short, the final list row should be used as an add button. Alternatively, if the list is long, the add button can be placed in a <link xref="header-bars">header bar</link> or <link xref="action-bars">action bar</link>.</p>
 
 <media type="image" mime="image/svg" src="figures/patterns/editable-lists.svg"/>
 
@@ -85,12 +92,12 @@
 <tbody>
 <tr>
 <td><p>Natürlich</p></td>
-<td><p>Down</p></td>
+<td><p>Nach unten</p></td>
 <td><p>Alphabetical, smallest number first, earliest date first, checked items first</p></td>
 </tr>
 <tr>
-<td><p>Reverse</p></td>
-<td><p>Hoch</p></td>
+<td><p>Umkehren</p></td>
+<td><p>Nach oben</p></td>
 <td><p>Reverse alphabetical, largest number first, most recent date first, unchecked items first</p></td>
 </tr>
 </tbody>
@@ -100,7 +107,7 @@
 </section>
 
 <section id="row-behavior">
-<title>Row behavior</title>
+<title>Verhalten von Spalten</title>
 
 <p>Depending on the type of list, rows have different behaviors when they are clicked or pressed. There are three types of list in this regard:</p>
 
@@ -108,7 +115,7 @@
 <thead>
 <tr>
 <td><p>Listentyp</p></td>
-<td><p>Row Behavior</p></td>
+<td><p>Verhalten von Zeilen</p></td>
 </tr>
 </thead>
 <tbody>
@@ -121,7 +128,7 @@
 <td><p>The list item is selected when it is clicked or pressed. This approach is often used for selecting one of a series of configuration options. In the case of <link xref="drop-down-lists">drop-down lists</link>, one option is always selected. The selected row is indicated by a check mark.</p></td>
 </tr>
 <tr>
-<td><p>Bearbeiten</p></td>
+<td><p itst:context="list-type">Edit</p></td>
 <td><p>Selecting the row item turns the row into a text entry field, which allows the item to be edited.</p></td>
 </tr>
 </tbody>
@@ -132,17 +139,26 @@
 </section>
 
 <section id="general-guidelines">
-<title>General guidelines</title>
+<title>Allgemeine Richtlinien</title>
 
 <list>
 <item><p>Differentiate the different types of information using different alignments, <link xref="typography">text colors and weights</link>. Highlight the most important and relevant information by giving other information a lighter weight and/or color.</p></item>
 <item><p>Be careful not to overpopulate lists with different columns and elements, and ensure that you only use them to present essential information.</p></item>
-<item><p>As a rule of thumb, avoid using several lists in the same window, particularly primary windows.</p></item>
-<item><p>Do not use lists with fewer than about five items, unless the number of items may increase over time. For options lists, check boxes or radio buttons can be used as an alternative in this case.</p></item>
+<item><p>Als Faustregel gilt, dass Sie verschiedene Listen im gleichen Fenster vermeiden sollten, insbesondere in primären Fenstern.</p></item>
+<item><p>Verwenden Sie keine Listen mit weniger als fünf Einträgen, es sei denn, die Anzahl der Einträge wächst mit der Zeit. Für Optionslisten können in diesem Fall alternativ Ankreuzfelder oder Radioknöpfe verwendet werden.</p></item>
 <item><p>Ensure that lists are ordered to be helpful to those who are using them. Recent documents might be more useful than alphabetically ordered documents, or contacts that are online might be more interesting than those who are offline, for example.</p></item>
 <item><p>If you use icons in your list, <link xref="icons-and-artwork">use symbolic icons</link>. The lower visual footprint of these icons will mean that they do not visually overload or dominate your list.</p></item>
 <item><p>If the list is long, make it possible to search it using the standard <link xref="search">search design pattern</link>.</p></item>
 </list>
 
 </section>
+
+<section id="api-reference">
+<title>API-Referenz</title>
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkListBox.html">GtkListBox</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkTreeView.html">GtkTreeView</link></p></item>
+</list>
+</section>
+
 </page>

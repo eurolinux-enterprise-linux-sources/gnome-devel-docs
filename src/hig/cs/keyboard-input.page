@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:itst="http://itstool.org/extensions/" type="topic" id="keyboard-input" xml:lang="cs">
+
+  <info>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <credit>
+      <name>Calum Benson</name>
+    </credit>
+    <credit>
+      <name>Adam Elman</name>
+    </credit>
+    <credit>
+      <name>Seth Nickell</name>
+    </credit>
+    <credit>
+      <name>Colin Robertson</name>
+    </credit>
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+    <desc>Ovládání klávesnicí, přístup z klávesnice a klávesové zkratky.</desc>  
+  </info>
+
+<title>Vstup z klávesnice</title>
+
+<p>Klávesnice jsou běžný způsobem komunikace s uživatelským rozhraním. Poskytuje pohodlný a účinný prostředek pro používání aplikací ve všech možných situacích a může být rychlejším a efektivnější, než jiná vstupní zařízení. Klávesnice jsou také důležité pro lidi se zrakovým nebo pohybovým postižením.</p>
+
+<p>Měli byste zajistit, aby všechny funkce poskytované vaší aplikací byly přístupné pomocí klávesnice. Nejlepší způsob, jako to otestovat, je použít vaší aplikaci jen čistě s klávesnicí.</p>
+
+<p>Práce s klávesnicí v GNOME a GTK+ má tři aspekty: navigaci, horké klávesy a klávesové zkratky. Dalším doplňujícím aspektem je <link xref="search">vyhledávání</link>.</p>
+
+<section id="keyboard-navigation">
+<title>Navigace klávesnicí</title>
+
+<p>Pomocí následujících vodítek se ujistěte, že je možné se pomocí klávesnice pohybovat po všech částech uživatelského rozhraní a komunikovat s nimi.</p>
+
+<list>
+<item><p>Dodržujte standardní klávesy GNOME pro navigaci. <key>Tab</key> je standardní klávesou pro pohyb po uživatelském rozhraní GTK+ a GNOME.</p></item>
+<item><p>Používejte logické pořadí pro ovládání z klávesnice. Při pohybu pomocí <key>Tab</key> v okně by se mělo zaměření klávesnice mezi ovládacími prvky přesouvat v předvídatelném pořadí. V národních prostředích zemí používajících latinku to normálně je zleva doprava a shora dolů.</p></item>
+<item><p>Kromě navigace pomocí klávesy <key>Tab</key> se snažte umožnit pohyb pomocí kurzorových šipek, a to jak v rámci prvků rozhraní (jako jsou seznamy, mřížky s ikonami nebo postranní panely), tak i mezi nimi.</p></item>
+</list>
+
+<note><p>Když aktivace ovládacího prvku zpřístupní jiné ovládací prvky, nepřesouvejte automaticky zaměření na první závislý ovládací prvek, který se zpřístupní, ale ponechte zaměření tak, jak je.</p></note>
+
+<section id="navigation-keys">
+<title>Standardní ovládací klávesy</title>
+
+<table>
+<thead>
+<tr>
+<td><p>Zkratka</p></td>
+<td><p>Funkce</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><key>Tab</key> a <keyseq><key>Shift</key><key>Tab</key></keyseq></p></td>
+<td><p>Přesunout zaměření klávesnice na následující/předchozí ovládací prvek</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Ctrl</key><key>Tab</key></keyseq> a <keyseq><key>Shift</key><key>Ctrl</key><key>Tab</key></keyseq></p></td>
+<td><p>Přesunout zaměření klávesnice z prostoru widgetu na následující/předchozí ovládací prvek v situaci, kdy samotná klávesa <key>Tab</key> má jinou funkci.</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Ctrl</key><key>Tab</key></keyseq> a <keyseq><key>Shift</key><key>Ctrl</key><key>Tab</key></keyseq></p></td>
+<td><p>Přesunout zaměření klávesnice na následující/předchozí skupinu ovládacích prvků</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Ctrl</key><key>F1</key></keyseq></p></td>
+<td><p>Zobrazit vysvětlivku pro právě zaměřené okno nebo ovládací prvek</p></td>
+</tr>
+<tr>
+<td><p><keyseq><key>Shift</key><key>F1</key></keyseq></p></td>
+<td><p>Zobrazit kontextově citlivou nápovědu pro právě zaměřené okno nebo ovládací prvek</p></td>
+</tr>
+<tr>
+<td><p><key>F6</key> a <keyseq><key>Shift</key><key>F6</key></keyseq></p></td>
+<td><p>Zaměřit následující/předchozí panel v okně s panely</p></td>
+</tr>
+<tr>
+<td><p><key>F8</key></p></td>
+<td><p>Zaměřit rozdělovací lištu v okně s panely</p></td>
+</tr>
+<tr>
+<td><p><key>F10</key></p></td>
+<td><p>Zaměřit nabídkovou lištu nebo otevřít nabídku v hlavičkové liště</p></td>
+</tr>
+<tr>
+<td><p><key>Space</key></p></td>
+<td><p>Přepnout stav zaměřeného zaškrtávacího políčka, skupinového přepínače nebo přepínače</p></td>
+</tr>
+<tr>
+<td><p><key>Enter</key></p></td>
+<td><p>Aktivovat zaměřené tlačítko, položku nabídky apod.</p></td>
+</tr>
+<tr>
+<td><p><key>Enter</key> a <key>End</key></p></td>
+<td><p>Vybrat/přesunout první položku ve vybraném widgetu.</p></td>
+</tr>
+<tr>
+<td><p><key>PageUp</key>, <keyseq><key>Ctrl</key><key>PageUp</key></keyseq>, <key>PageDown</key> a <keyseq><key>Ctrl</key><key>PageDown</key></keyseq></p></td>
+<td><p>Posunout vybrané zobrazení o jednu stánku nahoru/doleva/dolů/doprava</p></td>
+</tr>
+<tr>
+<td><p><key>Esc</key></p></td>
+<td><p>Zavřít nebo opustit aktuální kontext, pokud je dočasný. Mělo by to být jednotně používáno pro nabídky, rozbalovací dialogy nebo <link xref="dialogs#default-action-and-escape">dialogová okna</link> nebo kterékoliv jiné dočasné prvky uživatelského rozhraní.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+<section id="access-keys">
+<title>Horké klávesy</title>
+
+<p>Horké klávesy v kombinaci s <key>Alt</key> umožňují pracovat s popisky ovládacích prvků. V rámci jednotlivých popisků jsou vyznačeny podtržením písmene (podtržení se zobrazí, když držíte zmáčknutou klávesu <key>Alt</key>).</p>
+
+<list>
+<item><p>Komponenty s popisky by měly mít horkou klávesu všude, kde je to možné.</p></item>
+<item><p>Horké klávesy volte tak, aby byly snadné na zapamatování. Normálně to znamená použít první písmeno v popisku. Pokud má popisek více slov, je možné použít i první písmeno z jiného slova. Pokud ale jiné písmeno poskytuje lepší asociaci (například „x“ v „Extra Large“), zvažte použití tohoto písmene.</p></item>
+<item><p>Pokud je možnost, vyhněte se přiřazení horkých kláves „tenkým“ písmenům (jako jsou malé i nebo l) nebo písmenům jdoucím pod účaří (jako jsou g nebo y). U těchto znaků nemusí být podtržení někdy dobře viditelné.</p></item>
+<item><p>V případech, kdy je volba horké klávesy obtížná, přiřaďte klávesy nejdříve nejčastěji používaným ovládacím prvkům. Když nelze použít první znak, zvolte jinou snadno zapamatovatelnou souhlásku, například „p“ v „Replace“. Samohlásky přiřazujte, jen když není k dispozici souhláska.</p></item>
+<item><p>Uvědomte si, že horké klávesy musí být lokalizovány spolu s texty, do kterých patří, takže i když nevznikají konflikty v angličtině, mohou nastat v překladech.</p></item>
+</list>
+
+</section>
+
+<section id="shortcut-keys">
+<title>Klávesové zkratky</title>
+
+<p>Klávesové zkratky poskytují pohodlný přístup k běžným operacím. Můžete se jedna o samostatnou klávesu nebo o kombinaci několika kláves (typicky o modifikační klávesu v kombinaci s normální klávesou).</p>
+
+<list>
+<item><p>Nepřiřazujte ve své aplikaci klávesové zkratky, které používá systém. Podrobnosti viz dále.</p></item>
+<item><p>Používejte standardní klávesové zkratky GNOME (viz dále), pokud aplikace podporuje uvedené funkce. Tím se zajistí jednotnost všech aplikací v GNOME a uživatel je snáze objeví.</p></item>
+<item><p>Nejčastěji používaným činnostem ve vaší aplikaci přiřaďte klávesové zkratky. Nesnažte se ale přiřadit klávesové zkratky úplně všemu.</p></item>
+<item><p>Snažte se pro své vlastní klávesové zkratky použít <key>Ctrl</key> v kombinaci s písmenem. <keyseq><key>Shift</key> <key>Ctrl</key></keyseq> a písmeno je doporučeno pro klávesové zkratky, které obrací nebo rozšiřují funkci. Například <keyseq><key>Ctrl</key><key>Z</key></keyseq> a <keyseq><key>Shift</key><key>Ctrl</key><key>Z</key></keyseq> pro <gui>Undo</gui> a <gui>Redo</gui> (<gui>Zpět</gui> a <gui>Znovu</gui>).</p></item>
+<item><p>Nové klávesové zkratky by měly být co nejvíce mnemotechnické, aby bylo snadné se je naučit a zapamatovat. Například <keyseq><key>Ctrl</key><key>E</key></keyseq> by byla dobrá klávesová zkratky pro <gui>Edit Page</gui> (<gui>Upravit stránku</gui> – při překladech se nám tento bohulibý záměr obvykle pokazí).</p></item>
+<item><p>Pro běžné operace dávejte přednost klávesovým zkratkám, které lze snadno provést jednou rukou.</p></item>
+<item><p>Nepoužívejte pro klávesové zkratky <key>Alt</key>, protože by mohlo dojít ke konfliktu s horkými klávesami.</p></item>
+</list>
+
+</section>
+
+<section id="system-shortcuts">
+<title>Klávesové zkratky rezervované systémem</title>
+
+<p>Následující systémové klávesové zkratky by neměly být přepsány aplikací.</p>
+
+<p>GNOME 3 využívá klávesu <key>Super</key> (často nazývanou klávesa Windows) výlučně pro systémové klávesové zkratky. Proto byste neměli <key>Super</key> použít v aplikacích.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Funkce</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Zastaralá zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p>Přehled čínností</p></td>
+<td><p><key>Super</key></p></td>
+<td><p>žádná</p></td>
+<td><p>Otevře a zavře přehled činností</p></td>
+</tr>
+<tr>
+<td><p>Zobrazení aplikací</p></td>
+<td><p><keyseq><key>Super</key><key>A</key></keyseq></p></td>
+<td><p>žádná</p></td>
+<td><p>Otevře a zavře zobrazení aplikací v přehledu činností</p></td>
+</tr>
+<tr>
+<td><p>Pořadač zpráv</p></td>
+<td><p><keyseq><key>Super</key><key>M</key></keyseq></p></td>
+<td><p>žádná</p></td>
+<td><p>Přepne viditelnost pořadače zpráv</p></td>
+</tr>
+<tr>
+<td><p>Zamknout</p></td>
+<td><p><keyseq><key>Super</key><key>L</key></keyseq></p></td>
+<td><p>žádná</p></td>
+<td><p>Zamkne systém na zamykací obrazovku a k odemčení požaduje heslo (pokud je nastaveno).</p></td>
+</tr>
+<tr>
+<td><p>Přepnout aplikaci</p></td>
+<td><p><keyseq><key>Super</key><key>Tab</key></keyseq> a <keyseq><key>Shift</key><key>Super</key><key>Tab</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>Tab</key></keyseq> a <keyseq><key>Shift</key><key>Alt</key><key>Tab</key></keyseq></p></td>
+<td><p>Přepne zaměření na následující/předchozí aplikaci</p></td>
+</tr>
+<tr>
+<td><p>Přepnout okna</p></td>
+<td><p><keyseq><key>Super</key><key>`</key></keyseq> a <keyseq><key>Shift</key><key>Super</key><key>`</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>F6</key></keyseq> a <keyseq><key>Shift</key><key>Alt</key><key>F6</key></keyseq></p></td>
+<td><p>Přepne zaměření na následující nebo předchozí podřízené okno patřící k aplikaci</p></td>
+</tr>
+<tr>
+<td><p><gui>Maximalizovat</gui></p></td>
+<td><p><keyseq><key>Super</key><key>↑</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>F10</key></keyseq></p></td>
+<td><p>Maximalizuje zaměřené okno</p></td>
+</tr>
+<tr>
+<td><p><gui>Obnovit</gui></p></td>
+<td><p><keyseq><key>Super</key><key>↓</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>F5</key></keyseq></p></td>
+<td><p>Obnoví zaměřené okno do předchozího stavu</p></td>
+</tr>
+<tr>
+<td><p><gui>Skrýt</gui></p></td>
+<td><p><keyseq><key>Super</key><key>H</key></keyseq></p></td>
+<td><p><keyseq><key>Alt</key><key>F9</key></keyseq></p></td>
+<td><p>Skryje zaměřené okno</p></td>
+</tr>
+
+<tr>
+<td><p>Přepnout systémovou oblast</p></td>
+<td><p>žádná</p></td>
+<td><p><keyseq><key>Ctrl</key><key>Alt</key><key>Tab</key></keyseq> a <keyseq><key>Shift</key><key>Ctrl</key><key>Alt</key><key>Tab</key></keyseq></p></td>
+<td><p>Přepne zaměření na další hlavní oblast systému: okna, horní lišta, pořadač zpráv</p></td>
+</tr>
+<tr>
+<td><p>Vypnout</p></td>
+<td><p>žádná</p></td>
+<td><p><keyseq><key>Ctrl</key><key>Alt</key><key>Delete</key></keyseq></p></td>
+<td><p>Vyzve uživatele k vypnutí systému. Tato klávesová zkratka bývá ve výchozím stavu obvykle zakázaná.</p></td>
+</tr>
+<tr>
+<td><p>Nabídka okna</p></td>
+<td><p><keyseq><key>Alt</key><key>mezerník</key></keyseq></p></td>
+<td><p>žádná</p></td>
+<td><p>Otevřít nabídku okna u zaměřeného okna</p></td>
+</tr>
+<tr>
+<td><p><gui>Close</gui>
+(<gui>Zavřít</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p><keyseq><key>Alt</key><key>F4</key></keyseq></p></td>
+<td><p>Zavře zaměřené okno</p></td>
+</tr>
+<tr>
+<td><p><gui>Move</gui>
+(<gui>Přesunout</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p><keyseq><key>Alt</key><key>F7</key></keyseq></p></td>
+<td><p>Umožní přesunout zaměřené okno</p></td>
+</tr>
+<tr>
+<td><p><gui>Resize</gui>
+(<gui>Změnit velikost</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p><keyseq><key>Alt</key><key>F8</key></keyseq></p></td>
+<td><p>Umožní změnit velikost zaměřeného okna</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>Vyhnout byste se měli také klávesovým zkratkám pro zadávání unikódových znaků. K těm patří <keyseq><key>Shift</key><key>Ctrl</key><key>A</key></keyseq> až <keyseq><key>Shift</key><key>Ctrl</key><key>F</key></keyseq> a <keyseq><key>Shift</key><key>Ctrl</key><key>0</key></keyseq> až <keyseq><key>Shift</key><key>Ctrl</key><key>9</key></keyseq>.</p>
+
+</section>
+
+<section id="application-shortcuts">
+<title>Standardní klávesové zkratky v aplikacích</title>
+
+<p>Tento oddíl se podrobně zabývá běžnými klávesovými zkratkami aplikace. Vyjma klávesových zkratek týkajících se aplikace jako celku, je potřeba klávesové zkratky implementovat, jen když má vaše aplikace odpovídající funkčnost. Pokud daná činnost není implementovaná, můžete standardní klávesovou zkratku využít pro jinou činnost.</p>
+
+<p>Tato část poskytuje také pokyny pro standardní položky nabídek v <link xref="menu-bars">nabídkové liště</link></p>
+
+<section id="application">
+<title>Aplikace jako celek</title>
+
+<p>Standardní klávesové zkratky a položky nabídky aplikace. Tyto klávesové zkratky by neměly být přiřazené jiné činnosti, i když příslušná standardní činnost není ve vaší aplikaci poskytována.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Popisek</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Help</gui>
+(<gui>Nápověda</gui>)</p></td>
+<td><p><key>F1</key></p></td>
+<td><p>Otevře výchozí prohlížeč nápovědy na stránce s obsahem pro danou aplikaci</p></td>
+</tr>
+<tr>
+<td><p><gui>About</gui>
+(<gui>O aplikaci</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Otevře dialogové okno <gui>O aplikaci</gui>. Používejte k tomu standardní dialogové okno z GNOME 3.</p></td>
+</tr>
+<tr>
+<td><p><gui>Quit</gui>
+(<gui>Ukončit</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>Q</key></keyseq></p></td>
+<td><p>Zavře aplikaci, včetně všech jejích oken.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="file">
+<title>File (Soubor)</title>
+
+<p>Standardní klávesové zkratky a položky nabídky pro soubor.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Popisek</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>New</gui>
+(<gui>Nový</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>N</key></keyseq></p></td>
+<td><p>Vytvoří novou položku obsahu povětšinou, ale ne nutně vždy, v novém okně nebo kartě. Pokud vaše aplikace umí vytvářet několik různých typů dokumentu, můžete v položce <gui>New</gui> vytvořit podnabídku, která bude obsahovat položky pro jednotlivé typy. Těmto položkám dejte popisek <gui>New <em>document type</em></gui> a nejčastěji používaný typ zařaďte jako první a přidělte mu klávesovou zkratku <keyseq><key>Ctrl</key><key>N</key></keyseq>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Open…</gui>
+(<gui>Otevřít…</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>O</key></keyseq></p></td>
+<td><p>Otevře existující položku obsahu, většinou přes standardní dialogové okno <gui>Open File</gui> (<gui>Otevření souboru</gui>). V případě, že vybraný soubor již v aplikaci otevřený je, raději přeneste příslušné okno do popředí, než abyste jej otevírali znovu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Open Recent</gui>
+(<gui>Otevřít nedávné</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Podnabídka, která obsahuje seznam ne více jak šesti nedávno použitých souborů, uspořádaných od nejnověji použitého.</p></td>
+</tr>
+<tr>
+<td><p><gui>Save</gui>
+(<gui>Uložit</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>S</key></keyseq></p></td>
+<td><p>Uloží aktuální položku obsahu. Pokud má dokument již přiřazený název souboru, uložte jej hned, bez další interakce s uživatelem. Pokud existují nějaké další volby zadávané při ukládání souboru, před prvním uložením se na ně dotažte, ale při následných ukládáních používejte nadále ty stejné hodnoty a uživatele už neobtěžujte. Pokud dokument zatím nemá přidělený název souboru nebo je jen ke čtení, nechte jej vybrat stejně jako při zavolání <gui>Save As</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Save As…</gui>
+(<gui>Uložit jako…</gui>)</p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>S</key></keyseq></p></td>
+<td><p>Uloží položku obsahu pod novým názvem souboru. Název souboru nechte uživatele vybrat pomocí standardního dialogového okna <gui>Save As</gui> (<gui>Uložení jako</gui>).</p></td>
+</tr>
+<tr>
+<td><p><gui>Save a Copy…</gui>
+(<gui>Uložit kopii…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Požádá uživatele o zadání názvu souboru, do kterého bude uložena kopie souboru. Nemění ani zobrazení, ani název původního dokumentu. Všechny následující změny probíhají stále v původním dokumentu, dokud uživatel neurčí jinak, například pomocí příkazu <gui>Save As</gui>.</p>
+<p>Obdobně, jako dialogové okno <gui>Save As</gui>, může i dialogové okno <gui>Save a Copy</gui> (<gui>Uložení kopie</gui>) nabízet různé způsoby uložení dat. Například obrázek může být uložen ve svém přirozeném formátu nebo jako PNG.</p></td>
+</tr>
+<tr>
+<td><p><gui>Page Setup</gui>
+(<gui>Nastavení stránky</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Umožňuje uživateli určit nastavení vztahující se k tisku. Zobrazí mu dialogové okno, ve kterém může nastavit takové věci, jako formát na výšku/na šířku, okraje apod.</p></td>
+</tr>
+<tr>
+<td><p><gui>Print Preview</gui>
+(<gui>Náhled tisku</gui>)</p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>P</key></keyseq></p></td>
+<td><p>Zobrazí uživateli dokument jakoby vytisknutý. Použijte k tomu nové okno, ve které zobrazíte přesnou podobu dokumentu tak, jak by vypadal po vytisknutí.</p></td>
+</tr>
+<tr>
+<td><p><gui>Print…</gui>
+(<gui>Tisk…</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>P</key></keyseq></p></td>
+<td><p>Vytiskne aktuální dokument. Nejdříve uživateli zobrazí dialogové okno, ve kterém může nastavit různé volby, jako je rozsah tisknutých stránek, použitá tiskárna apod. Dialogové okno musí obsahovat tlačítko s popiskem <gui>Print</gui> (<gui>Vytisknout</gui>), které tisk spustí a okno zavře.</p></td>
+</tr>
+<tr>
+<td><p><gui>Send To…</gui>
+(<gui>Odeslat…</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>M</key></keyseq></p></td>
+<td><p>Nabídne uživateli prostředky pro přiložení aktuálního dokumentu do poštovní zprávy nebo jeho přímé odeslání, záleží na formátu. Když je k dispozici více možností, můžete nabídnout i více položek <gui>Send</gui>. Pokud jich bude více jak dvě, přesuňte je do podnabídky. Například, když je k dispozici jen <gui>Send by Email</gui> a <gui>Send by Bluetooth</gui> (<gui>Odeslat e-mailem</gui> a <gui>Odeslat přes Bluetooth</gui>), ponechejte je v nejvyšší úrovni nabídky. Když přibude třetí volba, třeba <gui>Send by FTP</gui> (<gui>Odeslat přes FTP</gui>), umístěte všechny do podnabídky <gui>Send</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Properties…</gui>
+(<gui>Vlastnosti…</gui>)</p></td>
+<td><p><keyseq><key>Alt</key><key>Enter</key></keyseq></p></td>
+<td><p>Otevře pro dokument okno <gui>Properties</gui>. Může obsahovat údaje, které lze upravit, jako je jméno autora, nebo informace určené jen ke čtení, jako je počet slov v dokumentu, nebo kombinaci obojího. Kde je pro vkládání nového řádku nejčastěji používána klávesa <key>Enter</key>, neměla by být poskytována klávesová zkratka <keyseq><key>Alt</key><key>Enter</key></keyseq>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Close</gui>
+(<gui>Zavřít</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>W</key></keyseq></p></td>
+<td><p>Zavře aktuální kartu nebo okno. Pokud okno používá karty a je otevřená jen jedna, měla by tato klávesová zkratka zavřít okno.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="edit">
+<title itst:context="menu">Edit (Upravit)</title>
+
+<p>Standardní klávesové zkratky a položky nabídky pro úpravy.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Popisek</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Undo <em>action</em></gui>
+(<gui>Zpět <em>činnost</em></gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>Z</key></keyseq></p></td>
+<td><p>Vrátí zpět projev předchozí činnosti.</p></td>
+</tr>
+<tr>
+<td><p><gui>Redo <em>action</em></gui>
+(<gui>Znovu <em>činnost</em></gui>)</p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>Z</key></keyseq></p></td>
+<td><p>Provede následující činnost v seznamu historie činností, hned za činností, o kterou se uživatel v seznamu naposledy vrátil pomocí příkazu <gui>Undo</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Cut</gui>
+(<gui>Vyjmout</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>X</key></keyseq></p></td>
+<td><p>Odstraní vybraný obsah a vloží jej do schránky. Na pohled odstraní obsah z dokumentu stejným způsobem, jako <gui>Smazat</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Copy</gui>
+(<gui>Kopírovat</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>C</key></keyseq></p></td>
+<td><p>Zkopíruje vybraný obsah do schránky.</p></td>
+</tr>
+<tr>
+<td><p><gui>Paste</gui>
+(<gui>Vložit</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>V</key></keyseq></p></td>
+<td><p>Vloží obsah ze schránky do položky obsahu. Když je upravován text a není zrovna nic vybráno, použije se jako místo vložení kurzor. Pokud je něco vybráno, nahradí obsah schránky celou vybranou část.</p></td>
+</tr>
+<tr>
+<td><p><gui>Paste Special…</gui>
+(<gui>Vložit jinak…</gui>)</p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>V</key></keyseq></p></td>
+<td><p>Vloží obsah schránky v jiné, než výchozí podobě. Nejdříve otevře dialogové okno zobrazující seznam dostupných formátů, ze kterých si uživatel může vybrat. Například, když schránka obsahuje kopii souboru PNG ze správce osuborů, může být obrázek přímo vložen do dokumentu nebo může být vložen jako odkaz na soubor, takže se změny provedené v obrázku později promítnou dodatečně i do dokumentu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Duplicate</gui>
+(<gui>Duplikovat</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>U</key></keyseq></p></td>
+<td><p>Vytvoří identickou kopii vybraného objektu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Delete</gui>
+(<gui>Smazat</gui>)</p></td>
+<td><p><key>Delete</key></p></td>
+<td><p>Odstraní vybraný obsah, aniž by se umístil do schránky.</p></td>
+</tr>
+<tr>
+<td><p><gui>Select All</gui>
+(<gui>Vybrat vše</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>A</key></keyseq></p></td>
+<td><p>Vybere veškerý obsah aktuálního dokumentu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Deselect All</gui>
+(<gui>Zrušit výběr</gui>)</p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>A</key></keyseq></p></td>
+<td><p>Zruší výběr veškerého obsahu v aktuálním dokumentu. Tuto položku poskytněte jen v situacích, kdy není žádný jiný způsob vrácení výběru možný nebo pro uživatele zřejmý. Například ve složitých grafických aplikacích, kde výběr a zrušení výběru není obvykle jednoduše možný pomocí kurzorových kláves. Upozornění: Neposkytujte tuto funkci v textových polích, kde se <keyseq><key>Shift</key><key>Ctrl</key><key>šestnáctková číslice</key></keyseq> používá k vložení unikódového znaku, takž by nefungovala jeho klávesová zkratka.</p></td>
+</tr>
+<tr>
+<td><p><gui>Find…</gui>
+(<gui>Hledat…</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>F</key></keyseq></p></td>
+<td><p>Zobrazí uživatelské rozhraní, pomocí kterého může uživatel hledat konkrétní obsah v aktuální položce obsahu nebo stránce.</p></td>
+</tr>
+<tr>
+<td><p><gui>Find Next</gui>
+(<gui>Najít následující</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>G</key></keyseq></p></td>
+<td><p>Vybere v aktuálním dokumentu následující výskyt naposledy hledaného výrazu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Find Previous</gui>
+(<gui>Najít předchozí</gui>)</p></td>
+<td><p><keyseq><key>Shift</key><key>Ctrl</key><key>G</key></keyseq></p></td>
+<td><p>Vybere v aktuálním dokumentu předchozí výskyt naposledy hledaného výrazu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Replace…</gui>
+(<gui>Nahradit…</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>H</key></keyseq></p></td>
+<td><p>Zobrazí uživatelské rozhraní, pomocí kterého může uživatel vyhledat zadaný obsah a jeho výskyty nahradit jiným obsahem.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="view">
+<title>View (Zobrazit)</title>
+
+<p>Standardní klávesové zkratky a položky nabídky pro zobrazení.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Popisek</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Icons</gui>
+(<gui>Ikony</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Zobrazí obsah jako mřížku ikon. Jedná se o položku nabídky v podobě skupinového přepínače.</p></td>
+</tr>
+<tr>
+<td><p><gui>List</gui>
+(<gui>Seznam</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Zobrazí obsah jako seznam. Jedná se o položku nabídky v podobě skupinového přepínače.</p></td>
+</tr>
+<tr>
+<td><p><gui>Sort By…</gui>
+(<gui>Řadit podle…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Určí kritéria, podle kterých by měl být obsah řazen. Může otevřít dialogové okno, rozbalovací dialog nebo podnabídku.</p></td>
+</tr>
+<tr>
+<td><p><gui>Filter…</gui>
+(<gui>Filtr…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Umožní vyfiltrovat obsah. Pro tento účel otevře rozbalovací dialog, rozbalovací seznam nebo dialogové okno.</p></td>
+</tr>
+<tr>
+<td><p><gui>Zoom In</gui>
+(<gui>Přiblížit</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>+</key></keyseq></p></td>
+<td><p>Přiblíží obsah tím, že jej opticky zvětší.</p></td>
+</tr>
+<tr>
+<td><p><gui>Zoom Out</gui>
+(<gui>Oddálit</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>-</key></keyseq></p></td>
+<td><p>Oddálí obsah tím, že jej opticky zmenší.</p></td>
+</tr>
+<tr>
+<td><p><gui>Normal Size</gui>
+(<gui>Normální velikost</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>0</key></keyseq></p></td>
+<td><p>Vrátí úroveň přiblížení zpět na výchozí hodnotu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Best Fit</gui>
+(<gui>Nejlepší velikost</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Zajistí, aby dokument zaplnil celé okno.</p></td>
+</tr>
+<tr>
+<td><p><gui>Reload</gui>
+(<gui>Znovu načíst</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>R</key></keyseq></p></td>
+<td><p>Překreslí aktuální zobrazení dokumentu, ale nejdříve zkontroluje, jestli nedošlo ke změnám ve zdroji dat. Například, než překreslí webovou stránku, zkontroluje, jestli webový server stránku neaktualizoval.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="format">
+<title>Format (Formát)</title>
+
+<p>Standardní klávesové zkratky a položky nabídky pro formát.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Popisek</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Style…</gui>
+(<gui>Styl…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Nastaví vlastnosti stylu u právě vybraného textu nebo objektu, buď jednotlivě nebo na předefinovaný pojmenovaný styl.</p></td>
+</tr>
+<tr>
+<td><p><gui>Font…</gui>
+(<gui>Písmo…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Nastaví vlastnosti písma pro vybraný text nebo objekty.</p></td>
+</tr>
+<tr>
+<td><p><gui>Paragraph…</gui>
+(<gui>Odstavec…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Nastaví vlastnosti vybraného odstavce.</p></td>
+</tr>
+<tr>
+<td><p><gui>Bold</gui>
+(<gui>Tučné</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>B</key></keyseq></p></td>
+<td><p>Zapne nebo vypne tučnost u právě vybraného textu. Pokud je některá část výběru již tučná a některá ne, měl by tento příkaz ztučnit celý vybraný text.</p></td>
+</tr>
+<tr>
+<td><p><gui>Italic</gui>
+(<gui>Kurzíva</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>I</key></keyseq></p></td>
+<td><p>Zapne nebo vypne kurzívu u právě vybraného textu. Pokud je některá část výběru již kurzívou a některá ne, měl by tento příkaz nastavit kurzívu pro celý vybraný text.</p></td>
+</tr>
+<tr>
+<td><p><gui>Underline</gui>
+(<gui>Podtržené</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>U</key></keyseq></p></td>
+<td><p>Zapne nebo vypne podtržení právě vybraného textu. Pokud je některá část výběru již podtržená a některá ne, měl by tento příkaz podtrhnout celý vybraný text.</p></td>
+</tr>
+<tr>
+<td><p><gui>Cells…</gui>
+(<gui>Buňky…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Nastavení vlastností vybraným buňkám tabulky.</p></td>
+</tr>
+<tr>
+<td><p><gui>List…</gui>
+(<gui>Seznam…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Nastaví vlastnosti vybraného seznamu (s odrážkami), nebo změní vybrané odstavce na seznam, pokud tak zatím naformátované nejsou.</p></td>
+</tr>
+<tr>
+<td><p><gui>Layer…</gui>
+(<gui>Vrstva…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Nastaví vlastnosti všech nebo vybraných vrstev ve vícevrstvém dokumentu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Page…</gui>
+(<gui>Stránka…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Nastaví vlastnosti všech nebo vybraných stránek dokumentu.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="bookmarks">
+<title>Bookmarks (Záložky)</title>
+
+<p>Standardní klávesové zkratky a položky nabídky pro záložky.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Popisek</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Add Bookmark</gui>
+(<gui>Přidat záložku</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>D</key></keyseq></p></td>
+<td><p>Přidá záložku pro aktuální umístění. Nezobrazujte žádné dialogové okno, které by se pro záložku ptalo na název nebo umístění, ale zvolte vhodné výchozí (jako je název dokumentu nebo název souboru pro název záložky) a uživateli dejte možnost je změnit později pomocí funkce <gui>Edit Bookmarks</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Edit Bookmarks</gui>
+(<gui>Upravit záložky</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>B</key></keyseq></p></td>
+<td><p>Umožní uživateli upravit si své záložky.</p></td>
+</tr>
+<tr>
+<td><p>Seznam záložek</p></td>
+<td><p>žádná</p></td>
+<td><p>Zobrazuje uživatelovy záložky.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="go">
+<title>Go (Přejít)</title>
+
+<p>Standardní klávesové zkratky a položky nabídky <gui>Go</gui>.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Popisek</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Back</gui>
+(<gui>Zpět</gui>)</p></td>
+<td><p><keyseq><key>Alt</key><key>←</key></keyseq></p></td>
+<td><p>Přesun na předchozí místo.</p></td>
+</tr>
+<tr>
+<td><p><gui>Forward</gui>
+(<gui>Vpřed</gui>)</p></td>
+<td><p><keyseq><key>Alt</key><key>→</key></keyseq></p></td>
+<td><p>Přesun na následující místo v historii navigace.</p></td>
+</tr>
+<tr>
+<td><p><gui>Up</gui>
+(<gui>Výš</gui>)</p></td>
+<td><p><keyseq><key>Alt</key><key>↑</key></keyseq></p></td>
+<td><p>Přesun do rodičovské položky, dokumentu, stránky nebo oddílu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Home</gui>
+(<gui>Domů</gui>)</p></td>
+<td><p><keyseq><key>Alt</key><key>Home</key></keyseq></p></td>
+<td><p>Přesun na první stránku určenou uživatelem nebo aplikací.</p></td>
+</tr>
+<tr>
+<td><p><gui>Location…</gui>
+(<gui>Umístění…</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>L</key></keyseq></p></td>
+<td><p>Umožní uživateli zadat adresu URI, na kterou chce přejít.</p></td>
+</tr>
+<tr>
+<td><p><gui>Previous Page</gui>
+(<gui>Předchozí stránka</gui>)</p></td>
+<td><p><key>PageUp</key></p></td>
+<td><p>Přesun na předchozí stránku dokumentu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Next Page</gui>
+(<gui>Následující stránka</gui>)</p></td>
+<td><p><key>PageDown</key></p></td>
+<td><p>Přesun na následující stránku dokumentu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Go to Page…</gui>
+(<gui>Přejít na stránku…</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Umožňuje uživateli zadat číslo stránky, na kterou se chce přesunout. Textové aplikace mohou mít také položku nabídky <gui>Go to Line…</gui> (<gui>Přejít na řádek…</gui>), která umožní uživateli přeskočit na řádek se zadaným číslem.</p></td>
+</tr>
+<tr>
+<td><p><gui>First Page</gui>
+(<gui>První stránka</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>Home</key></keyseq></p></td>
+<td><p>Přesune zaměření na první stránku dokumentu.</p></td>
+</tr>
+<tr>
+<td><p><gui>Last Page</gui>
+(<gui>Poslední stránka</gui>)</p></td>
+<td><p><keyseq><key>Ctrl</key><key>End</key></keyseq></p></td>
+<td><p>Přesune zaměření na poslední stránku dokumentu.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+
+<section id="windows">
+<title>Windows (Okna)</title>
+
+<p>Standardní položky nabídky <gui>Windows</gui>.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Popisek</p></td>
+<td><p>Zkratka</p></td>
+<td><p>Popis</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p><gui>Save All</gui>
+(<gui>Uložit vše</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Uloží všechny otevřené dokumenty. Pokud některé dokumenty zatím nemají název souboru, dotáže se na ně postupně pomocí standardního dialogového okna <gui>Save</gui> (<gui>Uložení</gui>).</p></td>
+</tr>
+<tr>
+<td><p><gui>Close All</gui>
+(<gui>Zavřít vše</gui>)</p></td>
+<td><p>žádná</p></td>
+<td><p>Zavře všechny otevřené dokumenty. Pokud jsou v některých dokumentech neuložené změny, zobrazí pro ně postupně upozornění s dotazem.</p></td>
+</tr>
+<tr>
+<td><p>Seznam oken</p></td>
+<td><p>žádná</p></td>
+<td><p>Jednotlivé položky nabídky vynesou příslušné okno do popředí před ostatní okna.</p></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+</section>
+
+</page>

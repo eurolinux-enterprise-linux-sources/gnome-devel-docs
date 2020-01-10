@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="window.c" xml:lang="ko">
+  <info>
+    <title type="text">Window (C)</title>
+    <link type="guide" xref="c#windows"/>
+    <revision version="0.1" date="2012-04-28" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>다른 위젯을 넣을 수 있는 최상위 창</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Window</title>
+<media type="image" mime="image/png" src="media/window.png"/>
+
+      <p>소형 GtkApplication입니다. GMenu 지원 기능이 필요하면 <link xref="GtkApplicationWindow.c">ApplicationWindow</link>를 사용하세요.</p>
+
+      
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+
+  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+  gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (app));
+  gtk_window_set_title (GTK_WINDOW (window), "Hello GNOME");
+
+  gtk_widget_show_all (GTK_WIDGET (window));
+}
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example",G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+  return status;
+}
+</code>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+</list>
+</page>

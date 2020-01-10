@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scale.js" xml:lang="ko">
+  <info>
+  <title type="text">Scale (JavaScript)</title>
+    <link type="guide" xref="beginner.js#entry"/>
+    <revision version="0.1" date="2012-06-20" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>숫자 값을 설정하는 슬라이더</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Scale</title>
+  <media type="image" mime="image/png" src="media/scalepenguins.png"/>
+  <p>Scale은 숫자값 범위 내의 값을 나타내는 수평 수직 방향의 슬라이더입니다. 새 Scale을 만들 때 기본 위치, 최소 최대 값, Scale의 손잡이를 양 끝에서 눌렀을 때 얼마나 옮길지를 설정합니다. 새 Scale을 만들 때마다 언제든 형식을 지키도록  Scale 값을 기억하는 Adjustment 객체를 만들고 새 Scale에 Adjustment를 사용하게 할 수 있습니다.</p>
+  <p>이 Scale은 펭귄이 살 빙산의 크기를 조절하는 간단한 위젯입니다. 빙산 위에 사는 수많은 펭귄은 슬라이더 두개의 값으로 만듭니다. 다루어보시고 어떤 일이 일어나는지 확인해보시죠.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>가져올 라이브러리</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+</code>
+    <p>이 프로그램을 실행할 때 가져올 라이브러리입니다. 시작 부분에 항상 gjs가 필요함을 알리는 줄을 작성해야 함을 기억하십시오.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>프로그램 창 만들기</title>
+    <code mime="application/javascript">
+const ScaleExample = new Lang.Class({
+    Name: 'Scale Example',
+
+    // Create the application itself
+    _init: function() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsscale'
+        });
+
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate: function() {
+        this._window.present();
+    },
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup: function() {
+        this._buildUI ();
+    },
+</code>
+    <p>이 예제의 모든 코드는 ScaleExample 클래스에 있습니다. 위 코드는 위젯과 창을 넣을 <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link>을 만듭니다.</p>
+    <code mime="application/javascript">
+    // Build the application's UI
+    _buildUI: function() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Birds on a Floe"});
+</code>
+    <p>_buildUI 함수는 프로그램 사용자 인터페이스를 만드는 모든 코드를 넣는 곳입니다. 첫 단계에서는 모든 위젯을 우겨넣을 새 <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link>를 만듭니다.</p>
+  </section>
+
+  <section id="button">
+    <title>Scale 만들기</title>
+    <code mime="application/javascript">
+        // Create the horizontal scale
+        this._hScale = Gtk.Scale.new_with_range (Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
+        this._hScale.set_valign (Gtk.Align.START);
+        this._hScale.set_value (50);
+        this._hScale.set_digits (0);
+        // this._hScale.set_draw_value (false);
+</code>
+
+    <p>new_with_range 메서드는 새 Scale 위젯을 만드는 수단입니다. 매개변수에는 <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Orientation.html">Gtk.Orientation</link>, 최소값, 최대 값, 증가 단계 값이 들어갑니다. 그 다음 Scale 메서드를 활용하여 시작 값과, 10진 값을 얼마나 둘지를 설정합니다. 또한 창에 나타내는 모양새를 수직으로 두게끔 설정하기도 합니다.</p>
+    <p>슬라이딩 눈금에 숫자를 표시할 지 여부를 set_draw_value 메서드를 활용하여 설정할 수 있습니다. 이 예제에서는 주석 처리했습니다.</p>
+
+    <code mime="application/javascript">
+        // Create a master adjustment to use for the vertical (or any other) scale
+        this._adjustment = new Gtk.Adjustment ({
+            value: 95,
+            lower: 0,
+            upper: 100,
+            step_increment: 5,
+            page_increment: 10 });
+</code>
+
+    <p>Adjustment는 새 Scale을 만들 때 간단하게 활용할 수 있는 객체입니다. Adjustments의 "value" 속성은 Scale 기본 값, "upper"는 최대, "lower"는 최소 값을 나타냅니다. 한편 증가값은 Slider를 클릭했을 때 옮겨갈 단계 값을 보여줍니다.</p>
+
+    <code mime="application/javascript">
+        // Create a vertical scale using the adjustment we just made
+        this._vScale = new Gtk.Scale ({
+            orientation: Gtk.Orientation.VERTICAL,
+            adjustment: this._adjustment,
+            digits: 0,
+            // draw_value: false,
+            margin_left: 10 });
+</code>
+
+    <p>여기서 우리는 _adjustment를 "adjustment" 속성으로 활용하여 새 Scale 객체를 만들었습니다. 굉장한 편의 수단입니다. 여전히 소숫점 영역을 반올림 해야 하긴 하지만요. 참고로 draw_value 속성은 주석처리했습니다. 이런 방식으로 Scale을 만들 때 Scale에 숫자를 표시하지 않는 방편이기 때문입니다.</p>
+
+    <code mime="application/javascript">
+        // Create the label that shows the product of the two values
+        this._product = (this._hScale.get_value() * this._vScale.get_value());
+        this._label = new Gtk.Label ({
+            label: (String(this._product) + " penguins on the iceberg."),
+            height_request: 200,
+            width_request: 200,
+            wrap: true});
+
+        // Connect the two scales to functions which recalculate the label
+        this._hScale.connect ("value-changed", Lang.bind (this, this._recalc));
+        this._vScale.connect ("value-changed", Lang.bind (this, this._recalc));
+</code>
+
+    <p>Scale에 설정한 숫자 값을 가져올 때 get_value 메서드를 사용할 수 있습니다. 그 다음 Scale 두 개의 값을 곱한 값을 <link xref="label.js">Label</link>에 보여주는 등 우리가 원하는 어떤 것이든 할 수 있습니다. 레이블의 텍스트는 줄을 바꿀 수 있는데, 줄을 바꾸지 않으면 말도 안되는 메시지를 화면에 보여주기 떄문입니다.</p>
+    <p>Label을 만들고 나면 Scale의 "value-changed" 시그널을 빙산의 펭귄 수를 다시 계산해서 새 메시지로 띄우는 _recalc  함수에 연결하겠습니다.</p>
+
+    <code mime="application/javascript">
+        // Create a grid to arrange things in
+        this._UIGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_top: 20,
+            margin_left: 20});
+
+        // Attach everything to the grid
+        this._UIGrid.attach (this._label, 0, 0, 1, 1);
+        this._UIGrid.attach (this._hScale, 0, 1, 1, 1);
+        this._UIGrid.attach (this._vScale, 1, 0, 1, 1);
+</code>
+    <p>여기서 모든 위젯을 넣을 <link xref="grid.js">Grid</link>를 만들고 Grid에 다 넣겠습니다. 참고로 여기 그리고 일부 위젯 자체에 여백을 주어 정돈된 느낌을 주는 공간을 확보합니다.</p>
+    <code mime="application/javascript">
+        // Add the grid to the window
+        this._window.add (this._UIGrid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    },
+</code>
+    <p>마지막으로 Grid를 창에 추가하고 창 자체와 그 안에 있는 모든 위젯을 화면에 나타내게 하겠습니다.</p>
+    </section>
+
+    <section id="scales-handler">
+    <title>Scale 값을 바꾸는 함수</title>
+
+    <code mime="application/javascript">
+    _recalc: function() {
+
+        // Figure out what the product of the two scales' values is
+        var product = (this._hScale.get_value() * this._vScale.get_value());
+
+        // Create a blank comment line in case there isn't a silly comment to make
+        var comment = "";
+
+        // Make a silly comment based on the number of penguins
+        if (product &gt; 9000) {
+            comment = "It's over 9000!";
+        }
+        else if (product &lt; 1000 &amp;&amp; product &gt; 0) {
+            comment = "They're getting lonely.";
+        }
+        else if (product == 0) {
+            comment = "They're all gone ...";
+        }
+        else comment = "";
+
+        // Set ._label's new text
+        this._label.set_label (String (product) + " penguins on the iceberg. " + comment);
+
+    }
+
+});
+</code>
+    <p>기억하실지 모르겠지만, Scale 값을 get_value 메서드로 가져올 수 있습니다. 여기서는, 간단하게 Scale을 움직인 다음 두 Scale의 값을 다시 계산하고 펭귄이 몇마리가 남는지 어설픈 메시지를 추가한 다음, 동작 중인 _label을 바꿔 새 숫자가 들어간 메시지를 보여주겠습니다.</p>
+
+    <code mime="application/javascript">
+// Run the application
+let app = new ScaleExample ();
+app.application.run (ARGV);
+</code>
+    <p>마지막으로, 마무리한 ScaleExample 클래스의 새 인스턴스를 만들고 프로그램을 실행하도록 설정하겠습니다.</p>
+  </section>
+
+  <section id="complete">
+    <title>완전한 코드 예제</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+
+class ScaleExample {
+
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jsscale'
+        });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            border_width: 20,
+            title: "Birds on a Floe"});
+
+        // Create the horizontal scale
+        this._hScale = Gtk.Scale.new_with_range (Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
+        this._hScale.set_valign (Gtk.Align.START);
+        this._hScale.set_value (50);
+        this._hScale.set_digits (0);
+        // this._hScale.set_draw_value (false);
+
+        // Create a master adjustment to use for the vertical (or any other) scale
+        this._adjustment = new Gtk.Adjustment ({
+            value: 95,
+            lower: 0,
+            upper: 100,
+            step_increment: 5,
+            page_increment: 10 });
+
+        // Create a vertical scale using the adjustment we just made
+        this._vScale = new Gtk.Scale ({
+            orientation: Gtk.Orientation.VERTICAL,
+            adjustment: this._adjustment,
+            digits: 0,
+            // draw_value: false,
+            margin_left: 10 });
+
+        // Create the label that shows the product of the two values
+        this._product = (this._hScale.get_value() * this._vScale.get_value());
+        this._label = new Gtk.Label ({
+            label: (String(this._product) + " penguins on the iceberg."),
+            height_request: 200,
+            width_request: 200,
+            wrap: true});
+
+        // Connect the two scales to functions which recalculate the label
+        this._hScale.connect ("value-changed", this._recalc.bind(this));
+        this._vScale.connect ("value-changed", this._recalc.bind(this));
+
+        // Create a grid to arrange things in
+        this._UIGrid = new Gtk.Grid ({
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
+            margin_top: 20,
+            margin_left: 20});
+
+        // Attach everything to the grid
+        this._UIGrid.attach (this._label, 0, 0, 1, 1);
+        this._UIGrid.attach (this._hScale, 0, 1, 1, 1);
+        this._UIGrid.attach (this._vScale, 1, 0, 1, 1);
+
+        // Add the grid to the window
+        this._window.add (this._UIGrid);
+
+        // Show the window and all child widgets
+        this._window.show_all();
+    }
+
+    _recalc() {
+
+        // Figure out what the product of the two scales' values is
+        var product = (this._hScale.get_value() * this._vScale.get_value());
+
+        // Create a blank comment line in case there isn't a silly comment to make
+        var comment = "";
+
+        // Make a silly comment based on the number of penguins
+        if (product &gt; 9000) {
+            comment = "It's over 9000!";
+        }
+        else if (product &lt; 1000 &amp;&amp; product &gt; 0) {
+            comment = "They're getting lonely.";
+        }
+        else if (product == 0) {
+            comment = "They're all gone ...";
+        }
+        else comment = "";
+
+        // Set ._label's new text
+        this._label.set_label (String (product) + " penguins on the iceberg. " + comment);
+    }
+};
+
+// Run the application
+let app = new ScaleExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>자세한 문서</title>
+<list>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Gtk.Adjustment</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Grid.html">Gtk.Grid</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Label.html">Gtk.Label</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Scale.html">Gtk.Scale</link></p></item>
+</list>
+  </section>
+</page>

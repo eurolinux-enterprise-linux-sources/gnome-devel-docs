@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -46,50 +46,49 @@
 
   <section id="imports">
     <title>Βιβλιοθήκες για εισαγωγή</title>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
-</code>
+]]></code>
     <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
     </section>
 
   <section id="applicationwindow">
     <title>Δημιουργία του παραθύρου εφαρμογής</title>
-    <code mime="application/javascript">
-const CheckButtonExample = new Lang.Class({
-    Name: 'CheckButton Example',
-
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
-    _init: function() {
+    <code mime="application/javascript"><![CDATA[
+class CheckButtonExample {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jscheckbutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-    // Σύνδεση σημάτων'activate' και 'startup' στις συναρτήσειs επανάκλησης
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', this._onActivate.bind(this));
+    this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents window when active
+    _onActivate() {
         this._window.present();
-    },
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function() {
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
         this._buildUI ();
-    },
-</code>
+    }
+]]></code>
     <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση CheckButtonExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
-    <code mime="application/javascript">
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function() {
+    <code mime="application/javascript"><![CDATA[
+    // Build the application's UI
+    _buildUI() {
 
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -97,38 +96,38 @@ const CheckButtonExample = new Lang.Class({
             default_width: 300,
             border_width: 10,
             title: "CheckButton Example"});
-</code>
+]]></code>
     <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
   </section>
 
   <section id="button">
     <title>Δημιουργία του πλήκτρου ελέγχου</title>
-    <code mime="application/javascript">
-        // Δημιουργία του κουμπιού ελέγχου
+    <code mime="application/javascript"><![CDATA[
+        // Create the check button
         this._button = new Gtk.CheckButton ({label: "Show Title"});
         this._window.add (this._button);
 
-        // Να ελέγχεται το κουμπί ελέγχου από προεπιλογή
+        // Have the check button be checked by default
         this._button.set_active (true);
 
-        // Σύνδεση του κουμπιού σε μια συνάρτηση που κάνει κάτι όταν εναλλάσσεται
-        this._button.connect ("toggled", Lang.bind (this, this._toggledCB));
-</code>
+        // Connect the button to a function that does something when it's toggled
+        this._button.connect ("toggled", this._toggledCB.bind(this));
+]]></code>
     <p>Αυτός ο κώδικας δημιουργεί το ίδιο το πλήκτρο ελέγχου. Η ετικέτα δίπλα στο πλήκτρο ελέγχου δημιουργείται δίνοντας στο πλήκτρο ελέγχου την ιδιότητα "label" και αποδίδοντας την τιμή μιας συμβολοσειράς σε αυτή. Επειδή αυτό το πλήκτρο ελέγχου εναλλάσσεται εάν ο τίτλος παραθύρου είναι ενεργός ή όχι και ο τίτλος παραθύρου θα είναι ενεργός στην εκκίνηση, θέλουμε το πλαίσιο να σημειωθεί από προεπιλογή. Όταν ο χρήστης σημειώνει ή ξεσημειώνει το πλαίσιο, καλούμε τη συνάρτηση _toggledCB.</p>
-    <code mime="application/javascript">
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+    <code mime="application/javascript"><![CDATA[
+        // Show the window and all child widgets
         this._window.show_all();
-    },
-</code>
+    }
+]]></code>
     <p>Αυτός ο κώδικας τελειώνει δημιουργώντας τη γραφική διεπαφή, λέγοντας στο παράθυρο να εμφανίσει τον εαυτό του και όλα τα θυγατρικά γραφικά στοιχεία (που είναι μόνο το πλήκτρο ελέγχου σε αυτήν την περίπτωση).</p>
   </section>
 
   <section id="function">
     <title>Η συνάρτηση που χειρίζεται την εναλλαγή του πλαισίου ελέγχου</title>
-    <code mime="application/javascript">
-    _toggledCB: function () {
+    <code mime="application/javascript"><![CDATA[
+    _toggledCB() {
 
-        // Εμφάνιση του τίτλου του παραθύρου ή εξαφάνιση όταν το πλαίσιο ελέγχου εναλλάσσεται 
+        // Make the window title appear or disappear when the checkbox is toggled
         if (this._button.get_active() == true)
             this._window.set_title ("CheckButton Example");
         else
@@ -136,11 +135,11 @@ const CheckButtonExample = new Lang.Class({
 
     }
 
-});
-</code>
+};
+]]></code>
     <p>Εάν το πλήκτρο ελέγχου εναλλάσσεται από ενεργό σε ανενεργό, θέλουμε ο τίτλος του παραθύρου να εξαφανιστεί. Εάν εναλλάσσεται από ανενεργό σε ενεργό, το θέλουμε να επανεμφανίζεται. Μπορούμε να πούμε με ποιο τρόπο εναλλάχτηκε δοκιμάζοντας να δούμε εάν είναι ενεργό (σημειωμένο) ή όχι κατόπιν. Μια απλή πρόταση if / else που καλεί τη μέθοδο get_active() του πλήκτρου ελέγχου θα δουλέψει για αυτό.</p>
     <code mime="application/javascript">
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new CheckButtonExample ();
 app.application.run (ARGV);
 </code>
@@ -151,41 +150,39 @@ app.application.run (ARGV);
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const CheckButtonExample = new Lang.Class({
-    Name: 'CheckButton Example',
+class CheckButtonExample {
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
-    _init: function() {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jscheckbutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents window when active
+    _onActivate() {
         this._window.present();
-    },
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function() {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
+    // Build the application's UI
+    _buildUI() {
 
-
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function() {
-
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -194,25 +191,23 @@ const CheckButtonExample = new Lang.Class({
             border_width: 10,
             title: "CheckButton Example"});
 
-        // Δημιουργία του κουμπιού ελέγχου
+        // Create the check button
         this._button = new Gtk.CheckButton ({label: "Show Title"});
         this._window.add (this._button);
 
-        // Να ελέγχεται το κουμπί ελέγχου από προεπιλογή
+        // Have the check button be checked by default
         this._button.set_active (true);
 
-        // Σύνδεση του κουμπιού με μια συνάρτηση που κάνει κάτι όταν εναλλάσσεται
-        this._button.connect ("toggled", Lang.bind (this, this._toggledCB));
+        // Connect the button to a function that does something when it's toggled
+        this._button.connect ("toggled", this._toggledCB.bind(this));
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
+    _toggledCB() {
 
-
-    _toggledCB: function () {
-
-        // Εμφάνιση ή εξαφάνιση του τίτλου του παραθύρου όταν το πλαίσιο ελέγχου εναλλάσσεται
+        // Make the window title appear or disappear when the checkbox is toggled
         if (this._button.get_active() == true)
             this._window.set_title ("CheckButton Example");
         else
@@ -220,9 +215,9 @@ const CheckButtonExample = new Lang.Class({
 
     }
 
-});
+};
 
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new CheckButtonExample ();
 app.application.run (ARGV);
 </code>

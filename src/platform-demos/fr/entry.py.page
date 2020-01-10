@@ -19,6 +19,36 @@
       <years>2011</years>
     </credit>
     <desc>Un champ de saisie de texte sur une ligne</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Rebert,</mal:name>
+      <mal:email>traduc@rebert.name</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alain Lojewski,</mal:name>
+      <mal:email>allomervan@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luc Pionchon</mal:name>
+      <mal:email>pionchon.luc@gmail.com</mal:email>
+      <mal:years>2011</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Bruno Brouard</mal:name>
+      <mal:email>annoa.b@gmail.com</mal:email>
+      <mal:years>2011-12</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Luis Menina</mal:name>
+      <mal:email>liberforce@freeside.fr</mal:email>
+      <mal:years>2014</mal:years>
+    </mal:credit>
   </info>
 
   <title>Entrée</title>
@@ -54,7 +84,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # retrieve the content of the widget
         name = entry.get_text()
         # print it in a nice form in the terminal
-        print "Hello " + name + "!"
+        print("Hello " + name + "!")
 
 
 class MyApplication(Gtk.Application):
@@ -77,13 +107,13 @@ sys.exit(exit_status)
 
   <section id="methods">
     <title>Méthodes utiles pour un élément graphique Entrée</title>
-    <p>In line 14 the signal <code>"activate"</code> is connected to the callback function <code>cb_activate()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation. Some of the signals that a Gtk.Entry widget can emit are: <code>"activate"</code> (emitted when the user activates the Entry key); <code>"backspace"</code> (emitted when the user activates the Backspace or Shift-Backspace keys); <code>"copy-clipboard"</code> (Ctrl-c and Ctrl-Insert); <code>"paste-clipboard"</code> (Ctrl-v and Shift-Insert); <code>"delete-from-cursor"</code> (Delete, for deleting a character; Ctrl-Delete, for deleting a word); <code>"icon-press"</code> (emitted when the user clicks an activable icon); <code>"icon-release"</code> (emitted on the button release from a mouse click over an activable icon);  <code>"insert-at-cursor"</code> (emitted when the user initiates the insertion of a fixed string at the cursor); <code>"move-cursor"</code> (emitted when the user initiates a cursor movement); <code>"populate-popup"</code> (emitted before showing the context menu of the entry; it can be used to add items to it).</p>
+    <p>In line 14 the signal <code>"activate"</code> is connected to the callback function <code>cb_activate()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation. Some of the signals that a Gtk.Entry widget can emit are: <code>"activate"</code> (emitted when the user activates the Entry key); <code>"backspace"</code> (emitted when the user activates the Backspace or Shift-Backspace keys); <code>"copy-clipboard"</code> (Ctrl-c and Ctrl-Insert); <code>"paste-clipboard"</code> (Ctrl-v and Shift-Insert); <code>"delete-from-cursor"</code> (Delete, for deleting a character; Ctrl-Delete, for deleting a word); <code>"icon-press"</code> (emitted when the user clicks an activatable icon); <code>"icon-release"</code> (emitted on the button release from a mouse click over an activatable icon);  <code>"insert-at-cursor"</code> (emitted when the user initiates the insertion of a fixed string at the cursor); <code>"move-cursor"</code> (emitted when the user initiates a cursor movement); <code>"populate-popup"</code> (emitted before showing the context menu of the entry; it can be used to add items to it).</p>
     <list>
       <item><p>Les méthodes <code>get_buffer()</code> et <code>set_buffer(tampon)</code>, où <code>tampon</code> est un objet Gtk.EntryBuffer, peuvent être utilisées pour obtenir et définir le tampon de l'entrée.</p></item>
       <item><p>Les fonctions <code>get_text()</code> et <code>set_text("some text")</code> peuvent être utilisées pour obtenir et définir le contenu de l'entrée.</p></item>
       <item><p>La méthode <code>get_text_length()</code> parle d'elle-même.</p></item>
       <item><p>La méthode <code>get_text_area()</code> obtient la position où le texte de l'entrée est dessiné.</p></item>
-      <item><p>Si nous définissons la méthode <code>set_visibility(False)</code>, les caractères de l'entrée sont affichés en tant que caractères invisibles. C'est la meilleur police disponible dans le type actuel, mais peut être modifié à l'aide de <code>set_invisible_char(ch)</code>, où <code>ch</code> est un caractère Unicode. Nous pouvons inverser cette denière fonction avec <code>unset_invisible_char()</code>.</p></item>
+      <item><p>If we set <code>set_visibility(False)</code> the characters in the entry are displayed as the invisible char. This is the best available in the current font, but it can be changed with <code>set_invisible_char(ch)</code>, where <code>ch</code> is a Unicode character. The latter method is reversed by <code>unset_invisible_char()</code>.</p></item>
       <item><p>La méthode <code>set_max_length(int)</code>, où <code>int</code> est un nombre entier, coupe chaque entrée plus longue que <code>int</code> afin d'obtenir la longueur maximum désirée.</p></item>
       <item><p>Par défaut, si vous appuyez sur la touche Entrée, Gtk.Entry émet le signal <code>"activate"</code>. Si vous préférez activer l'élément graphique par défaut de la fenêtre (défini par la méthode <code>set_default(widget)</code> pour la fenêtre), utilisez alors <code>set_activates_default(True)</code>.</p></item>
       <item><p>Pour définir un cadre autour de l'entrée, utilisez la méthode <code>set_has_frame(True)</code>.</p></item>

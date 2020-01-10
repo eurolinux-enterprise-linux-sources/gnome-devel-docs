@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherAutotools.js" xml:lang="ko">
+  <info>
+    <link type="guide" xref="weatherApp.js#main" group="#last"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Autotool과 아이콘</title>
+  <synopsis>
+    <p>안내서의 이 부분에서는 날씨 프로그램에서 필요한 autotool와 데스크톱에서 감쪽같이 보일 개별아이콘을 구성하도록 하겠습니다. 여러분 스스로가 모든 코드 예제를 작성하고 실행할 때는 코드를 작성할 편집기, 터미널, 그놈 3 이상을 컴퓨터에 설치해야 합니다. 이 안내서에서는 다음 내용을 진행하겠습니다:</p>
+
+    <list>
+      <item><p><link xref="#autotools"> Autotools</link></p></item>
+      <item><p><link xref="#icons">프로그램에 넣을 개별 아이콘</link></p></item>
+    </list>
+  </synopsis>
+
+
+
+  <section id="autotools">
+  <title>Autotools와 필요한 파일</title>
+  <p>autotools로 폴더에 여러 파일을 넣는건 조금 어렵습니다. .desktop 파일, autogen.sh, Makefile.am, configure.ac, myapp.sh.in 새 파일이 필요합니다. autotool 파일을 뜯는건 좀 복잡합니다. 자세한 내용은 여러 곳에서 찾아볼 수 있는데, <link href="http://en.wikipedia.org/wiki/GNU_build_system">위키피디아</link> 글이 주제를 살펴보기에 좋습니다.</p>
+    <list>
+      <item><p>weatherapp.desktop</p></item>
+      <item><p>weatherapp.sh.in</p></item>
+      <item><p>Makefile.am</p></item>
+      <item><p>configure.ac</p></item>
+      <item><p>autogen.sh</p></item>
+    </list>
+    <p>weatherapp.desktop</p>
+    <code mime="text/.desktop" style="numbered">
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Weather app
+Comment=Weather showing application
+Exec=weatherapp.sh
+Icon=application-default-icon
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Utility;</code>
+    <p>이 파일에서 주목해 볼 부분은, 다른 makefile을 실행한 다음에야 .desktop 파일을 동작하게 하는 Exec 줄 부분입니다. Weatherapp.sh는 weatherapp.sh.in에서 만든 작은 쉘 스크립트입니다.</p>
+
+    <p>weatherapp.sh.in</p>
+    <code mime="text/sh.in" style="numbered">
+#!/bin/sh
+export GJS_PATH=@bindir@
+gjs @bindir@/weatherapp.js</code>
+    <p>이 파일은 Makefile 파일을 통해 .desktop 파일로 실행하도록 하는 서식입니다.</p>
+
+    <p>Makefile.am</p>
+    <code mime="text/am" style="numbered">
+# The actual runnable program is set to the SCRIPTS primitive. Prefix bin_ tells where to copy this
+bin_SCRIPTS = weatherapp.js geonames.js weatherapp.sh
+# List of files to be distributed
+EXTRA_DIST=  \
+    $(bin_SCRIPTS) \
+    $(private_icons)	\
+	  $(NULL)
+
+CLEANFILES =
+
+# The desktop files
+desktopdir = $(datadir)/applications
+desktop_DATA =weatherapp.desktop
+
+# convenience command for doing Makefile variable substitutions in non-Makefile
+# files (scripts, service files, etc.)
+do_subst = sed -e 's|@abs_top_srcdir[@]|$(abs_top_srcdir)|g' \
+               -e 's|@abs_top_builddir[@]|$(abs_top_builddir)|g' \
+               -e 's|@localedir[@]|$(localedir)|g' \
+               -e 's|@bindir[@]|$(bindir)|g' \
+               -e 's|@libexecdir[@]|$(libexecdir)|g' \
+	       -e 's|@pkglibdir[@]|$(pkglibdir)|g' \
+	       -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+	       -e 's|@have_libnotify[@]|$(HAVE_LIBNOTIFY)|g' \
+	       -e 's|@have_libsoup[@]|$(HAVE_LIBSOUP)|g' \
+	       -e 's|@have_cheese[@]|$(HAVE_CHEESE)|g'
+
+weatherapp.sh: weatherapp.sh.in
+	$(AM_V_GEN) $(do_subst) $&lt; &gt; $@
+	chmod +x $@
+
+CLEANFILES += weatherapp.sh
+EXTRA_DIST += weatherapp.sh.in
+
+#the application icon
+appicondir=$(datadir)/icons/hicolor/scalable/apps
+appicon_DATA=weather-icon.svg
+
+#icons in the application
+NULL =
+
+private_icons = \
+	weather-clear.svg \
+  weather-few-clouds.svg \
+  weather-fog.svg \
+  weather-icon.svg \
+  weather-overcast.svg \
+  weather-showers.svg \
+  weather-showers-scattered.svg \
+  weather-snow.svg \
+  $(NULL)
+
+install-icons:
+	for icon in $(private_icons); do \
+		mkdir -p $(DESTDIR)$(pkgdatadir)/icons/; \
+		$(INSTALL_DATA) $(srcdir)/$$icon $(DESTDIR)$(pkgdatadir)/icons/; \
+	done
+
+install-data-local: install-icons</code>
+    <p>더 많은 설명이 필요합니다. HelloWorld Makefile.am과 비교하여 약간 바뀌었을 뿐입니다. 새 블록 부분을 살펴보겠습니다:</p>
+    <p>bin_scripts는 프로그램을 실행하는데 필요한 파일입니다. 이 경우 처음 두 파일은 프로그램 그 자체이며, 세번째는 프로그램을 실행하는 스크립트입니다.</p>
+    <p>EXTRA_DIST는 배포할 파일 목록입니다.</p>
+    <p>du_subst 블록은 각 파일이 각각 어디에 있어야 하는지 나타내는 부분입니다</p>
+    <p>after the comment #icons in the application there are all the icons that are used by the program. For them to be useful you need to install the icons in correct places and that is done by the install-icons: bit</p>
+
+    <p>configure.ac</p>
+    <code mime="text/ac" style="numbered">
+dnl This file is processed by autoconf to create a configure script
+AC_INIT([Weather App], 1.0)
+AM_INIT_AUTOMAKE([1.10 no-define foreign])
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT</code>
+    <p>autogen.sh</p>
+    <code mime="text/sh" style="numbered">
+#!/bin/sh
+# This will run autoconf, automake, etc. for us
+autoreconf --force --install</code>
+  </section>
+  <section id="icons">
+  <title>프로그램 개별 아이콘</title>
+  <p>개별 아이콘에 대해 생각할 때 경험상 최고의 방법은 아이콘을 다른 곳에서도 쓸 지, 앱 그 자체로만 한정할 것인지에 대한 고려입니다. 전자라면(쉘에서 나타나는 desktop 파일의 아이콘) /usr/share/hicolor에 넣어야 하고, 그렇지 않으면(여러분 혼자 쓰는 앱의 날씨 아이콘) /usr/share/$application/bla/bla 같은 곳에 넣으면 됩니다</p>
+  <p>autotools를 활용하면 .desktop 파일과 Makefile.am 파일을 약간 바꿔야합니다. desktop 파일에는 Icon=weather-icon으로 아이콘 이름을 바꿔주십시오. Makefile.am 파일에는 #the application icon을 적고 그 아래에 다음 두 줄을 넣으십시오.</p>
+  <p>appicondir=$(datadir)/icons/hicolor/scalable/apps</p>
+  <p>appicon_DATA=weather-icon.svg</p>
+  </section>
+
+</page>

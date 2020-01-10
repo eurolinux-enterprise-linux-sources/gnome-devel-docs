@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="c-coding-style" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="index#general-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Federico Mena-Quintero</name>
+      <email its:translate="no">federico@gnome.org</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>A equipe do GTK+</name>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Nossas diretrizes para código C no GNOME</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Estilo de codificação C</title>
+
+  <p>Esse documento apresenta o estilo de codificação preferido para programas C no GNOME. Enquanto o estilo de codificação é muito uma questão de gosto, no GNOME somos a favor de um estilo de codificação que promove consistência, legibilidade e manutenção.</p>
+
+  <p>Nós apresentamos exemplos de bom estilo de codificação, bem como exemplos de estilo ruim que não é aceitável no GNOME. Por favor, tente enviar patches que estejam em conformidade com o estilo de codificação do GNOME; isso indica que você fez seu dever de casa para respeitar o objetivo do projeto de manutenção a longo prazo. Patches com o estilo de codificação do GNOME também serão mais fáceis de revisar!</p>
+
+  <note>
+    <p>Esse documento é para código C. Para outras linguagens, veja a <link xref="index">página principal</link> das Diretrizes de programação do GNOME.</p>
+  </note>
+
+  <p>Essas diretrizes são fortemente inspiradas no documento “CODING-STYLE” do GTK, no “CodingStyle” do Kernel Linux e no “GNU Coding Standards”. Essas são pequenas variações entre si, com modificações particulares para cada culturas e necessidades em particular do projeto, e a versão do GNOME não é diferente.</p>
+
+  <section id="most-important-rule">
+    <title>A regra mais importante</title>
+
+    <p>A regra mais importante quando se está escrevendo código é essa: <em>veja o código ao redor e tente imitá-lo</em>.</p>
+
+    <p>Como um mantenedor, é assustador receber um patch que obviamente está em um estilo de codificação diferente do código ao redor. Isso é desrespeitoso, como alguém pisando em uma casa impecavelmente limpa com sapatos cheios de lama.</p>
+
+    <p>Então, independente do que este documenta recomenda, se há código escrito e você está fazendo um patch para ele, mantenha a consistência do seu estilo atual ainda que não seja seu estilo favorito.</p>
+  </section>
+
+  <section id="line-width">
+    <title>Largura da linha</title>
+
+    <p>Tente usar linhas de códigos entre 80 e 120 caracteres. Essa quantidade de texto é fácil de ajustar na maioria dos monitores com um tamanho de fonte decente. Linhas maiores que isso se tornam difíceis de ler, e isso pode significar que você provavelmente deveria restruturar seu código. Se você tiver um número grande de níveis de recuo, isso significa que você provavelmente deveria corrigir seu código de qualquer maneira.</p>
+  </section>
+
+  <section id="indentation">
+    <title>Recuo</title>
+
+    <p>Em geral, há dois estilos de recuo preferidos para código no GNOME.</p>
+
+    <list type="ordered">
+      <item>
+	<p>Estilo do Kernel Linux. Tabulações com um comprimento de 8 caracteres são usados para recuo, com colocação de chaves de K&amp;R:</p>
+
+	<code style="valid">
+for (i = 0; i &lt; num_elements; i++) {
+	foo[i] = foo[i] + 42;
+
+	if (foo[i] &lt; 35) {
+		printf ("Foo!");
+		foo[i]--;
+	} else {
+		printf ("Bar!");
+		foo[i]++;
+	}
+}</code>
+      </item>
+
+      <item>
+	<p>Estilo GNU. Cada novo nível possui recuo de 2 espaços, aspas vai em uma linha própria e elas também possuem recuo.</p>
+
+	<code style="valid">
+for (i = 0; i &lt; num_elements; i++)
+  {
+    foo[i] = foo[i] + 42;
+
+    if (foo[i] &lt; 35)
+      {
+        printf ("Foo!");
+        foo[i]--;
+      }
+    else
+      {
+        printf ("Bar!");
+        foo[i]++;
+      }
+  }</code>
+      </item>
+    </list>
+
+
+    <p>Ambos estilos têm suas vantagens e desvantagens. O mais importante é <em>ser consistente</em> com o código ao redor. Por exemplo, a biblioteca GTK+, que é uma caixa de ferramentas de widgets do GNOME, é escrito com o estilo GNU. Nautilus, o gerenciador de arquivos do GNOME, é escrito no estilo Kernel Linux. Ambos estilos são perfeitamente legíveis e consistentes quando você se acostuma com eles.</p>
+
+    <p>Seu primeiro sentimento ao ter que estudar ou trabalhar em um pedaço de código que não seja seu preferido em estilo de recuo pode ser, como vamos colocá-lo, desconfortável. Você deve resistir sua inclinação em ajustar o recuo de tudo, ou usar um estilo inconsistente para seu patch. Lembre-se da primeira regra: <em>ser consistente</em> e respeitoso com os costumes do código, e seus patches terão uma chance muito mais alta de serem aceitos sem muita argumentação sobre o estilo de recuo correto.</p>
+  </section>
+
+  <section id="tab-characters">
+    <title>Caracteres de tabulações</title>
+
+    <p><em>Não altere o tamanho dos tabs em seu editor</em>; deixe-os como 8 espaços. Alterar o tamanho dos tabs naquele código que você não escreveu estará perpetuamente desalinhada.</p>
+
+    <p>Em vez disso, defina o <em>tamanho do recuo</em> conforme apropriado para o código que você está editando. Quando se está escrevendo em algo diferente do estilo Kernel Linux, você pode está querer dizer ao seu editor para converter todas os tabs para 8 espaços, de forma que não haja ambiguidade sobre a quantidade de espaços.</p>
+  </section>
+
+  <section id="braces">
+    <title>Chaves</title>
+
+    <p>Chaves não devem ser usadas para blocos de instrução singular:</p>
+
+<code style="valid">
+/* válido */
+if (condição)
+	single_statement ();
+else
+	another_single_statement (arg1);</code>
+
+	<p>A regra de “nenhum bloco para instruções singulares” possui apenas quatro exceções:</p>
+
+	<list type="ordered">
+          <item>
+            <p>No estilo GNU, se qualquer um dos lados de uma instrução if-else possui chaves, ambos lados deveriam ter, para corresponder o recuo:</p>
+
+<code style="valid">
+/* estilo GNU válido */
+if (condição)
+  {
+    foo ();
+    bar ();
+  }
+else
+  {
+    baz ();
+  }</code>
+
+<code style="invalid">
+/* inválido */
+if (condição)
+  {
+    foo ();
+    bar ();
+  }
+else
+  baz ();</code>
+          </item>
+
+	  <item>
+	    <p>Se a instrução singular cobre múltiplas linhas (ex.: para funções com muitos argumentos) e é seguido por <code>else</code> ou <code>eles if</code>:</p>
+
+<code style="valid">
+/* estilo Kernel Linux válido */
+if (condição) {
+	uma_instrução_singular_com_muitos_args (algum_argumento_comprido,
+						outro_argumento_comprido,
+						e_mais_um_outro,
+						mais_um);
+} else
+	outro_arg_singular (arg1, arg2);
+
+/* estilo GNU válido */
+if (condição)
+  {
+    uma_instrução_singular_com_muitos_args (algum_argumento_comprido,
+                                            outro_argumento_comprido,
+                                            e_mais_um_outro,
+                                            mais_um);
+  }
+else
+  {
+    outro_arg_singular (arg1, arg2);
+  }</code>
+          </item>
+
+          <item>
+            <p>Se a condição for composta de muitas linhas:</p>
+
+<code style="valid">
+/* estilo Kernel Linux válido */
+if (condição1 ||
+    (condição2 &amp;&amp; condição3) ||
+    condição4 ||
+    (condição5 &amp;&amp; (condição6 || condição7))) {
+	uma_instrução_singular ();
+}
+
+/* estilo GNU válido */
+if (condição1 ||
+    (condição2 &amp;&amp; condição3) ||
+    condição4 ||
+    (condição5 &amp;&amp; (condição6 || condição7)))
+  {
+    uma_instrução_singular ();
+  }</code>
+
+            <p>Note que tais condições longas são geralmente difíceis de entender. Uma boa prática é definir essa condição para uma variável booleana, com um bom nome para aquela variável. Uma outra forma é mover a condição longa para uma função.</p>
+          </item>
+
+          <item>
+            <p><code>if</code>s aninhados, caso em que o bloco deve ser colocado <code>if</code> mais extremo:</p>
+
+<code style="valid">
+/* estilo Kernel Linux válido */
+if (condição) {
+	if (outra_condição)
+		instrução_singular ();
+	else
+		outra_instrução_singular ();
+}
+
+/* estilo GNU válido */
+if (condição)
+  {
+    if (outra_condição)
+      instrução_singular ();
+    else
+      outra_instrução_singular ();
+  }</code>
+
+<code style="invalid">
+/* inválido */
+if (condição)
+	if (outra_condição)
+		instrução_singular ();
+	else if (mais_uma_condição)
+		outra_instrução_singular ();</code>
+          </item>
+        </list>
+
+        <p>Em geral, novos blocos devem ser colocados em um novo nível de recuo, como este:</p>
+
+        <code style="valid">
+int retval = 0;
+
+instrucao_1 ();
+instrucao_2 ();
+
+{
+	int var1 = 42;
+	gboolean res = FALSE;
+
+	res = instrucao_3 (var1);
+
+	retval = res ? -1 : 1;
+}</code>
+
+        <p>Enquanto chaves para definições de função devem ficar em uma nova linha, elas não devem adicionar um novo nível de recuo:</p>
+
+        <code style="valid">
+/* estilo Kernel Linux válido */
+static void
+minha_funcao (int argumento)
+{
+	faz_minhas_coisas ();
+}
+
+/* estilo GNU válido */
+static void
+minha_funcao (int argumento)
+{
+  faz_minhas_coisas ();
+}</code>
+
+<code style="invalid">
+/* inválido */
+static void
+minha_funcao (int argumento) {
+	faz_minhas_coisas ();
+}
+
+/* inválido */
+static void
+minha_funcao (int argumento)
+  {
+    faz_minhas_coisas ();
+  }</code>
+  </section>
+
+  <section id="conditions">
+    <title>Condições</title>
+
+    <p>Não verifique valores booleanos por igualdade. Ao usar comparações implícitas, o código resultante pode ser mais parecido com o inglês conversacional. Um outro fundamento é que um valor ‘verdadeiro’ não necessariamente será igual a macro <code>TRUE</code> usada. Por exemplo:</p>
+
+    <code style="invalid">
+/* inválido */
+if (localizado == TRUE)
+	fazer_foo ();
+
+/* inválido */
+if (localizado == FALSE)
+	fazer_bar ();</code>
+
+    <code style="valid">
+/* válido */
+if (localizado)
+	fazer_foo ();
+
+/* válido */
+if (!localizado)
+	fazer_bar ();</code>
+
+    <p>A linguagem C usa o valor 0 para muitos propósitos. Como um valor numérico, o fim de uma string, um ponteiro nulo e o booleano <code>FALSE</code>. Para tornar o código mais limpo, você deveria escrever código que realça a forma específica que 0 é usado. Então, ao ler uma comparação, é possível saber o tipo de variável.  Para variáveis booleanas, uma comparação implícita é apropriado porque já é uma expressão lógica. Outros tipos de variáveis que não são expressões lógicas por si só, então uma comparação explícita é melhor:</p>
+
+    <code style="valid">
+/* válido */
+if (algum_ponteiro == NULL)
+	fazer_blá ();
+
+/* válido */
+if (número == 0)
+	fazer_foo ();
+
+/* válido */
+if (str != NULL &amp;&amp; *str != '\0')
+	fazer_bar ();</code>
+
+    <code style="invalid">
+/* inválido */
+if (!algum_ponteiro)
+	fazer_blá ();
+
+/* inválido */
+if (!número)
+	fazer_foo ();
+
+/* inválido */
+if (str &amp;&amp; *str)
+	fazer_bar ();</code>
+  </section>
+
+  <section id="functions">
+    <title>Funções</title>
+
+    <p>Funções devem ser declaradas colocando o valor de retorno em uma linha separada do nome da função:</p>
+
+    <code style="valid">
+void
+minha_funcao (void)
+{
+  …
+}</code>
+
+    <p>A lista de argumentos deve estar quebrada em nova linha para cada argumento, com os nomes dos argumentos alinhados à direita, levando em consideração os ponteiros:</p>
+
+    <code style="valid">
+void
+minha_funcao (algum_tipo_t    tipo,
+              outro_tipo_t   *um_ponteiro,
+              double_ptr_t  **ponteiro_duplo,
+              tipo_final_t    outro_tipo)
+{
+  …
+}</code>
+
+    <p>Se você usa Emacs, você pode usar <code>M-x align</code> para fazer esse tipo de alinhamento automaticamente. Basca colocar o ponteiro e marcar em volta do protótipo da função e invocar aquele comando.</p>
+
+    <p>O alinhamento também se mantém ao invocar uma função sem quebrar o limite de comprimento da linha:</p>
+
+    <code style="valid">
+alinha_args_de_funcoes (primeiro_argumento,
+                        segundo_argumento,
+                        terceiro_argumento);</code>
+  </section>
+
+  <section id="whitespace">
+    <title>Espaço em branco</title>
+
+    <p>Sempre coloque espaço antes de abrir parênteses, mas nunca após:</p>
+
+    <code style="valid">
+/* válido */
+if (condição)
+	faz_minhas_coisas ();
+
+/* válido */
+switch (condição) {
+}</code>
+
+<code style="invalid">
+/* inválido */
+if(condição)
+	faz_minhas_coisas();
+
+/* inválido */
+if ( condição )
+	faz_minhas_coisas ( );</code>
+
+    <p>Ao declarar um tipo de estrutura, use novas linhas para separar seções lógicas da estrutura:</p>
+
+    <code style="valid">
+struct _GtkWrapBoxPrivate
+{
+	GtkOrientation        orientation;
+	GtkWrapAllocationMode mode;
+
+	GtkWrapBoxSpreading   horizontal_spreading;
+	GtkWrapBoxSpreading   vertical_spreading;
+
+	guint16               vertical_spacing;
+	guint16               horizontal_spacing;
+
+	guint16               minimum_line_children;
+	guint16               natural_line_children;
+
+	GList                *children;
+};</code>
+
+    <p>Não elimine espaços em branco e novas linhas apenas por que alguma coisa caberia em uma única linha:</p>
+
+    <code style="invalid">
+/* inválido */
+if (condição) foo (); else bar ();</code>
+
+    <p>Elimine espaços em branco de qualquer linha, preferivelmente como um patch ou commit separado. Nunca use linhas vazias no começo ou no fim de um arquivo.</p>
+
+    <p>Essa é uma pequena função de Emacs que você pode usar para limpar linhas terminando com espaço em branco:</p>
+
+    <code>
+(defun clean-line-ends ()
+  (interactive)
+  (if (not buffer-read-only)
+      (save-excursion
+	(goto-char (point-min))
+	(let ((count 0))
+	  (while (re-search-forward "[ 	]+$" nil t)
+	    (setq count (+ count 1))
+	    (replace-match "" t t))
+	  (message "Limpadas %d linhas" count)))))</code>
+  </section>
+
+  <section id="switch">
+    <title>A instrução <code>switch</code></title>
+
+    <p>Um <code>switch</code> deve abrir um bloco em um novo nível de recuo, e cada <code>case</code> deve iniciar no mesmo nível de recuo que as chaves, com o bloco de <code>case</code> em um novo nível de recuo:</p>
+
+    <code style="valid">
+/* estilo Kernel Linux válido */
+switch (condição) {
+case FOO:
+	fazer_foo ();
+	break;
+
+case BAR:
+	fazer_bar ();
+	break;
+}
+
+/* estilo GNU válido */
+switch (condição)
+  {
+  case FOO:
+    fazer_foo ();
+    break;
+
+  case BAR:
+    fazer_bar ();
+    break;
+  }</code>
+
+<code style="invalid">
+/* inválido */
+switch (condição) {
+  case FOO: fazer_foo (); break;
+  case BAR: fazer_bar (); break;
+}
+
+/* inválido */
+switch (condição)
+  {
+  case FOO: fazer_foo ();
+    break;
+  case BAR: fazer_bar ();
+    break;
+  }
+
+/* inválido */
+switch (condição)
+  {
+    case FOO:
+    fazer_foo ();
+    break;
+    case BAR:
+    fazer_bar ();
+    break;
+  }</code>
+
+    <p>É preferível, apesar de não ser obrigatório, separar os vários cases com uma nova linha:</p>
+
+    <code style="valid">
+switch (condição) {
+case FOO:
+	fazer_foo ();
+	break;
+
+case BAR:
+	fazer_foo ();
+	break;
+
+default:
+	fazer_padrão ();
+}</code>
+
+    <p>A instrução <code>break</code> para o caso <code>default</code> não é obrigatório.</p>
+
+    <p>Se alternando sobre um tipo enumerado, uma instrução <code>case</code> deve existir para cada novo membro do tipo enumerado. Para membros que você não deseja tratar, apelide suas instruções <code>case</code> para <code>default</code>:</p>
+
+    <code style="valid">
+switch (condição_enumerada) {
+case TRATADA_1:
+	fazer_foo ();
+	break;
+
+case TRATADA_2:
+	fazer_bar ();
+	break;
+
+case IGNORADA_1:
+case IGNORADA_2:
+default:
+	fazer_padrão ();
+}</code>
+
+    <p>Se a maioria dos membros do tipo enumerado não deve ser tratada, considere usar uma instrução <code>if</code> em vez de um <code>switch</code>.</p>
+
+    <p>Se um bloco <code>case</code> precisa declarar novas variáveis, as mesmas regras que os blocos internos se aplicam (veja acima); a instrução <code>break</code> deve ser colocada fora do bloco interno:</p>
+
+    <code style="valid">
+/* estilo GNU válido */
+switch (condição)
+  {
+  case FOO:
+    {
+      int foo;
+
+      foo = fazer_foo ();
+    }
+    break;
+
+  …
+  }</code>
+  </section>
+
+  <section id="header-files">
+    <title>Arquivos de cabeçalho</title>
+
+    <p>A única regra importante para cabeçalhos é que as definições de funções devem estar alinhados verticalmente em três colunas:</p>
+
+    <code style="valid">
+tipo_retorno          nome_funcao            (tipo   argumento,
+                                              tipo   argumento,
+                                              tipo   argumento);</code>
+
+    <p>A largura máxima de cada coluna é dada pelo elemento mais longo na coluna:</p>
+
+    <code style="valid">
+void         gtk_type_set_property (GtkType      *type,
+                                    const gchar  *value,
+                                    GError      **error);
+const gchar *gtk_type_get_property (GtkType      *type);</code>
+
+    <p>Também é possível alinhar as colunas à próxima tabulação:</p>
+
+    <code style="valid">
+void          gtk_type_set_prop           (GtkType *type,
+                                           gfloat   value);
+gfloat        gtk_type_get_prop           (GtkType *type);
+gint          gtk_type_update_foobar      (GtkType *type);</code>
+
+    <p>Como anteriormente, você pode usar <code>M-x align</code> no Emacs para fazer isso automaticamente.</p>
+
+    <p>Se você está criando uma biblioteca pública, tente exportar um único arquivo de cabeçalho público que, por sua vez, inclua todos os arquivos de cabeçalhos menores nele. Isto é para que cabeçalhos públicos nunca seja incluídos diretamente; em vez disso, uma única inclusão é usada nos aplicativos. Por exemplo, GTK+ usa o seguinte em seus arquivos de cabeçalhos que não devem ser incluídos diretamente por aplicativos:</p>
+
+    <code style="valid">
+#if !defined (__GTK_H_INSIDE__) &amp;&amp; !defined (GTK_COMPILATION)
+#error "Only &lt;gtk/gtk.h&gt; can be included directly."
+#endif</code>
+
+    <p>Para bibliotecas, todos cabeçalhos devem ter proteções de inclusão (para uso interno) e proteções de C++ ou, em inglês, <em>#include guards</em> e <em>C++ guards</em>. Estas fornece a mágica <code>extern "C"</code> que C++ requer para incluir cabeçalhos de C simples:</p>
+
+    <code style="valid">
+#ifndef MYLIB_FOO_H_
+#define MYLIB_FOO_H_
+
+#include &lt;gtk/gtk.h&gt;
+
+G_BEGIN_DECLS
+
+…
+
+G_END_DECLS
+
+#endif /* MYLIB_FOO_H_ */</code>
+  </section>
+
+  <section id="gobject">
+    <title>Classes de GObject</title>
+
+    <p>Definições e implementações de classe GObject exigem algumas notas adicionais de estilo de codificação, e devem sempre estar sob <link xref="namespacing#gobject">espaço de nome correto</link>.</p>
+
+    <p>Declarações <code>Typedef</code> devem ser colocadas no começo do arquivo:</p>
+
+    <code style="valid">
+typedef struct _GtkBoxedStruct       GtkBoxedStruct;
+typedef struct _GtkMoreBoxedStruct   GtkMoreBoxedStruct;</code>
+
+    <p>Isso inclui tipos de enumeração:</p>
+
+    <code style="valid">
+typedef enum
+{
+  GTK_SIZE_REQUEST_WIDTH_FOR_HEIGHT,
+  GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH
+} GtkSizeRequestMode;</code>
+
+    <p>A tipos de retorno de chamada (<em>callback</em>):</p>
+
+    <code style="valid">
+typedef void (* GtkCallback) (GtkWidget *widget,
+                              gpointer   user_data);</code>
+
+    <p>Estruturas de instâncias devem ser declaradas usando <code>G_DECLARE_FINAL_TYPE</code> ou <code>G_DECLARE_DERIVABLE_TYPE</code>:</p>
+
+    <code style="valid">
+#define GTK_TYPE_FOO (gtk_foo_get_type ())
+G_DECLARE_FINAL_TYPE (GtkFoo, gtk_foo, GTK, FOO, GtkWidget)</code>
+
+    <p>Para tipos finais, dados privados podem ser armazenados em um objeto <code>struct</code>, o qual deve ser definido no arquivo C:</p>
+
+    <code style="valid">
+struct _GtkFoo
+{
+  GObject   instancia_pai;
+
+  guint     dados_privados;
+  gpointer  mais_dados_privados;
+};</code>
+
+    <p>Para tipos deriváveis, dados privados devem estar armazenados em um struct privado no arquivo C, configurado usando <code>G_DEFINE_TYPE_WITH_PRIVATE()</code> e acessado usando uma função <code>_get_instance_private()</code>:</p>
+
+    <code style="valid">
+#define GTK_TYPE_FOO gtk_foo_get_type ()
+G_DECLARE_DERIVABLE_TYPE (GtkFoo, gtk_foo, GTK, FOO, GtkWidget)
+
+struct _GtkFooClass
+{
+  GtkWidgetClass parent_class;
+
+  void (* handle_frob)  (GtkFrobber *frobber,
+                         guint       n_frobs);
+
+  gpointer padding[12];
+};</code>
+
+    <p>Sempre use as macros <code>G_DEFINE_TYPE()</code>, <code>G_DEFINE_TYPE_WITH_PRIVATE()</code> e <code>G_DEFINE_TYPE_WITH_CODE()</code> ou suas variantes abstratas <code>G_DEFINE_ABSTRACT_TYPE()</code>, <code>G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE()</code> e <code>G_DEFINE_ABSTRACT_TYPE_WITH_CODE()</code>; também, use as macros similares para definir interfaces e tipos “boxed”.</p>
+
+    <p>Tipos de interfaces devem sempre ter um typedef dummy visando as chamadas:</p>
+
+    <code style="valid">
+typedef struct _GtkFooable          GtkFooable;</code>
+
+    <p>A estrutura da interface deve ter ‘Interface’ pós-fixado ao typedef dummy:</p>
+
+    <code style="valid">
+typedef struct _GtkFooableInterface     GtkFooableInterface;</code>
+
+    <p>Interfaces devem ter as seguintes macros:</p>
+
+    <table>
+      <thead>
+	<tr>
+	  <td><p>Macro</p></td>
+	  <td><p>Expande para</p></td>
+	</tr>
+      </thead>
+      <tbody>
+	<tr>
+	  <td><p><code>GTK_TYPE_<var>iface_name</var></code></p></td>
+	  <td><p><code><var>iface_name</var>_get_type</code></p></td>
+	</tr>
+	<tr>
+	  <td><p><code>GTK_<var>iface_name</var></code></p></td>
+	  <td><p><code>G_TYPE_CHECK_INSTANCE_CAST</code></p></td>
+	</tr>
+	<tr>
+	  <td><p><code>GTK_IS_<var>iface_name</var></code></p></td>
+          <td><p><code>G_TYPE_CHECK_INSTANCE_TYPE</code></p></td>
+	</tr>
+	<tr>
+	  <td><p><code>GTK_<var>iface_name</var>_GET_IFACE</code></p></td>
+          <td><p><code>G_TYPE_INSTANCE_GET_INTERFACE</code></p></td>
+	</tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <section id="memory-allocation">
+    <title>Alocação de memória</title>
+
+    <p>Quando se estiver alocando dados em uma pilha, use <code>g_new()</code>.</p>
+
+    <p>Tipos de estrutura pública devem sempre ser retornados após serem zerados, seja explicitamente para cada membro, seja usando <code>g_new0()</code>.</p>
+
+    <p>Veja <link xref="memory-management"/> para mais detalhes.</p>
+  </section>
+
+  <section id="macros">
+    <title>Macros</title>
+
+    <p>Tente evitar macros privadas, a menos que seja estritamente necessário. Lembre-se de usar <code>#undef</code> nelas no final de um bloco ou uma série de funções que precisem delas.</p>
+
+    <p>Funções em linha são geralmente preferíveis a macros privadas.</p>
+
+    <p>Macros públicas não devem ser usadas a menos que elas sejam avaliadas para uma constante.</p>
+  </section>
+
+  <section id="public-api">
+    <title>API pública</title>
+
+    <p>Evite exportar variáveis como API pública, já que isso pode ser pesado demais para algumas plataformas. Em vez disso, é sempre preferível adicionar “gets” e “sets”. Também, cuidado com variáveis globais em geral.</p>
+  </section>
+
+  <section id="private-api">
+    <title>API privada</title>
+
+    <p>Funções não exportadas que são necessárias em mais de um arquivo fonte devem ser prefixadas com um sublinhado (‘_’) e declarados em um arquivo de cabeçalho privado. Por exemplo, <code>_minhalib_foo_interno()</code>.</p>
+
+    <p>Funções prefixadas com sublinhado nunca são exportadas.</p>
+
+    <p>Funções não exportadas que são necessárias apenas em um arquivo fonte devem ser declaradas com estáticas.</p>
+  </section>
+</page>

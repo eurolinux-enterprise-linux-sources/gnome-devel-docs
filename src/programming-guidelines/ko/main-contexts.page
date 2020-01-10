@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="main-contexts" xml:lang="ko">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2014–2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>다른 스레드, 이벤트 반복 루틴에서 함수를 실행하는 GLib 메인 컨텍스트</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016, 2017.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>GLib 메인 컨텍스트</title>
+
+  <synopsis>
+    <title>요약</title>
+
+    <list>
+      <item><p>모든 스레드에는 해당 스레드가 동작하는 동안 실행할 기본 메인 컨텍스트가 있으므로, 다른 스레드에서 함수를 실행하려면 <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-main-context-invoke-full"><code>g_main_context_invoke_full()</code></link> 함수를 활용하십시오(<link xref="#g-main-context-invoke-full"/>)</p></item>
+      <item><p>개별 스레드 사용을 전혀 신경쓰지 않고 백그라운드에서 함수를 실행하려면 <link href="https://developer.gnome.org/gio/stable/GTask.html"><code>GTask</code></link>를 활용하십시오(<link xref="#gtask"/>)</p></item>
+      <item><p>각 함수를 실행하는 컨텍스트를 검사할 때 단언 기법을 자유롭게 활용하시고, 코드를 처음 작성할 때 이 단언부를 추가하십시오(<link xref="#checking-threading"/>)</p></item>
+      <item><p>호출 예상 함수, 실행할 콜백, 발생할 시그널의 상황을 분명하게 문서로 남겨주십시오(<link xref="#using-gmaincontext-in-a-library"/>)</p></item>
+      <item><p>전역 기본 메인 컨텍스트를 은연 중에 활용하는 <code>g_idle_add()</code> 함수 및 유사 함수 활용시 주의하십시오(<link xref="#implicit-use-of-the-global-default-main-context"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="what-is-gmaincontext">
+    <title><code>GMainContext</code>란 무엇인가?</title>
+
+    <p><link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#GMainContext"><code>GMainContext</code></link>는 폴링 방식 파일 입출력 또는 (GTK+ 같은) 이벤트 기반 위젯 시스템에서 쓸 만한 <link href="http://en.wikipedia.org/wiki/Event_loop">이벤트 루프</link>의 정규 구현체입니다. 거의 모든 GLib 프로그램의 핵심입니다. <code>GMainContext</code>를 이해하려면 <link href="man:poll(2)">poll()</link> 함수와 폴링 입출력을 이해해야 합니다.</p>
+
+    <p><code>GMainContext</code>는 컨텍스트에 ‘붙은’ <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#GSource"><code>GSource</code></link> 모음이며 각각의 GSource는 이벤트를 받았을 때 실행할 콜백 함수와 관련된 이벤트로 생각할 수 있습니다. 또는 검사할 파일 서술자(FD)의 모음과 동일하다고 볼 수 있습니다. 예를 들어, 이벤트는 이벤트는 소켓의 제한 시간 내지는 수신 데이터가 될 수 있습니다. 반복 이벤트 루프는 다음 동작을 수행합니다:</p>
+    <list type="enumerated">
+      <item><p>즉시 실행 여부를 결정하는 소스를 준비합니다.</p></item>
+      <item><p>소스 중 하나에 해당하는 이벤트를 받기 전까지 현재 스레드의 실행을 막는 소스를 폴링합니다.</p></item>
+      <item><p>받은 이벤트에 해당하는 소스가 어떤 소스인지 확인합니다(여러 소스가 있을 수 있음).</p></item>
+      <item><p>해당 소스에서 콜백을 실행합니다.</p></item>
+    </list>
+
+    <p><link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#GSourceFuncs">GLib 문서 </link>에 <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#mainloop-states">자세한 설명</link>이 있습니다.</p>
+
+    <p>이 내용의 핵심에서, <code>GMainContext</code>는 <link href="http://www.linux-mag.com/id/357/">이 게시글</link>의 Listing 1과 같이, 전형적인 <code>poll()</code> 루프 구현체에서, 일반적인 전후 처리를 담당하는 루프 실행 단계를 준비하고 검사하고 실행하는 <code>poll()</code> 루프일 뿐입니다. 보통, 어떤 FD를 처리할 지 마련한 <code>poll()</code> 목록을 지켜보는 중요한 <code>poll()</code> 함수 활용 프로그램에서 일부 복잡성이 필요하긴 합니다. 게다가 바닐라 <code>poll()</code> 함수를 지원하지 않는 다양한 쓸 만한 기능을 <code>GMainContext</code>에서 추가합니다. 가장 중요한 점이라면, 스레드 안전성의 추가입니다.</p>
+
+    <p><code>GMainContext</code>는 스레드 실행에 완벽하게 안전하며, 어떤 스레드에 <code>GSource</code>를 만들고 다른 스레드에서 실행하는 <code>GMainContext</code>에 붙일 수 있습니다(추가 참고: <link xref="threading"/>). 일반 활용 방식은 작업 스레드에서 중앙 입출력 스레드의 <code>GMainContext</code>로 감청 소켓을 다룰 수 있게 합니다. 각 <code>GMainContext</code>는 반복 과정에서 <code>GMainContext</code>를 두어 취할 수 있습니다. 다른 스레드에서는 한 번에 하나의 스레드에서 <code>GSource</code>와 FD를 폴링 처리하도록 보장하는 <code>GMainContext</code>를 취하지 않으면 반복 처리할 수 없습니다(각 <code>GSource</code> 는 <code>GMainContext</code> 한 군데에만 붙기 때문). <code>GMainContext</code>는 반복 처리 과정에서 스레드간 상호 전환이 가능하지만, 처리 과정상 노력이 필요합니다.</p>
+
+    <p><code>GMainContext</code>는, 특히 다중 스레드를 처리할 경우, <code>poll()</code>로의 FD 배열 전달을 동적으로 관리하도록 투명하게 처리하므로 대부분 편의상 <code>poll()</code> 대신 사용합니다. 메인 컨텍스트 반복 처리상 각 ‘준비’ 단계에서 호출하는 <code>poll()</code>에 해당 FD를 전달해야 하는지 여부를 결정하는 <code>GSource</code>에서 FD를 캡슐화하여 처리합니다.</p>
+  </section>
+
+  <section id="what-is-gmainloop">
+    <title><code>GMainLoop</code>란 무엇인가?</title>
+
+    <p><link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#GMainLoop"><code>GMainLoop</code></link>는 (<link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-main-loop-run"><code>g_main_loop_run()</code></link>에서) 참조 카운팅과 잠금을 뺀 다음 코드와 같이 몇 줄 안되는 본질입니다:</p>
+    <code mime="text/x-csrc">loop-&gt;is_running = TRUE;
+while (loop-&gt;is_running)
+  {
+    g_main_context_iteration (context, TRUE);
+  }</code>
+
+    <p>그리고 <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-main-loop-quit"><code>g_main_loop_quit()</code></link>의 네번째 줄에서는 <code>loop-&gt;is_running = FALSE</code>를 설정하고 현재 메인 컨텍스트 반복을 끝내 반복 실행을 중단합니다.</p>
+
+    <p>따라서, <code>GMainLoop</code>는 편하고, 나가는 상태를 만나기 전까지 이벤트를 처리하는 스레드에 안전한 <code>GMainContext</code> 실행 코드부이며, 프로그램 실행 상태를 빠져나가려면 <code>g_main_loop_quit()</code> 함수를 호출해야합니다. 이 경우는 보통 UI 프로그램에서 사용자가 ‘나가기’를 눌렀을 경우에 해당합니다. 소켓 처리 프로그램에서는 최종 소켓 처리 과정이 될 수 있습니다.</p>
+
+    <p>메인 컨텍스트와 메인 루프를 혼동하지 않는게 중요합니다. 메인 컨텍스트는 작업 자체를 실행합니다. 소스 리스트를 준비하고, 이벤트를 기다리며, 콜백을 실행합니다. 메인 루프는 단순히 컨텍스트를 반복 실행할 뿐입니다.</p>
+  </section>
+
+  <section id="default-contexts">
+    <title>기본 컨텍스트</title>
+
+    <p><code>GMainContext</code>의 중요한 기능 중 하나는 ‘기본’ 컨텍스트 지원입니다. 기본 컨텍스트의 실행 레벨은 두가지가 있습니다. 하나는 스레드 기본 레벨, 하나는 전역 기본 레벨입니다. 전역 기본 레벨(<code>g_main_context_default()</code> 함수로 접근함)은 <code>gtk_main()</code>함수를 호출했을 때 GTK+에서 실행합니다. 또한 대기시간 후 실행(<code>g_timeout_add()</code>) 및 대기 콜백(<code>g_idle_add()</code>) 용도로 활용할 수 있습니다. 이 함수는 기본 컨텍스트를 실행하기 전에는 실행하지 않습니다! (<link xref="#implicit-use-of-the-global-default-main-context"/> 참고)</p>
+
+    <p>스레드 기본 컨텍스트는 나중에 GLib에 추가(버전 2.22부터)했으며, 스레드에서 실행하고 콜백 함수를 실행해야 하는 입출력 처리에 보통 활용합니다. 입출력 처리를 시작하기 전에 <code>g_main_context_push_thread_default()</code> 함수를 호출하여 스레드 기본 컨텍스트를 설정하고 입출력 처리 과정에 해당 컨텍스트에 소스를 추가할 수 있습니다. 그 다음 컨텍스트를 전역 기본 메인 컨텍스트를 실행하는 스레드의 스택이 아닌 스레드 스택에서 콜백 함수를 실행하도록 하여 입출력 스레드의 새 메인 루프에서 실행할 수 있습니다. 이 과정으로 이곳 저곳에 특정 <code>GMainContext</code> 포인터를 분명하게 전달하지 않고도 각기 다른 스레드에서 입출력 처리를 실행할 수 있습니다.</p>
+
+    <p>반대로 말해, 다수의 개별 스레드 기본 컨텍스트에서 오래 동작하는 처리 과정을 시작하면, 해당 처리 과정을 작업 스레드에서 처리 한다 하더라도, 호출 코드에서 처리 과정상 콜백 함수의 실행을 보장할 수 있습니다. 이는 <link href="https://developer.gnome.org/gio/stable/GTask.html"><code>GTask</code></link>의 처리 원칙입니다. 새 <code>GTask</code>를 만들면, <link href="https://developer.gnome.org/gio/stable/GTask.html#g-task-run-in-thread"><code>g_task_run_in_thread()</code></link> 함수로 작업 자체를 실행한다 하더라도, 현재 스레드 기본 컨텍스트에 참조를 저장하고 해당 컨텍스트의 마무리 콜백 함수를 실행합니다.</p>
+
+    <example>
+      <p>예를 들어, 아래 코드는 스레드에서 동시에 두가지의 기록을 수행하는 <code>GTask</code>를 실행합니다. 전체 작업 과정의 콜백 함수는 <code>interesting_context</code>에서 실행하는데 반해, 기록 과정에 활용할 콜백 함수는 작업 스레드에서 실행합니다.</p>
+
+      <code mime="text/x-csrc" style="valid">
+typedef struct {
+  GMainLoop *main_loop;
+  guint n_remaining;
+} WriteData;
+
+/* This is always called in the same thread as thread_cb() because
+ * it’s always dispatched in the @worker_context. */
+static void
+write_cb (GObject      *source_object,
+          GAsyncResult *result,
+          gpointer      user_data)
+{
+  WriteData *data = user_data;
+  GOutputStream *stream = G_OUTPUT_STREAM (source_object);
+  GError *error = NULL;
+  gssize len;
+
+  /* Finish the write. */
+  len = g_output_stream_write_finish (stream, result, &amp;error);
+  if (error != NULL)
+    {
+      g_error ("Error: %s", error-&gt;message);
+      g_error_free (error);
+    }
+
+  /* Check whether all parallel operations have finished. */
+  write_data-&gt;n_remaining--;
+
+  if (write_data-&gt;n_remaining == 0)
+    {
+      g_main_loop_quit (write_data-&gt;main_loop);
+    }
+}
+
+/* This is called in a new thread. */
+static void
+thread_cb (GTask        *task,
+           gpointer      source_object,
+           gpointer      task_data,
+           GCancellable *cancellable)
+{
+  /* These streams come from somewhere else in the program: */
+  GOutputStream *output_stream1, *output_stream;
+  GMainContext *worker_context;
+  GBytes *data;
+  const guint8 *buf;
+  gsize len;
+
+  /* Set up a worker context for the writes’ callbacks. */
+  worker_context = g_main_context_new ();
+  g_main_context_push_thread_default (worker_context);
+
+  /* Set up the writes. */
+  write_data.n_remaining = 2;
+  write_data.main_loop = g_main_loop_new (worker_context, FALSE);
+
+  data = g_task_get_task_data (task);
+  buf = g_bytes_get_data (data, &amp;len);
+
+  g_output_stream_write_async (output_stream1, buf, len,
+                               G_PRIORITY_DEFAULT, NULL, write_cb,
+                               &amp;write_data);
+  g_output_stream_write_async (output_stream2, buf, len,
+                               G_PRIORITY_DEFAULT, NULL, write_cb,
+                               &amp;write_data);
+
+  /* Run the main loop until both writes have finished. */
+  g_main_loop_run (write_data.main_loop);
+  g_task_return_boolean (task, TRUE);  /* ignore errors */
+
+  g_main_loop_unref (write_data.main_loop);
+
+  g_main_context_pop_thread_default (worker_context);
+  g_main_context_unref (worker_context);
+}
+
+/* This can be called from any thread. Its @callback will always be
+ * dispatched in the thread which currently owns
+ * @interesting_context. */
+void
+parallel_writes_async (GBytes              *data,
+                       GMainContext        *interesting_context,
+                       GCancellable        *cancellable,
+                       GAsyncReadyCallback  callback,
+                       gpointer             user_data)
+{
+  GTask *task;
+
+  g_main_context_push_thread_default (interesting_context);
+
+  task = g_task_new (NULL, cancellable, callback, user_data);
+  g_task_set_task_data (task, data,
+                        (GDestroyNotify) g_bytes_unref);
+  g_task_run_in_thread (task, thread_cb);
+  g_object_unref (task);
+
+  g_main_context_pop_thread_default (interesting_context);
+}</code>
+    </example>
+
+    <section id="implicit-use-of-the-global-default-main-context">
+      <title>전역 기본 메인 컨텍스트의 암시적 활용</title>
+
+      <p>몇가지 함수는 전역 기본 메인 컨텍스트로 암암리에 소스를 추가합니다. 스레드 코드에서는 사용하면 <em>안됩니다</em>. 대신 아래 표의 대용 함수로 만든 <code>GSource</code>와 <code>g_source_attach()</code> 함수를 활용하십시오.</p>
+
+      <p>전역 기본 메인 컨텍스트를 암묵적으로 사용한다 함은 곧 메인 스레드에서 콜백 함수를 호출한다는 의미이며, 보통, 작업 스레드에서 메인 스레드로 작업이 넘어갑니다.</p>
+
+      <table shade="rows">
+        <colgroup><col/></colgroup>
+        <colgroup><col/><col/></colgroup>
+        <thead>
+          <tr>
+            <td><p>사용하지 마십시오</p></td>
+            <td><p>대신 다음을 사용하십시오</p></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><p><code>g_timeout_add()</code></p></td>
+            <td><p><code>g_timeout_source_new()</code></p></td>
+          </tr>
+          <tr>
+            <td><p><code>g_idle_add()</code></p></td>
+            <td><p><code>g_idle_source_new()</code></p></td>
+          </tr>
+          <tr>
+            <td><p><code>g_child_watch_add()</code></p></td>
+            <td><p><code>g_child_watch_source_new()</code></p></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <example>
+        <p>작업 스레드 처리를 지연하려면 다음 코드를 활용하십시오:</p>
+        <code mime="text/x-csrc">
+static guint
+schedule_computation (guint delay_seconds)
+{
+  GSource *source = NULL;
+  GMainContext *context;
+  guint id;
+
+  /* Get the calling context. */
+  context = g_main_context_get_thread_default ();
+
+  source = g_timeout_source_new_seconds (delay_seconds);
+  g_source_set_callback (source, do_computation, NULL, NULL);
+  id = g_source_attach (source, context);
+  g_source_unref (source);
+
+  /* The ID can be used with the same @context to
+   * cancel the scheduled computation if needed. */
+  return id;
+}
+
+static void
+do_computation (gpointer user_data)
+{
+  /* … */
+}</code>
+      </example>
+    </section>
+  </section>
+
+  <section id="using-gmaincontext-in-a-library">
+    <title>라이브러리에서 <code>GMainContext</code> 활용</title>
+
+    <p>고수준 영역에서, 라이브러리 코드는 라이브러리를 활용하여 프로그램을 실행할 때 영향을 주는 프로그램의 메인 컨텍스트에서 <code>GSource</code>를 실행할 때 변화를 주는 식으로 변화를 주면 안됩니다. 이 문제를 해결할 때 따를 수 있는 다양한 바람직한 사례가 있습니다.</p>
+
+    <p>라이브러리, 전역 기본 컨텍스트, 스레드 기본 컨텍스트에서 만든 컨텍스트를 반복 실행하지 마십시오. 프로그램에서 <code>GSource</code> 생성을 기대하지 않을 때 프로그램에서 프로그램 코드에서 <link href="http://en.wikipedia.org/wiki/Reentrancy_%28computing%29">재진입 문제</link>를 유발하는 <code>GSource</code>를 실행합니다.</p>
+
+    <p>특히 프로그램에 <code>GSource</code>가 나타난다면(예: 스레드 기본), 라이브러리 최종 참조를 컨텍스트로 두기 전 메인 컨텍스트에서 <code>GSource</code>를 항상 제거하십시오. 그렇지 않으면 프로그램에서 계속 메인 컨텍스트를 참조하고 라이브러리에서 결과값을 반환한 후에도 계속 참조 유지를 반복하여, 라이브러리에서 예기치 못한 소스 실행이 일어납니다. 이는 라이브러리의 최종 참조를 해당 컨텍스트를 끝낼 메인 컨텍스트에 두도록 고려하지 않는 것과 동일합니다.</p>
+
+    <p>라이브러리를 다중 스레드에서 사용하도록 설계했거나, 상황별로 사용하는 식이라면 어떤 컨텍스트에서 어떤 콜백을 실행할 지 항상 문서화하십시오. 예를 들자면, “객체 생성시 스레드 기본 컨텍스트에서 콜백을 항상 실행한다”와 같은 식입니다. 라이브러리 API를 활용하는 개발자는 이 내용을 알고 있어야합니다.</p>
+
+    <p><code>g_main_context_invoke()</code> 함수를 활용하여 올바른 컨텍스트에서 콜백을 실행했는지 확인하십시오. 컨텍스트간 작업을 전달할 때 <code>g_idle_source_new()</code> 함수 직접 실행보다 훨씬 쉽습니다(참고: <link xref="#ensuring-functions-are-called-in-the-right-context"/>).</p>
+
+    <p>라이브러리에서는 <code>g_main_context_default()</code> 함수를 사용하지 말아야합니다(또는, 이와 동일하게 <code>GMainContext</code> 형식 매개변수에 <code>NULL</code>을 전달하면 안됩니다). <code>GMainContext</code>가 일부 기본 컨텍스트를 자주 가리키더라도, 항상 개별 <code>GMainContext</code>를 저장하고 분명하게 활용하십시오. 이렇게 하면, 나중에 필요한 경우 잘못된 컨텍스트에서 콜백을 실행하여 발생하는 디버깅 난제를 유발하지 않고도 코드를 쉽게 스레드로 쪼갤 수 있습니다.</p>
+
+    <p>항상 자체적으로 비동기 실행하도록 작성(적당한 곳에 <link xref="#gtask"><code>GTask</code></link> 활용)하고, 개별 <code>GMainContext</code>에서 <code>g_main_context_iteration()</code> 함수를 호출하여 구현할 수 있는 API의 최상단 레벨에서 래퍼의 동기화 실행 상태를 유지하십시오. 다시 말하자면, 앞으로의 일을 대비하면 리팩토링이 쉬워집니다. 위 예제를 통한 시연 예를 들어보겠습니다. 스레드는 <code>g_output_stream_write()</code> 함수 대신 <code>g_output_stream_write_async()</code> 함수를 활용합니다.</p>
+
+    <p>스레드 기본 메인 컨텍스트에서 <code>g_main_context_push_thread_default()</code> 함수 및 <code>g_main_context_pop_thread_default()</code> 함수로 삽입, 제거를 일치시키십시오.</p>
+  </section>
+
+  <section id="ensuring-functions-are-called-in-the-right-context">
+    <title>올바른 컨텍스트에서의 함수 호출 확인</title>
+
+    <p>‘적절한 컨텍스트’란 <em>함수를 실행하는 스레드</em>의 스레드 기본 메인 컨텍스트를 말합니다. 모든 스레드에는 메인 루프에서 실행하는 <em>단일</em> 메인 컨텍스트를 보유하고 있는 전형적인 상황을 가정합니다. 메인 컨텍스트는 스레드에 작업 또는 <link href="http://en.wikipedia.org/wiki/Message_queue">메시지 큐</link>를 분명하게 전달합니다. 어떤 스레드에서는 주기적으로 다른 스레드에서 대기 중인 작업이 있는지 확인합니다. 다른 메인 컨텍스트에서 함수를 실행하는 메시지를 이 큐에 넣으면 어쨌든 꼭 해당 스레드에서 실행합니다.</p>
+
+    <example>
+      <p>예를 들어, 어떤 프로그램이 긴 시간동안 CPU를 높은 비율로 점유하는 작업을 수행한다면, 백그라운드 스레드에서 작업하도록 기획하여 메인 스레드에서 UI 업데이트 과정을 멈추지 않게 해야합니다. 그러나 이 처리 과정의 결과는 UI에 나타내어, 처리 과정이 끝났을 때 일부 UI 업데이트 함수를 메인 스레드에서 한 번은 호출해야합니다.</p>
+
+      <p>게다가, 처리 함수 실행을 단일 스레드로 제한할 수 있을 경우 많은 양의 데이터에 접근하는 동작을 제한할 필요성을 쉽게 없앨 수 있습니다. 이 경우는 다른 스레드를 비슷하게 구현하여 대부분의 데이터를 <link href="http://en.wikipedia.org/wiki/Message_passing">메시지 전달 기법</link>으로 스레드간 통신을 수행하여 단일 스레드에서만 접근하는 경우를 가정합니다. 이 상황의 경우 각 스레드에서 다른 스레드로의 데이터 접근을 막는 과정을 확실히 단순화하여 충분한 여유를 두고 데이터를 업데이트할 수 있게 합니다.</p>
+   </example>
+
+    <p>일부 함수에 대해서는, 이 함수를 실행하는 컨텍스트가 어떤 컨텍스트인지 신경쓸 이유가 되지 않을 수도 있습니다. 아마도, 비동기 방식으로 실행하기에 컨텍스트의 실행을 방해하지 않기 때문입니다. 그러나 이 함수가 시그널을 내보내거나 콜백 함수를 실행할 수 있기 때문에 여전히 어떤 컨텍스트를 활용하는지 분명히 해두는게 좋으며, 스레드 실행 안전을 이유로 어떤 스레드에서 시그널 처리자와 콜백 함수를 실행하는지도 알아야 합니다.</p>
+
+    <example>
+      <p>예를 들면, <link href="https://developer.gnome.org/gio/stable/GFile.html#g-file-copy-async"><code>g_file_copy_async()</code></link> 함수의 처리 과정 콜백은 초기 호출시 스레드 기본 메인 컨텍스트에서 호출했을 경우를 문서로 남겨두었습니다.</p>
+    </example>
+
+    <section id="invocation-core-principle">
+      <title>실행 원리</title>
+
+      <p>개별 컨텍스트에서 함수를 실행하는 핵심 원칙은 단순하며, 아래에 계속해서 원리를 설명하겠습니다. 실제로는, 대신 <link xref="#g-main-context-invoke-full"><code>g_main_context_invoke_full()</code> 편의 함수</link>를 활용해야합니다.</p>
+
+      <p><link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#GSource"><code>GSource</code></link>는 함수를 호출하여 실행할 <code>GMainContext</code> 타겟에 추가해야합니다. <code>GSource</code>는 항상 <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-idle-source-new"><code>g_idle_source_new()</code></link> 함수로 만든 대기 소스여야 하지만, 꼭 이렇게 할 필요는 없습니다. 대기 시간을 걸어두어 일정 시간이 지나면 함수를 실행하게 할 수 있습니다.</p>
+
+      <p><code>GSource</code>는 스레드 스택에서 호출할 때 <link xref="#what-is-gmaincontext">준비한 대로 실행합니다</link>. 대기 소스의 경우, 실행한 소스 중 가장 높은 우선 순위에 있는 모든 소스가 됩니다. <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-source-set-priority"><code>g_source_set_priority()</code></link> 함수의 대기 소스 우선 순위 매개변수로 설정할 수 있습니다. 그 다음 소스를 메모리에서 제거하여 함수를 한 번만 실행하게 합니다(다시 말하지만, 꼭 이런건 아닙니다).</p>
+
+      <p><code>GSource</code> 콜백에 <code>user_data</code>를 전달할 때처럼 데이터를 스레드에서 스레드로 전달할 수 있습니다. 실행할 콜백 함수와 <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-source-set-callback"><code>g_source_set_callback()</code></link> 함수를 활용하는 소스의 셋입니다. 단일 포인터만 제공하기에 다중 데이터 필드를 전달해야 한다면 할당 구조로 래핑해야합니다.</p>
+
+      <example>
+        <p>하단의 예제에서는 근본 원칙을 보여주지만, 어떤 부분을 단순화할 지 간편한 방식으로 설명합니다.</p>
+
+        <code mime="text/x-csrc">
+/* Main function for the background thread, thread1. */
+static gpointer
+thread1_main (gpointer user_data)
+{
+  GMainContext *thread1_main_context = user_data;
+  GMainLoop *main_loop;
+
+  /* Set up the thread’s context and run it forever. */
+  g_main_context_push_thread_default (thread1_main_context);
+
+  main_loop = g_main_loop_new (thread1_main_context, FALSE);
+  g_main_loop_run (main_loop);
+  g_main_loop_unref (main_loop);
+
+  g_main_context_pop_thread_default (thread1_main_context);
+  g_main_context_unref (thread1_main_context);
+
+  return NULL;
+}
+
+/* A data closure structure to carry multiple variables between
+ * threads. */
+typedef struct {
+  gchar   *some_string;  /* owned */
+  guint    some_int;
+  GObject *some_object;  /* owned */
+} MyFuncData;
+
+static void
+my_func_data_free (MyFuncData *data)
+{
+  g_free (data-&gt;some_string);
+  g_clear_object (&amp;data-&gt;some_object);
+  g_free (data);
+}
+
+static void
+my_func (const gchar *some_string,
+         guint        some_int,
+         GObject     *some_object)
+{
+  /* Do something long and CPU intensive! */
+}
+
+/* Convert an idle callback into a call to my_func(). */
+static gboolean
+my_func_idle (gpointer user_data)
+{
+  MyFuncData *data = user_data;
+
+  my_func (data-&gt;some_string, data-&gt;some_int, data-&gt;some_object);
+
+  return G_SOURCE_REMOVE;
+}
+
+/* Function to be called in the main thread to schedule a call to
+ * my_func() in thread1, passing the given parameters along. */
+static void
+invoke_my_func (GMainContext *thread1_main_context,
+                const gchar  *some_string,
+                guint         some_int,
+                GObject      *some_object)
+{
+  GSource *idle_source;
+  MyFuncData *data;
+
+  /* Create a data closure to pass all the desired variables
+   * between threads. */
+  data = g_new0 (MyFuncData, 1);
+  data-&gt;some_string = g_strdup (some_string);
+  data-&gt;some_int = some_int;
+  data-&gt;some_object = g_object_ref (some_object);
+
+  /* Create a new idle source, set my_func() as the callback with
+   * some data to be passed between threads, bump up the priority
+   * and schedule it by attaching it to thread1’s context. */
+  idle_source = g_idle_source_new ();
+  g_source_set_callback (idle_source, my_func_idle, data,
+                         (GDestroyNotify) my_func_data_free);
+  g_source_set_priority (idle_source, G_PRIORITY_DEFAULT);
+  g_source_attach (idle_source, thread1_main_context);
+  g_source_unref (idle_source);
+}
+
+/* Main function for the main thread. */
+static void
+main (void)
+{
+  GThread *thread1;
+  GMainContext *thread1_main_context;
+
+  /* Spawn a background thread and pass it a reference to its
+   * GMainContext. Retain a reference for use in this thread
+   * too. */
+  thread1_main_context = g_main_context_new ();
+  g_thread_new ("thread1", thread1_main,
+                g_main_context_ref (thread1_main_context));
+
+  /* Maybe set up your UI here, for example. */
+
+  /* Invoke my_func() in the other thread. */
+  invoke_my_func (thread1_main_context,
+                  "some data which needs passing between threads",
+                  123456, some_object);
+
+  /* Continue doing other work. */
+}</code>
+
+        <p>위 코드의 실행은 <em style="strong">단방향성</em>을 지닙니다. <code>thread1</code>에서 <code>my_func()</code> 함수를 호출하지만 메인 스레드로 값을 반환할 방법이 없습니다. 이렇게 하려면 메인 스레드에서 콜백 함수를 실행하는 동일한 원칙을 활용해야합니다. 이 방식은 여기서 다루지 않던 간단한 추가 방식입니다.</p>
+
+        <p>스레드 안전성을 유지하려면 다중 스레드에서 잠재적으로 접근할 수 있는 데이터를 <link href="http://en.wikipedia.org/wiki/Mutual_exclusion">뮤텍스</link>를 활용하여 상호배타적으로 접근하게 해야합니다. 데이터는 다중 스레드에서 접근할 수 있습니다. <code>thread1_main_context</code>는 포킹 호출을 <code>thread1_main</code>에 전달하며, <code>some_object</code>는 데이터 클로저에 전달한 참조입니다. 중요한 점은, GLib에서 <code>GMainContext</code>가 스레드 실행에 안전함을 보장하기에, 스레드간 <code>thread1_main_context</code> 공유도 안전합니다. 예제에서는 <code>some_object</code>에 접근하는 다른 코드도 스레드 실행에 안전하다고 간주합니다.</p>
+
+        <p><code>some_string</code>과 <code>some_int</code>는 이들 사본을 원본 스레드가 아닌 <code>thread1</code>에 전달하므로 각 스레드에서 접근할 수 없음을 참고하십시오. 교차 스레드 호출을 별도의 잠금 매커니즘 없이 스레드에서 안전하게 실행할 수 있게 하는 표준 기술입니다. 이 기술로 하여금 <code>some_string</code> 해제 동기화 문제를 막아줍니다.</p>
+
+        <p>이와 비슷하게, <code>some_object</code> 참조를, 객체 해제 동기화 문제를 피하는 <code>thread1</code>로 전달합니다(<link xref="memory-management"/> 참고).</p>
+
+        <p>더 간단한 <code>g_idle_add()</code> 함수보다 <code>g_idle_source_new()</code> 함수를 사용하여 <code>GMainContext</code>가 붙을 대상을 지정할 수 있습니다.</p>
+      </example>
+    </section>
+
+    <section id="g-main-context-invoke-full">
+      <title>간편한 메서드: <code>g_main_context_invoke_full()</code></title>
+
+      <p>간편한 메서드 <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-main-context-invoke-full"><code>g_main_context_invoke_full()</code></link>로 엄청나게 단순화했습니다. 콜백을 실행하여 실행하는 동안 지정 <code>GMainContext</code>을 소유합니다. 소유한 메인 컨텍스트는 실행하는 동안 거의 항상 동일하며, 스레드의 기본으로 지정한 컨텍스트의 스레드에서 함수를 실행합니다.</p>
+
+      <p>실행 과정 반환 처리 후 <code>GDestroyNotify</code> 콜백에서 데이터를 해제할 필요가 없다면 <code>g_main_context_invoke()</code> 함수를 대신 사용할 수 있습니다.</p>
+
+      <example>
+        <p>쉬운 예제를 수정하여 다음과 같이 <code>invoke_my_func()</code> 함수 코드를 바꿀 수 있습니다:</p>
+
+        <code mime="text/x-csrc">
+static void
+invoke_my_func (GMainContext *thread1_main_context,
+                const gchar  *some_string,
+                guint         some_int,
+                GObject      *some_object)
+{
+  MyFuncData *data;
+
+  /* Create a data closure to pass all the desired variables
+   * between threads. */
+  data = g_new0 (MyFuncData, 1);
+  data-&gt;some_string = g_strdup (some_string);
+  data-&gt;some_int = some_int;
+  data-&gt;some_object = g_object_ref (some_object);
+
+  /* Invoke the function. */
+  g_main_context_invoke_full (thread1_main_context,
+                              G_PRIORITY_DEFAULT, my_func_idle,
+                              data,
+                              (GDestroyNotify) my_func_data_free);
+}</code>
+
+        <p><code>invoke_my_func()</code> 함수를 메인 스레드가 아닌 <code>thread1</code>에서 호출했다고 합시다. 초기 구현체에서 대기 소스는 <code>thread1</code> 컨텍스트에 추가하고 컨텍스트의 다음 반복 실행 과정에 실행합니다(더 높은 우선순위로 인해 실행 대기하지 않음을 가정). 개선 구현체에서는 <code>g_main_context_invoke_full()</code> 함수에서 스레드에서 지정 컨텍스트를 취했음을(또는 스레드에서 소유권을 취할 수 있고) 알린 후, 컨텍스트에 소스를 붙이고 다음 컨텍스트 반복 과정까지 실행을 지연하기보단, <code>my_func_idle()</code> 함수를 직접 실행합니다.</p>
+
+        <p>대부분 미묘한 동작상 차이는 그다지 문제가 되지 않지만, 동작을 멈추게 할 수 있기 때문에 참고해야합니다(<code>invoke_my_func()</code> 함수는 무시해도 될 정도의 시간동안 실행하지만, 걸리는 시간은 <code>my_func()</code> 함수의 반환 이전 실행 시간과 같습니다).</p>
+      </example>
+    </section>
+  </section>
+
+  <section id="checking-threading">
+    <title>스레드 검사</title>
+
+    <p>각 함수를 어떤 스레드에서 실행해야 할 지, 단언 형식으로 문서에 남겨둘 때 쓸 만합니다:</p>
+    <code mime="text/x-csrc">
+g_assert (g_main_context_is_owner (expected_main_context));</code>
+
+    <p>
+      If that’s put at the top of each function, any assertion failure will
+      highlight a case where a function has been called from the wrong
+      thread. It is much easier to write these assertions when initially
+      developing code, rather than debugging race conditions which can easily
+      result from a function being called in the wrong thread.
+    </p>
+
+    <p>이 기법은 올바른 컨텍스트를 활용했는지 검사하는 형 안전성 개선 목적으로 시그널 발생 및 콜백 함수에도 적용할 수 있습니다. 참고로 <link href="https://developer.gnome.org/gobject/stable/gobject-Signals.html#g-signal-emit"><code>g_signal_emit()</code></link> 함수 호출을 통한 시그널 발생은 동기 처리 방식이며, 모든 시그널이 메인 컨텍스트와 동작하진 않습니다.</p>
+
+    <example>
+      <p>예를 들어, 시그널을 보낼 때 다음 코드를 활용하는 대신:</p>
+      <code mime="text/x-csrc" style="invalid">
+guint param1;  /* arbitrary example parameters */
+gchar *param2;
+guint retval = 0;
+
+g_signal_emit_by_name (my_object, "some-signal",
+                       param1, param2, &amp;retval);</code>
+
+      <p>다음 코드를 활용할 수 있습니다:</p>
+      <code mime="text/x-csrc" style="valid">
+static guint
+emit_some_signal (GObject     *my_object,
+                  guint        param1,
+                  const gchar *param2)
+{
+  guint retval = 0;
+
+  g_assert (g_main_context_is_owner (expected_main_context));
+
+  g_signal_emit_by_name (my_object, "some-signal",
+                         param1, param2, &amp;retval);
+
+  return retval;
+}</code>
+    </example>
+  </section>
+
+  <section id="gtask">
+    <title><code>GTask</code></title>
+
+    <p><link href="https://developer.gnome.org/gio/stable/GTask.html"><code>GTask</code></link>는 별도의 스레드가 아닌 <em>일부</em> 백그라운드 스레드에서 함수를 실행해야 안성맞춤일 경우 다른 스레드에서 함수를 실행하는 약간 다른 접근 방식을 취합니다.</p>
+
+    <p><code>GTask</code>는 실행할 데이터 클로저와 함수를 취하며, 이 함수에서 결과를 반환하는 반환하는 방편을 제공합니다. <code>GTask</code>는 GLib 자체의 일부 스레드 풀에 있는 임의 스레드에서 해당 함수를 실행할 때 필요한 모든 수단을 통제합니다.</p>
+
+    <example>
+      <p><link xref="#g-main-context-invoke-full"><code>g_main_context_invoke_full()</code></link> 함수와 <code>GTask</code>를 함께 사용하면 특정 컨텍스트의 작업을 실행할 수 있고, 굳이 어떤 노력을 들이지 않고도 현재 컨텍스트로 결과를 반환할 수 있습니다:</p>
+      <code mime="text/x-csrc">
+/* This will be invoked in thread1. */
+static gboolean
+my_func_idle (gpointer user_data)
+{
+  GTask *task = G_TASK (user_data);
+  MyFuncData *data;
+  gboolean retval;
+
+  /* Call my_func() and propagate its returned boolean to
+   * the main thread. */
+  data = g_task_get_task_data (task);
+  retval = my_func (data-&gt;some_string, data-&gt;some_int,
+                    data-&gt;some_object);
+  g_task_return_boolean (task, retval);
+
+  return G_SOURCE_REMOVE;
+}
+
+/* Whichever thread this is invoked in, the @callback will be
+ * invoked in, once my_func() has finished and returned a result. */
+static void
+invoke_my_func_with_result (GMainContext        *thread1_main_context,
+                            const gchar         *some_string,
+                            guint                some_int,
+                            GObject             *some_object,
+                            GAsyncReadyCallback  callback,
+                            gpointer             user_data)
+{
+  MyFuncData *data;
+
+  /* Create a data closure to pass all the desired variables
+   * between threads. */
+  data = g_new0 (MyFuncData, 1);
+  data-&gt;some_string = g_strdup (some_string);
+  data-&gt;some_int = some_int;
+  data-&gt;some_object = g_object_ref (some_object);
+
+  /* Create a GTask to handle returning the result to the current
+   * thread-default main context. */
+  task = g_task_new (NULL, NULL, callback, user_data);
+  g_task_set_task_data (task, data,
+                        (GDestroyNotify) my_func_data_free);
+
+  /* Invoke the function. */
+  g_main_context_invoke_full (thread1_main_context,
+                              G_PRIORITY_DEFAULT, my_func_idle,
+                              task,
+                              (GDestroyNotify) g_object_unref);
+}</code>
+    </example>
+  </section>
+</page>

@@ -36,7 +36,7 @@
     <links type="section"/>
 
   <section id="imports">
-    <title>Libraries to import</title>
+    <title>Zu importierende Bibliotheken</title>
     <code mime="application/javascript">
 #!/usr/bin/gjs
 
@@ -50,7 +50,7 @@ const Pango = imports.gi.Pango;
 
   <section id="applicationwindow">
     <title>Entwurf des Anwendungsfensters</title>
-    <code mime="application/javascript"><![CDATA[
+    <code mime="application/javascript">
 const TreeViewExample = new Lang.Class({
     Name: 'TreeView Example with Simple ListStore',
 
@@ -74,9 +74,9 @@ const TreeViewExample = new Lang.Class({
     _onStartup: function() {
         this._buildUI ();
     },
-]]></code>
+</code>
     <p>All the code for this sample goes in the TreeViewExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
-    <code mime="application/javascript"><![CDATA[
+    <code mime="application/javascript">
     // Build the application's UI
     _buildUI: function() {
 
@@ -88,13 +88,13 @@ const TreeViewExample = new Lang.Class({
             default_width: 100,
             border_width: 20,
             title: "My Phone Book"});
-]]></code>
+</code>
     <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
   </section>
 
   <section id="liststore">
     <title>Creating the ListStore</title>
-    <code mime="application/javascript"><![CDATA[
+    <code mime="application/javascript">
         // Create the underlying liststore for the phonebook
         this._listStore = new Gtk.ListStore ();
         this._listStore.set_column_types ([
@@ -102,7 +102,7 @@ const TreeViewExample = new Lang.Class({
             GObject.TYPE_STRING,
             GObject.TYPE_STRING,
             GObject.TYPE_STRING]);
-]]></code>
+</code>
     <p>We first create the ListStore like we would any widget. Then we call its set_column_types method, and pass it an array of GObject data types. (We could have put the types all on one line, but here we are breaking them up to make it easier to read.)</p>
     <p>The GObject data types you can use include:</p>
     <list>
@@ -257,11 +257,11 @@ const TreeViewExample = new Lang.Class({
     <p>After we've done that, we call the Label's <file>set_label</file> function, and use the ListStore's <file>get_value</file> function a handful of times to fill in the data we want to put in it. Its parameters are a TreeIter pointing to the row we want to get data from, and the column.</p>
     <p>Here, we want to get data from all four columns, including the "hidden" one that's not part of the TreeView. This way, we can use our Label to show strings that are too large to fit in the TreeView, and that we don't need to see at a glance.</p>
 
-    <code mime="application/javascript"><![CDATA[
+    <code mime="application/javascript">
 // Run the application
 let app = new TreeViewExample ();
 app.application.run (ARGV);
-]]></code>
+</code>
     <p>Finally, we create a new instance of the finished TreeViewExample class, and set the application running.</p>
   </section>
 
@@ -269,40 +269,36 @@ app.application.run (ARGV);
     <title>Complete code sample</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 const Pango = imports.gi.Pango;
 
-const TreeViewExample = new Lang.Class({
-    Name: 'TreeView Example with Simple ListStore',
-
+class TreeViewExample {
     // Create the application itself
-    _init: function() {
+    constructor() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jstreeviewsimpleliststore'
         });
 
-    // Connect 'activate' and 'startup' signals to the callback functions
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate: function() {
+    _onActivate() {
         this._window.present();
-    },
+    }
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup: function() {
-        this._buildUI ();
-    },
-
-
+    _onStartup() {
+        this._buildUI();
+    }
 
     // Build the application's UI
-    _buildUI: function() {
-
+    _buildUI() {
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
@@ -381,7 +377,7 @@ const TreeViewExample = new Lang.Class({
         this.selection = this._treeView.get_selection();
 
         // When something new is selected, call _on_changed
-        this.selection.connect ('changed', Lang.bind (this, this._onSelectionChanged));
+        this.selection.connect ('changed', this._onSelectionChanged.bind(this));
 
         // Create a grid to organize everything in
         this._grid = new Gtk.Grid;
@@ -395,12 +391,9 @@ const TreeViewExample = new Lang.Class({
 
         // Show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
-
-
-    _onSelectionChanged: function () {
-
+    _onSelectionChanged() {
         // Grab a treeiter pointing to the current selection
         let [ isSelected, model, iter ] = this.selection.get_selected();
 
@@ -409,11 +402,10 @@ const TreeViewExample = new Lang.Class({
             this._listStore.get_value (iter, 0) + " " +
             this._listStore.get_value (iter, 1) + " " +
             this._listStore.get_value (iter, 2) + "\n" +
-            this._listStore.get_value (iter, 3));
-
+            this._listStore.get_value (iter, 3)
+        );
     }
-
-});
+};
 
 // Run the application
 let app = new TreeViewExample ();
@@ -422,7 +414,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>In-depth documentation</title>
+    <title>Weiterführende Dokumentation</title>
 <p>
   In this sample we used the following:
 </p>

@@ -17,7 +17,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -35,7 +35,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -48,10 +48,10 @@
     
   <section id="code">
   <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
-    <code mime="text/x-csharp" style="numbered">/* Αυτό είναι το παράθυρο */
+    <code mime="text/x-csharp" style="numbered">/* This is the Window */
 class MyWindow : Gtk.ApplicationWindow {
 
-	/* Μεταβλητές στιγμιοτύπου που ανήκουν στο παράθυρο */
+	/* Instance variables belonging to the window */
 	Gtk.Toolbar toolbar;
 	Gtk.ToolButton new_button;
 	Gtk.ToolButton open_button;
@@ -59,7 +59,7 @@ class MyWindow : Gtk.ApplicationWindow {
 	Gtk.ToolButton fullscreen_button;
 	Gtk.ToolButton leave_fullscreen_button;
 
-	/* Κατασκευαστής */
+	/* Constructor */
 	internal MyWindow (MyApplication app) {
 		Object (application: app, title: "Toolbar with Tooltips Example");
 
@@ -73,39 +73,39 @@ class MyWindow : Gtk.ApplicationWindow {
 		grid.attach (toolbar, 0, 0, 1, 1);
 		toolbar.show ();
 
-		/* δημιουργία της ενέργειας παραθύρου "undo" */
+		/* create the "undo" window action action */
 		var undo_action = new SimpleAction ("undo", null);
 		undo_action.activate.connect (undo_callback);
 		this.add_action (undo_action);
 
-		/* δημιουργία της ενέργειας παραθύρου "fullscreen" */
+		/* create the "fullscreen" window action */
 		var fullscreen_action = new SimpleAction ("fullscreen", null);
 		fullscreen_action.activate.connect (fullscreen_callback);
 		this.add_action (fullscreen_action);
 	}
 
-	/* Η συνάρτηση επανάκλησης για το σήμα query_tooltip */
+	/* Callback for query_tooltip signal */
 	bool undo_tooltip_callback (int x, int y, bool keyboard_tooltip, Gtk.Tooltip tooltip) {
 
-		/* ορισμός του κειμένου για τη συμβουλή οθόνης */
+		/* set the text for the tooltip */
         	tooltip.set_text ("Undo your last action");
 		
-		/* ορισμός εικονιδίου για τη συμβουλή οθόνης */
+		/* set an icon fot the tooltip */
 		tooltip.set_icon_from_stock("gtk-undo", Gtk.IconSize.MENU);
 
-        	/* εμφάνιση της συμβουλής οθόνης */
+        	/* show the tooltip */
         	return true;
 	}
 
-	/* Αυτή η συνάρτηση δημιουργεί την εργαλειοθήκη, τα κουμπιά εργαλείων της,
-	 * και εκχωρεί τα ονόματα ενεργειών στα κουμπιά εργαλείων.*/
+	/* This function creates the toolbar, its  ToolButtons,
+	 * and assigns the actions names to the ToolButtons.*/
 	void create_toolbar () {
 		toolbar = new Gtk.Toolbar ();
 		toolbar.get_style_context ().add_class (Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
 
 		new_button = new Gtk.ToolButton.from_stock (Gtk.Stock.NEW);
 
-		/* συμβουλή οθόνης με κείμενο */
+		/* tooltip with text */
 		new_button.set_tooltip_text ("Create a new file");
 
 		new_button.is_important = true; //decides whether to show the label
@@ -115,7 +115,7 @@ class MyWindow : Gtk.ApplicationWindow {
 
 		open_button = new Gtk.ToolButton.from_stock (Gtk.Stock.OPEN);
 
-		/* μια συμβουλή οθόνης χρησιμοποιώντας τη γλώσσα σήμανσης Pango */
+		/* a tooltip using Pango markup language */
 		open_button.set_tooltip_markup ("Open an &lt;i&gt;existing&lt;/i&gt; file");
 
 		open_button.is_important = true;
@@ -125,10 +125,10 @@ class MyWindow : Gtk.ApplicationWindow {
 
 		undo_button = new Gtk.ToolButton.from_stock (Gtk.Stock.UNDO);
 	
-		/* Για να έχει μια συμβουλή οθόνης μια εικόνα, πρέπει πρώτα set_has_tooltip να είναι 'true' */	
+		/* For a tooltip to have an image, first we must set_has_tooltip to be 'true' */	
 		(undo_button as Gtk.Widget).set_has_tooltip (true);
 
-		/* Σύνδεση με το σήμα query_tooltip στην επανάκληση */
+		/* Connect the query_tooltip signal to the callback */
 		undo_button.query_tooltip.connect (undo_tooltip_callback);
 	
 		undo_button.is_important = true;
@@ -168,7 +168,7 @@ class MyWindow : Gtk.ApplicationWindow {
 	}
 }
 
-/* Αυτή είναι η εφαρμογή */
+/* This is the application */
 class MyApplication : Gtk.Application {
 	protected override void activate () {
 		new MyWindow (this).show ();
@@ -177,18 +177,18 @@ class MyApplication : Gtk.Application {
 	protected override void startup () {
 		base.startup ();
 
-		/* Δημιουργία της ενέργειας "new" και προσθήκη της στην app*/
+		/* Create the "new" action and add it to the app*/
 		var new_action = new SimpleAction ("new", null);
 		new_action.activate.connect (new_callback);
 		this.add_action (new_action);
 
-		/* Δημιουργία της ενέργειας "open" και προσθήκη της στην app */
+		/* Create the "open" action, and add it to the app */
 		var open_action = new SimpleAction ("open", null);
 		open_action.activate.connect (open_callback);
 		this.add_action (open_action);
 
-		/* Μπορείτε επίσης να προσθέσετε την ενέργεια στο μενού app
-		 * αν θέλετε.
+		/* You could also add the action to the app menu
+		 * if you wanted to.
 		 */
 		//var menu = new Menu ();
 		//menu.append ("New", "app.new");
@@ -204,7 +204,7 @@ class MyApplication : Gtk.Application {
 	}
 }
 
-/* Η κύρια συνάρτηση δημιουργεί την εφαρμογή και την εκτελεί. */
+/* The main function creates the application and runs it. */
 int main (string[] args) {
 	return new MyApplication ().run (args);
 }

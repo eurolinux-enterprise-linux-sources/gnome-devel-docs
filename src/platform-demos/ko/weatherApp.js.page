@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="weatherApp.js" xml:lang="ko">
+  <info>
+  <title type="text">날씨 프로그램(JavaScript)</title>
+    <link type="guide" xref="js#examples"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <desc>비동기 함수 호출을 활용하는 프로그램을 기획하는 방법입니다. 비동기 함수 호출은 날씨 프로그램에서 보여드리겠습니다.</desc>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>날씨 프로그램</title>
+  <synopsis>
+    <p>안내서의 이 부분에서는 비동기 호출을 활용하여 로컬 라이브러리 geoNames를 만듭니다. 이 예제의 날씨 정보는 geonames.org에서 가져오며, 프로그램에서 날씨 정보를 요청할 때 <link href="http://en.wikipedia.org/wiki/List_of_airports_by_ICAO_code:_E">ICAO codes</link>를 활용합니다. 모든 코드 예제를 여러분 스스로 작성하고 실행하라면 코드를 작성해넣을 편집기, 터미널, 그놈 3 이상을 컴퓨터에 설치해야 합니다. 이 안내서에서는 다음 내용을 진행합니다:</p>
+
+    <list>
+      <item><p><link xref="#planningUi">그래픽 사용자 인터페이스 기획</link></p></item>
+      <item><p><link xref="#asynchronous">비동기 함수 호출</link></p></item>
+      <item><p><link xref="#main">main 프로그램 파일</link></p></item>
+      <item><p><link xref="#main">자체 GeoNames 라이브러리</link></p></item>
+      <item><p><link xref="#main">Autotool과 아이콘</link></p></item>
+    </list>
+  </synopsis>
+
+  <p>지침서를 읽고 나면 이 내용을 화면에서 볼 수 있어야합니다:</p>
+  <media type="image" mime="image/png" src="media/weatherAppJs.png"/>
+
+  <section id="planningUi">
+    <title>그래픽 사용자 인터페이스 기획</title>
+    <p>그놈 3 프로그램을 구성한다는 건 결국 <link href="http://developer.gnome.org/platform-overview/stable/gtk">GTK+</link>를 사용한다는 의미입니다. 메인 창은 하나의 위젯만 받아들일 수 있다는 점이 기억해야 할 중요한 점입니다. 이에 따라 구조를 기횡해야 합니다(이 예제는 Gtk.Grid를 사용함). 쓸만한 메서드는 메인 창을 그리고 필요한 모든 위젯을 박스에 넣는 함수입니다. 나중에 만들 프로그램의 그림을 살펴보면 여러 위젯에 어떤 관계가 있는지 쉽게 이야기할 수 있습니다. 예를 들어 Gtk.Grid에는 다른 위젯과의 관계에 따라 여러분의 위젯을 둡니다. 따라서 처음 위젯을 두고 나면, 그리드에서 다른 위젯에 관계에 따라 다른 위젯을 어떤 위치에 둘 수 있습니다.</p>
+  </section>
+  <section id="asynchronous">
+    <title>비동기 호출</title>
+    <p>수많은 프로그래밍 언어에서는 많은 동작 처리를 동기방식으로 처리합니다. 여러분의 프로그램에 무언가를 지시하면 앞에 진행하던 동작이 끝나기 전까지 기다립니다. 프로그램이 처리를 기다리는 동안 전체 프로그램이 멈추기에 그래픽 사용자 인터페이스에 좋지 않습니다. 여기서 비동기 방식(async)으로 처리해보겠습니다. 비동기 호출을 수행하면, 여러분이 작성한 사용자 인터페이스는 어떤 요청에도 동작을 멈추지 않습니다. async 호출은 프로그램 동작을 유연하게 하며, 예상 보다 더 많은 함수 호출이 있거나 무슨 이유로 인해 동작이 꼬이는 경우를 처리할 수 있습니다. 비동기 호출은 시스템 입출력과 백그라운드의 느린 계산처리에 활용할 수 있습니다.</p>
+    <p>이 예제에서는 geonames.org에서 데이터를 가져와야합니다. 데이터를 가져오는 동안 프로그램의 나머지 동작 부분을 계속 활용하고자 합니다. 인터넷 연결 상태가 좋지 않아 geonames.org에서 어떤 정보도 가져오지 못했고 이 프로그램이 동기 방식 처리 프로그램이라면, main_quit()를 제대로 처리할 부분을 확인할 수 없을 뿐더러 프로그램을 터미널에서 강제로 끝내야 할 수도 있습니다.</p>
+  </section>
+  <section id="main">
+    <title>프로그램의 각 부분</title>
+  </section>
+</page>

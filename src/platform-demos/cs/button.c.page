@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="button.c" xml:lang="cs">
+  <info>
+    <title type="text">Button (C)</title>
+    <link type="guide" xref="c#buttons"/>
+    <link type="seealso" xref="dialog.c"/>
+    <link type="seealso" xref="grid.c"/>
+    <revision version="0.2" date="2012-06-22" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Widget tlačítka, který vyšle signál při kliknutí</desc>
+  </info>
+
+  <title>Button</title>
+
+  <media type="image" mime="image/png" src="media/button.png"/>
+  <p>Widget tlačítka napojený na funkci zpětného volání, která při kliknutí otočí pořadí jeho popisku.</p>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+
+
+/* Toto je funkce zpětného volání. Jedná se o zpracující funkci, která 
+raguje na signál. V tomto případě způsobí otočení text na popisku tlačítka 
+do opačného pořadí. */
+static void
+button_clicked (GtkButton *button,
+                gpointer   user_data)
+{
+  const char *old_label;
+  char *new_label;
+
+  old_label = gtk_button_get_label (button);
+  new_label = g_utf8_strreverse (old_label, -1);
+
+  gtk_button_set_label (button, new_label);
+  g_free (new_label);
+}
+
+
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *button;
+
+  /* Vytvoření okna s názvem a výchozí velikostí */
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "GNOME Button");
+  gtk_window_set_default_size (GTK_WINDOW (window), 250, 50);
+
+  /* Vytvoření tlačítka s popiskem a jeho přidání do okna */
+  button = gtk_button_new_with_label ("Click Me");
+  gtk_container_add (GTK_CONTAINER (window), button);
+
+  /* Připojení signálu kliknutí na funkci zpětného volání */
+  g_signal_connect (GTK_BUTTON (button),
+                    "clicked", 
+                    G_CALLBACK (button_clicked), 
+                    G_OBJECT (window));
+
+  gtk_widget_show_all (window);
+}
+
+
+
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkButton.html">GtkButton</link></p></item>
+  <item><p><link href="http://developer.gnome.org/glib/stable/glib-Unicode-Manipulation.html#g-utf8-strreverse">Práce s Unikódem</link></p></item>
+</list>
+</page>

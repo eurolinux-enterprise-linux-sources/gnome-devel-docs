@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="tour-get_object" xml:lang="ko">
+
+  <info>
+    <link type="next" xref="tour-application"/>
+    <revision version="0.1" date="2013-06-17" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Gordon Hill</name>
+      <email its:translate="no">caseyweederman@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>GtkBuilder로 UI 파일에 지정한 창을 프로그램에 추가합니다.</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016, 2017.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>GtkBuilder</title>
+  <links type="prevnext" style="top"/>
+  <links type="series" style="floatend">
+    <title>그놈 시작하기</title>
+  </links>
+
+  <p>GtkBuilder는 UI 설명을 받아들여 gtk 프로그램으로 바꿉니다. 여기서 UI 설명은 <file>helloworld.glade</file> 파일에 있고, <code>get_object()</code> 메서드에서 읽을 수 있습니다.</p>
+
+  <example>
+    <p><code>GtkBuilder</code>로 UI 파일을 불러온 후, 글레이드에서 정한 <gui>Name</gui>(또는 <gui>ID</gui>)으로 윈도우 객체를 가져온 후, 프로그램에 윈도우 객체를 추가하십시오:</p>
+
+    <code><![CDATA[
+    _onStartup() {
+        let builder = new Gtk.Builder();
+        builder.add_from_file('helloworld.glade');
+        this._window = builder.get_object('window1');
+        this.application.add_window(this._window);
+    }
+};
+]]></code>
+  </example>
+  <links type="prevnext"/>
+</page>

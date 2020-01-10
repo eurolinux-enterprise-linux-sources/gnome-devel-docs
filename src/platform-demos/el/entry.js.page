@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -44,42 +44,40 @@
 
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const EntryExample = new Lang.Class({
-    Name: 'Entry Example',
+class EntryExample {
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
-    _init: function() {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jsentry',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-    // Σύνδεση των σημάτων  'activate' και 'startup' στις συναρτήσεις επανάκλησης
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα  'activate' παρουσιάζει παράθυρα όταν είναι ενεργή 
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
         this._window.present();
-    },
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function() {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
+    // Build the application's UI
+    _buildUI() {
 
-
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function() {
-
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -88,22 +86,20 @@ const EntryExample = new Lang.Class({
             border_width: 10,
             title: "What is your name?"});
 
-        // Δημιουργία του πλαισίου καταχώρισης κειμένου
+        // Create the text entry box
         this.entry = new Gtk.Entry ();
         this._window.add(this.entry);
 
-        // Σύνδεση του πλαισίου καταχώρισης κειμένου σε μια συνάρτηση που απαντά σε ό,τι πληκτρολογείτε
-        this.entry.connect("activate", Lang.bind (this, this._hello));
+        // Connect the text entry box to a function that responds to what you type in
+        this.entry.connect("activate", this._hello.bind(this));
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
+    _hello() {
 
-
-    _hello: function() {
-
-        // Δημιουργία αναδυόμενου διαλόγου για χαιρετισμό του προσώπου που πληκτρολογεί στο όνομά τους
+        // Create a popup dialog to greet the person who types in their name
         this._greeter = new Gtk.MessageDialog ({
             transient_for: this._window,
             modal: true,
@@ -112,20 +108,20 @@ const EntryExample = new Lang.Class({
             buttons: Gtk.ButtonsType.OK,
         });
 
-        // Εμφάνιση του αναδυόμενου διαλόγου
+        // Show the popup dialog
         this._greeter.show();
 
-        // Σύνδεση του κουμπιού ΕΝΤΑΞΕΙ στη συνάρτηση που κλείνει το αναδυόμενο
-        this._greeter.connect ("response", Lang.bind(this, this._okClicked));
-    },
+        // Bind the OK button to the function that closes the popup
+        this._greeter.connect ("response", this._okClicked.bind(this));
+    }
 
-    _okClicked: function () {
+    _okClicked() {
         this._greeter.destroy();
     }
 
-});
+};
 
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new EntryExample ();
 app.application.run (ARGV);
 </code>

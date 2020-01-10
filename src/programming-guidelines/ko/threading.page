@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="threading" xml:lang="ko">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>메인 스레드 외부의 처리를 작업 스레드로 옮깁니다</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016, 2017.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>스레드 처리</title>
+
+  <synopsis>
+    <title>요약</title>
+
+    <list>
+      <item><p>가능한 모든 경우에 스레드를 사용하지 마십시오(<link xref="#when-to-use-threading"/>).</p></item>
+      <item><p>스레드를 사용해야하면, <code>GTask</code> 또는 <code>GThreadPool</code>를 사용하고, 가능한 한 스레드 처리한 코드를 격리하십시오(<link xref="#using-threading"/>).</p></item>
+      <item><p><code>GThread</code>를 직접 사용한다면 <code>g_thread_join()</code> 함수를 사용하여 스레드 자원 누수를 막으십시오(<link xref="#using-threading"/>).</p></item>
+      <item><p>스레드를 사용할 경우 어떤 코드를 실행하든 <code>GMainContext</code>를 주의깊게 다루십시오. 잘못된 컨텍스트에서 코드를 실행하면 레이스 컨티션을 유발하거나 메인 루프가 멈출 수 있습니다(<link xref="#using-threading"/>).</p></item>
+    </list>
+  </synopsis>
+
+  <section id="when-to-use-threading">
+    <title>스레드 처리를 활용할 경우</title>
+
+    <p>GLib로 프로젝트를 작성할 때, 기본 접근에 있어 <em style="strong">스레드를 절대 사용하지 말아야</em>합니다. 대신, 메인 컨텍스트에서 다른 이벤트 처리를 계속 하는 동안 백그라운드에서 대부분이 대부분의 블로킹 입출력 처리가 가능하도록 비동기 처리하는 <link xref="main-contexts">GLib 메인 컨텍스트</link>를 적절하게 활용하는 것이 좋습니다. 스레드 처리한 코드의 분석, 검토, 디버깅은 매우 급격하게 난해해집니다.</p>
+
+    <p>GLib 코드에서 호출해야 하는 함수의 동작을 가로 막는 외부 라이브러리를 활용할 경우라면 스레드를 활용해야합니다. 라이브러리에서 동작을 가로막지 않는 대안책을 마련하거나<link href="http://pubs.opengroup.org/onlinepubs/009695399/functions/poll.html"><code>poll()</code></link> 루프와 잘 동작하는 수단이 있다면 취향에 따라 사용해야합니다. 동작을 가로 막는 함수를 꼭 사용해야 한다면, 작업 스레드에서 동작을 가로 막는 처리를 실행하는 <link href="https://developer.gnome.org/gio/stable/GAsyncResult.html"><code>GAsyncResult</code> 방식</link> 일반 GLib 비동기 함수로 변환하도록 씬 래퍼를 작성해야합니다.</p>
+
+    <example>
+      <p>예제:</p>
+      <code mime="text/x-csrc">
+int
+some_blocking_function (void *param1,
+                        void *param2);
+</code>
+      <p>위 코드를 다음과 같이 래핑해야합니다:</p>
+      <code mime="text/x-csrc">
+void
+some_blocking_function_async (void                 *param1,
+                              void                 *param2,
+                              GCancellable         *cancellable,
+                              GAsyncReadyCallback   callback,
+                              gpointer              user_data);
+int
+some_blocking_function_finish (GAsyncResult        *result,
+                               GError             **error);
+</code>
+
+      <p>그리고 다음과 같은 구현체를 넣으십시오:</p>
+      <code mime="text/x-csrc">/* Closure for the call’s parameters. */
+typedef struct {
+  void *param1;
+  void *param2;
+} SomeBlockingFunctionData;
+
+static void
+some_blocking_function_data_free (SomeBlockingFunctionData *data)
+{
+  free_param (data-&gt;param1);
+  free_param (data-&gt;param2);
+
+  g_free (data);
+}
+
+static void
+some_blocking_function_thread_cb (GTask         *task,
+                                  gpointer       source_object,
+                                  gpointer       task_data,
+                                  GCancellable  *cancellable)
+{
+  SomeBlockingFunctionData *data = task_data;
+  int retval;
+
+  /* Handle cancellation. */
+  if (g_task_return_error_if_cancelled (task))
+    {
+      return;
+    }
+
+  /* Run the blocking function. */
+  retval = some_blocking_function (data-&gt;param1, data-&gt;param2);
+  g_task_return_int (task, retval);
+}
+
+void
+some_blocking_function_async (void                 *param1,
+                              void                 *param2,
+                              GCancellable         *cancellable,
+                              GAsyncReadyCallback   callback,
+                              gpointer              user_data)
+{
+  GTask *task = NULL;  /* owned */
+  SomeBlockingFunctionData *data = NULL;  /* owned */
+
+  g_return_if_fail (validate_param (param1));
+  g_return_if_fail (validate_param (param2));
+  g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+  task = g_task_new (NULL, cancellable, callback, user_data);
+  g_task_set_source_tag (task, some_blocking_function_async);
+
+  /* Cancellation should be handled manually using mechanisms specific to
+   * some_blocking_function(). */
+  g_task_set_return_on_cancel (task, FALSE);
+
+  /* Set up a closure containing the call’s parameters. Copy them to avoid
+   * locking issues between the calling thread and the worker thread. */
+  data = g_new0 (SomeBlockingFunctionData, 1);
+  data-&gt;param1 = copy_param (param1);
+  data-&gt;param2 = copy_param (param2);
+
+  g_task_set_task_data (task, data, some_blocking_function_data_free);
+
+  /* Run the task in a worker thread and return immediately while that continues
+   * in the background. When it’s done it will call @callback in the current
+   * thread default main context. */
+  g_task_run_in_thread (task, some_blocking_function_thread_cb);
+
+  g_object_unref (task);
+}
+
+int
+some_blocking_function_finish (GAsyncResult  *result,
+                               GError       **error)
+{
+  g_return_val_if_fail (g_task_is_valid (result,
+                                         some_blocking_function_async), -1);
+  g_return_val_if_fail (error == NULL || *error == NULL, -1);
+
+  return g_task_propagate_int (G_TASK (result), error);
+}</code>
+      <p>자세한 내용은 <link href="https://developer.gnome.org/gio/stable/GAsyncResult.html"><code>GAsyncResult</code> 문서</link>를 참고하십시오. 작업 스레드를 구현하는 간단한 방법은 <link href="https://developer.gnome.org/gio/stable/GTask.html"><code>GTask</code></link> 와 <link href="https://developer.gnome.org/gio/stable/GTask.html#g-task-run-in-thread"><code>g_task_run_in_thread()</code></link> 함수를 활용하는 방법입니다(추가 참고: <link xref="main-contexts#gtask"/>).</p>
+    </example>
+  </section>
+
+  <section id="using-threading">
+    <title>스레드 활용</title>
+
+    <p>작업 스레드를 작성할 때 <code>GTask</code>가 적절한 수단이 아니라면, 좀 더 저수준의 접근 방식을 활용해야합니다. 스레드 코드로 하여금 실행 시간에 예기치 못한 버그가 나타난다거나, 데드락이 갑자기 걸린다거나, 자원을 갑자기 많이 소모한다거나, 프로그램이 끝나는 일은 식은죽 먹기니 매우 신중하게 고려해야 합니다.</p>
+
+    <p>스레드 코드 작성 완벽 설명서는 이 문서의 범위를 벗어나지만, 스레드 코드 작성시 잠재 버그를 줄이려 따를 몇가지 지침서가 있습니다. 무엇보다 우선하는 원칙은 스레드로 영향을 줄 수 있는 코드 및 데이터 양을 줄이는 방식입니다. 예를 들면, 스레드 수를 줄이거나, 작업 스레드 구현의 복잡도를 줄이거나, 스레드간 공유 데이터 양을 줄이는 방법입니다.</p>
+
+    <list>
+      <item>
+        <p>가능하면 직접 <link href="https://developer.gnome.org/glib/stable/glib-Threads.html"><code>GThread</code></link>를 만들기보다는 <link href="https://developer.gnome.org/glib/stable/glib-Thread-Pools.html"><code>GThreadPool</code></link>을 사용핫비시오. <link href="https://developer.gnome.org/glib/stable/glib-Thread-Pools.html"><code>GThreadPool</code></link>에서는 작업 큐, 가동 스레드 수 제한, 종결 스레드 자동 병합을 지원하여, 스레드가 어디론가 새 나갈 일이 없습니다.</p>
+      </item>
+      <item>
+        <p><code>GThreadPool</code>을 활용할 수 없다면(드문 경우):</p>
+
+        <list>
+          <item>
+            <p>스레드를 만들려면 <link href="https://developer.gnome.org/glib/stable/glib-Threads.html#g-thread-new"><code>g_thread_new()</code></link> 함수 대신 <link href="https://developer.gnome.org/glib/stable/glib-Threads.html#g-thread-try-new"><code>g_thread_try_new()</code></link> 함수를 활용하여 프로그램의 상태를 알 수 없는 상황에서 갑자기 멈추게 하기 보단 스레드 외적 영역에서의 시스템 동작상 나타나는 오류를 탁월하게 처리할 수 있게 하십시오.</p>
+          </item>
+          <item>
+            <p>스레드 자원의 방치를 막으려면 <link href="https://developer.gnome.org/glib/stable/glib-Threads.html#g-thread-join"><code>g_thread_join()</code></link> 함수를 사용하여 분명하게 스레드를 병합하십시오.</p>
+          </item>
+        </list>
+      </item>
+      <item>
+        <p>스레드간 데이터를 전달할 때, 뮤텍스의 동작을 직접 잠그기보다는 메시지 전달 기능을 활용하십시오. <code>GThreadPool</code>에서는 <link href="https://developer.gnome.org/glib/stable/glib-Thread-Pools.html#g-thread-pool-push"><code>g_thread_pool_push()</code></link> 함수로 메시지 전달 기능을 지원합니다.</p>
+      </item>
+      <item>
+        <p>뮤텍스를 활용해야 한다면:</p>
+
+        <list>
+          <item>
+            <p>스레드 코드를 최대한 격리하고, 클래스에서 뮤텍스를 자체 용도로 유지하며, 매우 한정적인 클래스 구성원만 다루십시오.</p>
+          </item>
+          <item>
+            <p>모든 뮤텍스는 뮤텍스에 보호 접근할 기타 구조체 또는 변수를 나타내는 선언부에 분명하게 설명을 달아두어야합니다. 이와 비슷하게, 해당 뮤텍스의 변수도 뮤텍스에서<em>만</em> 접근해야 한다고 설명을 달아두어야합니다.</p>
+          </item>
+        </list>
+      </item>
+      <item>
+        <p>메인 컨텍스트와 스레드간 상호 작용을 조심스럽게 취급하십시오. 예를 들면, <link href="https://developer.gnome.org/glib/stable/glib-The-Main-Event-Loop.html#g-timeout-add-seconds"><code>g_timeout_add_seconds()</code></link> 함수는, 현재 스레드에서 <em>불필요하며</em>, 메인 스레드에서 실행할 <em>전역 메인 컨텍스트의 실행</em> 제한 시간을 설정합니다. 이 부분을 잘못 설정하면 메인 스레드에서 실행한 작업 스레드가 갑자기 끝날 수 있음을 의미합니다(추가 참조: <link xref="main-contexts#default-contexts"/>).</p>
+      </item>
+    </list>
+  </section>
+
+  <section id="debugging">
+    <title>디버깅</title>
+
+    <p>스레드 문제 디버깅은 상당히 까다로운데 재현하기도 어려울 뿐더러 왜 인지도 이유를 밝히기 어렵기 때문입니다. 이게 바로 제일 먼저 스레드를 활용할 때 피해야 할 가장 큰 이유중 하나입니다.</p>
+
+    <p>그러나, 스레드 문제가 터지면 <link xref="tooling#helgrind-and-drd">Valgrind의 drd 도구와 helgrind 도구가 도움될 수 있습니다</link>.</p>
+  </section>
+</page>

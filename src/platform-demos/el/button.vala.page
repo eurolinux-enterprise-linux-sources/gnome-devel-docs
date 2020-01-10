@@ -17,7 +17,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -35,7 +35,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -45,10 +45,10 @@
   <p>Ένα γραφικό στοιχείο κουμπιού συνδεμένο με μια απλή συνάρτηση επανάκλησης.</p>
 
 <code mime="text/x-csharp" style="numbered">
-/* Ένα παράθυρο στην εφαρμογή */
+/* A window in the application */
 public class MyWindow : Gtk.ApplicationWindow {
 
-	/* Ο κατασκευαστής του παραθύρου */
+	/* The constructor of the window */
 	internal MyWindow (MyApplication app) {
 		Object (application: app, title: "GNOME Button");
 
@@ -61,29 +61,29 @@ public class MyWindow : Gtk.ApplicationWindow {
 		this.add (button);
 	}
 
-	/* Σύνδεση της συνάρτησης επανάκλησης με το σήμα
-	 * 'clicked' του κουμπιού.
+	/* The callback function connected to the
+	 * 'clicked' signal of the button.
 	 */
 	void reverse_label (Gtk.Button button) {
 		button.label = button.label.reverse ();
 	}
 }
 
-/* Αυτή είναι η εφαρμογή. */
+/* This is the application. */
 public class MyApplication : Gtk.Application {
 
-	/* Αυτός είναι ο κατασκευαστής */
+	/* This is the constructor */
 	internal MyApplication () {
 		Object (application_id: "org.example.MyApplication");
 	}
 
-	/* Αντικατάσταση του ενεργού σήματος GLib.Application */
+	/* Override the activate signal of GLib.Application */
 	protected override void activate () {
 		new MyWindow (this).show ();
 	}
 }
 
-/* το κύριο δημιουργεί και εκτελεί την εφαρμογή */
+/* main creates and runs the application */
 public int main (string[] args) {
 	return new MyApplication ().run (args);
 }

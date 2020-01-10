@@ -19,7 +19,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -37,7 +37,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -204,88 +204,79 @@ app.application.run (ARGV);
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const MessageDialogExample = new Lang.Class ({
-    Name: 'MessageDialog Example',
+class MessageDialogExample {
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
-    _init: function () {
-        this.application = new Gtk.Application ({
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application({
             application_id: 'org.example.jsmessagedialog',
-            flags: Gio.ApplicationFlags.FLAGS_NONE });
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
 
-        // Σύνδεση σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
-    _onActivate: function () {
-        this._window.present ();
-    },
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' αρχικοποιεί τα μενού και δομεί τη διεπαφή χρήστη 
-    _onStartup: function () {
+    // Callback function for 'startup' signal initializes menus and builds the UI
+    _onStartup() {
         this._initMenus();
         this._buildUI ();
-    },
+    }
 
+    // Build the application's UI
+    _buildUI() {
 
-
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function () {
-
-        // Δημιουργία του παραθύρου της εφαρμογής
-        this._window = new Gtk.ApplicationWindow  ({
+        // Create the application window
+        this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             title: "Gtk.MessageDialog Example",
             default_height: 200,
-            default_width: 400 });
+            default_width: 400
+        });
 
-        // Δημιουργία ενός χαζού μηνύματος προειδοποίησης και προσθήκη του στο παράθυρο
-        this.warningLabel = new Gtk.Label ({
-            label: "This application goes boom! (Not really.)"});
+        // Create a silly warning message and add it to the window
+        this.warningLabel = new Gtk.Label({
+            label: "This application goes boom! (Not really.)"
+        });
         this._window.add (this.warningLabel);
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
-
-
-    // Δόμηση του μενού της εφαρμογής, συμπεριλαμβανομένου του κουμπιού που καλεί τον διάλογο
-    _initMenus: function() {
+    // Build the application menu, including the button that calls the dialog
+    _initMenus() {
         let menu = new Gio.Menu();
         menu.append("Message",'app.message');
         menu.append("Quit",'app.quit');
         this.application.set_app_menu(menu);
 
-        // Αυτό εμφανίζει έναν διάλογο μηνύματος όταν πατιέται "Message" στο μενού
+        // This pops up a MessageDialog when "Message" is clicked in the menu
         let messageAction = new Gio.SimpleAction ({ name: 'message' });
-        messageAction.connect('activate', Lang.bind(this,
-            function() {
-                this._showMessageDialog();
-            }));
+        messageAction.connect('activate', () =&gt; { this._showMessageDialog(); });
         this.application.add_action(messageAction);
 
-        // Αυτό κλείνει το παράθυρο όταν πατιέται "Quit" στο μενού
+        // This closes the window when "Quit" is clicked in the menu
         let quitAction = new Gio.SimpleAction ({ name: 'quit' });
-        quitAction.connect('activate', Lang.bind(this,
-            function() {
-                this._window.destroy();
-            }));
+        quitAction.connect('activate', () =&gt; { this._window.destroy(); });
         this.application.add_action(quitAction);
-    },
+    }
 
+    _showMessageDialog() {
 
-
-    _showMessageDialog: function () {
-
-        // Δημιουργία ενός αναγκαστικού μηνύματος διαλόγου του οποίου το γονικό είναι στο παράθυρο
+        // Create a modal MessageDialog whose parent is the window
         this._messageDialog = new Gtk.MessageDialog ({
             transient_for: this._window,
             modal: true,
@@ -293,16 +284,14 @@ const MessageDialogExample = new Lang.Class ({
             message_type: Gtk.MessageType.WARNING,
             text: "This action will cause the universe to stop existing." });
 
-        this._messageDialog.connect ('response', Lang.bind(this, this._response_cb));
+        this._messageDialog.connect ('response', this._response_cb.bind(this));
         this._messageDialog.show();
-    },
+    }
 
+    // Callback function (aka signal handler) for the response signal
+    _response_cb(messagedialog, response_id) {
 
-
-    // Η συνάρτηση επανάκλησης  (χειριστής σήματος aka) για το σήμα απάντησης
-    _response_cb: function (messagedialog, response_id) {
-
-        // Ένας απλός διακόπτης που αλλάζει την ετικέτα του κυρίως παραθύρου
+        // A simple switch that changes the main window's label
         switch (response_id) {
             case Gtk.ResponseType.OK:
                 this.warningLabel.set_label ("*BOOM*\n");
@@ -318,10 +307,9 @@ const MessageDialogExample = new Lang.Class ({
         this._messageDialog.destroy();
 
     }
+};
 
-});
-
-// Εκτέλεση της εφαρμογής 
+// Run the application
 let app = new MessageDialogExample ();
 app.application.run (ARGV);
 </code>

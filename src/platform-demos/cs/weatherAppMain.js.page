@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherAppMain.js" xml:lang="cs">
+  <info>
+    <link type="guide" xref="weatherApp.js#main" group="#first"/>
+    <revision version="0.1" date="2012-03-09" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc/>
+  </info>
+
+  <title>Soubor s hlavním programem</title>
+  <synopsis>
+    <p>V této části lekce sestavíme hlavní programový soubor aplikace s počasím. Abyste si mohli napsat a spustit kód příkladu sami, budete potřebovat v počítači nainstalovaný editor pro psaní kódu, terminál a GNOME 3.0 nebo novější. V této lekci budeme postupovat následujícími částmi:</p>
+    <list>
+      <item><p><link xref="#script">Skript pro spuštění aplikace</link></p></item>
+      <item><p><link xref="#imports">Importované knihovny</link></p></item>
+      <item><p><link xref="#mainwindow">Vytvoření hlavního okna pro aplikaci</link></p></item>
+      <item><p><link xref="#widgets">Přidání mřížky a všech potřebných widgetů do ní</link></p></item>
+      <item><p><link xref="#asynccall">Žádání o informace o počasí asynchronně</link></p></item>
+      <item><p><link xref="#connectingbuttons">Připojení signálů k tlačítkům a vstupním polím</link></p></item>
+      <item><p><link xref="#weatherapp.js">weatherapp.js</link></p></item>
+    </list>
+  </synopsis>
+  <section id="script">
+    <title>Skript pro spuštění aplikace</title>
+    <code mime="application/javascript" style="numbered">
+  #!/usr/bin/gjs</code>
+    <p>Tento řádek říká, jak spustit skript. Musí být prvním řádek v souboru s kódem a soubor musí být spustitelný. Abyste získali práva na spuštění, jděte do terminálu a ve správné složce spusťte: chmod +x název_skriptu. Nebo můžete použít grafického správce souborů. Přejděte do správné složky s vašim kódem, klikněte na soubor s kódem pravým tlačítkem, zvolte vlastnosti, klikněte na kartu oprávnění a zaškrtněte políčko, které povoluje spuštění souboru jako programu.</p>
+  </section>
+
+  <section id="imports">
+    <title>Importované knihovny</title>
+    <code mime="application/javascript" style="numbered">
+var Gtk = imports.gi.Gtk;
+const WeatherService = imports.geonames;</code>
+    <p>Abychom získali funkční program, potřebujeme naimportovat GObject Introspection, což je knihovna, kterou využíváme. Pro funkční uživatelské rozhraní potřebujeme také Gtk. Gtk se importuje hned na začátku, takže jej můžeme použít kdekoliv. Importujeme také naši vlastní místní knihovnu geoname napsanou v jazyce JavaScript, protože ji zde využijeme.</p>
+    </section>
+
+   <section id="mainwindow">
+    <title>Vytvoření hlavního okna pro aplikaci</title>
+    <code mime="application/javascript" style="numbered">
+// Inicializuje GTK
+Gtk.init(null, 0);
+// Vytvoří okno, pojmenuje jej a napojí tlačítko „X“ na funkci pro ukončení
+// Pamatujte, že „window“ je rezervované slovo
+var weatherwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+weatherwindow.title = "Todays weather";
+// Okno přijímá jen jeden widget a název. Pro sloužitější struktury slouží Gtk.boxes apod.
+weatherwindow.connect("destroy", function(){Gtk.main_quit()});
+
+weatherwindow.show_all();
+// A spustí ji
+Gtk.main();</code>
+  </section>
+  <section id="widgets">
+  <title>Přidání mřížky a všech potřebných widgetů do ní</title>
+  <code mime="application/javascript" style="numbered">
+var grid = new Gtk.Grid();
+weatherwindow.add(grid);
+
+// Zde inicializujeme ikony, ale rozhodne se až později v geonames.js.
+var weatherIcon = new Gtk.Image();
+
+// Nastaví nějaké popisky do vašeho okna
+var label1 = new Gtk.Label({label: ""});
+var label2 = new Gtk.Label({label: "Looking in the sky..."});
+var label3 = new Gtk.Label({label: ""});
+
+var entry = new Gtk.Entry();
+entry.set_width_chars(4);
+entry.set_max_length(4);
+var label4 = new Gtk.Label({label: "Enter ICAO station for weather: "});
+var button1 = new Gtk.Button({label: "search!"});
+
+grid.attach(label4, 2, 1, 1, 1);
+grid.attach_next_to(label1,label4,3,1,1);
+grid.attach_next_to(label2,label1,3,1,1);
+grid.attach_next_to(label3,label2,3,1,1);
+grid.attach_next_to(entry,label4,1,1,1);
+grid.attach_next_to(button1,entry,1,1,1);
+grid.attach_next_to(weatherIcon,label2,1,1,1)
+</code>
+    <p>V této části vytvoříme mřížku, kterou se chystáme použít k umístění widgetů. Všechna tlačítka, popisky a vstupní pole jsou inicializována a umístěna v mřížce. Jak je vidět z umístění různých widgetů, nemusí se vztahovat jen k jednomu widgetu. V tuto chvíli nemají některé popisky žádný obsah. Ten bude doplněn později. Když aplikaci v této fázi spustíte, budete mít připravené uživatelské rozhraní, ale widgety nabudou nikam napojeny. Z tohoto důvodu potřebujeme nejprve sestavit místní knihovnu pro vyhledávání počasí a pak získávat informace, což chceme dělat asynchronně. Až budeme mít naši místní knihovnu připravenou, můžeme ji napojit na potřebné widgety.</p>
+  </section>
+
+     <section id="asynccall">
+  <title>Žádání o informace o počasí asynchroně</title>
+  <code mime="application/javascript" style="numbered">
+function getWeatherForStation() {
+  var station = entry.get_text();
+
+  var GeoNames = new WeatherService.GeoNames(station); //"EFHF";
+
+  GeoNames.getWeather(function(error, weather) {
+    /* Toto funguje trochu jako signály. Tento kód bude spuštěn, kdykoliv budeme
+       mít informaci o počasí. */
+    if (error) {
+      label2.set_text("Suggested ICAO station does not exist Try EFHF");
+    return; }
+    weatherIcon.file = GeoNames.getIcon(weather);
+
+    label1.set_text("Temperature is " + weather.weatherObservation.temperature + " degrees.");
+    if (weather.weatherObservation.weatherCondition !== "n/a"){
+      label2.set_text("Looks like there is " + weather.weatherObservation.weatherCondition + " in the sky.");
+      }
+    else {
+      label2.set_text("Looks like there is " + weather.weatherObservation.clouds + " in the sky.");
+    }
+    label3.set_text("Windspeed is " + weather.weatherObservation.windSpeed + " m/s")
+    // ...
+  });
+}
+</code>
+  <p>Tato funkce je určena k ptaní se na informace o počasí a k odpovídající aktualizaci popisků a ikon. Na začátku této funkce získáme vstup od uživatele udávající, na co se ptát. Takže zde konečně poprvé použijeme naši vlastní knihovnu a přiřadíme ji do proměnné <code>GeoNames</code>. Jakmile přiřadíme <code>WeatherService</code>, předáme ji obsluhu. První co uděláme v GeoNames, je dotaz na počasí. Vše, co se stane po <code>GeoNames.getWeather(function(error, weather)</code>, může být jen to, že dostaneme chybovou zprávu nebo informace o počasí. Pokud nic z toho nedorazí, bude zbytek programu normálně fungovat, včetně <code>main_Quit</code>.</p>
+  </section>
+
+  <section id="connectingbuttons">
+  <title>Připojení signálů k tlačítkům a vstupním polím</title>
+  <code mime="application/javascript" style="numbered">
+entry.connect("key_press_event", function(widget, event) {
+  if (entry.get_text().length === 4) {
+    // To už by stačilo
+    getWeatherForStation();
+  }
+  return false;
+});
+
+button1.connect("clicked", function(){
+  getWeatherForStation();
+});</code>
+  <p>A nakonec zde máme propojení, která zajistí, že celá aplikace poběží jak má. Propojíme vstupní pole a tlačítko, aby dělali to stejné, získali informace o počasí. Nebude tak záležet na tom, jestli zmáčknete <key>Enter</key> nebo kliknete na tlačítko <gui>search</gui>.</p>
+  </section>
+
+  <section id="weatherapp.js">
+  <title>Weatherapp.js</title>
+  <p>Soubor Weatherapp.js vypadá nějak takto:</p>
+  <code mime="application/javascript" style="numbered">
+#!/usr/bin/gjs
+// Předchozí řádek je tzv. "hash bang", který říká, jak skript spustit
+// Upozorňujeme, že skript musí být spustitelný
+// (v terminálu ve správné složce proveďte: chmod +x název_skriptu)
+
+var Gtk = imports.gi.Gtk;
+
+const WeatherService = imports.geonames;
+// Připraví vaši vlastní knihovnu ze stejné složky (nastaveno v GJS_PATH)
+// Pokud používáte autotools, .desktop se o to postará
+
+// Inicializuje GTK
+Gtk.init(null, 0);
+// Vytvoří okno, pojmenuje jej a napojí tlačítko „X“ na funkci pro ukončení
+// Pamatujte, že „window“ je rezervované slovo
+var weatherwindow = new Gtk.Window({type: Gtk.WindowType.TOPLEVEL});
+weatherwindow.title = "Todays weather";
+// Okno přijímá jen jeden widget a název. Pro sloužitější struktury slouží Gtk.boxes apod.
+weatherwindow.connect("destroy", function(){Gtk.main_quit()});
+// Zde inicializujeme ikony, ale rozhodne se až později v geonames.js.
+
+var weatherIcon = new Gtk.Image();
+
+// Nastaví nějaké popisky do vašeho okna
+var label1 = new Gtk.Label({label: ""});
+var label2 = new Gtk.Label({label: "Looking in the sky..."});
+var label3 = new Gtk.Label({label: ""});
+
+var grid = new Gtk.Grid();
+weatherwindow.add(grid);
+
+var entry = new Gtk.Entry();
+entry.set_width_chars(4);
+entry.set_max_length(4);
+var label4 = new Gtk.Label({label: "Enter ICAO station for weather: "});
+var button1 = new Gtk.Button({label: "search!"});
+
+// Nějaké počasí
+
+entry.connect("key_press_event", function(widget, event) {
+  // FIXME: Získat počasí klávesou Enter (key 13)
+  if (entry.get_text().length === 4) {
+    // To už by stačilo
+    getWeatherForStation();
+  }
+  return false;
+});
+
+button1.connect("clicked", function(){
+  getWeatherForStation();
+});
+
+function getWeatherForStation() {
+  var station = entry.get_text();
+
+  var GeoNames = new WeatherService.GeoNames(station); //"EFHF";
+
+  GeoNames.getWeather(function(error, weather) {
+    // Toto funguje trochu jako signály. Tento kód bude spuštěn, kdykoliv budeme mít informaci o počasí
+    if (error) {
+      label2.set_text("Suggested ICAO station does not exist Try EFHF");
+    return; }
+    weatherIcon.file = GeoNames.getIcon(weather);
+
+    label1.set_text("Temperature is " + weather.weatherObservation.temperature + " degrees.");
+    if (weather.weatherObservation.weatherCondition !== "n/a"){
+      label2.set_text("Looks like there is " + weather.weatherObservation.weatherCondition + " in the sky.");
+      }
+    else {
+      label2.set_text("Looks like there is " + weather.weatherObservation.clouds + " in the sky.");
+    }
+    label3.set_text("Windspeed is " + weather.weatherObservation.windSpeed + " m/s")
+    // ...
+  });
+}
+
+grid.attach(label4, 2, 1, 1, 1);
+grid.attach_next_to(label1,label4,3,1,1);
+grid.attach_next_to(label2,label1,3,1,1);
+grid.attach_next_to(label3,label2,3,1,1);
+grid.attach_next_to(entry,label4,1,1,1);
+grid.attach_next_to(button1,entry,1,1,1);
+grid.attach_next_to(weatherIcon,label2,1,1,1)
+weatherwindow.show_all();
+// A spustí ji
+Gtk.main();
+</code>
+  <p>Nechte běžet, dokud nebudou připravené všechny soubory autotools:</p>
+
+  <screen> <output style="prompt">$ </output><input> GJS_PATH=`pwd` gjs weatherapp.js</input></screen>
+  <p>Tento příkaz použijte v terminálu při vývoji svých modulů. Když zavoláte svůj program tímto způsobem, bude vědět, kde má hledat vaše vlastí knihovny v jazyce JavaScript, v tomto případě geonames.js.</p>
+
+  </section>
+</page>

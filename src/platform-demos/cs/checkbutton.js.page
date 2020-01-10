@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="checkbutton.js" xml:lang="cs">
+  <info>
+  <title type="text">CheckButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-06-12" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Políčko, které může být zaškrtnuté nebo nezaškrtnuté</desc>
+  </info>
+
+  <title>CheckButton</title>
+  <media type="image" mime="image/png" src="media/checkbutton.png"/>
+  <p>Tato aplikace má widget CheckButton. Je-li políčko zaškrtnuté, nebo ne, ovlivňuje, jestli je něco zobrazeno v záhlaví okna, nebo ne.</p>
+  <p>Když políčko zaškrtnete nebo zaškrtnutí zrušíte, vyšle signál <code>"toggled"</code>. Když je zaškrtnuté, je vlastnost <code>"active"</code> nastavena na <code>true</code>. Když není, vrátí test této vlastnosti hodnotu <code>false</code>.</p>
+    <links type="section"/>
+
+  <section id="imports">
+    <title>Importované knihovny</title>
+    <code mime="application/javascript">
+#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+</code>
+    <p>Toto jsou knihovny, které potřebujeme naimportovat, aby aplikace běžela. Pamatujte si, že řádek, který GNOME říká, že používáme Gjs, musí být vždy na začátku.</p>
+    </section>
+
+  <section id="applicationwindow">
+    <title>Vytvoření okna aplikace</title>
+    <code mime="application/javascript">
+class CheckButtonExample {
+    // Vytvoří vlastní aplikaci
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jscheckbutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Napojí signály "activate" a "startup" k funkcím zpětného volání
+    this.application.connect('activate', this._onActivate.bind(this));
+    this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Funkce zpětného volání pro signál "activate", která zobrazí okno při aktivaci
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Funkce zpětného volání pro signál "startup", která sestaví uživatelské rozhraní
+    _onStartup() {
+        this._buildUI ();
+    }
+</code>
+    <p>Všechen kód této ukázky je ve třídě <code>CheckButtonExample</code>. Výše uvedený kód vytvoří <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pro naše widgety a okno, ve kterém budou.</p>
+    <code mime="application/javascript">
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 100,
+            default_width: 300,
+            border_width: 10,
+            title: "CheckButton Example"});
+</code>
+    <p>Funkce <code>_buildUI</code> je místo, ze kterého voláme všechen kód, který vytváří uživatelské rozhraní aplikace. Prvním krokem je vytvoření nového <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link>, do kterého vložíme všechny naše widgety.</p>
+  </section>
+
+  <section id="button">
+    <title>Vytvoření widgetu CheckButton</title>
+    <code mime="application/javascript">
+        // Vytvoří zaškrtávací políčko
+        this._button = new Gtk.CheckButton ({label: "Show Title"});
+        this._window.add (this._button);
+
+        // Zajistí, že ve výchozím stavu bude zaškrtnuté
+        this._button.set_active (true);
+
+        // Napojí zaškrtávací políčko k funkci, která při přepnutí něco udělá
+        this._button.connect ("toggled", this._toggledCB.bind(this));
+</code>
+    <p>Tento kód vytvoří vlastní zaškrtávací políčko. Popisek vedle něj je vytvořen udáním vlastnosti <code>label</code> zaškrtávacího políčka a přiřazením řetězcové hodnoty do něj. Protože toto zaškrtávací políčko přepíná, zda má okno v záhlaví název a na začátku jej má, chceme aby políčko bylo ve výchozím stavu zaškrtnuté. Kdykoliv uživatel jeho zaškrtnutí změní, zavolá se funkce <code>_toggledCB</code>.</p>
+    <code mime="application/javascript">
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    }
+</code>
+    <p>Tento kód dokončí vytváření uživatelského rozhraní tím, že řekne oknu, aby zobrazilo sebe a všechny své synovské widgety (což je v tomto případě jen zaškrtávací políčko).</p>
+  </section>
+
+  <section id="function">
+    <title>Funkce, která zpracovává přepnutí zaškrtávacího políčka</title>
+    <code mime="application/javascript">
+    _toggledCB() {
+
+        // Zobrazí a skryje obsah záhlaví okna při přepnutí zaškrtávacího políčka
+        if (this._button.get_active() == true)
+            this._window.set_title ("CheckButton Example");
+        else
+            this._window.set_title ("");
+
+    }
+
+};
+</code>
+    <p>Když se je zrušeno zaškrtnutí zaškrtávacího políčka, chceme aby zmizel název na záhlaví okna. Až je zase zaškrtnuto, chceme, aby se znovu objevil. To, v jakém je stavu, můžeme říci po otestování, jestli je aktivní (zaškrtnuté) nebo ne. K funkčnosti nám stačí jednoduchý výraz <code>if</code>/<code>else</code>, který zavolá metodu <code>get_active()</code> zaškrtávacího políčka.</p>
+    <code mime="application/javascript">
+// Spustí aplikaci
+let app = new CheckButtonExample ();
+app.application.run (ARGV);
+</code>
+    <p>Nakonec vytvoříme novou instanci výsledné třídy CheckButtonExample a aplikaci spustíme.</p>
+  </section>
+
+  <section id="complete">
+    <title>Úplný kód ukázky</title>
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const Gtk = imports.gi.Gtk;
+
+class CheckButtonExample {
+
+    // Vytvoří vlastní aplikaci
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jscheckbutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+        });
+
+    // Napojí signály "activate" a "startup" k funkcím zpětného volání
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Funkce zpětného volání pro signál "activate" zobrazujicí okno při aktivaci
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Funkce zpětného volání pro signál "startup" sestavující uživatelské rozhraní
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Sestaví uživatelské rozhraní aplikace
+    _buildUI() {
+
+        // Vytvoří okno aplikace
+        this._window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            default_height: 100,
+            default_width: 300,
+            border_width: 10,
+            title: "CheckButton Example"});
+
+        // Vytvoří zaškrtávací políčko
+        this._button = new Gtk.CheckButton ({label: "Show Title"});
+        this._window.add (this._button);
+
+        // Zajistí, že ve výchozím stavu bude zaškrtnuté
+        this._button.set_active (true);
+
+        // Napojí zaškrtávací políčko k funkci, která při přepnutí něco udělá
+        this._button.connect ("toggled", this._toggledCB.bind(this));
+
+        // Zobrazí okno a všechny jeho synovské widgety
+        this._window.show_all();
+    },
+
+
+
+    _toggledCB: function () {
+
+        // Zobrazí a skryje obsah záhlaví okna při přepnutí zaškrtávacího políčka
+        if (this._button.get_active() == true)
+            this._window.set_title ("CheckButton Example");
+        else
+            this._window.set_title ("");
+
+    }
+
+};
+
+// Spustí aplikaci
+let app = new CheckButtonExample ();
+app.application.run (ARGV);
+</code>
+  </section>
+
+  <section id="in-depth">
+    <title>Dokumentace jdoucí do hloubky</title>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CheckButton.html">Gtk.CheckButton</link></p></item>
+</list>
+  </section>
+</page>

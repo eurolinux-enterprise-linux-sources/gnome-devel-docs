@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -48,33 +48,32 @@
     <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
     <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const PanedExample = new Lang.Class ({
-    Name: 'Paned Example',
+class PanedExample {
 
-    // Δημιουργία της ίδιας της εφαρμογής
-    _init: function () {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application({ application_id: 'org.example.panedexample' });
 
-       // Σύνδεση σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+       // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Συνάρτηση επανάκλησης για το σήμα 'activate' παριστάνει παράθυρα όταν είναι ενεργή
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
         this.window.present();
-    },
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' κατασκευάζει τη γραφική διεπαφή
-    _onStartup: function () {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
-    // Κατασκευή της γραφικής διεπαφής της εφαρμογής
-    _buildUI: function() {
+    // Build the application's UI
+    _buildUI() {
         // Create the application window
         this.window = new Gtk.ApplicationWindow  ({ application: this.application,
                                                     window_position: Gtk.WindowPosition.CENTER,
@@ -83,28 +82,28 @@ const PanedExample = new Lang.Class ({
                                                     default_height: 350,
                                                     border_width: 10 });
 
-        // ένα νέο γραφικό στοιχείο με δύο ρυθμίσιμα παράθυρα,
-        // ένα στα αριστερά και ένα στα δεξιά
+        // a new widget with two adjustable panes,
+        // one on the left and one on the right
         this.paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL);
 
-        // δύο εικόνες
+        // two images
         this.image1 = new Gtk.Image();
         this.image1.set_from_file("gnome-image.png");
         this.image2 = new Gtk.Image();
         this.image2.set_from_file("tux.png");
 
-        // προσθήκη της πρώτης εικόνας στο αριστερό παράθυρο
+        // add the first image to the left pane
         this.paned.add1(this.image1);
         // add the second image to the right pane
         this.paned.add2(this.image2)
 
-        // προσθήκη των φατνωμάτων στο παράθυρο
+        // add the panes to the window
         this.window.add(this.paned)
         this.window.show_all();
     }
-});
+};
 
-// εκτέλεση της εφαρμογής
+// Run the application
 let app = new PanedExample();
 app.application.run (ARGV);
 </code>

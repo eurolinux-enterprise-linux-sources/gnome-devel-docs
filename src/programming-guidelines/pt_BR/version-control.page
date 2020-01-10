@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="version-control" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="index#general-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Controle de versão de código-fonte com git</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Controle de versão</title>
+
+  <synopsis>
+    <title>Resumo</title>
+
+    <p>git é usado para controle de versão para todos os projetos do GNOME. Essa página presume que tenha um bom conhecimento em trabalhar com git; algum material introdutório está disponível <link href="https://www.atlassian.com/git/tutorials/">aqui</link> e um <link href="https://training.github.com/kit/downloads/github-git-cheat-sheet.pdf">folha de dica está aqui</link>.</p>
+
+    <list>
+      <item><p>Faça commits atômicos e reversíveis. (<link xref="#guidelines-for-making-commits"/>)</p></item>
+      <item><p>Inclua toda a fundamentação nas mensagens de commit, junto com links para especificações e relatórios de erros relevantes. (<link xref="#guidelines-for-making-commits"/>)</p></item>
+      <item><p>Mantenha alterações grandes, como renomeações, em commits separados. (<link xref="#guidelines-for-making-commits"/>)</p></item>
+      <item><p>Mescle alterações de ramos de recursos por meio de rebase. (<link xref="#use-of-git"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="use-of-git">
+    <title>Uso do Git</title>
+
+    <p>A maioria dos repositórios do GNOME seguem essas regras:</p>
+    <list>
+      <item><p>Nenhum push forçado. Exceto para ramos com o prefixo <code>wip/</code> (trabalho em progress), o histórico de commits não deve ser modificado, pois contribuidores dependem dele.</p></item>
+      <item><p>Faça rebase nos commits em vez de merge, para ter um histórico linear (que é mais fácil de seguir).</p></item>
+      <item><p>Trabalhe em ramos de recursos no git do GNOME em ramos <code>wip/</code> e então aplique rebase no master e merge em fast-foward nas alterações. Também é uma boa prática adicionar seu apelido ao nome do ramo, como <code>wip/apelido/recurso</code>.</p></item>
+      <item><p>Oculte “<link href="https://sethrobertson.github.io/GitBestPractices/#sausage">fazimento de salsicha</link>” (do inglês, “sausage making”) compactando commits antes de mesclá-los.</p></item>
+    </list>
+  </section>
+
+  <section id="guidelines-for-making-commits">
+    <title>Diretrizes para fazer commits</title>
+
+    <p>Commits devem ser tão pequenos quanto possível, mas não menores. Cada commit deve resolver um único problema, contendo apenas alterações relacionadas àquele problema. A mensagem para cada commit deve descrever o problema, explicar o que o causa e explicar como ele foi corrigido, se isso não foi óbvio. Se o commit está associado com um relatório de erro, a URI completa para o relatório de erro deve ser colocado em uma linha dedicada na parte inferior da mensagem de commit. Similarmente, o ID para o commit do git (do <cmd>git log --oneline</cmd>) deve ser compiado para o relatório de erro uma vez que o commit tenha sido enviado, com push, de forma que seja fácil localizar um por meio do outro.</p>
+
+    <p>As alterações em cada commit devem ser fáceis de ler. Por exemplo, eles não devem desnecessariamente alterar espaços em branco e recuo. Alterações grandes e mecânicas, tal como renomear um arquivo ou função, devem ser colocadas em commits separados das modificações do código dentro daquele arquivo ou função, de forma que as alterações posteriores não sejam enterradas ou perdidas na anterior.</p>
+
+    <p>Os princípios a seguir fundamentam todos os conselhos acima:</p>
+    <list>
+      <item><p>Cada commit deve levar o repositório a partir de um estado de trabalho para outro, do contrário <link href="http://git-scm.com/book/en/v2/Git-Tools-Debugging-with-Git#Binary-Search">bissecção</link> é impossível.</p></item>
+      <item><p>Cada commit deve ser individualmente reversível. Se posteriormente o commit acabar sendo uma ideia ruim, <cmd>git revert <var>ID do commit</var></cmd> deve levar o repositório de um estado de trabalho para outro.</p></item>
+      <item><p>A fundamentação de cada commit, e sua relação com recursos externos como especificações e relatórios de erro, deve estar clara de forma que aqueles commits escritos por um desenvolvedor no passado devem ainda ser entendíveis por um segundo desenvolvedor sem ter que seguir todo rastro de alterações e descobrir o que eles fazem.</p></item>
+      <item><p>Cada commit deve ser escrito uma vez e projetado para ser lido muitas vezes, por muitos revisores e futuros programadores.</p></item>
+    </list>
+  </section>
+
+  <section id="merging-procedure">
+    <title>Procedimento de mesclagem</title>
+
+    <p>Para mesclar um ramo de recursos chamado <code>meu-ramo</code> no master, use os seguintes comandos:</p>
+    <code mime="application/x-shellscript">
+git checkout master
+git pull
+
+git checkout wip/<var>meu-ramo</var>
+git rebase --interactive master
+# Certifique-se que o rebase funcione com sucesso; teste as alterações
+
+git checkout master
+git merge wip/<var>meu-ramo</var>
+git push
+
+# wip/<var>meu-ramo</var> agora pode ser excluído
+git push origin :wip/<var>meu-ramo</var>
+git branch -D wip/<var>meu-ramo</var></code>
+  </section>
+
+  <section id="external-links">
+    <title>Links externos</title>
+
+    <list>
+      <item><p><link href="https://sethrobertson.github.io/GitBestPractices/">Melhores práticas com git</link></p></item>
+      <item><p><link href="https://help.github.com/categories/using-git/">Perguntas frequentes do git</link></p></item>
+      <item><p><link href="https://www.atlassian.com/git/tutorials/">Tutorial de git do Atlassian</link></p></item>
+      <item><p><link href="http://git-scm.com/docs/gittutorial">Tutorial oficial do git</link></p></item>
+      <item><p><link href="https://try.github.io/">Tutorial interativo de git</link></p></item>
+      <item><p><link href="http://www.git-tower.com/learn/">Tutorial git-tower</link></p></item>
+    </list>
+  </section>
+</page>

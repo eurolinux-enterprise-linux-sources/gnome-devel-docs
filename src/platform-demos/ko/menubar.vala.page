@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.vala" xml:lang="ko">
+  <info>
+  <title type="text">MenuBar (Vala)</title>
+  <link type="guide" xref="beginner.vala#menu-combo-toolbar"/>
+  <link type="seealso" xref="aboutdialog.vala"/>
+  <link type="seealso" xref="gmenu.vala"/>
+    <revision version="0.1" date="2012-05-25" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>GtkMenuItem 위젯을 가진 위젯</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>MenuBar</title>
+  <media type="image" mime="image/png" src="media/menubar.png"/>
+  <p>XML과 GtkBuilder로 만든 MenuBar입니다.</p>
+
+  <links type="section"/>
+
+  <section id="xml"> <title>XML로 MenuBar 만들기</title>
+   <p>XML로 메뉴 표시줄을 만들려면:</p>
+   <steps>
+     <item><p>원하는 텍스트 편집기로 <file>menubar.ui</file> 파일을 만드십시오.</p></item>
+     <item><p>다음 줄을 파일 상단에 입력합니다:</p>
+           <code mime="application/xml">
+&lt;?xml version="1.0"? encoding="UTF-8"?&gt;</code>
+     </item>
+    <item><p>메뉴 표시줄과 하위 메뉴를 넣을 인터페이스를 만들겠습니다. 메뉴 표시줄에는 <gui>파일</gui>, <gui>편집</gui>, <gui>선택</gui> and <gui>도움말</gui> 하위 메뉴를 넣겠습니다. 다음 XML 코드를 파일에 넣겠습니다:</p>
+    <code mime="application/xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+     </item>
+     <item><p>이제 .vala 파일을 만들고 방금 추가한 <file>menubar.ui</file> 파일을 GtkBuilder를 사용하여 임포팅하겠습니다.</p></item>
+   </steps>
+   </section>
+   <section id="basis"> <title>GtkBuilder로 창에 MenuBar 추가하기</title>
+<code mime="text/x-csharp">public class MyWindow : Gtk.ApplicationWindow {
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "MenuBar Example");
+		this.set_default_size (200, 200);
+	}
+}
+
+class MyApplication: Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+	protected override void startup () {
+		base.startup ();
+
+		/* Setup menubar. */
+		/* Get the UI file. */
+		var builder = new Gtk.Builder ();
+		try {
+			builder.add_from_file ("menubar_basis.ui");
+		/* Handle the exception. */
+		} catch (Error e) {
+			error ("Unable to load file: %s", e.message);
+		}
+
+		/* Get the menubar from the builder. */
+		this.menubar = builder.get_object ("menubar") as MenuModel;
+	}
+}
+
+/* main creates and runs the application. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>이제 vala 파일을 컴파일하고 실행하십시오. 프로그램은 페이지 상단의 사진과 같은 모습이 나타납니다.</p>
+</section>
+
+
+
+<section id="xml2"> <title>항목을 메뉴에 추가하기</title>
+<p><gui>파일</gui> 메뉴에 <gui>새로 만들기</gui>와 <gui>끝내기</gui> 메뉴 항목 2개 추가로 시작하겠습니다. <code>파일</code> 하위 메뉴에 이 항목과 <code>section</code>을 추가하면 됩니다. <file>menubar.ui</file> 파일은 다음과 같이 나타나야 합니다(6번째 줄부터 13번째 줄까지 새로 추가한 섹션 구성이 들어갑니다):</p>
+      <code mime="application/xml" style="numbered">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name ="label"&gt;Quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;</code>
+
+<p>이 방식을 따라 <code>편집</code> 하위 메뉴로 <code>복사</code> 와 <code>붙여넣기</code> 를 추가하고, <code>Help</code> 하위 메뉴에 <code>정보</code>를 추가할 수 있습니다. 다음 따라하기 지침을 진행할 때까지 <link xref="menubar.vala#choices">선택 하위 메뉴</link>로의 항목 추가를 보류하겠습니다.</p>
+
+<note style="tip"><p>UI 파일만 바꾸었다면 vala 프로그램을 다시 컴파일할 필요는 없습니다. 그냥 이전에 컴파일한 프로그램을 실행만 하시면 사용자 인터페이스를 반영합니다.</p></note>
+</section>
+
+<section id="actions"><title>설정 동작</title>
+<p>세 단계로 이루어집니다.</p>
+<steps>
+  <item><p>우선 MyApplication 클래스에 ActionEntry 배열을 만들겠습니다. ActionEntry 구성은 다음과 같습니다:</p>
+  <list>
+    <item><p>"동작 이름"(필수)</p></item>
+    <item><p>동작의 "activate" 시그널에 연결하는 콜백 함수(가능하다면)</p></item>
+    <item><p>동작에 대한 활성화 함수로 전달할 매개변수 형식(가능하다면)</p></item>
+    <item><p>동작의 초기 상태(가능하다면)</p></item>
+    <item><p>"change-state" 시그널에 연결할 콜백 함수(가능하다면)</p></item>
+  </list>
+   <code mime="text/x-csharp">
+const ActionEntry[] actions = {
+    { "new", new_cb }, // {"action name", callback_function}
+    { "quit", quit_cb }
+};</code>
+
+  </item>
+  <item><p>두번째로 연결할 동작의 콜백 함수를 만들겠습니다.</p>
+  <code mime="text/x-csharp">
+void new_cb (SimpleAction action, Variant? parameter) {
+    print ("You clicked \"New\"\n");
+    //new MyWindow (this).show ();
+}
+
+void quit_cb (SimpleAction action, Variant? parameter) {
+    print ("You clicked \"Quit\"\n");
+    this.quit ();
+}</code>
+ </item>
+  <item><p>마지막으로, "action" 속성을 추가하여 XML 파일의 동작에 메뉴 항목을 연결하겠습니다:</p>
+    <code mime="application/xml">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+&lt;/item&gt;
+&lt;item&gt;
+  &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+&lt;/item&gt;</code>
+ </item>
+</steps>
+</section>
+
+
+<section id="choices"><title>상태가 들어간 선택 하위 메뉴 및 항목</title>
+  <media type="image" mime="image/png" src="media/menubar_choices.png"/>
+  <p>30줄부터 80줄 까지 <link xref="menubar.vala#xml-code"/>가 들어간 부분에서 <gui>선택</gui> 메뉴 사용자 인터페이스를 만드는 XML 코드를 시연하고 있습니다.</p>
+</section>
+
+<section id="win-app"><title>동작: 프로그램 또는 창?</title>
+  <p>위에서 MyApplication 클래스의 "new"와 "open" 동작을 만들었습니다. 프로그램 자체를 다루는 "quit" 같은 동작은 비슷하게 만듭니다.</p>
+
+  <p>"copy"나 "paste" 같은 창을 다루는 일부 동작은, 프로그램에 넣지 않습니다. 창 동작은 창 클래스 부분에 만들어야합니다.</p>
+
+  <p>완전한 예제 파일에는 프로그램 동작과 창 프로그램이 들어있습니다. 창 동작은 보통 <link xref="gmenu.vala">프로그램 메뉴</link>에도 들어있습니다. 창 동작을 프로그램 메뉴에 넣는건 별로 좋은 습관이 아닙니다. 시연 목적으로 "New"와 "Open" 항목이 들어간 프로그램 메뉴를 만드는 UI 파일에 들어간 XML의 내용을 따르며, 동일한 이름을 지닌 메뉴 표시줄 항목 처럼 동일한 동작을 실행합니다.</p>
+
+
+</section>
+
+  <section id="xml-code"><title>이 예제의 완전한 XML UI 파일</title>
+<code mime="application/xml" style="numbered">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Copy&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.copy&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Paste&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.paste&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+      &lt;submenu&gt;
+        &lt;attribute name="label"&gt;Shapes&lt;/attribute&gt;
+          &lt;section&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Line&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;line&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Triangle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;triangle&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Square&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;square&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Polygon&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;polygon&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Circle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;circle&lt;/attribute&gt;
+            &lt;/item&gt;
+          &lt;/section&gt;
+      &lt;/submenu&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;On&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;on&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Off&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;off&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Awesome&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.awesome&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;About&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.about&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+  &lt;menu id="appmenu"&gt;
+    &lt;section&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+      &lt;/item&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+      &lt;/item&gt;
+    &lt;/section&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+  </section>
+  <section id="vala-code"><title>이 예제에 대한 완전한 Vala 파일입니다</title>
+<code mime="text/x-csharp" style="numbered">public class MyWindow : Gtk.ApplicationWindow {
+
+	/* Callback functions for the window actions. */
+	void copy_cb (SimpleAction action, Variant? parameter) {
+		print ("\"Copy\" activated\n");
+	}
+
+	void paste_cb (SimpleAction action, Variant? parameter) {
+		print ("\"Paste\" activated\n");
+	}
+
+	void shape_cb (SimpleAction action, Variant? parameter) {
+		print ("shape is set to %s\n", parameter.get_string(null));
+		action.set_state (parameter);
+	}
+
+	/* Create the window actions. */
+	const ActionEntry[] actions = {
+		/*{ "action name", cb to connect to "activate" signal, parameter type,
+		     initial state, cb to connect to "change-state" signal } */
+		{ "copy", copy_cb },
+		{ "paste", paste_cb },
+		{ "shape", shape_cb, "s", "'line'"}
+	};
+
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "MenuBar Example");
+		this.set_default_size (200, 200);
+
+		/* Setup window actions. */
+		this.add_action_entries (actions, this);
+	}
+}
+
+class MyApplication: Gtk.Application {
+	protected override void activate () {
+		new MyWindow (this).show ();
+	}
+
+	/* Callback functions for the application actions. */
+	void new_cb (SimpleAction action, Variant? parameter) {
+		//new MyWindow (this).show ();
+		print ("You clicked \"New\"\n");
+	}
+
+	void quit_cb (SimpleAction action, Variant? parameter) {
+		print ("You clicked \"Quit\"\n");
+		this.quit ();
+	}
+
+	void awesome_cb (SimpleAction action, Variant? parameter) {
+		var active = action.get_state ().get_boolean ();
+		action.set_state (new Variant.boolean (!active));
+		if (active)
+			print ("You unchecked \"Awesome\"\n");
+		else
+			print ("You checked \"Awesome\"\n");
+	}
+
+	void state_cb (SimpleAction action, Variant? parameter) {
+		print ("state is set to %s\n", parameter.get_string(null));
+		action.set_state (parameter);
+	}
+
+	/* Create the application actions. */
+	const ActionEntry[] actions = {
+		{ "new", new_cb },
+		{ "quit", quit_cb },
+		{ "awesome", awesome_cb, null, "false" },
+		{ "state", state_cb, "s", "'off'" }
+	};
+
+	protected override void startup () {
+		base.startup ();
+
+		/* Setup application actions. */
+		this.add_action_entries (actions, this);
+
+		/* Setup menubar and app_menu. */
+		/* Get the UI file. */
+		var builder = new Gtk.Builder ();
+		try {
+			builder.add_from_file ("menubar.ui");
+		} catch (Error e) {
+			error ("Unable to load file: %s", e.message);
+		}
+
+		/* Get the menubar from the builder. */
+		this.menubar = builder.get_object ("menubar") as MenuModel;
+
+		/* Get the app_menu from the builder. */
+		this.app_menu = builder.get_object ("appmenu") as MenuModel;
+	}
+}
+
+/* main creates and runs the application. */
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+  </section>
+
+  <section id="mnemonics"><title>접근 키</title>
+    <p>레이블에는 접근 키가 들어갈 수 있습니다. 접근 키는 키보드로 탐색할 때 활용하는 레이블에 밑줄이 들어간 문자입니다. 접근 키는 접근키 문자 앞에 밑줄을 넣어 만듭니다. 예를 들어 menubar.ui 레이블 속성에서 "File" 대신 "_File"을 넣습니다.</p>
+   <p>접근키는 <key>Alt</key> 키를 누르면 나타납니다. <keyseq><key>Alt</key><key>F</key></keyseq> 키를 누르면 <gui>파일</gui> 메뉴가 나타납니다.</p>
+  </section>
+
+  <section id="accelerators"><title>가속키</title>
+    <p>가속키는 UI 정의에 분명하게 추가할 수 있습니다. 예를 들어 일반적으로 프로그램을 끝내는 동작은 <keyseq><key>Ctrl</key><key>Q</key></keyseq> 키를 눌러 진행할 수 있고, 또는 파일을 저장하는 동작은 <keyseq><key>Ctrl</key><key>S</key></keyseq> 키를 눌러 진행할 수 있습니다. UI 정의에 가속키를 추가하려면 간단하게 항목의 "accel" 속성 값을 추가하면 됩니다.</p>
+<p><code mime="application/xml">&lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;</code> 구문은 <code>Quit</code> 레이블 항목에 추가할 <keyseq><key>Ctrl</key><key>Q</key></keyseq> 키 조합 입력을 만듭니다. 여기서, "Primary"는 PC의 <key>Ctrl</key>키 또는 맥의 <key>⌘</key> 키를 따릅니다.</p>
+
+  <code mime="application/xml">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;_Quit&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+  &lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;
+&lt;/item&gt;</code>
+  </section>
+
+  <section id="translatable"><title>번역할 문자열</title>
+   <p>그놈 프로그램은 <link href="http://l10n.gnome.org/languages/">다양한 언어</link>로 번역하기에 프로그램 문자열을 번역할 수 있게 만들어 두는게 중요합니다. 레이블을 번역할 수 있게 하려면 간단히 <code>translatable="yes"</code>를 설정하십시오:</p>
+   <p><code mime="application/xml">&lt;attribute name="label" translatable="yes"&gt;Quit&lt;/attribute&gt;</code></p>
+  </section>
+  <section id="documentation"><title>관련 API 문서</title>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://valadoc.org/gio-2.0/GLib.ActionEntry.html">Glib.ActionEntry</link></p></item>
+  <item><p><link href="http://valadoc.org/gio-2.0/Gtk.Builder.html">Gtk.Builder</link></p></item>
+</list>
+</section>
+
+
+<section id="exercises"><title>연습 예제</title>
+  <xi:include href="exercises/menubar.vala.exercises"><xi:fallback/></xi:include>
+</section>
+</page>

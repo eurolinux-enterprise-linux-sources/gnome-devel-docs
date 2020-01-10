@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="button-menus" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="button-menus" xml:lang="es">
 
   <info>
     <credit type="author">
       <name>Allan Day</name>
       <email>aday@gnome.org</email>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/button-menu.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2014</mal:years>
+      <mal:years>2011 - 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Alex Puchades</mal:name>
+      <mal:email>alex94puchades@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -41,7 +51,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Oscar Rafael Arachi</mal:name>
       <mal:email>arachi910@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014 - 2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -103,30 +113,36 @@
       <mal:email>garciag.omar91@gmail.com</mal:email>
       <mal:years>2015</mal:years>
     </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Edilberto Huerta Niño</mal:name>
+      <mal:email>edilberto.huerta0290@gmail.com</mal:email>
+      <mal:years>2015</mal:years>
+    </mal:credit>
   </info>
 
 <title>Botones de menú</title>
 
-<p>A menu that is opened by pressing a button. They can be incorporated into a range of container widgets, such as header bars, action bars, sidebars or toolbars. <link xref="header-bar-menus">Header bar menus</link> are the most common example.</p>
+<p>Un menú que aparece pulsando un botón. Pueden incorporarse en diferentes contenedores de widgets, tales como barras de cabecera, barras de acción, barras laterales o barras de herramientas. Los <link xref="header-bar-menus">menús de barra de cabecera</link> son el ejemplo más común.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/button-menu.svg"/>
 
 <section id="when-to-use">
 <title>Cuándo usarlas</title>
 
-<p>A menu button is a way to present additional actions or options. They are appropriate when it is necessary to provide secondary actions or options which cannot be comfortably incorporated into your primary user interface. There are two primary types of button menu:</p>
+<p>Un botón de menú es una forma de presentar acciones u opciones adicionales. Están indicadas cuando sea necesario presentar una serie de acciones u opciones secundarias que no puedan incorporarse de manera adecuada en la interfaz principal de usuario. Hay dos tipos principales de botones de menú:</p>
 
 <list>
-<item><p><em style="strong">Overflow menus</em>: here, the button menu serves as an extension of an existing set of controls. This can be seen in the example of <link xref="header-bar-menus">header bar menus</link>, where the menu acts a continuation of the controls presented in the header bar itself. This approach can be applied to other containers, such as action bars. These generic button menus can contain a variety of miscellaneous items that relate to the context of the menu.</p></item>
-<item><p><em style="strong">Single purpose menus</em>: these provide actions and/or options for a specific area of functionality. In the same way that a menu bar presents a series of menus on different topics, so individual menu buttons can present groups of functionality, such as editing, changing the view, or providing navigation controls.</p></item>
+<item><p><em style="strong">Menús flotantes</em>: aquí, el botón del menú sirve como una extensión de un conjunto de controles existente. Esto se puede ver en el ejemplo de <link xref="header-bar-menus">menús de barra de cabecera</link>, donde el menú actúa como una continuación de los controles presentados en la propia barra de cabecera. Esto se puede aplicar a otros contenedores, como las barras de acción. Estos botones de menú genéricos pueden contener una amplia variedad de elementos relativos al contexto del menú.</p></item>
+<item><p><em style="strong">Menús de propósito único</em>: proporcionan acciones y/u opciones para una área de funcionalidad específica. De la misma manera en que una barra de menú presenta una serie de menús de diferentes tipos, los botones de menú individuales puede presentar grupos de funcionalidad, tales como edición, cmabiar la vista o proporcionar controles de navegación.</p></item>
 </list>
 
-<p>Menus provide a clear and consistent way to present diverse sets of actions and settings. At the same time, a popover with embedded controls, like buttons, sliders, spin buttons, lists and text entries, can provide a more effective interface for many tasks.</p>
+<p>Los menús proporcionan una manera clara y consistente de mostrar diversos conjuntos de acciones y configuraciones. Al mismo tiempo, una ventana emergente con controles integrados, tales como botones, deslizadores, botones incrementales, listas y entradas de texto puede proporcionar una interfaz más efectiva para muchas tareas.</p>
 
 <list>
-<item><p>Evaluate each function within a button menu, in order to decide whether it would be better served by a different <link xref="ui-elements">user interface element</link>. While simple actions or settings can be effectively represented by menu items, others cannot. In particular, sliders, spin buttons, switches and text entries provide functionality that cannot be easily reproduced with a menu. Likewise, some entries might be better represented as icons rather than text - in which case, buttons could be more appropropriate than a menu.</p></item>
-<item><p>If a menu button contains a small number of items that can be more effectively represented as a group of controls, a popover containing different interface elements can be a more interesting and efficient user interface. However, this approach can easily become over-complex for larger and more diverse button menus.</p></item>
-<item><p>A menu button can be combined with a small number of other interface elements, such as buttons, sliders and switches (see example below). This can enable some menu items to be presented in a more space-efficient manner, or to provide interactions that are not possible with a standard menu. However, be careful not to mix too many types of control or make the menu too complex in the process.</p></item>
+<item><p>Evalúe cada función con un menú de botón para decidir si sería mejor usar un <link xref="ui-elements">elemento de la interfaz de usuario</link>. diferente. Aunque las acciones simples o las opciones de configuración se pueden representar de manera efectiva con elementos de menú, otros elementos no. El particular, los deslizadores, botones incrementales, interruptores y entradas de texto proporcionan funcionalidad que no se puede reproducir fácilmente con un menú. Del mismo modo, algunas entradas se pueden representar mejor como iconos en lugar de como texto; en este caso, los botones pueden ser más apropiados que un menú.</p></item>
+<item><p>Si un menú contiene pocos elementos que se pueden representar de manera más efectiva como un grupo de ocntroles, una ventana emergente que contenga diferentes elementos de la interfaz puede ser más interesante y eficiente para el usuario. Sin embargo, este modelo se puede complicar fácilmente en el caso de botones de menús más grandes y diversos.</p></item>
+<item><p>Un botón de menú se puede combinar con un reducido número de elementos de la interfaz, tales como botones, deslizadores e interruptores (vea el siguiente ejemplo). Esto puede hacer que algunos elementos del menú aprovechen el espacio de manera más eficiente, o que proporcionen interacciones que no son posible con un menú estándar. Sin embargo, tenga cuidado de no mezclar muchos tipos de controles o hará que el menú sea muy complejo.</p></item>
 </list>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/hybrid-button-menu.svg"/>
@@ -134,13 +150,13 @@
 </section>
 
 <section id="general-guidelines">
-<title>General guidelines</title>
+<title>Guías Generales</title>
 
 <list>
-<item><p>Each context - whether it is a view or delineated area of your interface - should only include one generic button menu.</p></item>
-<item><p>Ensure that single purpose button menus are effectively labelled. While an icon is more compact, only use them when they will be commonly understood by your users. The <link xref="icons-and-artwork">icon usage guidelines</link> provide more advice on this.</p></item>
-<item><p>Single purpose buttons should be clearly and consistently defined. Their menu items should have an obvious relationship with the overall purpose of the menu.</p></item>
-<item><p>While multiple button menus can be used simultaneously, be careful about introducing too many disclosure points into your user interface. The more of these that you introduce, the harder it will be for users to find the controls they need, and human error will be increased.</p></item>
+<item><p>Cada contexto (si es una vista o un área delineada de tu interfaz) deberá incluir solo un botón genérico del menú.</p></item>
+<item><p>Asegúrese que los botones de propósito único estén correctamente etiquetados. A pesar de que un icono resulta más compacto, utilícelos sólo cuando esté seguro de que sus usuarios vayan a entenderlos. Las <link xref="icons-and-artwork">guías de uso de iconos</link> contienen más consejos acerca de este tema.</p></item>
+<item><p>Los botones de propósito único se deberán definir de manera clara y consistente. Sus elementos del menú deberán tener una relación obvia con el propósito general del menú.</p></item>
+<item><p>Aunque pueden usarse múltiples botones de menú simultáneamente, tenga cuidado de no introducir demasiados puntos de revelación en su interfaz de usuario. Cuantos más puntos de revelación aparezcan, más difícil será para los usuarios encontrar los controles que buscan, y las posibilidades de cometer un error aumentan.</p></item>
 </list>
 
 </section>

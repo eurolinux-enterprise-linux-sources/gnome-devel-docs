@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="progress-spinners" xml:lang="ru">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="progress-spinners" xml:lang="ru">
 
   <info>
     <credit type="author">
-      <name>Allan Day</name>
+      <name>Алан Дэй (Allan Day)</name>
       <email>aday@gnome.org</email>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/progress-spinner.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Progress spinners</title>
+<title>Индикаторы ожидания</title>
 
-<p>Progress spinners are a common user interface element for indicating progress in a task. In contrast to progress bars, they only indicate that progress is taking place, and do not display the proportion of the task that has been completed.</p>
+<p>Индикатор ожидания — это стандартный элемент пользовательского интерфейса, который показывает о выполнении некоторой задачи. В отличие от индикатора выполнения индикатор ожидания демонстрирует сам факт наличия задачи, но не показывает, какая часть задачи выполнена.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/progress-spinner.svg"/>
 
 <section id="when-to-use">
-<title>When to use</title>
+<title>Когда использовать</title>
 
-<p>A progress indication is generally needed whenever an operation takes more than around three seconds, and is necessary to indicate that an operation is really taking place. Otherwise, a user will be left in doubt whether an error has occurred.</p>
+<p>Индикатор выполнения обычно требуется, если операция занимает больше трёх секунд и необходимо явно показать, что она действительно выполняется. Иначе пользователь будет сомневаться, не произошла ли какая-нибудь ошибка.</p>
 
-<p>At the same time, progress indications are a potential source of distraction, especially when displayed for short periods of time. If an operation takes less that 3 seconds, it is better to avoid using a progress spinner, since animated elements that are shown for a very short amount of time can detract from the overall user experience.</p>
+<p>С другой стороны индикаторы выполнения могут стать источником недоразумений, особенно когда они появляются на короткое время. Если операция занимает меньше трёх секунд, лучше использовать индикатор выполнения, поскольку элементы с анимацией, которые показываются на короткое время отвлекают пользователей от работы с приложением.</p>
 
-<p>Spinners do not graphically show the degree of progress through a task, and are often better-suited for shorter operations. If the task is likely to take more than a minute, a <link xref="progress-bars">progress bar</link> might be a better choice.</p>
+<p>Индикаторы ожидания не показывают количественного выполнения задания, они лучше подходят для коротких операций. Если задание выполняется больше минуты, то вместо индикатора ожидания лучше применить <link xref="progress-bars">индикатор выполнения</link>.</p>
 
-<p>The shape of progress spinners also affects their appropriateness for different situations. Since they are effective at small sizes, spinners can be easily embedded in small user interface elements, like lists or header bars. Likewise, their shape means that they can be effective when embedded within square or rectangular containers. On the other hand, if vertical space is limited, a progress bar can be a better fit.</p>
+<p>Внешний вид индикатора ожидания определяет целесообразность применения индикатора в различных ситуациях. Индикаторы ожидания можно использовать в списках, заголовочных панелях, поскольку индикаторы имеют небольшие размеры и их легко встроить в указанные выше элементы. Их можно эффективно использовать в контейнерах квадратной и прямоугольной формы. Если вертикальная область сильно ограничена, то вместо индикатора ожидания можно применить индикатор выполнения.</p>
 
 </section>
 
@@ -32,12 +36,21 @@
 <title>Общие рекомендации</title>
 
 <list>
-<item><p>If an operation can vary in how long it takes, use a timeout to only show a progress spinner after three seconds have elapsed. A progress indication is not needed for lengths of time below this.</p></item>
-<item><p>Place progress spinners close to or within the user interface elements they relate to. If a button triggers a long-running operation, the spinner can be placed next to that button, for example. When loading content, the spinner should be placed within the area where that content will appear.</p></item>
-<item><p>Generally, only one progress spinner should be displayed at once. Avoid showing a large number of spinners simulatenously - this will often be visually overwhelming.</p></item>
-<item><p>A label can be shown next to a spinner if it is helpful to clarify the task which a spinner relates to.</p></item>
-<item><p>If a spinner is displayed for a long time, a label can indicate both the identity of the task and progress through it. This can take the form of a percentage, an indication of the time remaining or, or progress through sub-components of the task (eg. modules downloaded, or pages exported).</p></item>
+<item><p>Если время выполнения операции не определено, в течение первых трёх секунд показывайте индикатор ожидания, если этого времени недостаточно для выполнения операции, покажите индикатор выполнения. Индикатор выполнения не нужно показывать, если время выполнения операции меньше трёх секунд.</p></item>
+<item><p>Индикатор ожидания должен располагаться рядом с элементами интерфейса, с которыми он связан. Если нажатие на кнопку инициирует выполнение продолжительного действия, индикатор должен располгаться рядом с такой кнопкой. При загрузке содержимого индикатор должен располагаться в месте, в котором содержимое появится после загрузки.</p></item>
+<item><p>Generally, only one progress spinner should be displayed at once. Avoid showing a large number of spinners simultaneously - this will often be visually overwhelming.</p></item>
+<item><p>Рядом с индикатором ожидания можно расположить текстовую метку с описанием выполняемой задачи.</p></item>
+<item><p>Если индикатор ожидания долго находится на экране, в текстовой метке можно указать не только выполняемую задачу, но и этап её выполнения, который можно выразить в процентном соотношении, оставшемся времени или выполняемой подзадаче (например, «загрузка модулей», «экспортирование страниц» и т. п.).</p></item>
 </list>
 
 </section>
+
+<section id="api-reference">
+<title>API reference</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkSpinner.html">GtkSpinner</link></p></item>
+</list>
+</section>
+
 </page>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scale.py" xml:lang="cs">
+  <info>
+    <title type="text">Scale (Python)</title>
+    <link type="guide" xref="beginner.py#entry"/>
+    <link type="seealso" xref="grid.py"/>
+    <link type="next" xref="textview.py"/>
+    <revision version="0.2" date="2012-06-23" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Widget stupnice pro výběr hodnoty z nějakého rozsahu</desc>
+  </info>
+
+  <title>Scale</title>
+  <media type="image" mime="image/png" src="media/scale.png"/>
+  <p>Jezděte po stupnici!</p>
+
+  <links type="section"/>
+
+  <section id="code">
+    <title>Kód použitý k vygenerování tohoto příkladu</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Scale Example", application=app)
+        self.set_default_size(400, 300)
+        self.set_border_width(5)
+
+        # Dvě přizpůsobení (počáteční hodnota, min. hodnota, max. hodnota,
+        # přírůstek kroku - viz zmáčknutí kláves,
+        # přírůstek stránky - viz kliknutí mimo táhlo,
+        # velikost stránky - zde nepoužito)
+        ad1 = Gtk.Adjustment(0, 0, 100, 5, 10, 0)
+        ad2 = Gtk.Adjustment(50, 0, 100, 5, 10, 0)
+
+        # Vodorovná stupnice
+        self.h_scale = Gtk.Scale(
+            orientation=Gtk.Orientation.HORIZONTAL, adjustment=ad1)
+        # S celými čísly (bez desetinných míst)
+        self.h_scale.set_digits(0)
+        # Může se vodorovně roztáhnout, když je v mřížce místo (viz dále)
+        self.h_scale.set_hexpand(True)
+        # Je zarovnaná k horní části místa vyhrazeného v mřížce (viz dále)
+        self.h_scale.set_valign(Gtk.Align.START)
+
+        # Napojí signál "value-changed" vyslaný stupnicí na funkci
+        # zpětného volání scale_moved
+        self.h_scale.connect("value-changed", self.scale_moved)
+
+        # Svislá stupnice
+        self.v_scale = Gtk.Scale(
+            orientation=Gtk.Orientation.VERTICAL, adjustment=ad2)
+        # Může se svisle roztáhnout, když je v mřížce místo (viz dále)
+        self.v_scale.set_vexpand(True)
+
+        # Napojí signál "value-changed" vyslaný stupnicí na funkci
+        # zpětného volání scale_moved
+        self.v_scale.connect("value-changed", self.scale_moved)
+
+        # Popisek
+        self.label = Gtk.Label()
+        self.label.set_text("Move the scale handles...")
+
+        # Mřížka pro připojení widgetů
+        grid = Gtk.Grid()
+        grid.set_column_spacing(10)
+        grid.set_column_homogeneous(True)
+        grid.attach(self.h_scale, 0, 0, 1, 1)
+        grid.attach_next_to(
+            self.v_scale, self.h_scale, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach(self.label, 0, 1, 2, 1)
+
+        self.add(grid)
+
+    # Který koliv signál od stupnice říká popisku, že má změnit text
+    def scale_moved(self, event):
+        self.label.set_text("Horizontal scale is " + str(int(self.h_scale.get_value())) +
+                            "; vertical scale is " + str(self.v_scale.get_value()) + ".")
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="methods">
+    <title>Užitečné metody pro widget Scale</title>
+    <p><code>Gtk.Adjustment</code> je zapotřebí k vytvoření <code>Gtk.Scale</code>. Představuje hodnoty se spodní a horní hranicí, spolu s přírůstkem kroku a stránky a velikostí stránky, a vytváří se pomocí <code>Gtk.Adjustment(hodnota, spodní, horní, přírůstek_kroku, přírůstek_stránky, velikost_stránky)</code>, kde jednotlivé parametry jsou typu <code>float</code>. <code>přírůstek_kroku</code> určuje o kolik se má zvýšit/snížit hodnota při použití kurzorových kláves, <code>přírůstek_stránky</code> to stejné, ale při kliknutí na stupnici. Poznamenejme, že <code>velikost_stránky</code> zde nevyužíváme a měla by být nastavena na <code>0</code>.</p>
+    <p>Na řádku 28 je signál <code>"value-changed"</code> napojen na funkci zpětného volání <code>scale_moved()</code> pomocí <code><var>widget</var>.connect(<var>signál</var>, <var>funkce zpětného volání</var>)</code>. Podrobnější vysvětlení viz <link xref="signals-callbacks.py"/>.</p>
+    <list>
+      <item><p><code>get_value()</code> získá aktuální hodnotu ze stupnice. <code>set_value(hodnota)</code> ji nastaví (pokud je <code>hodnota</code> typu <code>float</code> mimo rozsah minima a maxima, bude stažena tak, aby do něj zapadala). Toto jsou metody třídy Gtk.Range.</p></item>
+      <item><p>Použití <code>set_draw_value(False)</code> zabrání zobrazování aktuální hodnoty v podobě řetězce vedle stupnice.</p></item>
+      <item><p>Když chcete zvýraznit část stupnice mezi počátkem a aktuální hodnotou:</p>
+        <code mime="text/x-python">
+self.h_scale.set_restrict_to_fill_level(False)
+self.h_scale.set_fill_level(self.h_scale.get_value())
+self.h_scale.set_show_fill_level(True)</code>
+        <p>ve funkci zpětného volání pro signál <code>"value-changed"</code>, takže se znovu vyplní pokaždé, když se změní hodnota. Jedná se o metodu třídy Gtk.Range.</p>
+      </item>
+      <item><p><code>add_mark(hodnota, pozice, značka)</code> přidá značku s <code>hodnotou</code> (<code>float</code> nebo <code>int</code>, pokud je stupnice s přesností na celá čísla) v místě <code>pozice</code> (<code>Gtk.PositionType.LEFT</code>, <code>Gtk.PositionType.RIGHT</code>, <code>Gtk.PositionType.TOP</code>, <code>Gtk.PositionType.BOTTOM</code>) s textem <code>Null</code> nebo <code>značka</code> ve značkovacím jazyce Pango. Ke smazání značek použijte <code>clear_marks()</code>.</p></item>
+      <item><p><code>set_digits(číslic)</code> nastaví přesnost stupnice na zadaný počet <code>číslic</code>.</p></item>
+    </list>
+  </section>
+
+  <section id="references">
+    <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkScale.html">GtkScale</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkAdjustment.html">GtkAdjustment</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/gtk3-Standard-Enumerations.html">Standardní výčtové konstanty</link></p></item>
+    </list>
+  </section>
+</page>

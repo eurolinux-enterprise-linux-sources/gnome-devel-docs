@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="glist" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Listas vinculadas e tipos contêineres</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>GList</title>
+
+  <section id="glist-usage">
+    <title>Uso do GList</title>
+
+    <p>GLib fornece vários tipos contêineres para conjuntos de dados: <link href="https://developer.gnome.org/glib/stable/glib-Doubly-Linked-Lists.html"><code>GList</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Singly-Linked-Lists.html"><code>GSList</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Pointer-Arrays.html"><code>GPtrArray</code></link> e <link href="https://developer.gnome.org/glib/stable/glib-Arrays.html"><code>GArray</code></link>.</p>
+
+    <p>Foi uma prática comum no passado usar GList e, todas situações nas quais uma sequência ou conjunto de dados precisa ser armazenada(o). Isso não é recomendável — na maioria das situações, um GPtrArray deve ser usado. Ele faz menor uso de memória (um terço a metade de uma lista equivalente), melhora localidade de cache e a mesma ou menor complexidade algorítmica para todas as operações comuns. A única situação típica na qual um GList pode ser mais apropriado é ao lidar com dados ordenados, que requer inserções custosas em índices arbitrários no vetor.</p>
+
+    <p>Se listas vinculadas forem usadas, tenha o cuidado de manter baixa a complexidade das operações nelas, usando análise padrão de complexidade CS. Qualquer operação que usa <link href="https://developer.gnome.org/glib/2.30/glib-Doubly-Linked-Lists.html#g-list-nth"><code>g_list_nth()</code></link> ou <link href="https://developer.gnome.org/glib/2.30/glib-Doubly-Linked-Lists.html#g-list-nth-data"><code>g_list_nth_data()</code></link> está quase certamente errada. Por exemplo, interação por um GList deve ser implementada usando os ponteiros vinculantes, em vez de um índice incremental:</p>
+    <code mime="text/x-csrc" style="valid">GList *some_list, *l;
+
+for (l = some_list; l != NULL; l = l-&gt;next)
+  {
+    gpointer element_data = l-&gt;data;
+
+    /* Faz alguma coisa com @element_data. */
+  }</code>
+
+    <p>Usar um índice incremental pode resultar em um decréscimo quadrático no desempenho (<em>O(N^2)</em> em vez de <em>O(N)</em>):</p>
+    <code mime="text/x-csrc" style="invalid">GList *some_list;
+guint i;
+
+/* Esse código é ineficiente e não deve ser usado em produção. */
+for (i = 0; i &lt; g_list_length (some_list); i++)
+  {
+    gpointer element_data = g_list_nth_data (some_list, i);
+
+    /* Faz alguma coisa com @element_data. */
+  }</code>
+
+    <p>A penalidade no desempenho vem de <code>g_list_length()</code> e de <code>g_list_nth_data()</code>, os quais percorrem a lista (<em>O(N)</em>) para realizar suas operações.</p>
+
+    <p>Implementar o código acima com um GPtrArray tem a mesma complexidade que a primeira (correta) implementação de GList, mas com melhor localidade de cache e menor consumo de memória, de forma a executar melhor para grandes números de elementos:</p>
+    <code mime="text/x-csrc" style="valid">GPtrArray *some_array;
+guint i;
+
+for (i = 0; i &lt; some_array-&gt;len; i++)
+  {
+    gpointer element_data = some_array-&gt;pdata[i];
+
+    /* Faz alguma coisa com @element_data. */
+  }</code>
+  </section>
+</page>

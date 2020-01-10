@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="harmful" xml:lang="sv">
+    <info>
+     <link type="guide" xref="index#harm"/>
+    
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Anders Jonsson</mal:name>
+      <mal:email>anders.jonsson@norsjovallen.se</mal:email>
+      <mal:years>2015</mal:years>
+    </mal:credit>
+  </info>
+    <title>Disksökningar ansedda skadliga</title>
+    <p>Disksökningar är en av de dyraste operationerna du kan utföra. Det kan vara svårt att inse om man betänker hur många av dem vi utför, men tro mig, det är de. Försök därför hålla dig från följande ej optimala beteende:</p>
+    <list type="unordered">
+        <item>
+            <p>Placera massor av små filer över hela disken.</p>
+        </item>
+        <item>
+            <p>Öppna, köra ”stat” på och läsa ett stort antal filer över hela disken</p>
+        </item>
+        <item>
+            <p>Göra det ovanstående på filer som lagts ut vid olika tidpunkter, så att de säkert är fragmenterade och orsakar än mer sökning.</p>
+        </item>
+        <item>
+            <p>Göra det ovanstående på filer som är i olika kataloger, så att de säkert är i olika cylindergrupper och orsakar än mer sökning.</p>
+        </item>
+        <item>
+            <p>Att upprepat göra det ovanstående då det bara behöver göras en gång.</p>
+        </item>
+    </list>
+    <p>Vägar på vilket du kan optimera din kod att bli mer sökvänlig:</p>
+    <list type="unordered">
+        <item>
+            <p>Samla data i en enda fil.</p>
+        </item>
+        <item>
+            <p>Håll data samlat i samma katalog.</p>
+        </item>
+        <item>
+            <p>Cacha data så att det inte konstant behöver läsas om.</p>
+        </item>
+        <item>
+            <p>Dela data så att det inte behöver läsas om från disk då varje program läses in.</p>
+        </item>
+        <item>
+            <p>Överväg att cacha alla data i en enstaka binärfil som är korrekt justerad och du kan köra mmap på.</p>
+        </item>
+    </list>
+    <p>Problemet med disksökningar förvärras för läsningar, vilket dessvärre är vad vi gör. Kom ihåg att läsningar generellt är synkrona medan skrivningar är asynkrona. Detta förvärrar bara problemet, serialiserar varje läsning och bidrar till programlatens.</p>
+</page>

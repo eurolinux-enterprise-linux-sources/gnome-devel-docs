@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2003/XInclude" type="topic" id="glist" xml:lang="ko">
+
+  <info>
+    <link type="guide" xref="index#specific-how-tos"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>연결 리스트 및 컨테이너 형식</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016, 2017.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>GList</title>
+
+  <section id="glist-usage">
+    <title>GList 활용법</title>
+
+    <p>GLib에는 <link href="https://developer.gnome.org/glib/stable/glib-Doubly-Linked-Lists.html"><code>GList</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Singly-Linked-Lists.html"><code>GSList</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Pointer-Arrays.html"><code>GPtrArray</code></link>, <link href="https://developer.gnome.org/glib/stable/glib-Arrays.html"><code>GArray</code></link> 데이터 집합 컨테이너 형식이 있습니다.</p>
+
+    <p>과거에 이 방식은 저장해야 할 데이터가 있는 모든 경우에 한해 GList를 활용하는 일반 방식이었지만, 이젠 별로 권할 바가 못됩니다. 대부분의 경우 GPtrArray를 대신 사용하는게 좋습니다. 적은 메모리를 차지하고(동일한 리스트 자료구조의 1/3에서 절반수준), 우월한 캐시 지역성을 확보하며, 모든 일반적 상황에서 동일한 또는 적은 알고리즘 복잡도를 보입니다. GList가 더 적절한 전형적인 유일한 경우는, 배열에서는 임의 색인 위치에 데이터를 삽입하려면 많은 노력을 들여야 하는데 반해 정렬 데이터를 취급할 경우일 뿐입니다.</p>
+
+    <p>연결 리스트를 사용한다면 표준 CS 복잡도 해석 기법을 활용하여 처리 복잡도를 낮게 유지하도록 만전을 기하십시오. <link href="https://developer.gnome.org/glib/2.30/glib-Doubly-Linked-Lists.html#g-list-nth"><code>g_list_nth()</code></link> 함수 또는 <link href="https://developer.gnome.org/glib/2.30/glib-Doubly-Linked-Lists.html#g-list-nth-data"><code>g_list_nth_data()</code></link>함수를 사용하는 어떤 동작의 경우는 거의 확실히 제대로 된 게 아닙니다. 예를 들어 GList를 순회한다면, 색인 값을 증가하기 보다, 연결 포인터를 활용하여 구현해야합니다:</p>
+    <code mime="text/x-csrc" style="valid">GList *some_list, *l;
+
+for (l = some_list; l != NULL; l = l-&gt;next)
+  {
+    gpointer element_data = l-&gt;data;
+
+    /* Do something with @element_data. */
+  }</code>
+
+    <p>색인 값 증가 방식을 활용하면 성능이 훨씬 더 떨어지는 결과를 초개합니다(<em>O(N)</em>이 아니라 <em>O(N^2)</em>임):</p>
+    <code mime="text/x-csrc" style="invalid">GList *some_list;
+guint i;
+
+/* This code is inefficient and should not be used in production. */
+for (i = 0; i &lt; g_list_length (some_list); i++)
+  {
+    gpointer element_data = g_list_nth_data (some_list, i);
+
+    /* Do something with @element_data. */
+  }</code>
+
+    <p>리스트를 순차적으로 살펴보는(<em>O(N)</em>) <code>g_list_length()</code> 함수 및 <code>g_list_nth_data()</code> 함수를 실행하면 성능상 불이익을 가져옵니다.</p>
+
+    <p>GPtrArray를 구현체의 동작상 복잡도는 처음(올바른) GList 구현제와 동일하지만, 캐시 지역성을 개선하며, 메모리를 덜 소모하여 더 많은 구성 항목을 저장할 때 성능상 우위를 점합니다:</p>
+    <code mime="text/x-csrc" style="valid">GPtrArray *some_array;
+guint i;
+
+for (i = 0; i &lt; some_array-&gt;len; i++)
+  {
+    gpointer element_data = some_array-&gt;pdata[i];
+
+    /* Do something with @element_data. */
+  }</code>
+  </section>
+</page>

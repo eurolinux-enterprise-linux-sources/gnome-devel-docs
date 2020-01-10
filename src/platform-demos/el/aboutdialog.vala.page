@@ -24,7 +24,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -42,7 +42,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -51,10 +51,10 @@
   <p>Ένα παράδειγμα AboutDialog χρησιμοποιώντας Gtk.ApplicationWindow και μενού</p>
   <note><p><em style="bold">You need to be running Gtk3.4 or later for this to work</em></p></note>
 
-<code mime="text/x-csharp" style="numbered">/* Ένα παράθυρο στην εφαρμογή */
+<code mime="text/x-csharp" style="numbered">/* A window in the application */
 public class Window : Gtk.ApplicationWindow {
 
-	/* Ο κατασκευαστής */
+	/* The constructor */
 	public Window (Application app) {
 		Object (application: app, title: "AboutDialog Example");
 
@@ -65,8 +65,8 @@ public class Window : Gtk.ApplicationWindow {
 		this.show_all ();
 	}
 
-	/* Αυτή είναι η συνάρτηση επανάκλησης συνδεμένη στο σήμα 'activate'
-	 * της απλής ενέργειας about_action.
+	/* This is the callback function connected to the 'activate' signal
+	 * of the SimpleAction about_action.
 	 */
 	void about_cb (SimpleAction simple, Variant? parameter) {
 		string[] authors = { "GNOME Documentation Team", null };
@@ -83,15 +83,15 @@ public class Window : Gtk.ApplicationWindow {
 	}
 }
 
-/* Αυτή είναι η εφαρμογή */
+/* This is the Application */
 public class Application : Gtk.Application {
 
-	/* Εδώ αντικαθιστούμε το σήμα ενεργοποίησης της GLib.Application */
+	/* Here we override the activate signal of GLib.Application */
 	protected override void activate () {
 		new Window (this);
 	}
 
-	/* Εδώ αντικαθιστούμε το σήμα έναρξης της GLib.Application */
+	/* Here we override the startup signal of GLib.Application */
 	protected override void startup () {
 
 		base.startup ();
@@ -106,13 +106,13 @@ public class Application : Gtk.Application {
 		this.add_action (quit_action);
 	}
 
-	/* Ο κατασκευαστής */
+	/* The constructor */
 	public Application () {
 		Object (application_id: "org.example.application");
 	}
 }
 
-/* Η κύρια συνάρτηση δημιουργεί την εφαρμογή και την εκτελεί */
+/* main function creates Application and runs it */
 int main (string[] args) {
 	return new Application ().run (args);
 }

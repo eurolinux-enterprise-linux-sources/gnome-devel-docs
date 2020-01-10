@@ -22,33 +22,35 @@
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Rafael Ferreira</mal:name>
-      <mal:email>rafael.f.f1@gmail.com</mal:email>
-      <mal:years>2013</mal:years>
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2013, 2014, 2016, 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Isaac Ferreira Filho</mal:name>
+      <mal:email>isaacmob@riseup.net</mal:email>
+      <mal:years>2018</mal:years>
     </mal:credit>
   </info>
 
-  <title>Set up your build system for translation</title>
+  <title>Configurando seu sistema de compilação para tradução</title>
 
   <links type="series" style="floatend">
-    <title>Set up translations</title>
+    <title>Configurando traduções</title>
   </links> 
 
-  <p>You will need to set up your project and build system to work with
-  translations.</p>
+  <p>Você precisará configurar seu projeto e sistema de compilação para funcionar com traduções.</p>
 
-  <p>Create a <file>po/</file> subdirectory in your project directory and list
-  the files which have translatable strings in <file>po/POTFILES.in</file>.
-  List files <em>without</em> translatable strings in
-  <file>po/POTFILES.skip</file>.</p>
+  <p>Crie um subdiretório <file>po/</file> no diretório de seu projeto e liste os arquivos que possuem mensagens traduzíveis em <file>po/POTFILES.in</file>. Liste arquivos <em>sem</em> mensagens traduzíveis em <file>po/POTFILES.skip</file>.</p>
 
-  <p>Add the following lines to your <file>configure.ac</file>:</p>
+  <p>Adicione as seguintes linhas ao seu <file>configure.ac</file>:</p>
   <code>
 IT_PROG_INTLTOOL([0.50.0])
 AC_SUBST([GETTEXT_PACKAGE], [$PACKAGE_TARNAME])
-AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Package name for gettext])</code>
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Nome de pacote para gettext])</code>
 
-  <p>Add the following lines to your <file>Makefile.am</file>:</p>
+  <p>Adicione as seguintes linhas ao seu <file>Makefile.am</file>:</p>
   <code>
 SUBDIRS = po
 </code>
@@ -58,36 +60,30 @@ AM_CPPFLAGS = -DPACKAGE_LOCALEDIR=\""$(datadir)/locale"\"
   <code>
 @INTLTOOL_DESKTOP_RULE@
 desktopdir = $(datadir)/applications
-desktop_in_files = data/<input>applicationname</input>.desktop.in
+desktop_in_files = data/<input>nomedoaplicativo</input>.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 </code>
 
-  <p>Run <cmd>intltoolize</cmd> to copy the intltool build infrastructure to
-  the build tree before running <cmd>autoreconf</cmd>.</p>
+  <p>Execute <cmd>intltoolize</cmd> para copiar a infraestrutura de compilação do intltool para a árvore de compilação antes de executar <cmd>autoreconf</cmd>.</p>
 
-  <p>Now that your build system and your source strings are ready for
-  translation, you need to tell <app>gettext</app> three things:</p>
+  <p>Agora que seu sistema de compilação e suas mensagens fontes estão prontos para tradução, você precisa dizer ao <app>gettext</app> três coisas:</p>
 
   <list>
-    <item><p>the <em>translation domain</em>, generally the same as the
-    application name</p></item>
-    <item><p>the location where the built translations are installed</p></item>
-    <item><p>the character encoding of the translations, generally
-    UTF-8</p></item>
+    <item><p>o <em>domínio de tradução</em>, geralmente o mesmo que o nome do aplicativo</p></item>
+    <item><p>a localização onde as traduções compiladas serão instaladas</p></item>
+    <item><p>a codificação de caracteres das traduções, geralmente UTF-8</p></item>
   </list>
 
   <example>
   <note>
-    <p>This example assumes that your application is written in C. It will be
-    slightly different for other programming languages.</p>
+    <p>Esse exemplo presume que seu aplicativo está escrito em C. Ele é um pouco diferente para outras linguagens de programação.</p>
   </note>
 
-  <p>Add the following line to the source file which contains your
-  <code>main()</code> function:</p>
+  <p>Adicione a seguinte linha ao arquivo fonte que contém sua função <code>main()</code>:</p>
 
   <code>#include "config.h"</code>
 
-  <p>Then, add the following lines to your <code>main()</code> function:</p>
+  <p>Então, adicione as seguintes linhas à sua função <code>main()</code>:</p>
 
   <code>
 bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALEDIR);
@@ -96,8 +92,6 @@ textdomain (GETTEXT_PACKAGE);
 </code>
   </example>
 
-  <p>Run <cmd>make <input>projectname</input>.pot</cmd> in the <file>po</file>
-  directory. This runs <cmd>intltool-extract</cmd> to extract the translatable
-  strings and put them in a po template (POT) file.</p>
+  <p>Execute <cmd>make <input>nomedoprojeto</input>.pot</cmd> no diretório <file>po</file>. Ele executa <cmd>intltool-extract</cmd> para extrair as mensagens traduzíveis e colocá-las em um arquivo de modelo de po (POT).</p>
 
 </page>

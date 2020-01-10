@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.vala" xml:lang="cs">
+  <info>
+  <title type="text">Entry (Vala)</title>
+    <link type="guide" xref="beginner.vala#entry"/>
+    <revision version="0.1" date="2012-05-03" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Jednořádkové textové vstupní pole</desc>
+  </info>
+
+  <title>Entry</title>
+  <media type="image" mime="image/png" src="media/entry.png"/>
+  <p>Tato aplikace vás přivítá v terminálu.</p>
+
+<code mime="text/x-csharp" style="numbered">/* Okno v aplikaci */
+class MyWindow : Gtk.ApplicationWindow {
+
+	/* Konstruktor */
+	internal MyWindow (MyApplication app) {
+		Object (application: app, title: "What is your name?");
+
+		var name_box = new Gtk.Entry ();
+
+		/* Napojí na obsluhu signálu */
+		name_box.activate.connect (this.on_activate);
+		name_box.show ();
+
+		this.set_default_size (300, 100);
+		this.border_width = 10;
+
+		/* Přidá name_box do tohoto okna */
+		this.add (name_box);
+	}
+
+	/* Zpracování signálu (neboli funkce zpětného volání) pro
+	 * signál "activate" z Gtk.Entry
+	 */
+	void on_activate (Gtk.Entry entry) {
+		name = entry.get_text ();
+		print ("\nHello " + name + "!\n\n");
+	}
+}
+
+/* Toto je aplikace */
+class MyApplication : Gtk.Application {
+
+	/* Konstruktor aplikace */
+	internal MyApplication () {
+		Object (application_id: "org.example.MyApplication");
+	}
+
+	/* Přepíše signál "activate" z GLib.Application */
+	protected override void activate () {
+
+		/* Vytvoří okno pro tuto aplikaci a zobrazí jej */
+		new MyWindow (this).show ();
+	}
+
+}
+
+/* Funkce main vytvoří a spustí aplikaci */
+int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Entry.html">Gtk.Entry</link></p></item>
+</list>
+</page>

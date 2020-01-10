@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -48,60 +48,64 @@
     <title>Ο χρησιμοποιούμενος κώδικας για παραγωγή αυτού παραδείγματος</title>
     <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const ScrolledWindowExample = new Lang.Class ({
-    Name: 'ScrolledWindow Example',
+class ScrolledWindowExample {
 
-    // Δημιουργία αυτής καθεαυτής της εφαρμογής
-    _init: function () {
-        this.application = new Gtk.Application({ application_id: 'org.example.jscrolledwindow' });
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jscrolledwindow'
+        });
 
-        // Σύνδεση σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
         this.window.present();
-    },
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' κατασκευάζει τη διεπαφή χρήστη
-    _onStartup: function() {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
-    // Κατασκευή της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function() {
-        // Δημιουργία του παραθύρου της εφαρμογής
-        this.window = new Gtk.ApplicationWindow  ({ application: this.application,
-                                                    window_position: Gtk.WindowPosition.CENTER,
-                                                    title: "ScrolledWindow Example",
-                                                    default_width: 200,
-                                                    default_height: 200,
-                                                    border_width: 10 });
-        // το κυλιόμενο παράθυρο
+    // Build the application's UI
+    _buildUI() {
+        // Create the application window
+        this.window = new Gtk.ApplicationWindow({
+            application: this.application,
+            window_position: Gtk.WindowPosition.CENTER,
+            title: "ScrolledWindow Example",
+            default_width: 200,
+            default_height: 200,
+            border_width: 10
+        });
+        // the scrolledwindow
         this.scrolledWindow = new Gtk.ScrolledWindow();
         this.scrolledWindow.set_border_width(10);
-        // υπάρχει πάντα η γραμμή κύλισης (αλλιώς: AUTOMATIC - μόνο αν χρειάζεται - ή NEVER)
+        // there is always the scrollbar (otherwise: AUTOMATIC - only if needed - or NEVER)
         this.scrolledWindow.set_policy(Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS);
-        // μια εικόνα - ελαφριά μεγαλύτερη από το παράθυρο
+        // an image - slightly larger than the window
         this.image = new Gtk.Image();
         this.image.set_from_file("gnome-image.png");
 
-        // προσθήκη της εικόνας στο κυλιόμενο παράθυρο
+        // add the image to the scrolledwindow
         this.scrolledWindow.add_with_viewport(this.image);
 
-        // προσθήκη του κυλιόμενου παράθυρου στο παράθυρο
+        // add the scrolledwindow to the window
         this.window.add(this.scrolledWindow);
         this.window.show_all();
     }
-});
+};
 
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new ScrolledWindowExample();
 app.application.run (ARGV);
 </code>

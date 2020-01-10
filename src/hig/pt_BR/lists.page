@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" xmlns:itst="http://itstool.org/extensions/" type="topic" id="lists" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="patterns#primary"/>
+    <desc>Rows of information or content items.</desc>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Georges Neto</mal:name>
+      <mal:email>georges.stavracas@gmail.com</mal:email>
+      <mal:years>2014.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Lists</title>
+
+<p>Lists are a basic user interface element that can be used to present information, content items, or controls. There are two primary types of list in GNOME 3: standard lists and tables.</p>
+
+<p><link xref="sidebar-lists">Sidebar lists</link> are a separate design pattern which also make use of a list.</p>
+
+<section id="when-to-use">
+<title>Quando usar</title>
+
+<p>A list is an appropriate way to present content items that have a distinct name as their primary identifier. If the content is visual in nature, such as with photos or videos, you might want to consider using a <link xref="grids">grid</link> instead.</p>
+
+<p>In some cases, it is advantageous to show both a list and a grid view for the same content items. Used in this way, a list view allows additional information to be displayed about the content through columns of information.</p>
+
+</section>
+
+<section id="standard-lists">
+<title>Standard lists</title>
+
+<p>Standard lists are most common list type, and should generally be used in favor of tables.</p>
+
+<p>In standard lists, each row is divided by separators, and changing the sort order is achieved by using a control outside the list itself.</p>
+
+<section id="styles">
+<title>Styles</title>
+
+<p>Standard lists have two styles: full-width and embedded. Full-width lists fill their container, while embedded lists are surrounded by padding.</p>
+
+<p>Full-width lists are visually simpler, and therefore more elegant. They should be used where possible. At the same time, it is not always possible to use a full-width list, and there are some situations where embedded lists are a better choice:</p>
+
+<list>
+<item><p>When the list contains columns of information that need to be kept close together for readability purposes, and there is a need to have the list inside a wide container.</p></item>
+<item><p>When a window contains several lists.</p></item>
+<item><p>When the list needs to be aligned with other controls inside the window.</p></item>
+</list>
+
+<media type="image" mime="image/svg" src="figures/patterns/list-styles.svg"/>
+
+</section>
+
+<section id="editable-lists">
+<title>Editable lists</title>
+
+<p>Editable lists allow a user to add or remove items from the list (for this reason, they are sometimes known as add/remove lists). Both full-width and embedded lists can be editable.</p>
+
+<p>Each row contains a remove button. If the number of items is short, the final list row should be used as an add button. Alternatively, if the list is long, the add button can be placed in a <link xref="header-bars">header bar</link> or <link xref="action-bars">action bar</link>.</p>
+
+<media type="image" mime="image/svg" src="figures/patterns/editable-lists.svg"/>
+
+</section>
+</section>
+
+<section id="tables">
+<title>Tables</title>
+
+<p>Tables can be used for more complex multi-column lists, where sorting the table by a variety of columns is common. Column headers allow people to identify the type of information in each column and to reorder the list according to the content of each column.</p>
+
+<p>When using column headers, indicate the sort order using arrows on the header.</p>
+
+<table>
+<thead>
+<tr>
+<td><p>Ordem</p></td>
+<td><p>Arrow Direction</p></td>
+<td><p>Example</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p>Natural</p></td>
+<td><p>Down</p></td>
+<td><p>Alphabetical, smallest number first, earliest date first, checked items first</p></td>
+</tr>
+<tr>
+<td><p>Reverse</p></td>
+<td><p>Up</p></td>
+<td><p>Reverse alphabetical, largest number first, most recent date first, unchecked items first</p></td>
+</tr>
+</tbody>
+
+</table>
+
+</section>
+
+<section id="row-behavior">
+<title>Row behavior</title>
+
+<p>Depending on the type of list, rows have different behaviors when they are clicked or pressed. There are three types of list in this regard:</p>
+
+<table>
+<thead>
+<tr>
+<td><p>List Type</p></td>
+<td><p>Row Behavior</p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><p>Navigation</p></td>
+<td><p>Selecting a row opens the corresponding item, whether it is by browsing to a new view or opening a dialog. This pattern is common for lists of content items, or for presenting groups of settings.</p></td>
+</tr>
+<tr>
+<td><p>Selecionar</p></td>
+<td><p>The list item is selected when it is clicked or pressed. This approach is often used for selecting one of a series of configuration options. In the case of <link xref="drop-down-lists">drop-down lists</link>, one option is always selected. The selected row is indicated by a check mark.</p></td>
+</tr>
+<tr>
+<td><p itst:context="list-type">Edit</p></td>
+<td><p>Selecting the row item turns the row into a text entry field, which allows the item to be edited.</p></td>
+</tr>
+</tbody>
+</table>
+
+<p>Navigation style lists can be combined with <link xref="selection-mode">selection mode</link> in order to allow rows to be both opened and manipulated. Using double-click to open list items should be avoided, since it is undiscoverable and is incompatible with touch input.</p>
+
+</section>
+
+<section id="general-guidelines">
+<title>Diretrizes gerais</title>
+
+<list>
+<item><p>Differentiate the different types of information using different alignments, <link xref="typography">text colors and weights</link>. Highlight the most important and relevant information by giving other information a lighter weight and/or color.</p></item>
+<item><p>Be careful not to overpopulate lists with different columns and elements, and ensure that you only use them to present essential information.</p></item>
+<item><p>As a rule of thumb, avoid using several lists in the same window, particularly primary windows.</p></item>
+<item><p>Do not use lists with fewer than about five items, unless the number of items may increase over time. For options lists, check boxes or radio buttons can be used as an alternative in this case.</p></item>
+<item><p>Ensure that lists are ordered to be helpful to those who are using them. Recent documents might be more useful than alphabetically ordered documents, or contacts that are online might be more interesting than those who are offline, for example.</p></item>
+<item><p>If you use icons in your list, <link xref="icons-and-artwork">use symbolic icons</link>. The lower visual footprint of these icons will mean that they do not visually overload or dominate your list.</p></item>
+<item><p>If the list is long, make it possible to search it using the standard <link xref="search">search design pattern</link>.</p></item>
+</list>
+
+</section>
+
+<section id="api-reference">
+<title>Referência de API</title>
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkListBox.html">GtkListBox</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkTreeView.html">GtkTreeView</link></p></item>
+</list>
+</section>
+
+</page>

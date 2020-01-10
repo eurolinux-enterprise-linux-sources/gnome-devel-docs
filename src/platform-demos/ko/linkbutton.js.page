@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="linkbutton.js" xml:lang="ko">
+  <info>
+  <title type="text">LinkButton (JavaScript)</title>
+    <link type="guide" xref="beginner.js#buttons"/>
+    <revision version="0.1" date="2012-05-29" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Taryn Fox</name>
+      <email its:translate="no">jewelfox@fursona.net</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>웹 페이지를 연결하는 단추</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>LinkButton</title>
+  <media type="image" mime="image/png" src="media/linkbutton.png"/>
+  <p>live.gnome.org에 연결한 단추입니다.</p>
+
+<code mime="application/javascript" style="numbered">#!/usr/bin/gjs
+
+imports.gi.versions.Gtk = '3.0';
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+
+class LinkButtonExample {
+
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application({
+            application_id: 'org.example.jslinkbutton',
+            flags: Gio.ApplicationFlags.FLAGS_NONE
+         });
+
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
+
+    // Callback function for 'activate' signal presents window when active
+    _onActivate() {
+        this._window.present();
+    }
+
+    // Callback function for 'startup' signal initializes menus and builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
+
+    // Build the application's UI
+    _buildUI() {
+
+        // Create the application window
+    this._window = new Gtk.ApplicationWindow  ({ application: this.application,
+                                                 window_position: Gtk.WindowPosition.CENTER,
+                                                 title: "GNOME LinkButton",
+                                                 default_height: 50,
+                                                 default_width: 250 });
+
+        // Create the LinkButton and have it link to live.gnome.org
+        this.LinkButton = new Gtk.LinkButton ({label: "Link to GNOME live!",
+                               uri: "http://live.gnome.org"});
+        this._window.add (this.LinkButton);
+
+    // Show the window and all child widgets
+    this._window.show_all();
+    }
+};
+
+// Run the application
+let app = new LinkButtonExample ();
+app.application.run (ARGV);
+</code>
+<p>이 예제는 다음 참고자료가 필요합니다:</p>
+<list>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
+  <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.LinkButton.html">Gtk.LinkButton</link></p></item>
+</list>
+</page>

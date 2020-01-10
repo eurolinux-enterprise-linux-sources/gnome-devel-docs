@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -42,10 +42,10 @@
   <media type="image" mime="image/png" src="media/checkbutton.png"/>
   <p>Αυτό το CheckButton εναλλάσσει τον τίτλο.</p>
 
-<code mime="text/x-csharp" style="numbered">/* Ένα παράθυρο στην εφαρμογή */
+<code mime="text/x-csharp" style="numbered">/* A window in the application */
 class MyWindow : Gtk.ApplicationWindow {
 
-	/* Ο κατασκευστής */
+	/* The constructor */
 	internal MyWindow (MyApplication app) {
 		Object (application: app, title: "CheckButton Example");
 
@@ -54,19 +54,19 @@ class MyWindow : Gtk.ApplicationWindow {
 
 		var checkbutton = new Gtk.CheckButton.with_label ("Show Title");
 
-		/* Σύνδεση του πλήκτρου ελέγχου στη
-		 * συνάρτηση επανάκλησης (χειριστής σήματος aka.).
+		/* Connect the checkbutton to the
+		 * callback function (aka. signal handler).
 		 */
 		checkbutton.toggled.connect (this.toggled_cb);
 
-		/* Προσθήκη του πλήκτρου σε αυτό το παράθυρο */
+		/* Add the button to the this window */
 		this.add (checkbutton);
 
 		checkbutton.set_active (true);
 		checkbutton.show ();
 	}
 
-	/* Ο χειριστής σήματος για το σήμα 'toggled' του πλήκτρου ελέγχου. */
+	/* The signal handler for the 'toggled' signal of the checkbutton. */
 	void toggled_cb (Gtk.ToggleButton checkbutton) {
 		if (checkbutton.get_active())
 			this.set_title ("CheckButton Example");
@@ -75,22 +75,22 @@ class MyWindow : Gtk.ApplicationWindow {
 	}
 }
 
-/* Αυτή είναι η εφαρμογή */
+/* This is the application */
 class MyApplication : Gtk.Application {
 
-	/* Ο κατασκευαστής */
+	/* The constructor */
 	internal MyApplication () {
 		Object (application_id: "org.example.checkbutton");
 	}
 
-	/* Αντικατάσταση του ενεργού σήματος του GLib.Application */
+	/* Override the activate signal of GLib.Application */
 	protected override void activate () {
 		new MyWindow (this).show ();
 	}
 
 }
 
-/* Το κύριο δημιουργεί και εκτελεί την εφαρμογή */
+/* main creates and runs the application */
 int main (string[] args) {
 	return new MyApplication ().run (args);
 }

@@ -1,91 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="tabs" xml:lang="ru">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:uix="http://projectmallard.org/experimental/ui/" type="topic" id="tabs" xml:lang="ru">
 
   <info>
     <credit type="author">
-      <name>Allan Day</name>
+      <name>Алан Дэй (Allan Day)</name>
       <email>aday@gnome.org</email>
     </credit>
     <credit>
-      <name>Calum Benson</name>
+      <name>Калум Бенсон (Calum Benson)</name>
     </credit>
     <credit>
-      <name>Adam Elman</name>
+      <name>Адам Элман (Adam Elman)</name>
     </credit>
     <credit>
-      <name>Seth Nickell</name>
+      <name>Сэт Никел (Seth Nickell)</name>
     </credit>
     <credit>
-      <name>Colin Robertson</name>
+      <name>Колин Робертсон (Colin Robertson)</name>
     </credit>
+
+    <link type="guide" xref="ui-elements"/>
+    <uix:thumb mime="image/svg" src="figures/ui-elements/tabs.svg"/>
+
     <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
   </info>
 
-<title>Tabs</title>
+<title>Вкладки</title>
 
-<p>Tabs provide a way to break down a window into a series of views. They come in two primary forms: fixed and dynamic.</p>
+<p>Вкладки разбивают окно на несколько областей просмотра. Вкладки бывают двух видов: фиксированные и динамические.</p>
 
-<p>Fixed tabs provide an immutable set of predefined views, and are primarily used in dialog windows. Dynamic tabs allow a window to contain mutable selection of content items, such as pages, documents or images. They are primarily used within <link xref="primary-windows">primary windows</link>, as a part of editor or browser applications.</p>
+<p>Фиксированные вкладки используются для фиксированного набора областей просмотра и чаще всего применяются в диалоговых окнах. Динамические вкладки используются для изменяемого набора объектов: страниц, документов, изображений и т. п. Динамические вкладки используются в основном в <link xref="primary-windows">главных окнах</link> в качестве элемента редактора или браузера.</p>
 
 <media type="image" mime="image/svg" src="figures/ui-elements/tabs.svg"/>
 
 <section id="when-to-use">
-<title>When to use</title>
+<title>Когда использовать</title>
 
-<p>Use fixed tabs when a <link xref="dialogs">dialog window</link> contains too many controls (or too much information) to be comfortably presented at once.</p>
+<p>Применяйте фиксированные вкладки в <link xref="dialogs">диалоговых окнах</link>, в которых находится много элементов управления или информации, чтобы удобно разместить их в одном окне.</p>
 
-<p>Dynamic tabs are primarily useful for browser or editor applications, where a user might want to use several locations or content items simulatenously.</p>
+<p>Dynamic tabs are primarily useful for browser or editor applications, where a user might want to use several locations or content items simultaneously.</p>
 
 </section>
 
 <section id="fixed">
-<title>Fixed tabs</title>
+<title>Фиксированные вкладки</title>
 
 <list>
-<item><p>Do not use too many tabs. If you cannot see all the tabs without scrolling or splitting them into multiple rows, you are probably using too many and should use a list control instead.</p></item>
-<item><p>Label tabs with <link xref="writing-style#capitalization">header capitalization</link>, and use nouns rather than verbs, for example <gui>Font</gui> or <gui>Alignment</gui>. Try to give tab labels a similar length.</p></item>
-<item><p>Do not design tabs such that changing controls on one page affects the controls on any other page. Users are unlikely to discover such dependencies.</p></item>
-<item><p>If a control affects every tab, place it outside the tabs.</p></item>
-<item><p>With fixed tabs, make the width of each tab proportional to the width of its label. Don’t just set all the tabs to the same width, as this makes them harder to scan visually, and limits the number of tabs you can display without scrolling.</p></item>
+<item><p>Вкладок не должно быть слишком много. Если для размещения всех вкладок требуется прокрутка или разбиение вкладок на несколько строк, возможно вместо них стоит применить список.</p></item>
+<item><p>В качестве текстовых меток применяйте существительные, а не глаголы. Например, <gui>Шрифт</gui> или <gui>Выравнивание</gui>. Старайтесь использовать одинаковые по длине метки. При использовании английского языка прописные буквы должны использоваться, <link xref="writing-style#capitalization">как в заголовках</link>.</p></item>
+<item><p>Проектируйте вкладки так, чтобы элементы управления на одной странице не влияли на элементы управления на других страницах, так как подобные связи трудно обнаружить.</p></item>
+<item><p>Если элемент управления оказывает действие на все вкладки, вынесите его за пределы вкладок.</p></item>
+<item><p>При использовании фикисрованных вкладок ширина каждой вкладки должна быть пропорциональна ширине её меток. Не делайте все вкладки одинаковой длины, это затрудняет их восприятие и ограничивает количество вкладок, которые можно разместить без прокрутки.</p></item>
 </list>
 
 </section>
 
 <section id="dynamic">
-<title>Dynamic tabs</title>
+<title>Динамические вкладки</title>
 
 <list>
-<item><p>Tabs often have a constrained width, so ensure that tab labels are short and concise, and that the most useful part of the label is displayed first. This ensures that the label continues to be useful even when ellipsized.</p></item>
-<item><p>If the content of a tab changes or requires attention, a visual hint can be displayed.</p></item>
-<item><p>Provide a context menu on each tab. This menu should only include actions for manipulating the tab itself, such as <gui>Move Left</gui>, <gui>Move Right</gui>, <gui>Move to New Window</gui>, and <gui>Close</gui>.</p></item>
-<item><p>If tabs are an important part of the application, a new tab button can be placed in the header bar or toolbar. Do not show a new tab button in applications where tabs will not always be used - keyboard shortcuts and/or menu items are sufficient in these cases.</p></item>
+<item><p>Ширина вкладки часто может быть очень незначительной, поэтому текстовые метки на вкладках должны быть краткими и ясными, важнейшие части метки должны располагаться в начале метки, даже если метка будет усечена, её смысл будет понятен.</p></item>
+<item><p>Если содержимое вкладки изменяется или ей нужно привлечь внимание пользователя, мо</p></item>
+<item><p>Добавьте контекстное меню для каждой вкладки. Меню должно содержать только те действия, которые управляют самой вкладкой, например <gui>Переместить влево</gui>, <gui>Переместить вправо</gui>, <gui>Переместить в новое окно</gui>, <gui>Закрыть</gui> и т. п.</p></item>
+<item><p>Если вкладки играют важную роль в приложении, кнопку для создания вкладок можно разместить в заголовочной панели или в панели инструментов. Не показывайте эту кнопку, если вкладки используются непостоянно, для этого случая достаточно элементов меню и быстрых клавиш.</p></item>
 </list>
 
 <section id="keyboard-shortcuts">
-<title>Standard Keyboard Shortcuts</title>
+<title>Стандартные быстрые клавиши</title>
 
-<p>When using dynamic tabs, ensure that the standard keyboard shortcuts are supported.</p>
+<p>Если в интерфейсе применяются динамические вкладки, для них должны поддерживаться следующие стандартные быстрые клавиши.</p>
 
 <table>
 <tr>
 <td><p><keyseq><key>Ctrl</key><key>T</key></keyseq></p></td>
-<td><p>Create a new tab</p></td>
+<td><p>Создать новую вкладку</p></td>
 </tr>
 <tr>
 <td><p><keyseq><key>Ctrl</key><key>W</key></keyseq></p></td>
-<td><p>Close the current tab</p></td>
+<td><p>Закрыть текущую вкладку</p></td>
 </tr>
 <tr>
 <td><p><keyseq><key>Ctrl</key><key>Page Up</key></keyseq></p></td>
-<td><p>Switch to the next tab</p></td>
+<td><p>Перейти к следующей вкладке</p></td>
 </tr>
 <tr>
 <td><p><keyseq><key>Ctrl</key><key>Page Down</key></keyseq></p></td>
-<td><p>Switch to the previous tab</p></td>
+<td><p>Перейти к предыдущей вкладке</p></td>
 </tr>
 </table>
 
 </section>
+
+</section>
+
+<section id="api-reference">
+<title>API reference</title>
+
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkNotebook.html">GtkNotebook</link></p></item>
+</list>
 
 </section>
 </page>

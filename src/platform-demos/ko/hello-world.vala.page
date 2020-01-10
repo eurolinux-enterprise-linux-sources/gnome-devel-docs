@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="hello-world.vala" xml:lang="ko">
+
+  <info>
+  <title type="text">Hello World (Vala)</title>
+    <link type="guide" xref="beginner.vala#tutorials" group="#first"/>
+
+    <revision version="0.1" date="2013-06-17" status="review"/>
+
+    <credit type="author copyright">
+      <name>Susanna Huhtanen</name>
+      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="editor">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+    </credit>
+
+    <desc>기본 "hello, world" 프로그램</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Hello World 프로그램의 <file>tar.xz</file> 파일을 빌드하고, 설치하고, 만들기</title>
+    <media type="image" mime="image/png" style="floatend" src="media/hello-world.png"/>
+    <synopsis>
+      <p>이 지침서에서는 다음 방법을 보여줍니다:</p>
+      <list style="numbered">
+        <item><p>GTK+로 간단한 "Hello, World" 프로그램을 만듭니다</p></item>
+        <item><p><file>.desktop</file> 파일 만들기</p></item>
+        <item><p>빌드 시스템 구성 방법</p></item>
+      </list>
+    </synopsis>
+
+  <links type="section"/>
+
+  <section id="hello-world"><title>프로그램 만들기</title>
+
+    <links type="section"/>
+
+    <section id="application"><title>프로그램 메인 창 만들기</title>
+      <code mime="text/x-csharp">class MyApplication : Gtk.Application {
+        protected override void activate () {
+                var window = new Gtk.ApplicationWindow (this);
+                window.set_title ("Welcome to GNOME");
+                window.set_default_size (200, 100);
+                window.show_all ();
+        }
+}</code>
+
+    <p>Gtk.Application은 GTK+를 초기화합니다. 또한 창을 만들 때 자동으로 붙인 <gui>x</gui> 단추를 "destroy" 시그널에 연결합니다.</p>
+    <p>첫 창 만들기를 시작할 수 있습니다. <var>window</var> 변수를 만들어 Gtk.ApplicationWindow를 할당하겠습니다.</p>
+    <p><code>set_title</code>로 창 제목을 설정하겠습니다. 여러분이 원하는대로 제목을 지을 수 있습니다. 안전한 방편으로 UTF-8 인코딩 방식으로 제목을 넣으시는게 좋습니다.</p>
+    <p>이제 제목과 동작하는 "닫기" 단추가 붙은 창을 만들었습니다. 이제 실제 "Hello World" 문구를 찍어보겠습니다.</p>
+    </section>
+
+    <section id="label"><title>창 레이블</title>
+      <code mime="text/x-csharp">var label = new Gtk.Label ("Hello GNOME!");
+                window.add (label);
+</code>
+
+      <p>마지막으로 프로그램을 만들고 실행하겠습니다:</p>
+
+      <code mime="text/x-csharp">int main (string[] args) {
+        return new MyApplication ().run (args);
+}</code>
+
+      <p>Gtk.ApplicationWindow는 한번에 위젯 하나만 가질 수 있습니다. 프로그램을 더 정교하게 만들려면 Gtk.Grid 같은 홀더 위젯을 창 안에 만들어 넣고 그 안에 위젯을 추가해야합니다.</p>
+   </section>
+
+
+    <section id="vala"><title>hello-world.vala</title>
+      <p>완전한 파일 내용:</p>
+      <code mime="text/x-csharp" style="numbered">public class MyApplication : Gtk.Application {
+	protected override void activate () {
+		var window = new Gtk.ApplicationWindow (this);
+		var label = new Gtk.Label ("Hello GNOME!");
+		window.add (label);
+		window.set_title ("Welcome to GNOME");
+		window.set_default_size (200, 100);
+		window.show_all ();
+	}
+}
+
+public int main (string[] args) {
+	return new MyApplication ().run (args);
+}
+</code>
+    </section>
+
+    <section id="terminal"><title>터미널에서 프로그램 실행</title>
+      <p>이 프로그램을 실행하려면 우선 hello-world.vala로 저장하십시오. 터미널을 연 다음 프로그램을 저장한 폴더로 이동하십시오.</p>
+      <p>프로그램을 컴파일하시고요:</p>
+           <screen>valac --pkg gtk+-3.0 <file>hello-world.vala</file></screen>
+      <p>프로그램을 실행하시죠:</p>
+           <screen>./<var>hello-world</var></screen>
+    </section>
+  </section>
+
+  <section id="desktop.in"><title><file>.desktop.in</file> 파일</title>
+      <p>터미널에서의 프로그램 실행은 프로그램을 처음 만드는 단계에서 상당히 유용합니다. 그놈 3에서 완벽하게 <link href="https://developer.gnome.org/integration-guide/stable/mime.html.en">프로그램 통합</link>하여 동작할 수 있게 하려면 데스크톱 실행 아이콘이 필요합니다. 이 아이콘을 만들려면 <file>.desktop</file> 파일을 만들어야합니다.  파일은 프로그램 이름, 사용 아이콘, 다양한 통합 부분을 서술합니다. <file>.desktop</file> 파일에 대한 더 자세한 관점은 <link href="http://developer.gnome.org/desktop-entry-spec/">여기</link>에 있습니다. <file>.desktop.in</file> 파일로 <file>.desktop</file> 파일을 만듭니다.</p>
+
+    <p>예제에서는 <code>.desktop.in</code> 파일에서 최소한 필요한 내용을 보여줍니다.</p>
+    <code mime="text/desktop" style="numbered">[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Hello World
+Comment=Say Hello
+Exec=@prefix@/bin/hello-world
+Icon=application-default-icon
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Utility;
+</code>
+
+    <p>이제 <code>.desktop.in</code> 파일 부분으로 들어가보겠습니다.</p>
+    <terms>
+      <item><title>Name</title><p>프로그램 이름입니다.</p></item>
+      <item><title>Comment</title><p>프로그램의 간단한 설명입니다.</p></item>
+      <item><title>Exec</title><p>메뉴에서 프로그램을 선택했을 때 실행할 명령을 지정합니다. 이 예제에서는 <file>hello-world</file> 파일을 어디서 찾는지 알려주며 파일을 다루는 방식은 나머지 부분에서 다룹니다.</p></item>
+      <item><title>Terminal</title><p>Exec 키의 명령을 터미널 창에서 실행할 지 여부를 지정합니다.</p></item>
+    </terms>
+
+    <p>프로그램을 적당한 분류에 넣으려면 Categories 줄에 필요한 분류 이름을 추가해야합니다. 다른 분류에 대한 자세한 정보는 <link href="http://standards.freedesktop.org/menu-spec/latest/apa.html">메뉴 명세</link>에 있습니다.</p>
+    <p>이 예제에서는 이미 있는 아이콘을 사용하겠습니다. 개별 아이콘을 사용하려면 <file>/usr/share/icons/hicolor/scalable/apps</file> 경로에 저장한 svg 아이콘 파일이 필요합니다. 아이콘 파일 이름을 .desktop.in file 파일 7번째 줄에 적어 넣으십시오. 더 자세한 아이콘 정보는 <link href="https://live.gnome.org/GnomeGoals/AppIcon">테마 아이콘 설치</link>와 <link href="http://freedesktop.org/wiki/Specifications/icon-theme-spec">on freedesktop.org: Specifications/icon-theme-spec</link>에 있습니다.</p>
+  </section>
+
+  <section id="autotools"><title>빌드 시스템</title>
+    <p>그놈 3의 일부 프로그램을 만들려면 autotools의 도움을 받아 설치해야합니다. autotools 빌드는 필요한 모든 파일을 모든 올바른 경로에 설치합니다.</p>
+    <p>진행하려면 다음 파일이 필요합니다:</p>
+    <links type="section"/>
+
+      <section id="autogen"><title>autogen.sh</title>
+        <code mime="application/x-shellscript" style="numbered">#!/bin/sh
+
+set -e
+
+test -n "$srcdir" || srcdir=`dirname "$0"`
+test -n "$srcdir" || srcdir=.
+
+olddir=`pwd`
+cd "$srcdir"
+
+# This will run autoconf, automake, etc. for us
+autoreconf --force --install
+
+cd "$olddir"
+
+if test -z "$NOCONFIGURE"; then
+  "$srcdir"/configure "$@"
+fi
+</code>
+
+      <p><file>autogen.sh</file> 파일을 준비했고 저장하고 나면, 다음을 실행하십시오:</p>
+      <screen><output style="prompt">$ </output><input>chmod +x autogen.sh</input></screen>
+    </section>
+
+
+    <section id="makefile"><title>Makefile.am</title>
+      <code mime="application/x-shellscript" style="numbered"># The actual runnable program is set to the SCRIPTS primitive.
+# # Prefix bin_ tells where to copy this
+bin_PROGRAMS = hello-world
+hello_world_CFLAGS = $(gtk_CFLAGS)
+hello_world_LDADD = $(gtk_LIBS)
+hello_world_VALAFLAGS = --pkg gtk+-3.0
+hello_world_SOURCES = hello-world.vala
+
+desktopdir = $(datadir)/applications
+desktop_DATA = \
+	hello-world.desktop
+</code>
+    </section>
+
+
+    <section id="configure"><title>configure.ac</title>
+      <code mime="application/x-shellscript" style="numbered"># This file is processed by autoconf to create a configure script
+AC_INIT([Hello World], 1.0)
+AM_INIT_AUTOMAKE([1.10 no-define foreign dist-xz no-dist-gzip])
+AC_PROG_CC
+AM_PROG_VALAC([0.16])
+PKG_CHECK_MODULES(gtk, gtk+-3.0)
+AC_CONFIG_FILES([Makefile hello-world.desktop])
+
+AC_OUTPUT
+</code>
+    </section>
+
+
+    <section id="readme"><title>README</title>
+       <p>사용자가 우선 읽어야 할 내용입니다. 이 파일은 비워둘 수 있습니다.</p>
+
+       <p>제대로 된 정보를 올바르게 갖춘 <file>hello-world.c</file>, <file>hello-world.desktop.in</file>, <file>Makefile.am</file>, <file>configure.ac</file>, <file>autogen.sh</file> 파일을 두었다면, <file>README</file> 파일에 다음 내용을 넣을 수 있습니다:</p>
+      <code mime="text/readme" style="numbered">To build and install this program:
+
+./autogen.sh --prefix=/home/your_username/.local
+make
+make install
+
+-------------
+Running the first line above creates the following files:
+
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+depcomp
+hello-world
+hello-world.c
+hello-world.desktop
+hello_world-hello-world.o
+hello_world_vala.stamp
+install-sh
+missing
+Makefile.in
+Makefile
+
+Running "make" links all the appropriate libraries.
+
+Running "make install", installs the application in /home/your_username/.local/bin
+and installs the hello-world.desktop file in /home/your_username/.local/share/applications
+
+You can now run the application by typing "Hello World" in the Overview.
+
+----------------
+To uninstall, type:
+
+make uninstall
+
+----------------
+To create a tarball type:
+
+make distcheck
+
+This will create hello-world-1.0.tar.xz
+</code>
+    </section>
+
+    <!-- TODO: How to make a custom icon with autotools -->
+
+  </section>
+</page>

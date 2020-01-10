@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="tech-atk" xml:lang="el">
-<info>
-  <link type="guide" xref="tech" group="atk"/>
-  <desc>Πακέτο εργαλείων για υλοποίηση υποστήριξης για αναγνώστες οθόνης και άλλα εργαλεία</desc>
-  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-atk" xml:lang="el">
 
+  <info>
+    <link type="guide" xref="tech" group="atk"/>
+
+    <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email its:translate="no">shaunm@gnome.org</email>
+      <years>2011–2012</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Πακέτο εργαλείων για υλοποίηση υποστήριξης για αναγνώστες οθόνης και άλλα εργαλεία</desc>
+  
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
@@ -14,7 +25,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
-      <mal:years>2012, 2013, 2014</mal:years>
+      <mal:years>2012-2014</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -37,7 +48,7 @@
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
+      <mal:email>tomtryf@gnome.org</mal:email>
       <mal:years>2014</mal:years>
     </mal:credit>
   </info>
@@ -50,15 +61,7 @@
 
 <p>Η ATK επιλύει το πρόβλημα σύνδεσης πολλών διαφορετικών ειδών γραφικών συστατικών (καταχωρίσεις κειμένων, περιοχές κειμένου, πλήκτρα, μενού) με πολλούς διαφορετικούς τύπους τεχνολογιών προσβασιμότητας (αναγνώστες οθόνης, οθόνες Μπράιγ, συσκευές ελέγχου εισπνοής/εκπνοής). Αντί για εγγραφή διεπαφών NxM, από κάθε γραφικό συστατικό σε κάθε συσκευή πρόσβασης, κάποιος πρέπει απλά να εκθέσει ένα γραφικό συστατικό μέσα από διεπαφές του ATK. Οι συσκευές πρόσβασης θα χρησιμοποιήσουν με τη σειρά τους αυτές τις διεπαφές για να αναζητήσουν προσβάσιμα γραφικά συστατικά. Για παράδειγμα, ένας ακουστικός αναγνώστης οθόνης και μια οθόνη Μπράιγ θα χρησιμοποιήσουν και οι δυο μια τυπική διεπαφή "λήψης των περιεχομένων κειμένου" σε ATK για όλα τα γραφικά συστατικά με κειμενικές πληροφορίες.</p>
 
-<p>Nonetheless, you should be aware of accessibility issues when
-when developing your applications.  Although GTK+ interfaces provide
-reasonable accessibility by default, you can often improve how well
-your program behaves with accessibility tools by providing additional
-information to ATK.  If you develop custom widgets, you should ensure
-that they expose their properties to ATK.  You should also avoid using
-sound, graphics, or color as the sole means of conveying information
-to the user; have redundant ways of providing this information instead of
-relying on the user being able to perceive a particular medium.</p>
+<p>Παρόλα αυτά, θα πρέπει να λαμβάνετε υπόψη σας την τα θέματα προσβασιμότητας κατά την ανάπτυξη των εφαρμογών σας. Αν και οι διεπαφές GTK+ παρέχουν ένα λογικό επίπεδο προσβασιμότητας από προεπιλογή, μπορείτε να βελτιώσετε συχνά τη συνεργασία του προγράμματός σας με τα εργαλεία προσβασιμότητας, παρέχοντας ορισμένες επιπρόσθετες πληροφορίες στη ATK. Αν έχετε αναπτύξει προσαρμοσμένα γραφικά συστατικά, διασφαλίστε ότι εκθέτουν τις ιδιότητές τους στο ATK. Επίσης, αποφύγετε να χρησιμοποιείτε ήχο, γραφικά ή χρώματα ως το μοναδικό μέσο παροχής πληροφοριών στο χρήστη· να έχετε εφεδρικούς τρόπους παροχής αυτών των πληροφοριών αντί να βασίζεστε στον χρήστη για να καταλάβει ένα συγκεκριμένο μέσο.</p>
 
 <p>Η επιφάνεια εργασίας GNOME περιλαμβάνει μια σειρά από εργαλεία προσβασιμότητας που επιτρέπουν στους χρήστες με αναπηρίες να αξιοποιούν πλήρως την επιφάνεια εργασίας και τις εφαρμογές της. Οι εφαρμογές που υλοποιούν πλήρως την ATK μπορούν να συνεργαστούν καλά με τα εργαλεία προσβασιμότητας. Τα εργαλεία προσβασιμότητας του GNOME περιλαμβάνουν έναν αναγνώστη οθόνης, ένα μεγεθυντή οθόνης, ένα πληκτρολόγιο οθόνης και το <app>Dasher</app>, ένα καινοτόμο εργαλείο εισαγωγής κειμένου με πρόβλεψη.</p>
 

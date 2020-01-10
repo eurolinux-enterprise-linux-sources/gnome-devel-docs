@@ -16,7 +16,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -34,7 +34,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -236,41 +236,39 @@ app.application.run (ARGV);
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
 
-const StatusbarExample = new Lang.Class({
-    Name: 'Statusbar Example',
+class StatusbarExample {
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
-    _init: function() {
+    // Create the application itself
+    constructor() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jsstatusbar',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
-    this.application.connect('activate', Lang.bind(this, this._onActivate));
-    this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
-    _onActivate: function() {
+    // Callback function for 'activate' signal presents window when active
+    _onActivate() {
         this._window.present();
-    },
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function() {
-        this._buildUI ();
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI();
+    }
 
+    // Build the application's UI
+    _buildUI() {
 
-
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function() {
-
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -278,28 +276,28 @@ const StatusbarExample = new Lang.Class({
             default_width: 300,
             title: "Button Clicker"});
 
-        // Δημιουργία μιας φατνωμένης διεπαφής
+        // Create a paned interface
         this._panes = new Gtk.Paned ({
             orientation: Gtk.Orientation.VERTICAL });
 
-        // Δημιουργία του κύριου πλήκτρου
+        // Create the main button
         this._clickMe = new Gtk.Button ({
             label: "Click Me!" });
-        this._clickMe.connect ("clicked", Lang.bind (this, this._clicked));
+        this._clickMe.connect ("clicked", this._clicked.bind(this));
 
-        // Δημιουργία του πλήκτρου επιστροφής
+        // Create the back button
         this._backButton = new Gtk.Button ({
             label: "gtk-go-back",
             use_stock: true });
-        this._backButton.connect ("clicked", Lang.bind (this, this._back));
+        this._backButton.connect ("clicked", this._back.bind(this));
 
-        // Δημιουργία του πλήκτρου καθαρισμού
+        // Create the clear button
         this._clearButton = new Gtk.Button ({
             label: "gtk-clear",
             use_stock: true });
-        this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
+        this._clearButton.connect ("clicked", this._clear.bind(this));
 
-        // Τοποθέτηση των πλήκτρων σε ένα πλέγμα
+        // Put the buttons in a grid
         this._grid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER });
@@ -307,81 +305,71 @@ const StatusbarExample = new Lang.Class({
         this._grid.attach_next_to (this._clickMe, this._backButton, Gtk.PositionType.RIGHT, 1, 1);
         this._grid.attach_next_to (this._clearButton, this._clickMe, Gtk.PositionType.RIGHT, 1, 1);
 
-        // Τοποθέτηση του πλέγματος σε ένα μεγάλο πλαίσιο που γεμίζει το περισσότερο παράθυρο
+        // Put the grid in a large frame that fills most of the window
         this._topFrame = new Gtk.Frame ({
             border_width: 20,
             height_request: 90,
             width_request: 300});
         this._topFrame.add (this._grid);
 
-        // Δημιουργία της γραμμής κατάστασης
+        // Create the statusbar
         this._statusbar = new Gtk.Statusbar();
 
-        // Παρακολούθηση του αριθμού των φορών που πατήθηκε το πλήκτρο
+        // Keep track of the number of times the button has been clicked
         this.Clicks = 0;
         this.ContextID = this._statusbar.get_context_id ("Number of Clicks");
 
-        // Δίνει στη γραμμή κατάστασης ένα αρχικό μήνυμα
+        // Give the statusbar an initial message
         this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
 
-        // Τοποθέτηση της γραμμής κατάστασης στο δικό της πλαίσιο στο τέλος
+        // Put the statusbar in its own frame at the bottom
         this._barFrame = new Gtk.Frame ({
             height_request: 30 });
         this._barFrame.add (this._statusbar);
 
-        // Συγκέντρωση των πλαισίων στη φατνωμένη διεπαφή
+        // Assemble the frames into the paned interface
         this._panes.pack1 (this._topFrame, true, false);
         this._panes.pack2 (this._barFrame, false, false);
 
-        // Τοποθέτηση των φατνωμάτων στο παράθυρο
+        // Put the panes into the window
         this._window.add (this._panes);
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
-    },
+    }
 
+    _clicked() {
 
-
-    _clicked: function() {
-
-        // Αύξηση του αριθμού των πατημάτων κατά 1
+        // Increment the number of clicks by 1
         this.Clicks++;
 
-        // Ενημέρωση της γραμμής κατάστασης με τον νέο αριθμό πατημάτων
+        // Update the statusbar with the new number of clicks
         this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+    }
 
-    },
+    _back() {
 
-
-
-    _back: function () {
-
-        // Αν υπήρξαν πατήματα, μείωση κατά 1 και αφαίρεση της τελευταίας ενημέρωσης της γραμμής κατάστασης
+        // If there have been any clicks, decrement by 1 and remove last statusbar update
         if (this.Clicks &gt; 0 ) {
             this.Clicks--;
             this._statusbar.pop (this.ContextID);
         };
-
-    },
-
-
-
-    _clear: function () {
-
-        // Επαναφορά του αριθμού των πατημάτων
-        this.Clicks = 0;
-
-        // Εκκαθάριση όλων των μηνυμάτων που προωθήθηκαν στη γραμμή κατάστασης
-        this._statusbar.remove_all (this.ContextID);
-
-        // Επαναφορά του μηνύματος της γραμμής κατάστασης
-        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
-
     }
 
-});
+    _clear() {
 
-// Εκτέλεση της εφαρμογής
+        // Reset the number of clicks
+        this.Clicks = 0;
+
+        // Wipe out all the messages pushed to the statusbar
+        this._statusbar.remove_all (this.ContextID);
+
+        // Reset the statusbar's message
+        this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+    }
+};
+
+// Run the application
 let app = new StatusbarExample ();
 app.application.run (ARGV);
 </code>

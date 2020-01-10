@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="namespacing" xml:lang="cs">
+
+  <info>
+    <link type="guide" xref="index#maintainer-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015, 2016</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Jak předejít konfliktům v symbolech mezi knihovnami pomocí jmenných prostorů ve všech API</desc>
+  </info>
+
+  <title>Jmenné prostory</title>
+
+  <synopsis>
+    <title>Shrnutí</title>
+
+    <p>Když má knihovna přidělený správný jmenný prostor, může ve svém API definovat typy a metody, které mají stejné názvy jako v jiných knihovnách a program ji s nimi může použít souběžně, aniž by došlo ke konfliktům. Je toho dosaženo díky předřazení prefixu v podobě jedinečného jmenného prostoru knihovny před názvy všech typů a metod.</p>
+  </synopsis>
+
+  <section id="gobject">
+    <title>API pro GObject</title>
+
+    <p>Jednotné a úplné jmenné prostory symbolů (funkcí a typů) a souborů jsou důležité ze dvou hlavních důvodů:</p>
+    <list type="numbered">
+      <item><p>Zavedení zvyklostí, které pro vývojáře znamenají, že si stačí zapamatovat pár názvů symbolů, aby mohli knihovnu používat – zbytek si mohou snadno domyslet.</p></item>
+      <item><p>Zajištění, že symboly ze dvou projektů nebudou ve vzájemném konfliktu, když jsou vložené do stejného souboru.</p></item>
+    </list>
+
+    <p>Druhý bod je velmi důležitý — představte si, co by se stalo, když by každý projekt exportoval funkci nazvanou <code>create_object()</code>. Hlavičkové soubory, které by ji definovaly, by pak nemohly být vložené naráz ve stejném souboru. A i kdyby mohly, programátor by pak stejně nevěděl, ze kterého projektu je která. Jmenné prostory tento problém řeší pomocí použití jedinečného a jednotného prefixu pro všechny symboly a názvy souborů v projektu, čímž se symboly seskupí ve svém projektu a oddělí od ostatních projektů.</p>
+
+    <p>Konvence uvedené níže by se měly používat pro jmenné prostory všech symbolů. Jsou <link href="https://developer.gnome.org/gobject/stable/gtype-conventions.html">použity ve všech projektech založených na GLib</link>, a měly by tak být dobře známy velkému množství vývojářů:</p>
+    <list>
+      <item><p>Funkce by měly používat <code>mala_pismena_s_podtrzitky</code>.</p></item>
+      <item><p>Struktury, typy a objekty by měly používat <code>VelkaPismenaNaZacatkuSlovBezPodtrzitek</code>.</p></item>
+      <item><p>Makra a konstanty by měly používat <code>VELKA_PISMENA_S_PODTRZITKY</code>.</p></item>
+      <item><p>Všechny symboly by měly mít prefix s krátkou (2 až 4 písmennou) verzí jmenného prostoru. To je dostatečně krátké pro snadné psaní, ale stále by to mělo být jedinečné.</p></item>
+      <item><p>Také názvy všech metody třídy by měly mít na začátku připojen název třídy.</p></item>
+    </list>
+
+    <p>Navíc by veřejné hlavičkové soubory měly být vkládány z podsložky, které pro ně fakticky vytvoří jmenný prostor. Například místo <code>#include &lt;abc.h&gt;</code> by měl projekt svým uživatelům umožnit použít <code>#include &lt;namespace/abc.h&gt;</code>.</p>
+
+    <p>Některé projekty připojují jmenný prostor k hlavičkovým souborům v rámci podsložky, například <code>#include &lt;namespace/ns-abc.h&gt;</code> namísto <code>#include &lt;namespace/abc.h&gt;</code>. Dochází tak ke zdvojení, ale ničemu to nevadí.</p>
+
+    <p>Například pro projekt s názvem „Walbottle“ by šel zvolit zkrácený název pro jmenný prostor „Wbl“. Když bude mít třídu „schema“ a třídu „writer“, instalovaly by se hlavičkové soubory:</p>
+    <list>
+      <item><p><file><var>$(includedir)</var>/walbottle-<var>$API_MAJOR</var>/walbottle/schema.h</file></p></item>
+      <item><p><file><var>$(includedir)</var>/walbottle-<var>$API_MAJOR</var>/walbottle/writer.h</file></p></item>
+    </list>
+
+    <p>(Použití <var>$API_MAJOR</var> výše je z důvodu <link xref="parallel-installability">možnosti souběžné instalace</link>.)</p>
+
+    <p>Pro třídu schématu by měly být exportovány následující symboly (mimo jiné) a dodržet při tom zvyklosti pro GObject:</p>
+    <list>
+      <item><p>Struktura <code>WblSchema</code></p></item>
+      <item><p>Struktura <code>WblSchemaClass</code></p></item>
+      <item><p>Makro <code>WBL_TYPE_SCHEMA</code></p></item>
+      <item><p>Makro <code>WBL_IS_SCHEMA</code></p></item>
+      <item><p>Funkce <code>wbl_schema_get_type</code></p></item>
+      <item><p>Funkce <code>wbl_schema_new</code></p></item>
+      <item><p>Funkce <code>wbl_schema_load_from_data</code></p></item>
+    </list>
+  </section>
+</page>

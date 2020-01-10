@@ -10,9 +10,9 @@
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Rafael Ferreira</mal:name>
-      <mal:email>rafael.f.f1@gmail.com</mal:email>
-      <mal:years>2013</mal:years>
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2013, 2014, 2017</mal:years>
     </mal:credit>
   </info>
       <title>Utilizando <app>Massif</app> para perfilar utilização de memória em software do GNOME</title>
@@ -20,7 +20,7 @@
     <p>Este artigo descreve como utilizar o perfilador (profiler) de heap <app>Massif</app> com aplicativos do GNOME. Nós descrevemos como invocar, interpretar e agir sobre a saída do <app>Massif</app>. O jogo <app>Swell Foop</app> é utilizado como exemplo.</p>
    <section id="optimization-massif-TBL-intro">
         <title>Introdução</title>
-        <p><app>Massif</app> é um membro da suíte de ferramentas de perfilação de memória <link href="http://valgrind.org/">valgrind</link>. Seu propósito é fornecer uma visão detalhada da utilização de memória dinâmica durante o tempo de vida do programa. Especificamente, ele grava a utilização de heap e de stack (pilha) da memória.</p>
+        <p><app>Massif</app> é um membro da suíte de ferramentas de perfilamento de memória <link href="http://valgrind.org/">valgrind</link>. Seu propósito é fornecer uma visão detalhada da utilização de memória dinâmica durante o tempo de vida do programa. Especificamente, ele grava a utilização de heap e de stack (pilha) da memória.</p>
         <p>O heap é a região da memória que é alocada com funções como malloc. Ele cresce por demanda e geralmente é a maior região de memória em um programa. A pilha (stack) é onde são armazenados todos os dados locais para as funções. Isto inclui as variáveis "automáticas" em C e os endereços de retorno para as sub-rotinas. A pilha é tipicamente bem menor e muito mais ativa que o heap. Nós não vamos considerar explicitamente como pilha já que o <app>Massif</app> o trata como se fosse apenas outra parte do heap. <app>Massif</app> também fornece informações sobre quanta memória é utilizada para gerenciar o heap.</p>
         <p>O <app>Massif</app> produz dois arquivos de saída: um resumo gráfico em um arquivo postscript e uma discriminação detalhada em um arquivo de texto.</p>
     </section>
@@ -43,7 +43,7 @@ valgrind --tool=massif --depth=5  --alloc-fn=g_malloc --alloc-fn=g_realloc --all
             <title>Saída do <app>Massif</app> para a versão não otimizada do programa <app>Swell Foop</app>.</title>
             <media type="image" src="figures/massif-before.png"/>
          </figure>
-        <p><link xref="optimization-massif-FIG-output-unoptimized"/> mostra uma saída postscript típica do <app>Massif</app>. Este é o resultado que você obteria ao jogar um único jogo do <app>Swell Foop</app> (versão 2.8.0) e depois saindo. O arquivo postscript terá um nome como <file>massif.12345.ps</file> e o arquivo de texto será chamado <file>massif.12345.txt</file>. O número ao meio é o ID do processo do programa que foi examinado. Se você realmente tentar realizar este exemplo, você encontrará duas versões para cada arquivo com números levemente diferentes, devido o <app>Swell Foop</app> iniciar um segundo processo e o <app>Massif</app> o seguir também. Nós iremos ignorar este segundo processo, ele consome muito pouca memória.</p>
+        <p>A imagem acima mostra uma saída postscript típica do <app>Massif</app>. Este é o resultado que você obteria ao jogar um único jogo do <app>Swell Foop</app> (versão 2.8.0) e depois saindo. O arquivo postscript terá um nome como <file>massif.12345.ps</file> e o arquivo de texto será chamado <file>massif.12345.txt</file>. O número ao meio é o ID do processo do programa que foi examinado. Se você realmente tentar realizar este exemplo, você encontrará duas versões para cada arquivo com números levemente diferentes, devido o <app>Swell Foop</app> iniciar um segundo processo e o <app>Massif</app> o seguir também. Nós iremos ignorar este segundo processo, ele consome muito pouca memória.</p>
         <p>Ao topo do gráfico, nós vemos uma ampla faixa amarela rotulada gdk_pixbuf_new. Ela parece ser uma candidata ideal para otimização, mas nós iremos precisar utilizar o arquivo de texto para descobrir o que está chamando gdk_pixbuf_new. O topo do arquivo de texto irá se parecer como algo assim:</p>
         <code>
 Comando: ./swell-foop
@@ -82,13 +82,13 @@ Called from:
     <section id="optimization-massif-TBL-acting-on-results">
         <title>Atuando sobre os resultados</title>
         <p>Reduzir o consumo de espaço-tempo é bom, porém há duas formas de reduzi-lo e elas não são iguais. Você pode tanto reduzir a quantidade de memória alocada ou reduzir o montante de tempo que é alocado para isto. Por um momento, considere um modelo de sistema com apenas dois processos em execução. Ambos os processos utilizam quase toda a memória RAM física e se eles se sobrepõem completamente, então o sistema irá utilizar a memória de troca (swap) e tudo vai ficar lento. Obviamente, se nós reduzimos a utilização de memória de cada processo por um fator de dois, então eles podem coexistir pacificamente sem a necessidade de utilizar a memória de troca (swap). Se ao invés disso, nós reduzimos o tempo o qual a memória é alocada por um fator de dois, então os dois programas podem coexistir, mas apenas enquanto seus períodos de alta utilização de memória não sobreporem-se. Logo, é melhor reduzir o montante de memória alocada.</p>
-        <p>Infelizmente, a escolha de otimização também é reprimida pelas necessidades do programa. O tamanho dos dados do pixbuf no <app>Swell Foop</app> é determinado pelo tamanho dos gráficos do jogo e não pode ser reduzido facilmente. Entretanto, a quantidade de tempo que ele gasta sendo carregado para dentro da memória, pode ser drasticamente reduzido. <link xref="optimization-massif-FIG-output-optimized"/> mostra a análise feita pelo <app>Massif</app> do <app>Swell Foop</app> após se dispor do pixbufs, uma vez que as imagens foram carregadas dentro do servidor X.</p>
+        <p>Infelizmente, a escolha de otimização também é reprimida pelas necessidades do programa. O tamanho dos dados do pixbuf no <app>Swell Foop</app> é determinado pelo tamanho dos gráficos do jogo e não pode ser reduzido facilmente. Entretanto, a quantidade de tempo que ele gasta sendo carregado para dentro da memória, pode ser drasticamente reduzido. A imagem abaixo mostra a análise feita pelo <app>Massif</app> do <app>Swell Foop</app> após se dispor do pixbufs, uma vez que as imagens foram carregadas dentro do servidor X.</p>
         <figure>
             <title>Saída do <app>Massif</app> para o programa <app>Swell Foop</app> otimizado.</title>
            <media type="image" src="figures/massif-after.png"/>
             </figure>
         <p>A utilização de espaço-tempo do gdk_pixbuf_new é agora uma faixa fina que apenas sofre picos de forma leve (é a décima-sexta faixa para baixo e sombreada de magenta). Como bônus, o pico de utilização de memória caiu 200 kB, já que o pico ocorre antes de outra memória ser alocada. Se dois processos como este são executados juntos, as chances do pico de utilização de memória coincidirem, e por isso o risco de usar memória de troca (swap), seriam bastante baixos.</p>
-        <p>Nós podemos fazer melhor ? Uma verificação rápida na saída de texto do <app>Massif</app> revela: g_strdup como o novo maior ofensor.</p>
+        <p>Nós podemos fazer melhor? Uma verificação rápida na saída de texto do <app>Massif</app> revela: g_strdup como o novo maior ofensor.</p>
         <code>
 Comando: ./swell-foop
 
@@ -126,6 +126,6 @@ Called from:
     <section id="optimization-massif-TBL-caveats">
         <title>Advertências</title>
         <p>Existem um par de coisas as quais devemos ficar atentos: Primeiramente, espaço-tempo é apenas informado como uma porcentagem, você deve compará-lo ao tamanho total do programa, para decidir se vale a pena você ir atrás de quantidade de memória. O gráfico, com seu eixo vertical em kilobytes, é bom para isto.</p>
-        <p>Em segundo lugar, o <app>Massif</app> apenas leva em consideração a memória utilizada pelo seu próprio programa. Recursos como pixmaps são armazenados no servidor X e não são considerados pelo <app>Massif</app>. No exemplo do <app>Swell Foop</app> nós realmente só mudamos o consumo de memória do lado do cliente do pixbufs para o lado do servidor pixmaps. Apesar de termos trapaceado, ocorreram ganhos de performance. Manter os dados de imagem no servidor X, faz com que as rotinas dos gráficos fiquem mais rápidas e remove uma grande quantidade de comunicações entre processos (ipcs). Ademais, os pixamps serão armazenados em um formato gráfico nativo que geralmente é mais compacto que o formato RGBA de 32-bits utilizado pelo gdk_pixbuf. Para medir o efeito de pixmaps, e outros recursos X, utilize o programa <link href="http://www.freedesktop.org/Software/xrestop">xrestop</link>.</p>
+        <p>Em segundo lugar, o <app>Massif</app> apenas leva em consideração a memória utilizada pelo seu próprio programa. Recursos como pixmaps são armazenados no servidor X e não são considerados pelo <app>Massif</app>. No exemplo do <app>Swell Foop</app> nós realmente só mudamos o consumo de memória do lado do cliente do pixbufs para o lado do servidor pixmaps. Apesar de termos trapaceado, ocorreram ganhos de performance. Manter os dados de imagem no servidor X, faz com que as rotinas dos gráficos fiquem mais rápidas e remove uma grande quantidade de comunicações entre processos (ipcs). Ademais, os pixmaps serão armazenados em um formato gráfico nativo que geralmente é mais compacto que o formato RGBA de 32-bits utilizado pelo gdk_pixbuf. Para medir o efeito de pixmaps, e outros recursos X, utilize o programa <link href="http://www.freedesktop.org/Software/xrestop">xrestop</link>.</p>
     </section>
 </page>

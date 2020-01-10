@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.py" xml:lang="cs">
+  <info>
+  <title type="text">MenuBar (Python)</title>
+  <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
+  <link type="seealso" xref="gmenu.py"/>
+    <link type="next" xref="colorbutton.py"/>
+    <revision version="0.1" date="2012-08-01" status="stub"/>
+
+    <credit type="author copyright">
+      <name>Tiffany Antopolski</name>
+      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <years>2012</years>
+    </credit>
+    <credit type="author copyright">
+      <name>Marta Maria Casetti</name>
+      <email its:translate="no">mmcasetti@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Widget, který sdružuje widgety GtkMenuItem.</desc>
+  </info>
+
+  <title>MenuBar vytvořený pomocí XML a GtkBuilder</title>
+  <media type="image" mime="image/png" src="media/menubar.png"/>
+  <p>MenuBar vytvořený pomocí XML a GtkBuilder.</p>
+
+  <links type="section"/>
+
+  <section id="xml"> <title>Vytvoření MenuBar pomocí XML</title>
+   <p>Abyste vytvořili nabídkovou lištu pomocí XML:</p>
+   <steps>
+     <item><p>Pomocí svého oblíbeného textového editoru vytvořte <file>menubar.ui</file>.</p></item>
+     <item><p>Na začátek souboru vložte následující řádek:</p>
+           <code mime="application/xml">
+&lt;?xml version="1.0"? encoding="UTF-8"?&gt;</code>
+     </item>
+    <item><p>Chceme vytvořit rozhraní, které bude obsahovat naši nabídkovou lištu a její podnabídky. Naše nabídková lišta bude obsahovat podnabídky <gui>Soubor</gui>, <gui>Upravit</gui>, <gui>Volby</gui> a <gui>Nápověda</gui>. Do souboru přidáme následující kód XML:</p>
+    <code mime="application/xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+     </item>
+     <item><p>Nyní vytvoříme soubor .py a použijeme GtkBuilder k naimportování souboru <file>menubar.ui</file>, který jsme před chvílí vytvořili.</p></item>
+   </steps>
+   </section>
+
+   <section id="basis"> <title>Přidání MenuBar do okna pomocí GtkBuilder</title>
+<code mime="text/x-python">from gi.repository import Gtk
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="MenuBar Example", application=app)
+        self.set_default_size(200, 200)
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+
+        # Builder pro přidání uživatelského rozhraní navrženého v Glade do mřížky
+        builder = Gtk.Builder()
+        # Získá soubor (pokud existuje)
+        try:
+            builder.add_from_file("menubar_basis.ui")
+        except:
+            print("file not found")
+            sys.exit()
+
+        # Použije metodu Gtk.Application.set_menubar(nabídková_lišta) pro přídání
+        # nabídkové lišty do aplikace (Upozornění: NE do okna!)
+        self.set_menubar(builder.get_object("menubar"))
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+<p>Nyní aplikaci napsanou v jazyce Python spusťte. Měla by vypadat podobně, jako na obrázku na začátku této stránky.</p>
+</section>
+
+<section id="xml2"> <title>Přidání položek do nabídky</title>
+<p>Začneme přidáním dvou položek nabídky do nabídky <gui>File</gui>: <gui>New</gui> a <gui>Quit</gui>. Provedeme to přidáním <code>oddílu</code> s těmito položkami do podnabídky <code>File</code>. Soubor <file>menubar.ui</file> by měl vypadat jako tento (řádky 6 až 13 včetně obsahují nově přidaný oddíl):</p>
+
+   <listing>
+      <title>menubar.ui</title>
+      <code mime="application/xml" style="numbered">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name ="label"&gt;Quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;</code>
+</listing>
+
+  <p>Podle tohoto vzoru nyní můžete přidat položky <gui>Copy</gui> a <gui>Paste</gui> do podnabídky <gui>Edit</gui> a položku <gui>About</gui> do podnabídky <gui>Help</gui>.</p>
+
+  </section>
+
+  <section id="actions">
+    <title>Nastavení akcí</title>
+
+    <p>Nyní vytvoříme akce pro „New“ a „Quit“ napojené na funkce zpětného volání v souboru .py. Například „new“ vytvoříme jako:</p>
+    <code mime="text/x-python">
+new_action = Gio.SimpleAction.new("new", None)
+new_action.connect("activate", self.new_callback)</code>
+
+    <p>A vytvoříme funkci zpětného volání pro „new“ jako</p>
+    <code mime="text/x-python">
+def new_callback(self, action, parameter):
+    print "You clicked \"New\""</code>
+
+    <p>Nyní v souboru XML napojíme položky nabídky na akce v souboru XML přidáním atributu „action“:</p>
+    <code mime="text/x-python">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+&lt;/item&gt;</code>
+
+    <p>Všimněte si, že pro akce, které se vztahují k aplikaci, používáme předponu <code>app.</code> a pro akce, které se vztahují k oknu, používáme předponu <code>win.</code>.</p>
+
+    <p>Nakonec v souboru <file>.py</file> přidáme akci do aplikace nebo do okna – například <code>app.new</code> bude přidáno do aplikace v metodě <code>do_startup(self)</code> jako</p>
+    <code mime="text/x-python">
+self.add_action(new_action)</code>
+
+    <p>Podrobnější vysvětlení signálů a zpětných volání viz <link xref="signals-callbacks.py"/>.</p> 
+
+  </section>
+
+  <section id="win-app"><title>Akce: Aplikace nebo okno?</title>
+    <p>Výše jsme vytvořili akce <code>"new"</code> a <code>"open"</code> jako součást třídy <code>MyApplication</code>. Akce, které ovládají přímo aplikaci, jako je <code>"quit"</code> by se vytvořily podobně.</p>
+
+    <p>Některé akce, jako je <code>"copy"</code> (kopírovat) nebo <code>"paste"</code> (vložit) se vztahují k oknu a ne k aplikaci. Akce okna by měly být vytvářeny jako součást třídy okna.</p>
+
+    <p>Soubor s celým příkladem obsahuje jak akce aplikace, tak akce okna. Akce okna jsou obvykle zároveň i součástí <link xref="gmenu.py">aplikační nabídky</link>. Není dobrým zvykem vkládat akce okna do aplikační nabídky. Pro předváděcí účely zahrnuje soubor s celým příkladem, který následuje, kód XML v souboru <file>.ui</file>, který vytvoří aplikační nabídku včetně položek <code>"New"</code> a <code>"Open"</code> a ty jsou zavěšeny na stejnou akci, jako položky nabídkové lišty se stejným názvem.</p>
+  </section>
+
+  <section id="choices">
+    <title>Podnabídka „Choices“ a položky se stavem</title>
+    <media type="image" mime="image/png" src="media/menubar_choices.png"/>
+    <p>Řádky 30 až 80 včetně v <link xref="menubar.py#xml-code"/> ukazují kód XML použitý k vytvoření uživatelského rozhraní pro nabídku <gui>Choices</gui>.</p>
+
+    <p>Dosud vytvořené akce jsou <em>bezstavové</em>, tj. takové, které si nepamatují stave nebo nezávisí na stavu akce samotné. Akce, které potřebujeme vytvořit pro podnabídku <gui>Choices</gui> jsou na druhou stranu <em>stavové</em>. Příkladem vytvoření stavové akce je:</p>
+    <code mime="text/x-python">
+shape_action = Gio.SimpleAction.new_stateful("shape", GLib.VariantType.new('s'), GLib.Variant.new_string('line'))</code>
+
+    <p>kde proměnné v metodě jsou: název, typ parametru (v tomto případě řetězec, úplný seznam s významem znaků viz <link href="http://developer.gnome.org/glib/unstable/glib-GVariantType.html">zde</link>), počáteční stav (v tomto případě <code>'line'</code>, v případě pravdivostní hodnoty <code>True</code> by to mělo být <code>Glib.Variant.new_boolean(True)</code> apod.; úplný seznam viz <link href="http://developer.gnome.org/glib/unstable/glib-GVariant.html">zde</link>).</p>
+
+    <p>Po vytvoření stavové jednoduché akce ji napojíme na funkci zpětného volání a přidáme ji do okna (nebo do aplikace v některých případech), stejně jako dřív:</p>
+
+    <code mime="text/x-python">
+shape_action.connect("activate", self.shape_callback)
+self.add_action(shape_action)</code>
+
+  </section>
+
+  <section id="xml-code">
+    <title>Celý soubor s uživatelským rozhraním ve formátu XML pro tento příklad</title>
+    <code mime="application/xml" style="numbered">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;interface&gt;
+  &lt;menu id="menubar"&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;File&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Edit&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Copy&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.copy&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Paste&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.paste&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Choices&lt;/attribute&gt;
+      &lt;submenu&gt;
+        &lt;attribute name="label"&gt;Shapes&lt;/attribute&gt;
+          &lt;section&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Line&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;line&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Triangle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;triangle&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Square&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;square&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Polygon&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;polygon&lt;/attribute&gt;
+            &lt;/item&gt;
+            &lt;item&gt;
+              &lt;attribute name="label"&gt;Circle&lt;/attribute&gt;
+              &lt;attribute name="action"&gt;win.shape&lt;/attribute&gt;
+              &lt;attribute name="target"&gt;circle&lt;/attribute&gt;
+            &lt;/item&gt;
+          &lt;/section&gt;
+      &lt;/submenu&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;On&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;on&lt;/attribute&gt;
+        &lt;/item&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Off&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.state&lt;/attribute&gt;
+          &lt;attribute name="target"&gt;off&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;Awesome&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;app.awesome&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+    &lt;submenu&gt;
+      &lt;attribute name="label"&gt;Help&lt;/attribute&gt;
+      &lt;section&gt;
+        &lt;item&gt;
+          &lt;attribute name="label"&gt;About&lt;/attribute&gt;
+          &lt;attribute name="action"&gt;win.about&lt;/attribute&gt;
+        &lt;/item&gt;
+      &lt;/section&gt;
+    &lt;/submenu&gt;
+  &lt;/menu&gt;
+  &lt;menu id="appmenu"&gt;
+    &lt;section&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;New&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.new&lt;/attribute&gt;
+      &lt;/item&gt;
+      &lt;item&gt;
+        &lt;attribute name="label"&gt;Quit&lt;/attribute&gt;
+        &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+      &lt;/item&gt;
+    &lt;/section&gt;
+  &lt;/menu&gt;
+&lt;/interface&gt;
+</code>
+  </section>
+
+  <section id="python-code">
+    <title>Kompletní soubor v jazyce Python pro tento příklad</title>
+    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+from gi.repository import GLib
+from gi.repository import Gio
+import sys
+
+
+class MyWindow(Gtk.ApplicationWindow):
+
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="MenuBar Example", application=app)
+        self.set_default_size(200, 200)
+
+        # Vytvoří bezstavovou akci (název, typ parametru)
+        copy_action = Gio.SimpleAction.new("copy", None)
+        # Napojí ji na funkci zpětného volání
+        copy_action.connect("activate", self.copy_callback)
+        # Přidá ji do okna
+        self.add_action(copy_action)
+
+        # Vytvoří bezstavovou akci (název, typ parametru)
+        paste_action = Gio.SimpleAction.new("paste", None)
+        # Napojí ji na funkci zpětného volání
+        paste_action.connect("activate", self.paste_callback)
+        # Přidá ji do okna
+        self.add_action(paste_action)
+
+        # Vytvoří stavovou akci (název, typ_parametru, počáteční_stav)
+        shape_action = Gio.SimpleAction.new_stateful(
+            "shape", GLib.VariantType.new('s'), GLib.Variant.new_string('line'))
+        # Napojí ji na funkci zpětného volání
+        shape_action.connect("activate", self.shape_callback)
+        # Přidá ji do okna
+        self.add_action(shape_action)
+
+        # Vytvoří stavovou akci
+        about_action = Gio.SimpleAction.new("about", None)
+        # Napojí ji na funkci zpětného volání
+        about_action.connect("activate", self.about_callback)
+        # Přidá ji do aplikace
+        self.add_action(about_action)
+
+    # Funkce zpětného volání pro copy_action
+    def copy_callback(self, action, parameter):
+        print("\"Copy\" activated")
+
+    # Funkce zpětného volání pro paste_action
+    def paste_callback(self, action, parameter):
+        print("\"Paste\" activated")
+
+    # Funkce zpětného volání pro shape_action
+    def shape_callback(self, action, parameter):
+        print("Shape is set to", parameter.get_string())
+        # Note that we set the state of the action!
+        action.set_state(parameter)
+
+    # Funkce zpětného volání pro about (viz příklad AboutDialog)
+    def about_callback(self, action, parameter):
+        # Gtk.AboutDialog
+        aboutdialog = Gtk.AboutDialog()
+
+        # Seznam autorů kódu a dokumentace (bude použit později)
+        authors = ["GNOME Documentation Team"]
+        documenters = ["GNOME Documentation Team"]
+
+        # Vyplní AboutDialog
+        aboutdialog.set_program_name("MenuBar Example")
+        aboutdialog.set_copyright(
+            "Copyright \xc2\xa9 2012 GNOME Documentation Team")
+        aboutdialog.set_authors(authors)
+        aboutdialog.set_documenters(documenters)
+        aboutdialog.set_website("http://developer.gnome.org")
+        aboutdialog.set_website_label("GNOME Developer Website")
+
+        # Napojí signál "response" na on_close, aby se zavřel 
+        # AboutDialog, když je kliknuto na "close"
+        aboutdialog.connect("response", self.on_close)
+        # Zobrazí AboutDialog
+        aboutdialog.show()
+
+    # Funkce zpětného volání pro likvidaci AboutDialog
+    def on_close(self, action, parameter):
+        action.destroy()
+
+
+class MyApplication(Gtk.Application):
+
+    def __init__(self):
+        Gtk.Application.__init__(self)
+
+    def do_activate(self):
+        win = MyWindow(self)
+        win.show_all()
+
+    def do_startup(self):
+        # PRVNÍ, CO SE MUSÍ UDĚLAT: do_startup()
+        Gtk.Application.do_startup(self)
+
+        # Vytvoří bezstavovou akci
+        new_action = Gio.SimpleAction.new("new", None)
+        # Napojí ji na funkci zpětného volání
+        new_action.connect("activate", self.new_callback)
+        # Přidá ji do aplikace
+        self.add_action(new_action)
+
+        # Vytvoří bezstavovou akci
+        quit_action = Gio.SimpleAction.new("quit", None)
+        # Napojí ji na funkci zpětného volání
+        quit_action.connect("activate", self.quit_callback)
+        # Přidá ji do aplikace
+        self.add_action(quit_action)
+
+        # Vytvoří stavovou akci
+        state_action = Gio.SimpleAction.new_stateful(
+            "state",  GLib.VariantType.new('s'), GLib.Variant.new_string('off'))
+        # Napojí ji na funkci zpětného volání
+        state_action.connect("activate", self.state_callback)
+        # Přidá ji do aplikace
+        self.add_action(state_action)
+
+        # Vytvoří stavovou akci
+        awesome_action = Gio.SimpleAction.new_stateful(
+            "awesome", None, GLib.Variant.new_boolean(False))
+        # Napojí ji na funkci zpětného volání
+        awesome_action.connect("activate", self.awesome_callback)
+        # Přidá ji do aplikace
+        self.add_action(awesome_action)
+
+        # Builder, který přidá navrh uživatelského rozhraní z Glade do mřížky
+        builder = Gtk.Builder()
+        # Získá soubor (pokud existuje)
+        try:
+            builder.add_from_file("menubar.ui")
+        except:
+            print("file not found")
+            sys.exit()
+
+        # Použije metodu Gtk.Application.set_menubar(menubar) pro přidání
+        # nabídkové lišty a aplikační nabídky (Poznámka: NE do okna!)
+        self.set_menubar(builder.get_object("menubar"))
+        self.set_app_menu(builder.get_object("appmenu"))
+
+    # Funkce zpětného volání pro new
+    def new_callback(self, action, parameter):
+        print("You clicked \"New\"")
+
+    # Funkce zpětného volání pro quit
+    def quit_callback(self, action, parameter):
+        print("You clicked \"Quit\"")
+        sys.exit()
+
+    # Funkce zpětného volání pro state
+    def state_callback(self, action, parameter):
+        print("State is set to", parameter.get_string())
+        action.set_state(parameter)
+
+    # Funkce zpětného volání pro awesome
+    def awesome_callback(self, action, parameter):
+        action.set_state(GLib.Variant.new_boolean(not action.get_state()))
+        if action.get_state().get_boolean() is True:
+            print("You checked \"Awesome\"")
+        else:
+            print("You unchecked \"Awesome\"")
+
+
+app = MyApplication()
+exit_status = app.run(sys.argv)
+sys.exit(exit_status)
+</code>
+  </section>
+
+  <section id="mnemonics-and-accelerators"><title>Horké klávesy a klávesové zkratky</title>
+    <p>Popisky mohou obsahovat horké (mnemotechnické) klávesy. Mají podobu podtržených písmen v popiscích a používají se pro ovládání z klávesnice. Horké klávesy se vytváří umístěním podtržítka před příslušný znak. Například <code>"_File"</code> namísto <code>"File"</code> v atributu <code>label</code> v <file>menubar.ui</file>.</p>
+   <p>Horké klávesy jsou vidět, když zmáčknete klávesu <key>Alt</key>. Zmáčknutím <keyseq><key>Alt</key> <key>F</key></keyseq> otevřete nabídku <gui>File</gui>.</p>
+
+    <p>Klávesové zkratky mohou být přidány přímo do definicí uživatelského rozhraní. Například je běžné, že aplikaci lze ukončit zmáčknutím <keyseq><key>Ctrl</key><key>Q</key></keyseq>, nebo že lze uložit soubor zmáčknutím <keyseq><key>Ctrl</key><key>S</key></keyseq>. Pro přidání klávesové zkratky do definice uživatelského rozhraní stačí akorát přidat do položky atribut <code>"accel"</code>.</p>
+<p><code mime="application/xml">&lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;</code> vytvoří sekvenci <keyseq><key>Ctrl</key><key>Q</key></keyseq> při přidávání položky <code>Quit</code>. „Primary“ má zde význam klávesy <key>Ctrl</key> na počítačích PC nebo klávesy <key>⌘</key> na počítačích Mac.</p>
+
+  <code mime="application/xml">
+&lt;item&gt;
+  &lt;attribute name="label"&gt;_Quit&lt;/attribute&gt;
+  &lt;attribute name="action"&gt;app.quit&lt;/attribute&gt;
+  &lt;attribute name="accel"&gt;&amp;lt;Primary&amp;gt;q&lt;/attribute&gt;
+&lt;/item&gt;</code>
+  </section>
+
+  <section id="translatable"><title>Přeložitelné řetězce</title>
+   <p>Protože aplikace GNOME jsou překládány do <link href="http://l10n.gnome.org/languages/">mnoha jazyků</link>, je důležité, aby řetězce ve vaší aplikaci byly přeložitelné. U popisku to zajistíte jednoduše nastavením <code>translatable="yes"</code>:</p>
+
+     <code mime="application/xml">&lt;attribute name="label" translatable="yes"&gt;Quit&lt;/attribute&gt;</code>
+
+  </section>
+  <section id="references">
+    <title>Odkazy k API</title>
+    <p>V této ukázce se používá následující:</p>
+    <list>
+      <item><p><link href="http://developer.gnome.org/gio/unstable/GSimpleAction.html">GSimpleAction</link></p></item>
+      <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkBuilder.html">GtkBuilder</link></p></item>
+    </list>
+  </section>
+</page>

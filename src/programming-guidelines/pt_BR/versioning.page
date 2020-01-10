@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="versioning" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="index#maintainer-guidelines"/>
+
+    <credit type="author copyright">
+      <name>Philip Withnall</name>
+      <email its:translate="no">philip.withnall@collabora.co.uk</email>
+      <years>2015</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Versionamento e lançamento de bibliotecas e aplicativos</desc>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>Versionamento</title>
+
+  <synopsis>
+    <title>Resumo</title>
+
+    <p>O versionamento é diferente para módulos de bibliotecas e aplicativos: as bibliotecas precisam de uma versão de libtool especificada junto com a versão de seu pacote. Por sua vez, aplicativos só possuem uma versão de pacote.</p>
+
+    <list>
+      <item><p>Bibliotecas e aplicativos possuem uma versão de pacote na forma de <em>maior.menor.micro</em>. (<link xref="#package-versioning"/>)</p></item>
+      <item><p>Adicionalmente, bibliotecas possuem uma versão de libtool na forma de <em>atual:revisão:idade</em>. (<link xref="#libtool-versioning"/>)</p></item>
+      <item><p>Os números de versão devem ser atualizados a cada lançamento (usando incrementos de lançamento e pós-lançamento). (<link xref="#release-process"/>)</p></item>
+      <item><p>As versões de pacotes devem ser incrementados por alterações ou adições de recursos. (<link xref="#package-versioning"/>)</p></item>
+      <item><p>As versões de libtool devem ser atualizadas por alterações ou adições de API. (<link xref="#libtool-versioning"/>)</p></item>
+      <item><p>Versões <em>menores</em> pares/ímpares de pacotes podem ser usadas respectivamente para lançamentos estáveis/instáveis. (<link xref="#stable-unstable-versions"/>)</p></item>
+    </list>
+  </synopsis>
+
+  <section id="package-versioning">
+    <title>Versionamento de pacote</title>
+
+    <p>Bibliotecas e aplicativos possuem uma versão de pacote na forma de <em>maior.menor.micro</em>.</p>
+
+    <p>O número de versão de pacote é aquele passado para <code>AC_INIT()</code> e que geralmente é conhecido como número de versão do projeto. Por exemplo, o pacote Debian para uma biblioteca vai usar a versão de pacote da biblioteca (apesar de também poder incluir o número de versão maior no nome de pacote para permitir <link xref="parallel-installability">instalabilidade paralela</link>). Versões de pacotes são atualizadas pelas seguintes regras:</p>
+    <steps>
+      <item><p>Se for quebrar a <link xref="api-stability">compatibilidade de API</link> em uma biblioteca, ou fazer uma alterações a um aplicativo que afeta tudo (tal como um redesenho da interface gráfica), incremente a versão maior e defina a menor e micro para 0.</p></item>
+      <item><p>Do contrário, se for alterar ou adicionar um recurso, ou adicionar qualquer API, incremente a versão menor e defina micro para 0.</p></item>
+      <item><p>Do contrário (se for fazer um lançamento contendo apenas correções de erros e atualizações de tradução), incremente a versão micro.</p></item>
+    </steps>
+
+    <p>Note que o número da versão menor deve ser atualizada se qualquer API for adicionada.</p>
+  </section>
+
+  <section id="libtool-versioning">
+    <title>Versionamento de libtool</title>
+
+    <p>Bibliotecas possuem dois números de versão: uma versão de libtool que rastreia a compatibilidade reversa com ABI (veja <link xref="api-stability"/>) e uma versão de pacote que rastreia alterações de recursos. Esses são normalmente incrementados em sincronização, mas devem ser mantidos separados por causa de compatibilidade reversa com ABI não está necessariamente relacionada a alterações de recursos ou correções de erros. Além do mais, os dois números de versões possuem semânticas diferentes e não podem ser gerados automaticamente para cada um.</p>
+
+    <p>Uma boa visão geral do versionamento de libtool, e as diferenças para versionamento de pacote, é fornecida no <link href="https://autotools.io/libtool/version.html">Autotools MythBuster</link>; outro está no <link href="http://www.gnu.org/s/libtool/manual/html_node/Updating-version-info.html">manual do libtool</link>.</p>
+
+    <p>Para atualizar a versão do libtool, siga o algoritmo fornecido nos comentários abaixo. Esse é tipicamente um bloco de código do <file>configure.ac</file> para configurar versionamento de libtool:</p>
+
+    <code>
+# Before making a release, the LT_VERSION string should be modified. The
+# string is of the form c:r:a. Follow these instructions sequentially:
+#   1. If the library source code has changed at all since the last update, then
+#      increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
+#   2. If any interfaces have been added, removed, or changed since the last
+#      update, increment current, and set revision to 0.
+#   3. If any interfaces have been added since the last public release, then
+#      increment age.
+#   4. If any interfaces have been removed or changed since the last public
+#      release, then set age to 0.
+AC_SUBST([LT_VERSION],[0:0:0])</code>
+
+    <p>O bloco de código a seguir pode ser usado em um <file>Makefile.am</file> para passar aquela informação de versão para o libtool:</p>
+    <code>minha_biblioteca_la_LDFLAGS = -version-info $(LT_VERSION)</code>
+  </section>
+
+  <section id="stable-unstable-versions">
+    <title>Versões estáveis e instáveis de pacote</title>
+
+    <p>A maioria dos módulos do GNOME seguem uma convenção para lançamentos estáveis e instáveis. A versão menor é par para lançamentos estáveis e é ímpar para lançamentos instáveis. Por exemplo, as versões 3.20.* são estáveis, mas as versões 3.19.* são instáveis. As versões 3.19.* podem ser vistas como lançamentos alfa e beta da versão 3.20.</p>
+
+    <p>Uma nova versão micro <em>estável</em> (ex.: 3.20.0 → 3.20.1) não adiciona novos recursos, apenas atualizações de tradução e correções de erro. Por outro lado, lançamentos micro <em>instáveis</em> (ex.: 3.19.1 → 3.19.2) podem adicionar API, ou alterar ou remover API que foi adicionada em um lançamento micro anterior naquela séries menores.</p>
+
+    <p>A versão libtool deve ser atualizada apenas para versões de pacote estável.</p>
+  </section>
+
+  <section id="release-process">
+    <title>Processo de lançamento</title>
+
+    <p>O processo padrão para fazer um lançamento de um módulo incrementa a versão de libtool (se o módulo é uma biblioteca) em tempo de lançamento e, imediatamente após, incrementa o número de versão do pacote (isso é chamado de “incremento pós-lançamento” ou, em inglês, “post-release increment”)</p>
+
+    <p>Atualizar as versões de libtool em tempo de lançamento significa que eles são incrementados apenas uma vez para todas as alterações de ABI em um lançamento. O uso de incremento pós-lançamento para versões de pacotes significa que o número de versão de pacote não está desatualizado (ainda igual ao lançamento anterior) durante o ciclo de desenvolvimento.</p>
+
+    <p>O processo de lançamento (baseado no <link href="https://wiki.gnome.org/MaintainersCorner/Releasing">processo de lançamento do GNOME</link>):</p>
+    <steps>
+      <item><p>Certifique-se de que o código esteja atualizado: <cmd>git pull</cmd></p></item>
+
+      <item><p>Certifique-se de que você tenha nenhuma alteração local: <cmd>git status</cmd></p></item>
+      <item><p>Se o lançamento é para uma versão de pacote estável, incremente o número de versão de libtool no <file>configure.ac</file> (se ele existir)</p></item>
+      <item><p>Adicione uma entrada ao arquivo <file>NEWS</file></p></item>
+      <item>
+        <p>Execute <cmd>./autogen.sh &amp;&amp; make &amp;&amp; make install &amp;&amp; make distcheck</cmd> e certifique-se de que foi concluído com sucesso</p>
+        <list>
+          <item><p>Corrija quaisquer problemas que aparecerem, faça o commit das alterações e reinicie no passo 3</p></item>
+        </list>
+      </item>
+      <item><p>Se <cmd>make distcheck</cmd> finalizar com “[archive] is ready for distribution”, execute <cmd>git commit -a -m "Release version x.y.z"</cmd> (sendo “x.y.z” o número da versão do pacote)</p></item>
+      <item>
+        <p>Execute <cmd>git push</cmd></p>
+        <list>
+          <item><p>Se isso falhar em razão de outros commits terem sido enviados (push) neste meio tempo, execute <cmd>git pull</cmd> para mesclar seu commit no ramo seguido por um segundo <cmd>git push</cmd>. Isso é uma exceção às diretrizes do GNOME de ter um histórico de git linear (<link xref="version-control#use-of-git"/>). Se você prefere ter um histórico linear, você precisa reiniciar o passo 1.</p></item>
+        </list>
+      </item>
+      <item><p>Crie uma tag de lançamento: <cmd>git tag -s x.y.z</cmd> (sendo “x.y.z” o número de versão do pacote)</p></item>
+      <item><p>Execute <cmd>git push origin x.y.z</cmd> (sendo “x.y.z” o número de versão do pacote)</p></item>
+    </steps>
+
+    <p>O lançamento agora está completo e o incremento de versão pós-lançamento pode ser feita:</p>
+    <steps>
+      <item><p>Incremente o número de versão de pacote no <file>configure.ac</file></p></item>
+      <item><p>Execute <cmd>git commit -a -m "Post-release version increment"</cmd></p></item>
+      <item><p>Execute <cmd>git push</cmd></p></item>
+    </steps>
+
+    <p>O arquivo de pacote gerado por <cmd>make distcheck</cmd> agora pode ser enviado para download.gnome.org ou distribuído em outras formas.</p>
+  </section>
+</page>

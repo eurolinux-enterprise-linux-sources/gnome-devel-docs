@@ -18,7 +18,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
       <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2014</mal:years>
+      <mal:years>2012-2015</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -36,7 +36,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Θάνος Τρυφωνίδης</mal:name>
       <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
+      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -60,51 +60,49 @@
     <title>Εγκατάσταση της εφαρμογής μας</title>
 
     <p>Πριν να ψάξουμε οποιαδήποτε γραφικά στοιχεία από την εργαλειοθήκη Gtk+, χρειαζόμαστε πρώτα να γράψουμε το βασικό κώδικα στερεότυπου που η εφαρμογή μας απαιτεί.</p>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
+imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
-const Lang = imports.lang;
-</code>
-    <p>Αυτό το μέρος πηγαίνει πάντα στην αρχή του κώδικά σας. Ανάλογα με το τι θα κάνετε με αυτό, μπορεί να θέλετε να δηλώσετε περισσότερες εισαγωγές εδώ. Αυτό που γράφουμε σήμερα είναι αρκετά βασικό, έτσι αυτά είναι που χρειαζόμαστε· Gtk για γραφικά στοιχεία και Lang ώστε να μπορούμε να χρησιμοποιήσουμε Lang.bind για να συνδέσουμε τα σήματα ενεργοποίησης και εκκίνησης της εφαρμογής στις αναγκαίες συναρτήσεις.</p>
+]]></code>
+    <p>This part always goes at the start of your code. Depending on what you'll be doing with it, you may want to declare more imports here. What we're writing today is pretty basic, so these are all we need; Gtk for the widgets, using the stable '3.0' API.</p>
     <p>Μιλώντας για:</p>
-    <code mime="application/javascript">
-const WelcomeToTheGrid = new Lang.Class({
-    Name: 'Welcome to the Grid',
+    <code mime="application/javascript"><![CDATA[
+class WelcomeToTheGrid {
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application();
 
-    // Δημιουργία αυτής καθεαυτής της εφαρμογής
-    _init: function() {
-        this.application = new Gtk.Application()·
+        // Connect 'activate' and 'startup' signals to the callback functions
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-        // Σύνδεση σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
-        this.application.connect('activate', Lang.bind(this, this._onActivate))·
-        this.application.connect('startup', Lang.bind(this, this._onStartup))·
-    },
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
-    _onActivate: function() {
-        this._window.present()·
-    },
-
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function() {
-        this._buildUI ()·
-    },
-</code>
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI ();
+    }
+]]></code>
     <p>Αυτή είναι η αρχή της ίδιας της εφαρμογής και η συνάρτηση _init που τη δημιουργεί. Λέει στη _buildUI να δημιουργήσει μια ApplicationWindow, που πρόκειται να καλέσει το _window και λέει στο παράθυρό μας να εμφανίζει τον εαυτό του όποτε απαιτείται.</p>
     <p>Αυτό το μέρος, πάλι, είναι αρκετά αντιγραφή και επικόλληση, αλλά θέλετε πάντα να δώσετε στην εφαρμογή σας ένα μοναδικό όνομα.</p>
 
-    <code mime="application/javascript">
-    // Δημιουργία της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function() {
+    <code mime="application/javascript"><![CDATA[
+    // Build the application's UI
+    _buildUI() {
 
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 10,
-            title: "Welcome to the Grid"})·
-</code>
+            title: "Welcome to the Grid"});
+]]></code>
     <p>Τελικά, ξεκινάμε τη συνάρτηση _buildUI δημιουργώντας ένα νέο ApplicationWindow. Ορίζουμε ότι πηγαίνει με αυτήν την εφαρμογή, που θα πρέπει να εμφανιστεί στο κέντρο της οθόνης και εκεί θα πρέπει να είναι τουλάχιστον 10 εικονοστοιχεία μεταξύ της εξωτερικής άκρης και όλων των γραφικών στοιχείων της. Επίσης της δίνουμε έναν τίτλο, που θα εμφανιστεί στην κορυφή του παραθύρου.</p>
   </section>
 
@@ -116,30 +114,30 @@ const WelcomeToTheGrid = new Lang.Class({
 
     <p>Πρόκειται να χρειαστούμε, τουλάχιστον, μια εικόνα και μια ετικέτα κειμένου να πάει μαζί της. Ας αρχίσουμε με την εικόνα:</p>
     <code mime="application/javascript">
-        // Δημιουργία εικόνας
-        this._image = new Gtk.Image ({ file: "gnome-image.png" })·
+        // Create an image
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
 </code>
 
     <p>Μπορείτε να κατεβάσετε το χρησιμοποιούμενο αρχείο εικόνας σε αυτό το παράδειγμα <link href="https://live.gnome.org/TarynFox?action=AttachFile&amp;do=get&amp;target=gnome-image.png">εδώ</link>. Βεβαιωθείτε να το βάλετε στον ίδιο κατάλογο με τον κώδικα που γράφετε.</p>
 
     <code mime="application/javascript">
-        // Δημιουργία ετικέτας
-        this._label = new Gtk.Label ({ label: "Welcome to GNOME, too!" })·
+        // Create a label
+        this._label = new Gtk.Label ({ label: "Welcome to GNOME, too!" });
 </code>
     <p>Αυτός ο κώδικας προσθέτει κάτω από την ετικέτα. Μπορείτε να δείτε πώς δημιουργούμε γραφικά στοιχεία, εδώ· καθένα είναι μέρος του Gtk και μπορούμε να του δώσουμε ιδιότητες που προσαρμόζουν τη συμπεριφορά του. Σε αυτήν την περίπτωση, ορίζουμε την ιδιότητα αρχείο της εικόνας να είναι το όνομα αρχείου της εικόνας που θέλουμε και η ιδιότητα ετικέτα της ετικέτας να είναι η πρόταση που θέλουμε κάτω από την εικόνα.</p>
     <note style="tip"><p>Ναι, ακούγεται περιττό για μια ετικέτα να έχει μια ιδιότητα ετικέτας, αλλά δεν ισχύει. Άλλα γραφικά στοιχεία που περιέχουν κείμενο έχουν μια ιδιότητα ετικέτας, έτσι είναι <em>συνεπές</em> για το γραφικό στοιχείο ετικέτας να έχει επίσης μία.</p></note>
     <p>Δεν μπορούμε απλά να προσθέσουμε αυτά τα γραφικά στοιχεία στο παράθυρό μας στη σειρά, όμως, με τον ίδιο τρόπο που τα στοιχεία HTML εμφανίζονται στη σειρά που τα γράφετε. Αυτό συμβαίνει επειδή ένα ApplicationWindow μπορεί να περιέχει μόνο ένα γραφικό στοιχείο.</p>
     <p>Πώς το παρακάμπτουμε; Κάνοντας αυτό το γραφικό στοιχείο έναν αποδέκτη γραφικού στοιχείου, που μπορεί να κρατά περισσότερα από ένα γραφικό στοιχείο και να τα οργανώσουμε μέσα του. Ιδού: το πλέγμα.</p>
     <code mime="application/javascript">
-        // Δημιουργία του πλέγματος
-        this._grid = new Gtk.Grid ()·
+        // Create the Grid
+        this._grid = new Gtk.Grid ();
 </code>
 
     <p>Δεν του δίνουμε ακόμα ιδιότητες. Αυτές θα έρθουν αργότερα, καθώς μαθαίνουμε πώς να χρησιμοποιούμε τις δυνάμεις του πλέγματος. Πρώτα, ας προσαρτήσουμε την εικόνα και την ετικέτα που κάναμε στο πλέγμα μας.</p>
     <code mime="application/javascript">
-        // Προσάρτηση της εικόνας και της ετικέτας στο πλέγμα
-        this._grid.attach (this._image, 0, 0, 1, 1)·
-        this._grid.attach (this._label, 0, 1, 1, 1)·
+        // Attach the image and label to the grid
+        this._grid.attach (this._image, 0, 0, 1, 1);
+        this._grid.attach (this._label, 0, 1, 1, 1);
 </code>
 
     <p>Αυτός ο κώδικας φαίνεται πολύ περίπλοκος, αλλά δεν είναι. Να τι σημαίνουν αυτοί οι αριθμοί:</p>
@@ -149,20 +147,20 @@ const WelcomeToTheGrid = new Lang.Class({
       <item><p>Ο <em>τρίτος</em> και ο <em>τέταρτος</em> αριθμός είναι πόσες στήλες και γραμμές πρέπει να καταλάβει ένα γραφικό στοιχείο. Θα δούμε πώς αυτά δουλεύουν σε ένα λεπτό.</p></item>
     </list>
 
-    <code mime="application/javascript">
-        // Προσθήκη του πλέγματος στο παράθυρο
-        this._window.add (this._grid)·
+    <code mime="application/javascript"><![CDATA[
+        // Add the grid to the window
+        this._window.add (this._grid);
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
-        this._window.show_all()·
+        // Show the window and all child widgets
+        this._window.show_all();
     }
 
-})·
+};
 
-// Εκτέλεση της εφαρμογής
-let app = new WelcomeToTheGrid ()·
-app.application.run (ARGV)·
-</code>
+// Run the application
+let app = new WelcomeToTheGrid ();
+app.application.run (ARGV);
+]]></code>
     <p>Τώρα που έχουμε δημιουργήσει το πλέγμα και προσαρτήσαμε σε αυτό όλα τα γραφικά στοιχεία μας, το προσθέτουμε στο παράθυρο και λέμε στο παράθυρο να εμφανίσει τον εαυτόν του, όπως το τελευταίο μέρος της συνάρτησης _buildUI. Όπως πάντα, για να τελειώσουμε δημιουργούμε ένα νέο στιγμιότυπο της κλάσης της εφαρμογής και του λέμε να εκτελεστεί.</p>
     <p>Αποθηκεύστε την εφαρμογή σας ως welcome_to_the_grid.js. Έπειτα, για να εκτελέσετε την εφαρμογή σας ανοίξτε απλά έναν τερματικό, πηγαίνετε στον κατάλογο όπου η εφαρμογή σας είναι και πληκτρολογήστε</p>
       <screen> <output style="prompt">$ </output>gjs welcome_to_the_grid.js </screen>
@@ -177,10 +175,10 @@ app.application.run (ARGV)·
 
     <p>Ένα πράγμα που μπορούμε να κάνουμε, είναι να δώσουμε στην ετικέτα μια ιδιότητα margin_top όταν τη δημιουργούμε. Αυτό δουλεύει όπως η ρύθμιση ενός περιθωρίου για ένα στοιχείο HTML χρησιμοποιώντας ενσωματωμένη μορφή CSS.</p>
     <code mime="application/javascript">
-        // Δημιουργία ετικέτας
+        // Create a label
         this._label = new Gtk.Label ({
             label: "Welcome to GNOME, too!",
-            margin_top: 20 })·
+            margin_top: 20 });
 </code>
 
     <p>Φυσικά, εάν κάνουμε αυτό τότε εάν αντικαταστήσουμε την ετικέτα με κάτι άλλο -- ή προσθέτοντας σε ένα άλλο γραφικό στοιχείο -- τότε πρέπει να επαναλάβουμε το margin_top σε αυτό ξανά. Αλλιώς τελειώνουμε μα κάτι σαν αυτό:</p>
@@ -188,9 +186,9 @@ app.application.run (ARGV)·
 
     <p>Μπορούμε να δώσουμε στην εικόνα μια ιδιότητα margin_bottom, αλλά δεν θα δουλέψει όταν η νέα ετικέτα είναι σε μια ξεχωριστή στήλη. Έτσι ας δοκιμάσουμε αυτό:</p>
     <code mime="application/javascript">
-        // Δημιουργία του πλέγματος
+        // Create the Grid
         this._grid = new Gtk.Grid ({
-            row_spacing: 20 })·
+            row_spacing: 20 });
 </code>
 
     <p>Αυτό το κάνει έτσι ώστε να υπάρχουν πάντα 20 εικονοστοιχεία χώρου μεταξύ κάθε οριζόντιας γραμμής.</p>
@@ -202,14 +200,14 @@ app.application.run (ARGV)·
 
     <p>Εάν θέλουμε να προσθέσουμε μια δεύτερη ετικέτα, πώς θα μπορούσαμε να κάνουμε έτσι ώστε να φαίνεται πράγματι ότι ανήκε εκεί; Ένας τρόπος είναι να κεντράρετε την εικόνα στην κορυφή, έτσι ώστε να είναι πάνω και από τις δύο ετικέτες αντί για τη μία μόνο στα αριστερά. Εδώ είναι που αυτοί οι άλλοι αριθμοί στη μέθοδο προσάρτησης του πλέγματος έρχονται:</p>
     <code mime="application/javascript">
-        // Δημιουργία δεύτερης ετικέτας
+        // Create a second label
         this._labelTwo = new Gtk.Label ({
-            label: "The cake is a pie." })·
+            label: "The cake is a pie." });
 
-        // Προσάρτηση εικόνας και ετικετών στο πλέγμα
-        this._grid.attach (this._image, 0, 0, 2, 1)·
-        this._grid.attach (this._label, 0, 1, 1, 1)·
-        this._grid.attach (this._labelTwo, 1, 1, 1, 1)·
+        // Attach the image and labels to the grid
+        this._grid.attach (this._image, 0, 0, 2, 1);
+        this._grid.attach (this._label, 0, 1, 1, 1);
+        this._grid.attach (this._labelTwo, 1, 1, 1, 1);
 </code>
 
     <p>Μετά τη δημιουργία της δεύτερης ετικέτας, την προσκολλάμε στο πλέγμα στα δεξιά της πρώτης ετικέτας. Να θυμάστε, οι πρώτοι δύο αριθμοί υπολογίζουν στήλες και γραμμές από αριστερά προς τα δεξιά και από πάνω προς τα κάτω, ξεκινώντας από 0. Έτσι εάν η πρώτη ετικέτα είναι στη στήλη 0 και στη γραμμή 1, μπορούμε να βάλουμε τη δεύτερη στη στήλη 1 και στη γραμμή 1 για να τη βάλουμε στα δεξιά της πρώτης ετικέτας.</p>
@@ -225,12 +223,12 @@ app.application.run (ARGV)·
     <p>Υπάρχουν τουλάχιστον τρεις τρόποι που μπορούμε να παρακάμψουμε την τελευταία. Πρώτα, μπορούμε να ορίσουμε ένα margin_left ή margin_right σε μία από τις ετικέτες:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_05.png"/>
 
-    <p>Δεύτερο, μπορούμε να ορίσουμε την ιδιότητα column_homogenous σε αληθή.</p>
+    <p>Δεύτερο, μπορούμε να ορίσουμε την ιδιότητα πλέγμετος column_homogenous σε αληθή.</p>
     <code mime="application/javascript">
-        // Δημιουργία του πλέγματος
+        // Create the Grid
         this._grid = new Gtk.Grid ({
             column_homogeneous: true,
-            row_spacing: 20 })·
+            row_spacing: 20 });
 </code>
 
     <p>Αυτό το κάνει να μοιάζει σαν αυτό:</p>
@@ -238,10 +236,10 @@ app.application.run (ARGV)·
 
     <p>Και τρίτο, μπορούμε να ορίσουμε την ιδιότητα column_spacing του πλέγματος, με τον ίδιο τρόπο που ορίζουμε το row_spacing του.</p>
     <code mime="application/javascript">
-        // Δημιουργία του πλέγματος
+        // Create the Grid
         this._grid = new Gtk.Grid ({
             column_spacing: 20,
-            row_spacing: 20 })·
+            row_spacing: 20 });
 </code>
     <p>Αυτό το κάνει να μοιάζει σαν αυτό:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_07.png"/>
@@ -252,18 +250,18 @@ app.application.run (ARGV)·
 
     <p>Το GNOME έχει πολλές εικόνες παρακαταθήκης ήδη, που μπορούμε να χρησιμοποιήσουμε εάν δεν θέλουμε να δημιουργήσουμε τις δικές μας ή εάν θέλουμε ένα γενικά αναγνωρισμένο εικονίδιο. Να πώς δημιουργούμε μια εικόνα παρακαταθήκης, συγκρινόμενη με το πώς δημιουργούμε μια κανονική:</p>
     <code mime="application/javascript">
-        // Δημιουργία εικόνας
-        this._image = new Gtk.Image ({ file: "gnome-image.png" })·
+        // Create an image
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
 
-        // Δημιουργία δεύτερης εικόνας χρησιμοποιώντας έτοιμο εικονίδιο
-        this._icon = new Gtk.Image ({ stock: 'gtk-about' })·
+        // Create a second image using a stock icon
+        this._icon = new Gtk.Image ({ stock: 'gtk-about' });
 </code>
     <p>Μετά από αυτό, το προσκολλάμε στο πλέγμα στα αριστερά της πρώτης ετικέτας. (Δεν χρησιμοποιούμε τη δεύτερη για αυτό το παράδειγμα.)</p>
     <code mime="application/javascript">
-        // Προσάρτηση εικόνων και ετικέτας στο πλέγμα
-        this._grid.attach (this._image, 0, 0, 2, 1)·
-        this._grid.attach (this._icon,  0, 1, 1, 1)·
-        this._grid.attach (this._label, 1, 1, 1, 1)·
+        // Attach the images and label to the grid
+        this._grid.attach (this._image, 0, 0, 2, 1);
+        this._grid.attach (this._icon,  0, 1, 1, 1);
+        this._grid.attach (this._label, 1, 1, 1, 1);
 </code>
     <p>Αυτά μας δίνει αυτό, όταν το εκτελούμε:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_08.png"/>
@@ -277,14 +275,14 @@ app.application.run (ARGV)·
     <title>Ποιο είναι το επόμενο;</title>
     <p>Πριν πάμε στο επόμενο μάθημα, ας δοκιμάσουμε κάτι λίγο διαφορετικό:</p>
     <code mime="application/javascript">
-        // Δημιουργία κουμπιού
+        // Create a button
         this._button = new Gtk.Button ({
-            label: "Welcome to GNOME, too!"})·
+            label: "Welcome to GNOME, too!"});
 
-        // Προσάρτηση εικόνων και κουμπιού στο πλέγμα
-        this._grid.attach (this._image,  0, 0, 2, 1)·
-        this._grid.attach (this._icon,   0, 1, 1, 1)·
-        this._grid.attach (this._button, 1, 1, 1, 1)·
+        // Attach the images and button to the grid
+        this._grid.attach (this._image,  0, 0, 2, 1);
+        this._grid.attach (this._icon,   0, 1, 1, 1);
+        this._grid.attach (this._button, 1, 1, 1, 1);
 </code>
 
     <p>Ακριβώς, μετατρέπουμε την ετικέτα σε ένα κουμπί αλλάζοντας απλά το όνομα! Εάν εκτελείτε την εφαρμογή και πατήστε πάνω της, όμως, θα δείτε ότι δεν κάνει τίποτα. Πώς κάνουμε το κουμπί μας να κάνει κάτι; Αυτό θα μάθουμε στο <link xref="03_getting_the_signal.js">επόμενο μάθημά μας</link>.</p>
@@ -296,90 +294,87 @@ app.application.run (ARGV)·
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-const Gtk = imports.gi.Gtk·
-const Lang = imports.lang·
+imports.gi.versions.Gtk = '3.0';
+const Gtk = imports.gi.Gtk;
 
-const WelcomeToTheGrid = new Lang.Class({
-    Name: 'Welcome to the Grid',
+class WelcomeToTheGrid {
 
-    // Δημιουργία αυτής καθεαυτής της εφαρμογής
-    _init: function() {
-        this.application = new Gtk.Application()·
+    // Create the application itself
+    constructor() {
+        this.application = new Gtk.Application();
 
-    // Σύνδεση σημάτων 'activate' και 'startup' στις συναρτήσεις επανάκλησης
-    this.application.connect('activate', Lang.bind(this, this._onActivate))·
-    this.application.connect('startup', Lang.bind(this, this._onStartup))·
-    },
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', this._onActivate.bind(this));
+    this.application.connect('startup', this._onStartup.bind(this));
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
-    _onActivate: function() {
-        this._window.present()·
-    },
+    // Callback function for 'activate' signal presents windows when active
+    _onActivate() {
+        this._window.present();
+    }
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
-    _onStartup: function() {
-        this._buildUI ()·
-    },
+    // Callback function for 'startup' signal builds the UI
+    _onStartup() {
+        this._buildUI ();
+    }
 
+    // Build the application's UI
+    _buildUI() {
 
-
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
-    _buildUI: function() {
-
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 10,
-            title: "Welcome to the Grid"})·
+            title: "Welcome to the Grid"});
 
-        // Δημιουργία του πλέγματος
+        // Create the Grid
         this._grid = new Gtk.Grid ({
             // column_homogeneous: true,
             // column_spacing: 20,
-            row_spacing: 20 })·
+            row_spacing: 20 });
 
-        // Δημιουργία εικόνας
-        this._image = new Gtk.Image ({ file: "gnome-image.png" })·
+        // Create an image
+        this._image = new Gtk.Image ({ file: "gnome-image.png" });
 
-        // Δημιουργία δεύτερης εικόνας χρησιμοποιώντας έτοιμο εικονίδιο
-        this._icon = new Gtk.Image ({ stock: 'gtk-about' })·
+        // Create a second image using a stock icon
+        this._icon = new Gtk.Image ({ stock: 'gtk-about' });
 
-        // Δημιουργία ετικέτας
+        // Create a label
         this._label = new Gtk.Label ({
             label: "Welcome to GNOME, too!",
-            /* margin_top: 20 */ })·
+            /* margin_top: 20 */ });
 
-        /* Δημιουργία δεύτερης ετικέτας
+        /* Create a second label
         this._labelTwo = new Gtk.Label ({
-            label: "The cake is a pie." })· */
+            label: "The cake is a pie." }); */
 
-        /* Δημιουργία κουμπιού
+        /* Create a button
         this._button = new Gtk.Button ({
-            label: "Welcome to GNOME, too!"})· */
+            label: "Welcome to GNOME, too!"}); */
 
-        // Προσάρτηση των εικόνων και του κουμπιού στο πλέγμα
-        this._grid.attach (this._image,  0, 0, 2, 1)·
-        this._grid.attach (this._icon,   0, 1, 1, 1)·
-        this._grid.attach (this._label,  1, 1, 1, 1)·
+        // Attach the images and button to the grid
+        this._grid.attach (this._image,  0, 0, 2, 1);
+        this._grid.attach (this._icon,   0, 1, 1, 1);
+        this._grid.attach (this._label,  1, 1, 1, 1);
 
-        // this._grid.attach (this._label, 0, 1, 1, 1)·
-        // this._grid.attach (this._labelTwo, 1, 1, 1, 1)·
+        // this._grid.attach (this._label, 0, 1, 1, 1);
+        // this._grid.attach (this._labelTwo, 1, 1, 1, 1);
 
-        // this._grid.attach (this._button, 1, 1, 1, 1)·
+        // this._grid.attach (this._button, 1, 1, 1, 1);
 
-        // Προσθήκη του πλέγματος στο παράθυρο
-        this._window.add (this._grid)·
+        // Add the grid to the window
+        this._window.add (this._grid);
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
-        this._window.show_all()·
+        // Show the window and all child widgets
+        this._window.show_all();
     }
 
-})·
+};
 
-// Εκτέλεση της εφαρμογής
-let app = new WelcomeToTheGrid ()·
-app.application.run (ARGV)·
+// Run the application
+let app = new WelcomeToTheGrid ();
+app.application.run (ARGV);
 </code>
   </section>
 

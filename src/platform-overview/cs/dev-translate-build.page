@@ -14,29 +14,37 @@
     <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
 
     <desc/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Lucas Lommer</mal:name>
+      <mal:email>llommer@svn.gnome.org</mal:email>
+      <mal:years>2009.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Marek Černocký</mal:name>
+      <mal:email>marek@manet.cz</mal:email>
+      <mal:years>2015.</mal:years>
+    </mal:credit>
   </info>
 
-  <title>Set up your build system for translation</title>
+  <title>Nastavení systému sestavení pro překlady.</title>
 
   <links type="series" style="floatend">
-    <title>Set up translations</title>
+    <title>Nastavení překladů</title>
   </links> 
 
-  <p>You will need to set up your project and build system to work with
-  translations.</p>
+  <p>Aby váš projekt fungoval s překlady, musíte jej správně nastavit, stejně jako systém sestavení.</p>
 
-  <p>Create a <file>po/</file> subdirectory in your project directory and list
-  the files which have translatable strings in <file>po/POTFILES.in</file>.
-  List files <em>without</em> translatable strings in
-  <file>po/POTFILES.skip</file>.</p>
+  <p>Ve svém projektu vytvořte podsložku <file>po/</file> a do souboru <file>po/POTFILES.in</file> uveďte soubory, které obsahují přeložitelné řetězce. Soubory <em>bez</em> přeložitelných řetězců uveďte do <file>po/POTFILES.skip</file>.</p>
 
-  <p>Add the following lines to your <file>configure.ac</file>:</p>
+  <p>Do souboru <file>configure.ac</file> zadejte následující řádky:</p>
   <code>
 IT_PROG_INTLTOOL([0.50.0])
 AC_SUBST([GETTEXT_PACKAGE], [$PACKAGE_TARNAME])
-AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [Package name for gettext])</code>
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"], [název balíčku pro gettext])</code>
 
-  <p>Add the following lines to your <file>Makefile.am</file>:</p>
+  <p>Do souboru <file>Makefile.am</file> zadejte následující řádky:</p>
   <code>
 SUBDIRS = po
 </code>
@@ -50,32 +58,26 @@ desktop_in_files = data/<input>applicationname</input>.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 </code>
 
-  <p>Run <cmd>intltoolize</cmd> to copy the intltool build infrastructure to
-  the build tree before running <cmd>autoreconf</cmd>.</p>
+  <p>Než spustíte <cmd>autoreconf</cmd>, spusťte nejdříve <cmd>intltoolize</cmd>, aby se nakopírovala infrastruktura intltool do stromu sestavení.</p>
 
-  <p>Now that your build system and your source strings are ready for
-  translation, you need to tell <app>gettext</app> three things:</p>
+  <p>Když jsou nyní systém sestavení a řetězce ve vašem zdrojovém kódu připraveny k překladu, musíte uvést následující tři věci pro <app>gettext</app>:</p>
 
   <list>
-    <item><p>the <em>translation domain</em>, generally the same as the
-    application name</p></item>
-    <item><p>the location where the built translations are installed</p></item>
-    <item><p>the character encoding of the translations, generally
-    UTF-8</p></item>
+    <item><p><em>doménu překladu</em>, většinou je stejná, jako název aplikace</p></item>
+    <item><p>místo, kde jsou uloženy sestavené překlady</p></item>
+    <item><p>kódování znaků v překladech, obvykle to je UTF-8</p></item>
   </list>
 
   <example>
   <note>
-    <p>This example assumes that your application is written in C. It will be
-    slightly different for other programming languages.</p>
+    <p>Příklad předpokládá, že vaše aplikace je napsána v jazyce C. Pro ostatní programovací jazyky se to může lehce lišit.</p>
   </note>
 
-  <p>Add the following line to the source file which contains your
-  <code>main()</code> function:</p>
+  <p>Do zdrojového kódu, který obsahuje funkci <code>main()</code> přidejte následující řádek:</p>
 
   <code>#include "config.h"</code>
 
-  <p>Then, add the following lines to your <code>main()</code> function:</p>
+  <p>Následně do funkce <code>main()</code> přidejte tyto řádky:</p>
 
   <code>
 bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALEDIR);
@@ -84,8 +86,6 @@ textdomain (GETTEXT_PACKAGE);
 </code>
   </example>
 
-  <p>Run <cmd>make <input>projectname</input>.pot</cmd> in the <file>po</file>
-  directory. This runs <cmd>intltool-extract</cmd> to extract the translatable
-  strings and put them in a po template (POT) file.</p>
+  <p>Spusťte <cmd>make <input>název_projektu</input>.pot</cmd> ve složce <file>po</file>. Tím se spustí nástroj <cmd>intltool-extract</cmd>, který získá přeložitelné řetězce a vloží je do souboru šablony (POT).</p>
 
 </page>

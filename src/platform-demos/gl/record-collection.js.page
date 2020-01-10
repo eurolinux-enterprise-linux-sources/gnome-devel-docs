@@ -172,9 +172,9 @@ Gtk.main ();]]></code>
     this.connection.open ();
 
     try {
-      var dm = Gda.execute_select_command (this.connection, "select * from demo");
+      var dm = this.connection.execute_select_command ("select * from demo");
     } catch (e) {
-      Gda.execute_non_select_command (this.connection, "create table demo (id integer, name varchar(100))");
+      this.connection.execute_non_select_command ("create table demo (id integer, name varchar(100))");
     }
   },]]></code>
   <list>
@@ -196,7 +196,7 @@ Gtk.main ();]]></code>
     <item><p>Liña 4: Abrir a conexión. No fornecedor de SQLite, se a conexión non existe crearase neste paso.</p></item>
     <item>
       <p>Liñas 6-10: Tenta facer unha selección sinxela para comprobar que a táboa existe (liña 7). Se non existe (porque a base de datos foi recén creada), esta orde disparará unha excepción, que está xestionada polo bloque <code>try</code>...<code>catch</code>. Se este é o caso executarase a declaración de creación de táboa (liña 9).</p>
-      <p>Para executar ordes SQL usamos as funcións globais de GDA, <code>execute_select_command</code> e <code>execute_non_select_command</code>. Son moi sinxelas de usar, e só requiren dous argumentos: o obxecto <code>Connection</code> e a orde SQL a analizar.</p>
+      <p>In order to run the SQL commands above we are using the GDA connection methods <code>execute_select_command</code> and <code>execute_non_select_command</code>. They are simple to use, and just require two arguments: The <code>Connection</code> object and the SQL command to be parsed.</p>
     </item>
   </list>
 
@@ -208,7 +208,7 @@ Gtk.main ();]]></code>
   <p>Despois de conectarse á base de datos, o construtor da nosa demostración chama ao método <code>selectData</code>. É responsábel de obter tódolos rexistros na táboa e para mostrarllas no widget <code>TextView</code>. Votémoslle unha ollada:</p>
   <code mime="application/javascript" style="numbered"><![CDATA[
   selectData: function () {
-    var dm = Gda.execute_select_command (this.connection, "select * from demo order by 1, 2");
+    var dm = this.connection.execute_select_command  ("select * from demo order by 1, 2");
     var iter = dm.create_iter ();
 
     var text = "";
@@ -224,7 +224,7 @@ Gtk.main ();]]></code>
     this.count_label.label = "<i>" + dm.get_n_rows () + " record(s)</i>";
   },]]></code>
   <list>
-    <item><p>Liña 2: A orde <code>SELECT</code>. Usamos a función global de GDA <code>execute_select_command</code> para iso. Devólve un obxecto <code>DataModel</code>, que máis tarde empregaremos para obter as filas.</p></item>
+    <item><p>Line 2: The <code>SELECT</code> command. We are using the GDA connection's <code>execute_select_command</code> method for that. It returns a <code>DataModel</code> object, which is later used to retrieve the rows.</p></item>
     <item><p>Liña 3: Crea un obxecto <code>Iter</code>, que se usa para iterar sobre os rexistros de <code>DataModel</code>.</p></item>
     <item><p>Liña 7: Iterar por tódolos rexistros e obtelos coa axuda do obxecto <code>Iter</code>. Neste punto a variábel <code>iter</code> contén os datos actualizados obtidos. O seu método <code>move_next</code> devolve <code>false</code> cando se chegue ao último rexistro.</p></item>
     <item>
@@ -261,7 +261,9 @@ Gtk.main ();]]></code>
     this._clearFields ();
     this.selectData ();
   },]]></code>
-  <p>Aprendemos como usar as funcións de GDA de forma conveniente <code>execute_select_command</code> e <code>execute_non_select_command</code> para executar ordes SQL de forma rápida nunha base de datos. GDA permítelle construír unha declaración SQL de forma indirecta usando o seu obxecto <code>SqlBuilder</code>. Cales son os beneficios de isto? GDA xerará a declaración SQL de forma dinámica e será válida para o fornecedor de conexión usado (usarase o mesmo dialecto SQL que o fornecedor usa). Estudiemos o código:</p>
+  <p>
+    We have learned how to use the GDA connection's methods <code>execute_select_command</code> and <code>execute_non_select_command</code> to quickly execute SQL commands on the database. GDA allows one to build a SQL statement indirectly, by using its <code>SqlBuilder</code> object. What are the benefits of this? GDA will generate the SQL statement dynamically, and it will be valid for the connection provider used (it will use the same SQL dialect the provider uses). Let's study the code:
+  </p>
   <list>
     <item><p>Liña 2-3: compróbase que o usuario completa tódolos campos. O código do método privato <code>_validateFields</code> é realmente sinxelo e pode lelo no código fonte completo da demostración.</p></item>
     <item><p>Liña 5: A forma máis rápida é <code>INSERT</code>. Está descomentado xa que queremos ver como usar o obxecto <code>SqlBuilder</code> para construír unha declaración SQL portábel a través das bases de datos.</p></item>

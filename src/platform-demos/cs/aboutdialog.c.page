@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="aboutdialog.c" xml:lang="cs">
+  <info>
+    <title type="text">AboutDialog (C)</title>
+    <link type="guide" xref="c#windows"/>
+    <link type="seealso" xref="dialog.c"/>
+    <link type="seealso" xref="messagedialog.c"/>
+    <revision version="0.2" date="2012-08-07" status="draft"/>
+
+    <credit type="author copyright">
+      <name>Monica Kochofar</name>
+      <email its:translate="no">monicakochofar@gmail.com</email>
+      <years>2012</years>
+    </credit>
+
+    <desc>Zobrazuje informace o aplikaci</desc>
+  </info>
+
+  <title>AboutDialog</title>
+
+  <media type="image" mime="image/png" src="media/aboutdialog_GMenu.png"/>
+  <p>Příklad s AboutDialog, který používá Gtk.ApplicationWindow a Menu</p>
+  <note><p><em style="bold">Musíte používat Gtk 3.4 nebo novější, aby tento příklad fungoval.</em></p></note>
+
+      <code mime="text/x-csrc" style="numbered">
+#include &lt;gtk/gtk.h&gt;
+
+/* Funkce zpětného volání, ve které se reaguje na signál "response" od uživatele
+ * v dialogovém okně se zprávou.
+ * Tato funkce se používá ke zničení dialogového okna.
+ */
+static void
+on_close (GtkDialog *dialog,
+          gint       response_id,
+          gpointer   user_data)
+{
+  /* Toto způsobí, že dialogové okno bude zničeno */
+  gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+/* Callback function for the response signal "activate" related to the SimpleAction
+ * "about_action".
+ * This function is used to cause the about dialog window to popup.
+ */
+/* Funkce zpětného volání, ve které se reaguje na signál "activate" vztahující se k
+ * SimpleAction s názvem about_action.
+ * Tato funkce se používá ke zobrazení dialogového okna O aplikaci.
+ */
+static void
+about_cb (GSimpleAction *simple,
+          GVariant      *parameter,
+          gpointer       user_data)
+{
+  GtkWidget *about_dialog;
+
+   about_dialog = gtk_about_dialog_new ();
+
+  /* Seznam autorů programu/dokumentace, který bude použit později, musí být inicializován
+   * polem řetězců zakončených pomocí null.
+   */
+  const gchar *authors[] = {"GNOME Documentation Team", NULL};
+  const gchar *documenters[] = {"GNOME Documentation Team", NULL};
+
+  /* Vyplnění informací pro dialogové okno O aplikaci */
+  gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (about_dialog), "AboutDialog Example");
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_dialog), "Copyright \xc2\xa9 2012 GNOME Documentation Team");
+  gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (about_dialog), authors);
+  gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (about_dialog), documenters);
+  gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_dialog), "GNOME Developer Website");
+  gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_dialog), "http://developer.gnome.org");
+
+  /* Nepřejeme si zobrazení názvu okna, který by v tomto případě byl 
+   * "AboutDialog Example". Musíme název dialogového okna se zprávou vymazat 
+   * po nastavení názvu programu.
+   */
+  gtk_window_set_title (GTK_WINDOW (about_dialog), "");
+
+  /* Pro zavření dialogového okna O aplikaci, kdyže je kliknuto na „Zavřít“ připojíme odpovídající 
+   * signál k on_close
+   */
+  g_signal_connect (GTK_DIALOG (about_dialog), "response", 
+                    G_CALLBACK (on_close), NULL);
+
+  /* Zobrazení dialogového okna O aplikaci */
+  gtk_widget_show (about_dialog); 
+}
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+
+  GSimpleAction *about_action;
+
+  /* Vytvoření okna se záhlavím a výchozí velikostí */
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "AboutDialog Example");
+  gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
+
+  /* Vytvoření nové jednoduché akce. Předává se jí parametr typu NULL. Bude 
+   * vždy NULL pro akce vyvolané z nabídky. (například při kliknutí na tlačítko 
+   * OK nebo Cancel)
+   */
+  about_action = g_simple_action_new ("about", NULL); 
+
+  /* Připojení signálu "activate" k příslušné funkci zpětného volání. 
+   * Bude indikovat, že akce již byla aktivována.
+   */
+  g_signal_connect (about_action, "activate", G_CALLBACK (about_cb), 
+                    GTK_WINDOW (window));
+
+  /* Přidání about_action do celkové mapy akcí. Mapa akcí je rozhraní, 
+   * které obsahuje řadu pojmenovaných instancí GAction (jako je about_action) 
+   */
+  g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (about_action));
+
+  gtk_widget_show_all (window);
+}
+
+/* Funkce zpětného volání pro reakci na signál "activate" od akce „quit“ nacházející 
+ * se hned v následující funkci níže.
+ */ 
+static void
+quit_cb (GSimpleAction *simple,
+         GVariant      *parameter,
+         gpointer       user_data)
+{
+  GApplication *application = user_data;
+
+  g_application_quit (application);
+}
+
+/* Spouštěcí funkce pro nabídku vytvořenou v této ukázce */
+static void
+startup (GApplication *app,
+         gpointer      user_data)
+{
+  GMenu *menu;
+  GSimpleAction *quit_action;
+
+  /* Inicializace GMenu a přidání položky nabídky s popiskem "About" a akcí 
+   * "win.about". Dále se přidá položka s popiskem "Quit" a akcí "app.quit" 
+   */
+  menu = g_menu_new ();
+  g_menu_append (menu, "About", "win.about");
+  g_menu_append (menu, "Quit", "app.quit");
+
+  /* Vytvoření nové jednoduché akce pro aplikaci. (V tomto případě se jedná o 
+   * akci „quit“.
+   */
+  quit_action = g_simple_action_new ("quit", NULL);
+
+  /* Ujištění, že již vytvořená nabídka je nastavená pro celou aplikaci  */
+  gtk_application_set_app_menu (GTK_APPLICATION (app), G_MENU_MODEL (menu));
+
+  g_signal_connect (quit_action, 
+                    "activate", 
+                    G_CALLBACK (quit_cb), 
+                    app);
+
+  g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (quit_action));
+
+}
+
+/* Spouštěcí funkce pro aplikaci */
+int
+main (int argc, char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect (app, "startup", G_CALLBACK (startup), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code>
+<p>V této ukázce se používá následující:</p>
+<list>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkAboutDialog.html">GtkAboutDialog</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GMenu.html">GMenu</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gio/stable/GActionMap.html">GActionMap</link></p></item>
+</list>
+</page>

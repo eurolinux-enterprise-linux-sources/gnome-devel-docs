@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="application-menus" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="patterns#primary"/>
+    <desc>Menu global de aplicativo que é acessado a partir da barra superior</desc>
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Georges Neto</mal:name>
+      <mal:email>georges.stavracas@gmail.com</mal:email>
+      <mal:years>2014.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Menus de aplicativo</title>
+
+<media type="image" mime="image/svg" src="figures/patterns/application-menu.svg"/>
+
+<p>Menus de aplicativo fornecem acesso à ações e opções globais e de nível superior para seu aplicativo. Isto inclui itens padrão para acessar documentação e informação sobre o aplicativo.</p>
+
+<section id="when-to-use">
+<title>Quando usar</title>
+
+<p>Menus de aplicativo são uma parte padrão do GNOME 3, e todo aplicativo que executa sob o GNOME 3 deveria ter um.</p>
+
+</section>
+
+<section id="general-guidelines">
+<title>Diretrizes gerais</title>
+
+<list>
+<item><p>Siga <link xref="menus">guia de projeto de menu</link> padrão.</p></item>
+<item><p>Inclua apenas itens de menu que são relacionados ao aplicativo como um todo, como as preferências de aplicativo. Ações que são específicas a uma janela ou visão particular, ou que agem sobre o conteúdo de uma janela de aplicativo, não devem ser incluídas.</p></item>
+<item><p>Se um item do menu de aplicativo é usado frequentemente, considere movê-lo para um local mais acessível.</p></item>
+</list>
+
+</section>
+
+<section id="standard-menu-items">
+<title>Itens de menu padrões</title>
+
+<p>Itens comuns de menu de aplicativo incluem <gui>New Window</gui>, <gui>Preferences</gui>, <gui>Help</gui>, <gui>About</gui> e <gui>Quit</gui>. <gui>Help</gui>, <gui>About</gui> e <gui>Quit</gui> devem estar contidos dentro de seu próprio grupo na parte inferior do menu.</p>
+
+<table>
+<tr>
+<td><p><gui>New Window</gui></p></td>
+<td><p>Abre uma nova janela. Somente <link xref="primary-windows#application-types">aplicativos de múltiplas instâncias</link> devem incluir esse item de menu. Se a nova janela contiver um tipo específico de item de conteúdo, ou simultaneamente executa uma ação, renomeie-a para ser menos genérico. Por exemplo: <gui>New Connection</gui> ou <gui>New Document</gui>.</p></td>
+</tr>
+<tr>
+<td><p><gui>Preferences</gui></p></td>
+<td><p>Abre a caixa de diálogo de preferências do aplicativo. Apenas mostre este item de menu se o seu aplicativo tiver uma caixa de diálogo de preferências.</p></td>
+</tr>
+<tr>
+<td><p><gui>Help</gui></p></td>
+<td><p>Abre a documentação do usuário do aplicativo no aplicativo <app>Ajuda</app>. Apenas mostre este item de menu se o seu aplicativo tiver documentação do usuário.</p></td>
+</tr>
+<tr>
+<td><p><gui>About</gui></p></td>
+<td><p>Abre o diálogo sobre o aplicativo. Todo menu de aplicativo deve incluir esse item.</p></td>
+</tr>
+<tr>
+<td><p><gui>Quit</gui></p></td>
+<td><p>Fecha o aplicativo, incluindo todas as janelas de aplicativos. Todo menu de aplicativo deve incluir esse item.</p></td>
+</tr>
+</table>
+
+</section>
+
+<section id="api-reference">
+<title>Referência de API</title>
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkApplication.html">GtkApplication</link></p></item>
+</list>
+</section>
+</page>

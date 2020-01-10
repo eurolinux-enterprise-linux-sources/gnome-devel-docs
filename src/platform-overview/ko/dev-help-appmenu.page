@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="dev-help-appmenu" xml:lang="ko">
+
+  <info>
+    <link type="seealso" xref="dev-help"/>
+    <revision version="0.1" date="2013-06-19" status="review"/>
+
+    <credit type="author copyright">
+      <name>Radina Matic</name>
+      <email its:translate="no">radina.matic@gmail.com</email>
+      <years>2013</years>
+    </credit>
+    <credit type="editor">
+      <name>Ekaterina Gerasimova</name>
+      <email its:translate="no">kittykat3756@gmail.com</email>
+      <years>2013</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>조성호</mal:name>
+      <mal:email>shcho@gnome.org</mal:email>
+      <mal:years>2016, 2017.</mal:years>
+    </mal:credit>
+  </info>
+
+  <title>프로그램 메뉴에 <gui>도움말</gui> 추가</title>
+
+  <links type="series" style="floatend">
+    <title>도움말 설정</title>
+  </links>
+
+  <p>대부분의 그놈 프로그램에는 프로그램 메뉴가 있습니다. <gui style="menuitem">도움말</gui> 메뉴 항목은 <gui style="menuitem">정보</gui> 메뉴 항목에 있어야합니다.</p>
+
+  <example>
+  <note>
+    <p><app href="https://git.gnome.org/browse/cheese/tree/src/cheese-main.vala">치즈</app> 프로그램에 기반한 예제에서, 프로그램을 Vala로 작성했다고 가정하겠습니다. 다른 프로그램밍 언어를 활용하는 경우 약간 다를 수 있습니다.</p>
+  </note>
+
+  <p>동작 목록에 <gui style="menuitem">도움말</gui> 항목을 추가하십시오:</p>
+  <code>
+   private const GLib.ActionEntry action_entries[] = {
+        <input>{ "help", on_help },</input>
+        { "about", on_about },
+        { "quit", on_quit }
+    };
+
+   add_action_entries (action_entries, my_Gtk_Application);
+</code>
+
+  <p>프로그램 메뉴에 <gui style="menuitem">도움말</gui> 메뉴를 추가하십시오:</p>
+
+<code>
+  var menu = new GLib.Menu ();
+  var section = new GLib.Menu ();
+
+  <input>var item = new GLib.MenuItem (_("_Help"), "app.help");
+  item.set_attribute ("accel", "s", "F1");
+  section.append_item (item);</input>
+</code>
+
+  <p><gui style="menuitem">도움말</gui> 메뉴 항목을 누르면 <app>Yelp</app> 프로그램으로 도움말을 표시합니다:</p>
+
+<code>
+  private void on_help ()
+  {
+    var screen = main_window.get_screen ();
+    try
+    {
+      Gtk.show_uri (screen, <input>"help:cheese"</input>, Gtk.get_current_event_time ());
+    }
+    catch (Error err)
+    {
+      message ("Error opening help: %s", err.message);
+    }
+  }
+</code>
+
+  <p><file>index.page</file> 파일의 섹션을 연결하려면 <code>"help:<input>applicationname</input>/index#<input>sectionid</input>"</code> 코드를 활용하십시오.</p>
+
+  </example>
+</page>

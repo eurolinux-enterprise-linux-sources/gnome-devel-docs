@@ -23,7 +23,7 @@
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Daniel Mustieles</mal:name>
       <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011-2015</mal:years>
+      <mal:years>2011-2017</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -48,28 +48,27 @@
 
   <p>GTK+ tiene una serie de eventos predefinidos que puede usar en su aplicación.</p>
   <example>
-    <p>Declare <code>HelloWorld</code> como una clase <code>Lang</code> nueva. Gjs requiere que las clases tengan la propiedad Nombre definida.</p>
+    <p>Declare <code>HelloWorld</code> como una clase nueva.</p>
 
     <code>
-const HelloWorld = new Lang.Class({
-    Name: 'HelloWorld',
+class HelloWorld {
 </code>
 
-    <p>Se llama a <code>_init</code> cuando se crea una instancia nueva. Cree una <code>GtkApplication</code>, conecte la señal <code>activate</code> al evento <code>_onActivate</code> de GTK+ existente y <code>startup</code> a <code>_onStartup</code>:</p>
+    <p>Se llama a <code>constructor</code> cuando se crea una instancia nueva. Cree una <code>GtkApplication</code>, conecte la señal <code>activate</code> al evento <code>_onActivate</code> de GTK+ existente y <code>startup</code> a <code>_onStartup</code>:</p>
 
     <code>
-    _init: function() {
+    constructor() {
         this.application = new Gtk.Application();
-        this.application.connect('activate', Lang.bind(this, this._onActivate));
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-    },
+        this.application.connect('activate', this._onActivate.bind(this));
+        this.application.connect('startup', this._onStartup.bind(this));
+    }
 </code>
 
     <p>Mostrar la ventana al activar la aplicación:</p>
     <code>
-    _onActivate: function(){
+    _onActivate() {
         this._window.show_all();
-    },
+    }
 </code>
   </example>
   <links type="prevnext"/>

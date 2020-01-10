@@ -18,8 +18,7 @@
 
     <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
 
-    <desc>Add the window specified in the UI file to the application using
-    GtkBuilder.</desc>
+    <desc>Adicione a janela especificada no arquivo UI ao aplicativo usando GtkBuilder.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Enrico Nicoletto</mal:name>
@@ -28,36 +27,38 @@
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Rafael Ferreira</mal:name>
-      <mal:email>rafael.f.f1@gmail.com</mal:email>
-      <mal:years>2013</mal:years>
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2013, 2014, 2016, 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Isaac Ferreira Filho</mal:name>
+      <mal:email>isaacmob@riseup.net</mal:email>
+      <mal:years>2018</mal:years>
     </mal:credit>
   </info>
 
   <title>GtkBuilder</title>
   <links type="prevnext" style="top"/>
   <links type="series" style="floatend">
-    <title>Get started with GNOME</title>
+    <title>Primeiros passos com GNOME</title>
   </links>
 
-  <p>GtkBuilder accepts UI descriptions and turns them into Gtk applications.
-  In this case, the UI description is in the file <file>helloworld.glade</file>
-  and can be read by the <code>get_object()</code> method.</p>
+  <p>GtkBuilder aceita descrições de UI e as torna descrições Gtk. Neste caso, a descrição está no arquivo <file>helloworld.glade</file> e pode ser lido pelo método <code>get_object()</code>.</p>
 
   <example>
-    <p>Load the UI file using <code>GtkBuilder</code> and get the window object
-    using the <gui>Name</gui> (or <gui>ID</gui>) chosen in Glade, and add the
-    window object to the application:</p>
+    <p>Carregue o arquivo UI usando <code>GtkBuilder</code> e obtenha o objeto da janela usando o <gui>Nome</gui> (ou <gui>ID</gui>) escolhido no Glade, e adicione o objeto de janela ao aplicativo:</p>
 
-    <code><![CDATA[
-    _onStartup: function() {
+    <code>
+    _onStartup() {
         let builder = new Gtk.Builder();
         builder.add_from_file('helloworld.glade');
         this._window = builder.get_object('window1');
         this.application.add_window(this._window);
     }
-});
-]]></code>
+};
+</code>
   </example>
   <links type="prevnext"/>
 </page>

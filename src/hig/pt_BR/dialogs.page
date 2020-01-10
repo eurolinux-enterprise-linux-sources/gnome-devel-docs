@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="dialogs" xml:lang="pt-BR">
+
+  <info>
+    <link type="guide" xref="patterns#primary"/>
+    <desc>Janelas secundárias que aparecem sobre primárias, pais</desc>  
+    <credit type="author">
+      <name>Allan Day</name>
+      <email>aday@gnome.org</email>
+    </credit>
+    <credit>
+      <name>Calum Benson</name>
+    </credit>
+    <credit>
+      <name>Adam Elman</name>
+    </credit>
+    <credit>
+      <name>Seth Nickell</name>
+    </credit>
+    <credit>
+      <name>Colin Robertson</name>
+    </credit>
+    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Georges Neto</mal:name>
+      <mal:email>georges.stavracas@gmail.com</mal:email>
+      <mal:years>2014.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2017</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Janelas de diálogo</title>
+
+<p>As janelas de diálogo são janelas secundárias que aparecem sobre uma janela principal, pai. Elas são usadas para apresentar informações ou controles adicionais, incluindo preferências e propriedades, ou para apresentar mensagens ou perguntas.</p>
+
+<p>O GTK+ fornece uma série de diálogos padrão que podem ser usados, como impressão ou seleção de cores.</p>
+
+<p>Há três tipos básicos de diálogos.</p>
+
+<section id="when-to-use">
+<title>Quando usar</title>
+
+<p>Os diálogos são um padrão de design comumente reconhecido, e há convenções estabelecidas para os diferentes tipos de diálogo que você pode querer usar. As diretrizes sobre cada tipo de diálogo fornecem informações adicionais sobre isso.</p>
+
+<p>Embora os diálogos possam ser uma maneira eficaz de divulgar controles ou informações adicionais, eles também podem ser uma fonte de interrupção para o usuário. Por esse motivo, sempre pergunte se é necessária uma caixa de diálogo e trabalhe para evitar as situações em que são necessárias.</p>
+
+<p>Há muitas formas de evitar o uso de diálogos:</p>
+
+<list>
+<item><p>Use a composição em linha para novas mensagens, registros ou contatos.</p></item>
+<item><p>As notificações no aplicativo são uma alternativa para diálogos de mensagens.</p></item>
+<item><p><link xref="popovers">Janelas sobrepostas</link> podem ser uma maneira de exibir controles ou opções adicionais de forma menos perigosa.</p></item>
+</list>
+
+</section>
+
+<section id="message-dialogs">
+<title>Diálogos de mensagem</title>
+
+<media type="image" mime="image/svg" src="figures/patterns/message-dialog.svg"/>
+
+<p>Diálogos de mensagens são o tipo de diálogo mais simples. Eles apresentam uma mensagem ou pergunta, juntamente com 1-3 botões para responder. Eles são sempre modais, o que significa que impedem o acesso a sua janela pai. Diálogos de mensagens são uma escolha apropriada quando é essencial que o usuário veja e responda a uma mensagem.</p>
+
+<section id="message-dialog-examples">
+<title>Exemplos</title>
+
+<p>As caixas de diálogo de confirmação usam uma caixa de diálogo de mensagem para verificar – ou confirmar – que o usuário deseja realizar uma ação. Eles têm dois botões: um para confirmar que a ação deve ser realizada e uma para cancelar a ação.</p>
+
+<note style="tip"><p>As caixas de diálogo de confirmação geralmente serão reconhecidas acidentalmente ou automaticamente, e nem sempre evitarão erros. Muitas vezes, é melhor fornecer funcionalidades de desfazer.</p></note>
+
+<p>As caixas de diálogos de erro apresentam uma mensagem de erro para o usuário. Eles geralmente incluem um único botão que permite ao usuário reconhecer e fechar a caixa de diálogo.</p>
+
+<note style="tip"><p>As caixas de diálogos de erros geralmente devem ser um último recurso. Você deve projetar seu aplicativo para que os erros não ocorram e se recuperar automaticamente se algo der errado.</p></note>
+
+</section>
+</section>
+
+<section id="action-dialogs">
+<title>Caixas de diálogos de ação</title>
+
+<media type="image" mime="image/svg" src="figures/patterns/action-dialog.svg"/>
+
+<p>As caixas de diálogos de ação apresentam opções e informações sobre uma ação específica antes de serem realizadas. Elas têm um título (que geralmente descreve a ação) e dois botões principais – um que permite que a ação seja realizada e uma que a cancele.</p>
+
+<p>Às vezes, o usuário pode ser obrigado a escolher opções antes de uma ação pode ser realizada. Nesses casos, o botão de diálogo afirmativo deve ser insensível até que as opções necessárias tenham sido selecionadas.</p>
+
+<section id="action-dialog-examples">
+<title>Exemplos</title>
+
+<p>Muitos das caixas de diálogos GTK+ são de ação. A caixa de diálogo de impressão é um bom exemplo: ele é exibido em resposta ao usuário usando a ação de impressão e apresenta informações e opções para essa ação de impressão. Os dois botões da barra de cabeçalho permitem que a ação de impressão seja cancelada ou executada.</p>
+
+</section>
+</section>
+
+<section id="presentation-dialogs">
+<title>Diálogos de apresentação</title>
+
+<media type="image" mime="image/svg" src="figures/patterns/presentation-dialog.svg"/>
+
+<p>Diálogos de apresentação apresentam informações ou controles. Como diálogos de ação, eles têm uma barra de cabeçalho e um assunto. No entanto, em vez de prefixar uma ação, seu conteúdo se relaciona com um aplicativo ou item de conteúdo.</p>
+
+<section id="presentation-dialog-examples">
+<title>Exemplos</title>
+
+<p>As preferências e as propriedades são exemplos de diálogos de apresentação e ambos apresentam informações e configurações em relação a uma entidade específica (um aplicativo ou um item de conteúdo). Os diálogos de propriedades são um bom exemplo de como os diálogos podem ser usados para divulgar informações adicionais que nem sempre são necessárias na janela principal do aplicativo.</p>
+
+<note style="tip"><p>Resista à tentação de fornecer uma janela de preferências para seu aplicativo. Sempre se pergunte se as configurações adicionais são realmente necessárias. A maioria das pessoas não se incomodará em investigar as preferências que você fornece e as opções de configuração contribuirão para a complexidade de sua aplicação. Faça um esforço para garantir que o seu design de aplicação funcione para todos sem a necessidade de alterar suas configurações.</p></note>
+
+</section>
+
+<section id="instant-and-explicit-apply">
+<title>Aplicação instantânea e explícita</title>
+
+<p>Diálogos de apresentação são aplicados de forma instantânea ou explícita. Em diálogos de aplicação instantânea, mudanças em configurações ou valores são atualizadas imediatamente. Em contraste, os diálogos de aplicação explícita incluem um botão para aplicar as mudanças.</p>
+
+<p>A aplicação instantânea deve ser usada sempre que possível. Diálogos de apresentação de aplicação instantânea têm um botão de fechar na barra de título, como uma <link xref="primary-windows">janela primária</link>.</p>
+
+<p>A aplicação explícita só é necessária se as mudanças no diálogo tiverem que ser aplicadas simultaneamente para ter o comportamento desejado. Os diálogos de aplicação explícita incluem botões <gui>Done</gui> e <gui>Cancel</gui> (<gui>Cancel</gui> redefine todos os valores no diálogo para o estado antes de ser aberto e Done aplica todas as alterações e fecha a janela).</p>
+
+</section>
+</section>
+
+<section id="primary-buttons">
+<title>Botões primários</title>
+
+<p>Diálogos de mensagens e ações incluem botões primários que afetam toda a janela. A ordem desses botões, bem como os rótulos utilizados, são uma parte fundamental da caixa de diálogo.</p>
+
+<section id="order">
+<title>Ordem</title>
+
+<p>Quando um diálogo inclui um botão afirmativo e de cancelamento, certifique-se sempre de que o botão de cancelamento aparece primeiro, antes do botão afirmativo. Nas localidades da esquerda para a direita, esta está à esquerda.</p>
+
+<p>Esta ordem de botão garante que os usuários se conscientizem, e sejam lembrados, da capacidade de cancelar antes de encontrar o botão afirmativo.</p>
+
+</section>
+
+<section id="labels">
+<title>Rótulos</title>
+
+<p>Rótulo de botão primário afirmativo com um verbo imperativo específico, por exemplo: <gui>Save</gui>, <gui>Print</gui>, <gui>Remove</gui>. Isso é mais claro que um rótulo genérico como <gui>OK</gui> ou <gui>Done</gui>.</p>
+
+<p>Os diálogos de erros geralmente incluem um único botão que descarta o diálogo. Neste caso, uma ação específica não precisa ser referenciada, e esta pode ser uma boa oportunidade para usar o humor. <gui>Apology Accepted</gui> ou <gui>Got It</gui> são exemplos de bons rótulos.</p>
+
+</section>
+
+<section id="default-action-and-escape">
+<title>Ação e escape padrão</title>
+
+<p>Atribua a tecla Enter para ativar o botão afirmativo primário em um diálogo (por exemplo, <gui>Print</gui> em um diálogo de impressão). Isso é chamado de ação padrão, e é indicado por um estilo visual diferente. Não faça um botão como padrão se sua ação for irreversível, destrutiva ou inconveniente para o usuário. Se não houver um botão apropriado para designar como o botão padrão, não configure um.</p>
+
+<p>Você também deve se certificar de que a tecla Esc ative o botão de cancelar ou fechar, caso algum deles esteja presente. Diálogos de mensagens com um único botão podem ter Esc e Enter vinculados ao botão.</p>
+
+<p>Vincular Enter e Esc desta maneira fornece uma forma previsível e conveniente de continuar através de um diálogo, ou para voltar.</p>
+
+</section>
+
+</section>
+
+<section id="general-guidelines">
+<title>Diretrizes gerais</title>
+
+<list>
+<item><p>As janelas de diálogo nunca devem aparecer de forma inesperada, e só devem ser exibidas em resposta imediata a uma ação deliberada do usuário.</p></item>
+<item><p>Diálogos devem sempre ter uma janela pai.</p></item>
+<item><p>Siga as diretrizes de <link xref="visual-layout">layout visual</link> ao projetar o conteúdo das janelas.</p></item>
+<item><p>Use <link xref="view-switchers">alternadores de visão</link> ou <link xref="tabs">abas</link> para quebrar controles e informações.</p></item>
+<item><p>Evite empilhar janelas de diálogo uma em cima da outra. Apenas uma janela de diálogo deve ser exibida de cada vez.</p></item>
+<item><p>Ao abrir um diálogo, forneça o foco inicial do teclado ao componente que você espera que os usuários operem primeiro. Este foco é especialmente importante para os usuários que devem usar um teclado para navegar no seu aplicativo.</p></item>
+</list>
+
+</section>
+
+<section id="api-reference">
+<title>Referência de API</title>
+<list>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkAboutDialog.html">GtkAboutDialog</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkDialog.html">GtkDialog</link></p></item>
+<item><p><link href="https://developer.gnome.org/gtk3/stable/GtkMessageDialog.html">GtkMessageDialog</link></p></item>
+</list>
+</section>
+
+</page>

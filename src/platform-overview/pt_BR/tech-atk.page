@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" type="topic" id="tech-atk" xml:lang="pt-BR">
-<info>
-  <link type="guide" xref="tech" group="atk"/>
-  <desc>Accessibility toolkit to implement support for screen readers and other tools</desc>
-  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="tech-atk" xml:lang="pt-BR">
 
+  <info>
+    <link type="guide" xref="tech" group="atk"/>
+
+    <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <credit type="author copyright">
+      <name>Shaun McCance</name>
+      <email its:translate="no">shaunm@gnome.org</email>
+      <years>2011–2012</years>
+    </credit>
+
+    <include xmlns="http://www.w3.org/2001/XInclude" href="cc-by-sa-3-0.xml"/>
+
+    <desc>Kit de ferramentas de acessibilidade para implementar suporte para leitores de tela e outras ferramentas</desc>
+  
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Enrico Nicoletto</mal:name>
       <mal:email>liverig@gmail.com</mal:email>
@@ -12,58 +23,32 @@
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Rafael Ferreira</mal:name>
-      <mal:email>rafael.f.f1@gmail.com</mal:email>
-      <mal:years>2013</mal:years>
+      <mal:name>Rafael Fontenelle</mal:name>
+      <mal:email>rafaelff@gnome.org</mal:email>
+      <mal:years>2013, 2014, 2016, 2017</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Isaac Ferreira Filho</mal:name>
+      <mal:email>isaacmob@riseup.net</mal:email>
+      <mal:years>2018</mal:years>
     </mal:credit>
   </info>
 
 <title>ATK</title>
 
-<p>Accessibility is the process of ensuring your application can be
-used by people with various disabilities.  Disabilities come in many forms:
-visual impairments, movement impairments, hearing impairments, cognitive
-and language impairments, and seizure disorders.  Many people have some
-sort of disability, and making your application accessible will allow
-more people to use it effectively, even if they are not disabled.</p>
+<p>Acessibilidade é o processo de certificar-se de que seu aplicativo pode ser utilizado por pessoas com várias deficiências. Deficiências podem vir de muitas formas: deficiências visuais, disfunções motoras, dificuldades auditivas, problemas de cognição e fala e distúrbios convulsivos. Muitas pessoas possuem alguma espécie de deficiência e ao fazer seus aplicativos de acessibilidade estará permitindo que mais pessoas utilizem-o efetivamente, mesmo se eles não seja deficiente.</p>
 
-<p>GNOME provides support for accessibility devices using the ATK framework,
-which stands for Accessibility Tool Kit.  This framework defines a set of
-interfaces to which graphical interface components adhere.  This allows, for
-instance, screen readers to read the text of an interface and interact with its
-controls.  ATK support is built into GTK+ and the rest of the GNOME platform,
-so any application using GTK+ will have reasonable accessibility support for
-free.</p>
+<p>GNOME oferece suporte para dispositivos de acessibilidade usando a framework ATK, que significa “Accessibility Tool Kit” (ou “kit de ferramentas de acessibilidade”). Esta framework define um conjunto de interfaces as quais os componentes de interface gráfica deverão aderir. Isto permite, por exemplo, que leitores de tela leiam o texto de uma interface e interajam com seus controles. O suporte para ATK é construído dentro do GTK+ e de todo o resto da plataforma GNOME, então qualquer aplicativo usando GTK+ terá suporte razoável a acessibilidade de graça.</p>
 
-<p>ATK solves the problem of plugging many different kinds of widgets (text
-entries, text areas, buttons, menus) with many different types of accessibility
-technologies (screen readers, braille displays, sip-and-puff control devices).
-Instead of writing NxM interfaces, from each widget to each accessibility
-device, one just has to expose a widget through ATK's interfaces.
-Accessibility devices will in turn use these interfaces to query accessible
-widgets.  For example, an aural screen reader and a braille display will both
-use a standard "get the text contents" interface in ATK for all widgets with
-textual information.</p>
+<p>ATK resolve o problema de conectar muitos tipos diferentes de widgets (entradas de texto, áreas de texto, botões, menus) com muitos tipos diferentes de tecnologias de acessibilidade (leitores de tela, telas braille, dispositivos de controle “aspirar e soprar”). Em vez de escrever interfaces NxM, de cada widget para cada dispositivo de acessibilidade, basta apenas expor um widget às interfaces do ATK. Dispositivos de acessibilidade, por sua vez, usarão essas interfaces para consultar widgets de acessibilidade. Por exemplo, tanto um leitor de tela auricular quanto uma tela braille usarão uma interface padrão “obtenha o conteúdo de texto” no ATK para todos widgets com informação textual.</p>
 
-<p>Nonetheless, you should be aware of accessibility issues when
-when developing your applications.  Although GTK+ interfaces provide
-reasonable accessibility by default, you can often improve how well
-your program behaves with accessibility tools by providing additional
-information to ATK.  If you develop custom widgets, you should ensure
-that they expose their properties to ATK.  You should also avoid using
-sound, graphics, or color as the sole means of conveying information
-to the user; have redundant ways of providing this information instead of
-relying on the user being able to perceive a particular medium.</p>
+<p>Apesar de tudo, você deveria conscientizar-se das questões de acessibilidade ao desenvolver seus aplicativos. Embora as interfaces GTK+ ofereçam por padrão acessibilidade razoável, você pode muitas vezes melhorar o quão bem seu programa se comporta com ferramentas de acessibilidade ao oferecer informações adicionais para o ATK. Se você desenvolve widgets personalizados, você deve certificar-se de que eles revelam suas propriedades ao ATK. Você também deveria evitar usar apenas áudio, gráficos ou cores como único caminho de transmissão de informações para o usuário; tenha formas redundantes de fornecer essa informação em vez de depender do usuário ser capaz de entender um meio em particular.</p>
 
-<p>The GNOME desktop ships with a number of accessibility tools which enable
-users with disabilities to take full advantage of their desktop and
-applications.  Applications that fully implement ATK will be able to work with
-the accessibility tools.  These include a screen reader, a screen magnifier, an
-on-screen keyboard, and <app>Dasher</app>, an innovative predictive text entry
-tool.</p>
+<p>O ambiente GNOME vem com uma porção de ferramentas de acessibilidade que permitem aos usuários com deficiências usufruírem ao máximo sua área de trabalho e seus aplicativos. Aplicativos que implementam completamente o ATK estarão aptos a trabalharem com as ferramentas de acessibilidade. Essas incluem um leitor de tela, um ampliador de tela, um teclado sobre a tela, e o <app>Dasher</app>, uma ferramenta inovadora de predição de entrada de texto.</p>
 
 <list style="compact">
   <item><p><link href="http://developer.gnome.org/accessibility-devel-guide/">Acessibilidade do GNOME para desenvolvedores</link></p></item>
-  <item><p><link href="https://developer.gnome.org/atk/stable/">ATK Reference</link></p></item>
+  <item><p><link href="https://developer.gnome.org/atk/stable/">Referência do GTK+</link></p></item>
 </list>
 </page>
