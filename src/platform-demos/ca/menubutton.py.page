@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubutton.py" xml:lang="ca">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubutton.py" xml:lang="ca">
   <info>
   <title type="text">MenuButton</title>
     <link type="guide" xref="beginner.py#buttons"/>
@@ -8,13 +8,13 @@
 
     <credit type="author copyright">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -31,25 +31,23 @@
     
   <section id="code">
   <title>Code used to generate this example</title>
-    <code mime="text/x-python" style="numbered">from gi.repository import Gtk
+    <code mime="text/x-csharp" style="numbered">from gi.repository import Gtk
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Menubutton Example", application=app)
         self.set_default_size(600, 400)
 
         grid = Gtk.Grid()
-
+        
         # a menubutton
         menubutton = Gtk.MenuButton()
         menubutton.set_size_request(80, 35)
-
+        
         grid.attach(menubutton, 0, 0, 1, 1)
-
+        
         # a menu with two actions
         menumodel = Gio.Menu()
         menumodel.append("New", "app.new")
@@ -67,16 +65,14 @@ class MyWindow(Gtk.ApplicationWindow):
         about_action = Gio.SimpleAction.new("about", None)
         about_action.connect("activate", self.about_callback)
         self.add_action(about_action)
-
+        
         self.add(grid)
 
     # callback for "about"
     def about_callback(self, action, parameter):
-        print("You clicked \"About\"")
-
+        print "You clicked \"About\""
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -91,17 +87,17 @@ class MyApplication(Gtk.Application):
         new_action = Gio.SimpleAction.new("new", None)
         new_action.connect("activate", self.new_callback)
         self.add_action(new_action)
-
+        
         quit_action = Gio.SimpleAction.new("quit", None)
         quit_action.connect("activate", self.quit_callback)
         self.add_action(quit_action)
-
+    
     # callback functions for the actions related to the application
     def new_callback(self, action, parameter):
-        print("You clicked \"New\"")
+        print "You clicked \"New\""
 
     def quit_callback(self, action, parameter):
-        print("You clicked \"Quit\"")
+        print "You clicked \"Quit\""
         self.quit()
 
 app = MyApplication()

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.py" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.py" xml:lang="es">
   <info>
     <title type="text">GMenu (Python)</title>
     <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
@@ -9,28 +9,28 @@
 
     <credit type="author copyright">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Una implementación sencilla de GMenu</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -53,15 +53,11 @@
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="GMenu Example", application=app)
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -69,7 +65,7 @@ class MyApplication(Gtk.Application):
         win = MyWindow(self)
         win.show_all()
 
-    def do_startup(self):
+    def do_startup (self):
         # start the application
         Gtk.Application.do_startup(self)
 
@@ -101,15 +97,15 @@ class MyApplication(Gtk.Application):
 
     # callback function for "new"
     def new_cb(self, action, parameter):
-        print("This does nothing. It is only a demonstration.")
+        print "This does nothing. It is only a demonstration."
 
     # callback function for "about"
     def about_cb(self, action, parameter):
-        print("No AboutDialog for you. This is only a demonstration.")
+        print "No AboutDialog for you. This is only a demonstration."
 
     # callback function for "quit"
     def quit_cb(self, action, parameter):
-        print("You have quit.")
+        print "You have quit."
         self.quit()
 
 app = MyApplication()

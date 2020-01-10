@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="desktop-integration" lang="el">
+  <title>Ενσωμάτωση στην επιφάνεια εργασίας</title>
+  
+  <para>Υπάρχουν δύο στοιχεία στην βασική ολοκλήρωση με το περιβάλλον χρήστη της επιφάνειας εργασίας GNOME. <orderedlist>
+      <listitem><para>Να τοποθετείτε μια καταχώριση για την εφαρμογή σας στο μενού <guimenu>Εφαρμογές</guimenu>. Αυτός είναι ο πρωτεύων μηχανισμός με τον οποίο οι χρήστες ανακαλύπτουν και εκτελούν εφαρμογές.</para></listitem>
+      <listitem><para>Αν η εφαρμογή σας μπορεί να ανοίγει και να αποθηκεύει αρχεία, τοποθετήστε καταχωρήσεις για αυτούς του τύπους αρχείων στην βάση δεδομένων της εφαρμογής σας και στην βάση δεδομένων τύπου εγγράφων (MIME). Αυτό επιτρέπει τον διαχειριστή αρχείων και άλλων εφαρμογών να εκκινούν αυτόματα την εφαρμογή σας όταν αντιμετωπίζουν αρχεία τα οποία μπορεί να χειριστεί η εφαρμογή σας.</para></listitem>
+    </orderedlist> Μην προσθέτετε εκκινητές ή άλλα εικονίδια στην επιφάνεια εργασίας όταν η εφαρμογή σας εγκαθίσταται. Η επιφάνεια εργασίας είναι ο χώρος του χρήστη και είναι κρατημένη για εικονίδια που ρητά ζητάνε ή προσθέτουν μόνοι τους.</para>
+  <sect1 id="desktop-application-menu">
+    <title>Τοποθέτηση εγγραφών στο μενού Εφαρμογές</title>
+    
+	<figure><title>Το μενού Εφαρμογές</title>
+	  <mediaobject><imageobject><imagedata fileref="images/desktop-applications-menu.png" format="PNG" width="160" depth="365"/></imageobject> <imageobject><imagedata fileref="images/desktop-applications-menu.eps" format="EPS"/></imageobject><textobject><phrase>Στιγμιότυπο του ανοιχτού μενού εφαρμογών στο πλαίσιο μενού GNOME</phrase></textobject></mediaobject>
+	</figure>
+	
+       <para>Το μενού <guimenu>Εφαρμογές</guimenu>, το οποίο εμφανίζεται στο πλαίσιο στο επάνω μέρος της οθόνης εξ ορισμού, είναι ο κύριος μηχανισμός με τον οποίο οι χρήστες ανακαλύπτουν και τρέχουν εφαρμογές. Τοποθετείς καταχωρίσεις σε αυτό το μενού εγκαθιστώντας το κατάλληλο αρχείο <filename>.desktop</filename>.</para>
+
+    <para>Το μενού είναι διατεταγμένο σε μία συλλογή κατηγοριών, όπως είναι τα Βοηθήματα και τα Παιχνίδια. Οι εφαρμογές τοποθετούνται σε συγκεκριμένες κατηγορίες από την συλλογή λέξεων κλειδιών που περιέχονται στο δικό τους αρχείο <filename>.desktop</filename>.</para>
+
+	<itemizedlist><title>Κατευθυντήριες γραμμές</title>
+		<listitem><para>Αναθέστε την εφαρμογή σας σε μόνο μία κατηγορία στο μενού <guimenu>Εφαρμογές</guimenu></para></listitem>
+
+		<listitem><para>Για σουίτες εφαρμογών που συνδέουν έναν αριθμό από μικρότερες υπό-εφαρμογές σε ένα ενιαίο παράθυρο, όπως για παράδειγμα το Evolution ή το OpenOffice.org, προσθέστε ένα αντικείμενο μενού για κάθε υπό-εφαρμογή. Για παράδειγμα, το mail, το ημερολόγιο, και η λίστα εργασιών στο Evolution θα πρέπει το καθένα να έχει το δικό του αντικείμενο μενού.</para></listitem>
+
+	</itemizedlist>
+
+	<para>Οι τεχνικές πληροφορίες μπορούν να βρεθούν στις δυνατότητες του freedesktop.org <ulink url="http://freedesktop.org/Standards/menu-spec">μενού </ulink> και της <ulink url="http://www.freedesktop.org/Standards/desktop-entry-spec">εισόδου επιφάνειας εργασίας</ulink>.</para>
+
+
+    <sect2 id="menu-item-names">
+      <title>Στοιχείο μενού για ονόματα</title>
+
+
+      <sect3 id="menu-item-functional-description">
+	<title>Να συμπεριλαμβάνετε μία λειτουργική περιγραφή στο όνομα του μενού</title>
+
+	<para>Στην ονομασία αντικειμένου του μενού, συμπεριλάβετε μία περιγραφή της λειτουργικότητας σε σχέση με την κατάλληλη ονομασία της εφαρμογής. Αυτό είναι εξαιρετικά χρήσιμο για αρχάριους χρήστες, και για χρήστες συστημάτων όπου πολυάριθμες εφαρμογές είναι εγκατεστημένες από προεπιλογή. Οι χρήστες είναι περισσότερο πιθανό να βρούνε την εφαρμογή σου αν η ονομασία που εμφανίζετε στο μενού περιλαμβάνει μία περιγραφή της λειτουργικότητας της.</para>
+
+	<para>Για παράδειγμα, η <ulink url="http://ist.mit.edu/services/consulting/usability">δοκιμή χρηστών του συστήματος MIT's Athena</ulink> αποκάλυψε ότι οι χρήστες είχαν δυσκολία στην εύρεση του διαχειριστή αρχείων διότι δεν ήταν εξοικειωμένοι με το όνομα "Ναυτίλος". Επειδή οι χρήστες δεν συσχέτιζαν την ονομασία "Ναυτίλος" με την ιδέα "διαχειριστής αρχείων" το αντικείμενο μενού δεν τους βοήθησε. Αυτό είναι ένα παράδειγμα μη χρήσης της γλώσσας του χρήστη. Δείτε το <xref linkend="principles-match"/> για περισσότερα πάνω στο θέμα.</para>
+
+
+	    <example>
+		<title>Να περιλαμβάνεται λειτουργική περιγραφή σε ονόματα μενού</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Αρχικό στοιχείο μενού</entry>
+				      <entry>Αναθεωρημένο στοιχείο μενού</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Epiphany</entry>
+					<entry>Περιηγητής διαδικτύου Epiphany</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+      </sect3>
+
+      <sect3>
+	<title>Να περιλαμβάνονται μόνο χρήσιμες πληροφορίες στο όνομα του μενού</title>
+	<para>Μην συμπεριλαμβάνετε λέξεις όπως "GNOME", "X Window System", "GTK+" ή άλλες πληροφορίες από πλατφόρμες στις ονομασίες του μενού <guimenu>Εφαρμογές</guimenu>. Οι χρήστες πιθανότατα γνωρίζουν ήδη τι πλατφόρμα χρησιμοποιούν, και αν όχι, η ονομασίες των εφαρμογών δεν είναι το σωστό μέρος για να τους πληροφορήστε.</para>
+	<example>
+		<title>Αφαίρεση των μη ουσιωδών πληροφοριών από την ονομασία του μενού</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Αρχικό στοιχείο μενού</entry>
+				      <entry>Αναθεωρημένο στοιχείο μενού</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Εφαρμογή προβολής εικόνων του GNOME</entry>
+					<entry>Εφαρμογή προβολής εικόνων</entry>
+				</row>
+				<row>
+					<entry>Επεξεργαστής Blog GTK</entry>
+					<entry>Επεξεργαστής Blog</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+	<para>Μην συμπεριλαμβάνετε τεχνικές πληροφορίες όταν ο χρήστης δεν χρειάζεται να τις γνωρίζει, ή μπορεί να τις συμπεράνει από το περιεχόμενο. Αποφύγετε την τεχνική φρασεολογία εκτός και αν η εφαρμογή προορίζετε για χρήση μόνο από τεχνικό κοινό.</para>
+	<para>Για παράδειγμα, όταν ταυτόχρονα ένας πελάτης και ένας εξυπηρετητής για κάτι παρατίθενται στα μενού, αφαιρέστε την λέξη "πελάτης" από την ονομασία στο μενού για τον πελάτη.</para>
+	
+	<example>
+		<title>Αφαίρεση τεχνικής φρασεολογίας από την ονομασία στο μενού</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Αρχικό στοιχείο μενού</entry>
+				      <entry>Αναθεωρημένο στοιχείο μενού</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Πελάτης Gnome Batalla Naval</entry>
+					<entry>Batalla Naval</entry>
+				</row>
+				<row>
+					<entry>Διακομιστής Gnome Batalla Naval</entry>
+					<entry>Διακομιστής Batalla Naval Multiplayer</entry>
+				</row>
+				<row>
+					<entry>Πελάτης Gnome VideoLAN</entry>
+					<entry>Εφαρμογή αναπαραγωγής ταινιών VideoLan</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+	<tip><title>Παρέχονται οι σωστές πληροφορίες</title>
+        <para>Προσπαθήστε να φανταστείτε τι λέξεις θα αναζητάνε οι χρήστες όταν επιλέγουν την εφαρμογή σας από το μενού <guimenu>Εφαρμογές</guimenu>. Αυτές είναι οι πληροφορίες που θα έπρεπε να είναι στην ονομασία του μενού. Για παράδειγμα, ένας χρήστης που θέλει να αναπαράξει μία ταινία πιθανότατα θα ψάξει για την λέξη "πελάτης". Από την άλλη, ένας χρήστης που θέλει να μεταδώσει ταινίες από τον υπολογιστή του μπορεί να ψάξει για την λέξη "εξυπηρετητής". Αποφύγετε να σκέφτεστε το μενού των εφαρμογών ως μία οντότητα!</para></tip>
+      </sect3>
+
+      <sect3>
+	<title>Μορφές ονομασιών μενού</title>
+	<orderedlist>
+	  
+         <listitem>
+	    <para>Αν η κατάλληλη ονομασία της εφαρμογής σας περιγράφει ήδη την λειτουργικότητα της, και δεν είναι απλά αναφορική, χρησιμοποιήστε την μορφή: <replaceable>Ονομασία εφαρμογής</replaceable></para>
+	<example>
+		<title>Χρησιμοποίηση της ονομασίας της εφαρμογής ως ονομασία του μενού</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Όνομα εφαρμογής</entry>
+				      <entry>Όνομα μενού</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Λεξικό</entry>
+					<entry>Λεξικό</entry>
+				</row>
+				<row>
+					<entry>Εργαλείο αναζήτησης</entry>
+					<entry>Εργαλείο αναζήτησης</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+        	</example>
+          </listitem>
+
+	  <listitem>
+	    <para>Αν υπάρχει μία συνοπτική περιγραφή της λειτουργικότητας της εφαρμογής σας, χρησιμοποιήστε την μορφή: <replaceable>ΟνομασίαΕφαρμογής ΠεριγραφήΛειτουργικότητας</replaceable></para>
+
+	<example>
+		<title>Χρησιμοποίηση λειτουργικής περιγραφής στις ονομασίες του μενού</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Όνομα εφαρμογής</entry>
+				      <entry>Όνομα αντικειμένου μενού</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Το GIMP</entry>
+					<entry>Εφαρμογή επεξεργασίας εικόνας GIMP</entry>
+				</row>
+				<row>
+					<entry>υπό-εφαρμογή Evolution email</entry>
+					<entry>Evolution Email</entry>
+				</row>
+				<row>
+					<entry>AbiWord</entry>
+					<entry>Εφαρμογή επεξεργασίας λέξεων AbiWord</entry>
+				</row>
+				<row>
+					<entry>Galeon</entry>
+					<entry>Περιηγητής διαδικτύου Galeon</entry>
+				</row>
+				<row>
+					<entry>Gramps</entry>
+					<entry>Gramps Genealogy</entry>
+				</row>
+				<row>
+					<entry>AisleRiot</entry>
+					<entry>πασιέντζα AisleRiot</entry>
+				</row>
+
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+
+	  </listitem>
+
+	  <listitem>
+	    <para>Μερικές εφαρμογές, συγκεκριμένα τα παιχνίδια, δεν έχουν κατάλληλες περιγραφές λειτουργικότητας (αλλά σημειώστε ότι πολλά παιχνίδια έχουν). Σε αυτή τη περίπτωση, χρησιμοποιήστε την <replaceable>Ονομασία εφαρμογής</replaceable> ως ονομασία μενού.</para>
+
+	<example>
+		<title>Χρήση της ονομασίας εφαρμογής ως ονόματος μενού όπου δεν υπάρχει λειτουργική περιγραφή</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Όνομα εφαρμογής</entry>
+				      <entry>Όνομα αντικειμένου μενού</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Bomber Maze</entry>
+					<entry>Bomber Maze</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+	  </listitem>
+
+	</orderedlist>
+      </sect3>
+<!--
+	<sect3>
+	<title>Generic Name and Name</title>
+
+        <para>There are two name types required for a menu item, a generic name and a proper name.  The menu item requires these two names to distinguish the applications when there are more than one of the same application type present and to simplify the item name when there is only one present.  If only one application of a generic name exists in the menu the application assumes the generic name, otherwise the proper name is displayed.</para>
+
+	<example>
+		<title>X-Chat .desktop file</title>
+		 <programlisting>
+	Name=X-Chat IRC
+	GenericName=IRC
+		 </programlisting>
+	</example>
+
+	<para>
+	The generic name or GenericName, is a name describing only the applications functionality without the applications proper name.  This is the name to be displayed when there are no other applications of the same generic name present and should simply describe the pure functionality of the application without its actual name.
+	</para>
+
+	<para>
+	A proper name or Name, is the displayed name of the application when there are more than one applications present with the same generic name.  This distinguishes the multiple generic names with the applications proper name.
+	</para>
+
+	<example>
+		<title>GenericName and Name</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>GenericName</entry>
+					<entry>Name</entry>
+	   			</row>
+			  </thead>
+			  <tbody>
+	     			<row>
+					<entry>Web Browser</entry>
+					<entry>Epiphany Web Browser</entry>
+				</row>
+	     			<row>
+					<entry>Web Browser</entry>
+					<entry>Mozilla Web Browser</entry>
+				</row>
+	     			<row>
+					<entry>Word Processor</entry>
+					<entry>AbiWord Word Processor</entry>
+				</row>
+	     			<row>
+					<entry>Word Processor</entry>
+					<entry>OpenOffice.org Word Processor</entry>
+				</row>
+	  		</tbody>
+	         	</tgroup>
+		</informaltable>
+	</example>
+	</sect3>
+-->
+    </sect2>
+    <sect2 id="menu-item-tooltips">
+
+      <title>Βοηθήματα αντικείμενου μενού</title>
+
+      <para>Τα βοηθήματα μενού παρέχουν στους χρήστες αρκετές πληροφορίες για να τρέξουν την σωστή εφαρμογή. Πολλοί χρήστες χρησιμοποιούν τα βοηθήματα μενού για να εξερευνήσουν ένα νέο περιβάλλον.</para>
+	<para>Να παρέχετε ένα βοήθημα για κάθε αντικείμενο μενού <guimenu>Εφαρμογή</guimenu> που προσθέτετε, ακολουθώντας αυτά τα κατευθυντήρια βήματα:</para>
+
+	<itemizedlist><title>Κατευθυντήριες γραμμές</title>
+		<listitem><para>Εκφράστε το βοήθημα ως ένα επιτακτικό ρήμα, για παράδειγμα "σχεδιασμός", "γράψτε" ή "ελέγξτε".</para></listitem>
+		<listitem><para>Περιγράψτε τις πιο σημαντικές εργασίες που μπορούν να επιτύχουν οι χρήστες με την εφαρμογή σας.</para></listitem>
+		<listitem><para>Ενώ τα βοηθήματα δεν θα πρέπει να είναι πολύλογα, θα πρέπει να είναι μεγαλύτερα και πιο περιγραφικά από την ονομασία του αντικειμένου.</para></listitem>
+	</itemizedlist>
+
+	<example>
+		<title>Παραδείγματα βοηθημάτων για τις εφαρμογές GNOME</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Εφαρμογή</entry>
+				      <entry>Βοήθημα αντικείμενου μενού</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Πίνακας Χαρακτήρων</entry>
+					<entry>Εισάγετε ειδικούς χαρακτήρες στα έγγραφα</entry>
+				</row>
+
+				<row>
+					<entry>Memprof</entry>
+					<entry>Ελέγξτε τις εφαρμογές σας για διαρροές μνήμης</entry>
+				</row>
+				<row>
+					<entry>Ίδιο GNOME</entry>
+					<entry>Τακτοποιήστε μακριές αλυσίδες παρόμοιων χρωμάτων από μπάλες για να τις εξαλείψετε</entry>
+				</row>
+				<row>
+					<entry>Πελάτης Gnome Batalla Naval</entry>
+					<entry>Βρείτε και βυθίστε πλοία εχθρών σε αυτή τη δικτυωμένη έκδοση του Battleship</entry>
+				</row>
+	  		</tbody>
+	         	</tgroup>
+		</informaltable>
+	</example>
+
+    </sect2>
+   </sect1>
+    <sect1 id="gconf-keys">
+
+      <title>Κλειδιά στο GConf</title>
+
+      <para>Τα κλειδιά του GConf απαιτείται να έχουν μια σύντομη και μια εκτενή περιγραφή για κάθε κλειδί. Πολλά κλειδιά δεν έχουν διεπαφή στην εφαρμογή, οπότε για κάποιον που διαχειρίζεται τις τιμές των κλειδιών από μια άλλη εφαρμογή, τα πεδιά περιγραφών είναι η μόνη τους διεπαφή.</para>
+
+	<itemizedlist><title>Κατευθυντήριες γραμμές</title>
+		<listitem><para>Οι Σύντομες περιγραφές πρέπει να είναι σύντομες, κάτω από 8 λέξεις και να περιγράφουν το σκοπό του κλειδιού</para></listitem>
+		<listitem><para>Οι Εκτενείς περιγραφές πρέπει να είναι πλήρεις στην περιγραφή των πιθανών τιμών του κλειδιού και της επιρροής που έχουν εκείνες οι τιμές στην εφαρμογή</para></listitem>
+	</itemizedlist>
+
+	<example>
+		<title>Παραδείγματα περιγραφών των κλειδιών του GConf από το gnome-terminal</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="3" align="left">
+			  <thead>
+				<row>
+					<entry>Κλειδί</entry>
+		      			<entry>Σύντομη περιγραφή</entry>
+				      <entry>Εκτενής περιγραφή</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>τύπος_παρασκηνίου</entry>
+					<entry>Τύπος παρασκηνίου</entry>
+					<entry>Ο τύπος του παρασκηνίου του τερματικού. Μπορεί να είναι "συμπαγές" για ένα συμπαγές χρώμα, "εικόνα" για μια εικόνα, ή "διαφανές" για μια ψευδοδιαφάνεια.</entry>
+				</row>	
+	     			<row>
+					<entry>delete_binding</entry>
+					<entry>Αποτέλεσμα του πλήκτρου Delete</entry>
+					<entry>Ορίζει τι κώδικα θα παράγει το πλήκτρο delete. Πιθανές τιμές είναι "ascii-del" για το χαρακτήρα ASCII-DEL, "control-h" για το Control-H (άλλως το χαρακτήρα ASCII BS), "escape-sequence" για την ακολουθία διαφυγής η οποία τυπικά συνδέεται με τα πλήκτρα backspace ή delete. Το "escape-sequence" θεωρείται συνήθως η σωστή ρύθμιση για το πλήκτρο Delete.</entry>
+				</row>	
+			</tbody>
+	         	</tgroup>
+		</informaltable>
+	</example>
+   </sect1>
+  
+  <sect1 id="desktop-mimedatabase">
+    <title>Αντιστοίχιση τύπων εγγράφων με εφαρμογές</title>
+    
+    <para>Η βάση δεδομένων του τύπου εγγράφων (MIME) επιτρέπει στον χρήστη να προσδιορίσει τις προτιμώμενες εφαρμογές του για να ανοίγουν διαφορετικού τύπου έγγραφα. Αυτός είναι ο μηχανισμός με τον οποίο το Nautilus, το Evolution και άλλες εφαρμογές αποφασίζουν πια εφαρμογή να τρέξει όταν αντιμετωπίζουν ένα αρχείο που δεν μπορούν να ανοίξουν μόνες τους.</para>
+
+    <para>Είναι σημαντικό για τους χρήστες να είναι σε θέση να διπλοπατούν σε έγγραφα που βλέπουν στην επιφάνεια εργασίας τους, όπως αρχεία και μηνύματα αλληλογραφίας και να εκκινούν στην αγαπημένη τους εφαρμογή. Επιπλέον, η εφαρμογή σας GNOME θα πρέπει να συσχετίζει τον εαυτό της κατά την εγκατάσταση με όλους τους τύπους εγγράφων που μπορεί να διαχειριστεί. Τεχνικές λεπτομέρειες για να το κάνετε αυτό μπορείτε να βρείτε στην ελεύθερη επιφάνεια εργασίας <ulink url="http://www.freedesktop.org/wiki/Specifications/shared-mime-info-spec"><citetitle>κοινόχρηστη προδιαγραφή πληροφοριών MIME</citetitle></ulink> και <ulink url="http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html"><citetitle>προδιαγραφή καταχώρισης επιφάνειας εργασίας</citetitle></ulink>.</para>
+
+    <!-- FIXME: need to cover things like the preferred list and when an application should add itself to the preferred list -->
+
+  </sect1>
+
+  <sect1 id="desktop-notification-area">
+	<title>Χρήσημοποιώντας της περιοχής ειδοποιήσεων κατάστασης</title>
+	<para>Χρησιμοποιώντας την περιοχή ειδοποιήσεων κατάστασης οι εφαρμογές μπορούν να ειδοποιήσουν τον χρήστη για κρίσιμα συμβάντα (για παράδειγμα, άφιξη ενός νέου email, ή είσοδος στην συνομιλία ενός 'φίλου'), και εκθέσουν την κατάσταση ενεργών διεργασιών συστήματος (για παράδειγμα, ενός εγγράφου προς εκτύπωση, ή την φόρτιση ενός φορητού υπολογιστή).</para>
+
+	<para>Ακολουθώντας τις κατευθυντήριες γραμμές σε αυτό το τμήμα σας βοηθήσουν να κατανοήσετε την διαφορά στο μυαλό του χρήστη μέσω των πληροφοριών που εμφανίζονται στην περιοχή ειδοποιήσεων, και τους ελέγχους και τις πληροφορίες που εμφανίζονται σε άλλα σημεία του πάνελ.</para>
+
+		<warning><para>Η χρησιμότητα της περιοχής ειδοποιήσεων μειώνεται συνεχώς όταν περισσότερα από περίπου τέσσερα εικονίδια είναι παρών. Για αυτό το λόγο, εικονίδια που εμφανίζονται μόνο προσωρινά για αποκρίσεις εκδηλώσεων είναι προτιμότερα.</para></warning>
+
+	<sect2 id="desktop-notification-or-applet"><title>Περιοχή ειδοποιήσεων ή Μικροεφαρμογή πάνελ</title>
+	<para>Πιθανότατα θα πρέπει να γράψετε μία μικροεφαρμογή αντί για την χρησιμοποίηση της περιοχής ειδοποιήσεων εάν:</para>
+	<itemizedlist>
+		<listitem><para>πατώντας στο εικονίδιο στη περιοχή ειδοποιήσεων κάνει οτιδήποτε άλλο από το να ανοίγει ένα συναφή παράθυρο απευθείας με το εικονίδιο (π.χ. ένα παράθυρο φακέλου μηνυμάτων για ένα εικονίδιο καινούριου μηνύματος, ή ένα παράθυρο ουράς εκτύπωσης για την περιοχή εικονιδίου εκτυπωτή), ή</para></listitem>
+		<listitem><para>υπάρχουν συγκεκριμένες επιλογές εικονιδίων στο σχετικό μενού για να κάνετε οτιδήποτε άλλο από αυτό</para></listitem> 
+		<listitem><para>η εφαρμογή σας θα χρειαζόταν πάντοτε να εμφανίσει περισσότερα από ένα εικονίδιο ειδοποίησης την ίδια στιγμή</para></listitem>
+	</itemizedlist>
+	</sect2>
+
+	<sect2><title>Εμφάνιση εικονιδίου</title>
+	<itemizedlist><title>Κατευθυντήριες γραμμές</title>
+		<listitem><para>Χρησιμοποιήστε την προοπτική πίνακα για εικονίδια που εκπροσωπούν φυσικές συσκευές, με την φωτεινή πηγή από επάνω και στα αριστερά της προοπτικής του αντικειμένου. Για παράδειγμα, ένα εικονίδιο εκτυπωτή κατά την διάρκεια της εκτύπωσης. Δείτε <xref linkend="icon_style_perspective"/> για περισσότερα στην προοπτική πίνακα.</para></listitem>
+		<listitem><para>Χρησιμοποιήστε προοπτική ραφιού, με εναέριο φωτισμό, για όλα τα υπόλοιπα εικονίδια. Για παράδειγμα, εμφάνιση ενός φακέλου όταν φτάνει ένα νέο μήνυμα. Δείτε <xref linkend="icon_style_perspective"/> για περισσότερα στην προοπτική ραφιού.</para></listitem>	
+		<listitem><para>Για τις οθόνες ή τις μπάρες προόδου που αλλάζουν με την πάροδο του χρόνου, όπως η οθόνη φόρτισης μπαταρίας, καθορίστε σαφέστατα τα όρια της περιοχής.</para></listitem>
+
+		</itemizedlist>
+
+		<itemizedlist><title>Κατευθυντήριες γραμμές</title>
+			<listitem><para>Μόνο τα βασικά προγράμματα GNOME μπορούν να εμφανίζουν ένα εικονίδιο στην περιοχή κατάστασης διαρκώς.</para></listitem>
+			<listitem><para>Μη βασικά προγράμματα για τα οποία ένα διαρκές εικονίδιο μπορεί να είναι χρήσιμο πρέπει να έχουν προεπιλεχθεί να μην εμφανίζουν το εικονίδιο αέναα. Οι χρήστες μπορούν να ενεργοποιήσουν το εικονίδιο διαρκείας για την εφαρμογή ως προτίμηση. <remark>Standard way of presenting this option would be nice.</remark></para></listitem>
+		</itemizedlist>
+
+	</sect2>
+
+	<sect2 id="notification-area-animation">
+	<title>Κινούμενες εικόνες</title>
+	
+	<itemizedlist><title>Κατευθυντήριες γραμμές</title>
+		<listitem><para>Τα εικονίδια δεν θα πρέπει να εμφανίζονται συνήθως ως κινούμενα. Μπορούν να αλλάζουν για να υποδεικνύουν μία αλλαγή κατάστασης, αλλά δεν θα πρέπει να το κάνουν αυτό όταν αυτή η αλλαγή συμβαίνει κανονικά ή γρήγορα. Ένα δείκτης κατάστασης μπαταρίας θα άλλαζε συνήθως αργά, επομένως ένα εικονίδιο είναι κατάλληλο. Αντίθετα, ένας μετρητής φόρτωσης θα αλλάζει πάντα συνεχώς, επομένως θα πρέπει να χρησιμοποιήσει μία επίπεδη εικόνα.</para></listitem>
+<!--		<listitem><para>Icons are permitted to blink under a few conditions.
+ An icon may blink for n (=5?) seconds when first displayed
+   if showing the icon is not caused by user action.
+   A printing-in-progress icon would be shown because the user
+   is printing a document, therefore it should not blink.
+   An incoming email or personal message (IM) would be shown
+   because something has changed absent the user, therefore it
+   may blink.</para></listitem>
+
+ 		<listitem><para>A icon may blink for n seconds if its conditions for initially
+   blinking recur. For example, an incoming email icon which was
+   shown and blinked when a message arrived and which has remained
+   visible may blink again when another message arrives.</para></listitem>
+-->
+ 		<listitem><para>Οποιοδήποτε εικονίδιο μπορεί να αναβοσβήνει για να υποδείξει ένα σφάλμα αντί να εμφανίσει μία ειδοποίηση. Για παράδειγμα, ένα εικονίδιο εκτύπωσης σε εξέλιξη μπορεί να αναβοσβήνει όταν υπάρχει μία εμπλοκή με το χαρτί, αλλά όχι όταν ο εκτυπωτής παίρνει φωτιά - αυτό θα πρέπει να εμφανίσει μία ειδοποίηση.</para></listitem>
+		<listitem><para>Μην στηρίζεστε στα εικονίδια που αναβοσβήνουν ή στις κινούμενες εικόνες ως ένα τρόπο ειδοποίησης του χρήστη για οποιοδήποτε ιδιαίτερο γεγονός.</para></listitem>
+		</itemizedlist>
+
+	</sect2>
+	
+	<sect2 id="notification-icon-interaction">
+	<title>Αλληλεπίδραση</title>
+		<para>Τα εικονίδια θα ανταποκρίνονται σε αυτές τις ενέργειες του χρήστη. (Οι πληκτρολογήσεις εφαρμόζονται μόνο όταν ένα εικονίδιο έχει εστίαση, φυσικά)</para>
+		<itemizedlist><title>Κατευθυντήριες γραμμές</title>
+  			<listitem><para>Το διπλό πάτημα ή το πλήκτρο <keysym>Διάστημα</keysym> θα πρέπει να εκτελούν την προεπιλεγμένη λειτουργία του εικονιδίου. Κανονικά αυτό θα πρέπει να ανοίγει ένα παράθυρο με τα σχετικά δεδομένα, παραδείγματος χάριν: <itemizedlist>
+     				<listitem><para>η σειρά εκτύπωσης για ένα εικονίδιο εκτύπωσης σε εξέλιξη.</para></listitem>
+     				<listitem><para>τα εισερχόμενα για ένα εικονίδιο εισερχόμενου μηνύματος</para></listitem>
+     				<listitem><para>το μήνυμα για ένα εισερχόμενο μήνυμα</para></listitem>
+			</itemizedlist></para></listitem>
+  		<listitem><para>Το δεξί πάτημα ή <keycombo><keycap>Shift</keycap><keycap>F10</keycap></keycombo> θα πρέπει να παρουσιάζει ένα μενού για το εικονίδιο που να περιέχει τουλάχιστον την προεπιλεγμένη λειτουργία του εικονιδίου.</para></listitem>
+
+		<listitem><para>Αν οι ιδιότητες του εικονιδίου μπορούν να αλλάξουν θα πρέπει να έχει ένα αντικείμενο μενού <guimenuitem>Ιδιότητες</guimenuitem> στο μενού του, και να εμφανίζει τον πίνακα ιδιοτήτων ανταποκρινόμενο στο Alt+Enter.</para></listitem>
+
+		<listitem><para>Τα εικονίδια θα πρέπει να υπακούουν σε τυπικές συμβάσεις συμβουλών οθόνης.</para></listitem>
+		</itemizedlist>
+	</sect2>
+ </sect1>
+
+</chapter>

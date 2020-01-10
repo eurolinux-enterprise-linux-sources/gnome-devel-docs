@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_treestore.py" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_treestore.py" xml:lang="es">
   <info>
     <title type="text">TreeView con TreeStore (Python)</title>
     <link type="guide" xref="beginner.py#treeview"/>
@@ -9,22 +9,22 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Un TreeView mostrando un TreeStore (ejemplo más simple)</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -51,9 +51,7 @@ books = [["Tolstoy, Leo", "War and Peace", "Anna Karenina"],
          ["Shakespeare, William", "Hamlet", "Macbeth", "Othello"],
          ["Tolkien, J.R.R.", "The Lord of the Rings"]]
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Library", application=app)
         self.set_default_size(250, 100)
@@ -79,8 +77,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # the cellrenderer for the column - text
         renderer_books = Gtk.CellRendererText()
         # the column is created
-        column_books = Gtk.TreeViewColumn(
-            "Books by Author", renderer_books, text=0)
+        column_books = Gtk.TreeViewColumn("Books by Author", renderer_books, text=0)
         # and it is appended to the treeview
         view.append_column(column_books)
 
@@ -92,7 +89,6 @@ class MyWindow(Gtk.ApplicationWindow):
 
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 

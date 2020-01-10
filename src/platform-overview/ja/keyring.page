@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="keyring" xml:lang="ja">
+<info>
+  <link type="guide" xref="index" group="apps"/>
+  <desc>Secure storage for passwords and other data</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+</info>
+
+<title>Keyring</title>
+
+<p>GNOME provides a modern and secure keyring manager to store users'
+passwords and other sensitive data.  Applications can use the keyring
+manager library to store and access passwords, and users can manage
+their passwords using GNOME's <app>Seahorse</app>
+application.</p>
+
+<p>キーリング・マネージャーはアイテムをいくつか含むことができる任意の個数のキーリングを提供します。キーリングのアイテムにはデータやパスワードが保存されます。それぞれのキーリングは個別にロックされ、ユーザーはロックを解除するためのパスワードを提供しなければなりません。キーリングのロックを解除すると、ユーザーはキーリングに含まれるすべてのアイテムにアクセスできます。</p>
+
+<p>キーリング・マネージャーは、キーリングのアイテムにたいするアクセス制御リストを提供し、そのアイテムによりアクセスが許可されるアプリケーションを制御します。もし未知のアプリケーションがキーリングのアイテムにアクセスしようとした場合、キーリング・マネージャーはユーザーにプロンプトを表示してそのアプリケーションのアクセスを許可するか、拒否するかを尋ねます。これにより悪意のあるプログラムや質の悪いプログラムがユーザーの機密データにアクセスすることを防ぐことができます。</p>
+
+<p>ファイルシステムに保存されたキーリングのデータは AES ブロック暗号化方式で暗号化されアイテムの属性にはハッシュ関数には SHA1 が使用されます。属性のハッシュを使用することにより、キーリング・マネージャーはキーリングのロックを解除することなくアプリケーションに要求されたアイテムを見つけることができます。キーリングはアイテムが見つかったときにロックが解除され、アイテムにアクセスすることができるようになります。</p>
+
+<p>キーリング・マネージャーはセッションのためのキーリングも提供します。セッション・キーリングのアイテムはディスクには決して保存されず、ユーザーがセッションを終了すると失われます。セッション・キーリングは現在のセッションだけで使用するパスワードに使用されます。</p>
+
+<p>もしリモートサーバーにアクセスする場合に GIO を使用している場合は、キーリング・マネージャーによる恩恵を自動的に享受することができます。GVFS がユーザーの認証を必要とする場合、認証に使用するパスワードを既定のキーリングかセッションのキーリングに保存するかのオプションを選択することができます。</p>
+
+<p>アプリケーションがユーザーのパスワードや機密データを保存する必要がある場合はキーリング・マネージャーを使用するべきです。キーリング・マネージャーを使用することによりユーザーのデータを安全かつ確実に保つことができ、よりよいユーザー経験を提供することができます。</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/gnome-keyring/stable/">gnome-keyring Reference Manual</link></p></item>
+  <item><p><link href="http://developer.gnome.org/libseahorse/stable/">libseahorse Reference Manual</link></p></item>
+</list>
+
+</page>

@@ -2,10 +2,8 @@ from gi.repository import GLib
 from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
     # a window
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="ProgressBar Example", application=app)
         self.set_default_size(220, 20)
@@ -42,9 +40,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # call the function again
         return True
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 

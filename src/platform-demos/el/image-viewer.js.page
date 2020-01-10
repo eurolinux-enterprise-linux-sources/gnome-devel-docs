@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.js" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="image-viewer.js" xml:lang="el">
 
   <info>
   <title type="text">Προβολέας εικόνων (JavaScript)</title>
@@ -10,40 +10,22 @@
     <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
     <credit type="author">
       <name>Jonh Wendell</name>
-      <email its:translate="no">jwendell@gnome.org</email>
+      <email>jwendell@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasettii@gmail.com</email>
+      <email>mmcasettii@gmail.com</email>
       <years>2013</years>
     </credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -169,7 +151,7 @@ Gtk.main ();</code>
     </item>
     <item>
     <p>Η επόμενη γραμμή δημιουργεί το κύριο παράθυρο δημιουργώντας ένα νέο αντικείμενο <code>Gtk.Window</code>. Μπορείτε να περάσετε αρκετές ιδιότητες στον κατασκευαστή παραθύρου χρησιμοποιώντας τη σύνταξη <code>{property: value, property: value, ...}</code>. Σε αυτήν την περίπτωση ορίζουμε τον τίτλο του παραθύρου.</p></item>
-    <item><p>Η επόμενη γραμμή ρητά εμφανίζει το παράθυρο. Στο Gtk, κάθε γραφικό στοιχείο κρύβεται από προεπιλογή.</p></item>
+    <item><p>Η επόμενη γραμμή ρητά εμφανίζει το παράθυρο. Στο Gtk, κάθε γραφικό συστατικό κρύβεται από προεπιλογή.</p></item>
     <item><p>Τελικά, το <code>Gtk.main</code> τρέχει τον κύριο βρόχο — με άλλα λόγια, εκτελεί το πρόγραμμα. Ο κύριος βρόχος απαντά σε συμβάντα (σήματα) από τη διεπαφή χρήστη και έπειτα καλεί έναν χειριστή σήματος που θα κάνει κάτι χρήσιμο. Θα μάθουμε περισσότερα για τα σήματα σύντομα.</p></item>
   </list>
 
@@ -194,7 +176,7 @@ ImageViewer.prototype = {
   }
 }
 
-Gtk.init (null, null);
+Gtk.init (0, null);
 var iv = new ImageViewer ();
 Gtk.main ();</code>
   <!-- FIXME: Throws an error, "JS ERROR: !!!   Unhandled type int32 releasing GArgument" on Ubuntu 10.10 -->
@@ -215,7 +197,7 @@ b.connect ("clicked", button_clicked);</code>
   <p>Η σύνταξη για σύνδεση οποιουδήποτε σήματος σε μια συνάρτηση είναι:</p>
   <code mime="application/javascript">
 object.connect (&lt;signal_name&gt;, &lt;function_to_be_called&gt;);</code>
-  <p>Μπορείτε να βρείτε ορισμούς σήματος για κάθε αντικείμενο στο <link href="https://developer.gnome.org/gtk3/stable/gtkobjects.html">αναφορά κλάσης GTK</link>.</p>
+  <p>Μπορείτε να βρείτε ορισμούς σήματος για κάθε αντικείμενο στο <link href="http://library.gnome.org/devel/gtk/stable/ch01.html">αναφορά κλάσης GTK</link>.</p>
 
   <note>
     <p>Μπορείτε να απλοποιήσετε τον κώδικα χρησιμοποιώντας έναν ενσωματωμένο ορισμό συνάρτησης:</p>
@@ -235,29 +217,29 @@ b.connect ("clicked", function () { print ("you clicked me!"); });</code>
 
 <section id="containers2">
   <title>Περιέκτες: Σχεδίαση διεπαφής χρήστη</title>
-  <p>Γραφικά στοιχεία (έλεγχοι, όπως τα κουμπιά και οι ετικέτες) μπορούν να τοποθετηθούν στο παράθυρο κάνοντας χρήση των <em>περιεκτών</em>. Μπορείτε να οργανώσετε την διάταξη συνδυάζοντας διαφορετικών ειδών περιέκτες, όπως πλαίσια και πλέγματα.</p>
-  <p>Ένα <code>Gtk.Window</code> είναι από μόνο του ένα είδος περιέκτη, αλλά μπορείτε να τοποθετήσετε μόνο ένα γραφικό στοιχείο άμεσα πάνω του. Θα θέλαμε να είχαμε δύο γραφικά στοιχεία, μια εικόνα και ένα κουμπί, άρα θα πρέπει να τοποθετήσουμε έναν υποδοχέα "υψηλότερης χωρητικότητας" μέσα στο παράθυρο για να κρατάει τα άλλα γραφικά στοιχεία. Ένας αριθμός από <link href="http://library.gnome.org/devel/gtk/stable/GtkContainer.html">τύπους περιεκτών</link> είναι διαθέσιμοι, αλλά θα χρησιμοποιήσουμε εδώ ένα <code>Gtk.Box</code>. Ένα <code>Gtk.Box</code> μπορεί να κρατήσει πολλά γραφικά στοιχεία, οργανωμένα οριζόντια ή κάθετα. Μπορείτε να κάνετε και πιο περίπλοκες διατάξεις βάζοντας πολλά πλαίσια το ένα μέσα στο άλλο κ.ο.κ.</p>
+  <p>Γραφικά συστατικά (έλεγχοι, όπως τα κουμπιά και οι ετικέτες) μπορούν να τοποθετηθούν στο παράθυρο κάνοντας χρήση των <em>περιεκτών</em>. Μπορείτε να οργανώσετε την διάταξη συνδυάζοντας διαφορετικών ειδών περιέκτες, όπως πλαίσια και πλέγματα.</p>
+  <p>Ένα <code>Gtk.Window</code> είναι από μόνο του ένα είδος περιέκτη, αλλά μπορείτε να τοποθετήσετε μόνο ένα γραφικό συστατικό άμεσα πάνω του. Θα θέλαμε να είχαμε δύο γραφικά συστατικά, μια εικόνα και ένα κουμπί, άρα θα πρέπει να τοποθετήσουμε έναν υποδοχέα "υψηλότερης χωρητικότητας" μέσα στο παράθυρο για να κρατάει τα άλλα γραφικά στοιχεία. Ένας αριθμός από <link href="http://library.gnome.org/devel/gtk/stable/GtkContainer.html">τύπους περιεκτών</link> είναι διαθέσιμοι, αλλά θα χρησιμοποιήσουμε εδώ ένα <code>Gtk.Box</code>. Ένα <code>Gtk.Box</code> μπορεί να κρατήσει πολλά γραφικά συστατικά, οργανωμένα οριζόντια ή κάθετα. Μπορείτε να κάνετε και πιο περίπλοκες διατάξεις βάζοντας πολλά πλαίσια το ένα μέσα στο άλλο κ.ο.κ.</p>
   <note>
   <p>Υπάρχει ένας γραφικός σχεδιαστής διεπαφής χρήστη με όνομα <app>Glade</app> ενσωματωμένος στο <app>Anjuta</app> που κάνει τη σχεδίαση γραφικού περιβάλλοντος πολύ εύκολη. Για αυτό το απλό παράδειγμα, όμως, θα κωδικοποιήσουμε τα πάντα χειροκίνητα.</p>
   </note>
-  <p>Ας προσθέσουμε ένα πλαίσιο και γραφικά στοιχεία στο παράθυρο. Προσθέστε τον παρακάτω κώδικα στη μέθοδο <code>_init</code>, αμέσως πάνω από τη γραμμή <code>this.window.show</code> line:</p>
+  <p>Ας προσθέσουμε ένα πλαίσιο και γραφικά συστατικά στο παράθυρο. Προσθέστε τον παρακάτω κώδικα στη μέθοδο <code>_init</code>, αμέσως πάνω από τη γραμμή <code>this.window.show</code> line:</p>
   <code mime="application/javascript" style="numbered">
 var main_box = new Gtk.Box ({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
 this.window.add (main_box);</code>
-  <p>Η πρώτη γραμμή δημιουργεί ένα <code>Gtk.Box</code> που ονομάζεται <code>main_box</code> και ορίζει δύο από τις ιδιότητες του: την <code>orientation</code> που ρυθμίζεται στο κάθετο (οπότε τα γραφικά στοιχεία τακτοποιούνται σε στήλη), και το <code>spacing</code> ανάμεσα στα γραφικά στοιχεία που έχει ρυθμιστεί στα 0 εικονοστοιχεία. Η επόμενη γραμμή έπειτα προσθέτει στο παράθυρο το νεοδημιουργημένο <code>Gtk.Box</code>.</p>
+  <p>Η πρώτη γραμμή δημιουργεί ένα <code>Gtk.Box</code> που ονομάζεται <code>main_box</code> και ορίζει δύο από τις ιδιότητες του: την <code>orientation</code> που ρυθμίζεται στο κάθετο (οπότε τα γραφικά συστατικά τακτοποιούνται σε στήλη), και το <code>spacing</code> ανάμεσα στα γραφικά συστατικά που έχει ρυθμιστεί στα 0 εικονοστοιχεία. Η επόμενη γραμμή έπειτα προσθέτει στο παράθυρο το νεοδημιουργημένο <code>Gtk.Box</code>.</p>
   <p>Μέχρι στιγμής το παράθυρο περιέχει μόνο ένα άδειο <code>Gtk.Box</code> και άμα εκτελέσετε τώρα το πρόγραμμα δε θα δείτε καμία απολύτως αλλαγή (το <code>Gtk.Box</code> είναι ένας διαφανής περιέκτης, οπότε δεν μπορείτε να δείτε ότι είναι εκεί).</p>
 </section>
 
 <section id="packing2">
-  <title>Συσκευασία: Πρόσθεση γραφικών στοιχείων στον περιέκτη</title>
-  <p>Για να προσθέσετε κάποια γραφικά στοιχεία στο <code>Gtk.Box</code>, εισάγετε τον ακόλουθο κώδικα ακριβώς κάτω από την γραμμή <code>this.window.add (main_box)</code>:</p>
+  <title>Συσκευασία: Πρόσθεση γραφικών συστατικών στον περιέκτη</title>
+  <p>Για να προσθέσετε κάποια γραφικά συστατικά στο <code>Gtk.Box</code>, εισάγετε τον ακόλουθο κώδικα ακριβώς κάτω από την γραμμή <code>this.window.add (main_box)</code>:</p>
   <code mime="application/javascript" style="numbered">
 this.image = new Gtk.Image ();
 main_box.pack_start (this.image, true, true, 0);</code>
-  <p>Η πρώτη γραμμή δημιουργεί ένα καινούργιο <code>Gtk.Image</code> που ονομάζεται <code>image</code>, το οποίο θα εμφανίζει ένα αρχείο εικόνας. Έπειτα, το γραφικό στοιχείο εικόνας προστίθεται (<em>πακεταρισμένο</em>) στον περιέκτη <code>main_box</code> χρησιμοποιώντας τη μέθοδο του <code>Gtk.Box</code> <link href="http://library.gnome.org/devel/gtk/stable/GtkBox.html#gtk-box-pack-start"><code>pack_start</code></link>.</p>
-  <p>Το <code>pack_start</code> παίρνει 4 ορίσματα: το γραφικό στοιχείο που προστίθεται στο <code>Gtk.Box</code> (<code>child</code>)· αν το <code>Gtk.Box</code> πρέπει να μεγαλώσει όταν προστεθεί νέο γραφικό στοιχείο (<code>expand</code>)· αν το νέο γραφικό στοιχείο θα έπρεπε να καλύψει όλο τον διαθέσιμο χώρο αν μεγαλώσει το <code>Gtk.Box</code> (<code>fill</code>)· και πόσος χώρος πρέπει να υπάρχει, σε εικονοστοιχεία, ανάμεσα στο γραφικό στοιχείο και στους γείτονές του μέσα στο <code>Gtk.Box</code>, (<code>padding</code>).</p>
-  <p>Οι περιέκτες (και τα γραφικά στοιχεία) του Gtk επεκτείνονται δυναμικά για να καλύψουν τον διαθέσιμο χώρο, αν τα αφήσετε. Δεν τοποθετείτε τα γραφικά στοιχεία δίνοντας τους ακριβείς θέσεις x, y-συντεταγμένων στο παράθυρο· αλλά, τοποθετούνται σχετικά μεταξύ τους. Αυτό κάνει το χειρισμό της αλλαγής του μεγέθους του παραθύρου πιο εύκολη και τα γραφικά στοιχεία πρέπει να πάρουν αυτόματα ένα λογικό μέγεθος στις περισσότερες περιπτώσεις.</p>
-  <p>Επίσης σημειώστε πώς τα γραφικά στοιχεία οργανώνονται σε μια ιεραρχία. Μόλις πακεταριστούν μέσα στο <code>Gtk.Box</code>, το <code>Gtk.Image</code> θεωρείται <em>θυγατρικό</em> του <code>Gtk.Box</code>. Αυτό επιτρέπει να συμπεριφερθούμε σε όλα τα θυγατρικά ενός γραφικού στοιχείου ως μια ομάδα· για παράδειγμα, μπορείτε να κρύψετε το <code>Gtk.Box</code>, που θα κρύψει επίσης όλα τα θυγατρικά του ταυτόχρονα.</p>
+  <p>Η πρώτη γραμμή δημιουργεί ένα καινούργιο <code>Gtk.Image</code> που ονομάζεται <code>image</code>, το οποίο θα εμφανίζει ένα αρχείο εικόνας. Έπειτα, το γραφικό συστατικό εικόνας προστίθεται (<em>πακεταρισμένο</em>) στον περιέκτη <code>main_box</code> χρησιμοποιώντας τη μέθοδο του <code>Gtk.Box</code> <link href="http://library.gnome.org/devel/gtk/stable/GtkBox.html#gtk-box-pack-start"><code>pack_start</code></link>.</p>
+  <p>Το <code>pack_start</code> παίρνει 4 ορίσματα: το γραφικό συστατικό που προστίθεται στο <code>Gtk.Box</code> (<code>child</code>)· αν το <code>Gtk.Box</code> πρέπει να μεγαλώσει όταν προστεθεί νέο γραφικό συστατικό (<code>expand</code>)· αν το νέο γραφικό συστατικό θα έπρεπε να καλύψει όλο τον διαθέσιμο χώρο αν μεγαλώσει το <code>Gtk.Box</code> (<code>fill</code>)· και πόσος χώρος πρέπει να υπάρχει, σε εικονοστοιχεία, ανάμεσα στο γραφικό συστατικό και στους γείτονές του μέσα στο <code>Gtk.Box</code>, (<code>padding</code>).</p>
+  <p>Οι περιέκτες (και τα γραφικά συστατικά) του Gtk επεκτείνονται δυναμικά για να καλύψουν τον διαθέσιμο χώρο, αν τα αφήσετε. Δεν τοποθετείτε τα γραφικά συστατικά δίνοντας τους ακριβείς θέσεις x, y-συντεταγμένων στο παράθυρο· αλλά, τοποθετούνται σχετικά μεταξύ τους. Αυτό κάνει το χειρισμό της αλλαγής του μεγέθους του παραθύρου πιο εύκολη και τα γραφικά συστατικά πρέπει να πάρουν αυτόματα ένα λογικό μέγεθος στις περισσότερες περιπτώσεις.</p>
+  <p>Επίσης σημειώστε πώς τα γραφικά συστατικά οργανώνονται σε μια ιεραρχία. Μόλις πακεταριστούν μέσα στο <code>Gtk.Box</code>, το <code>Gtk.Image</code> θεωρείται <em>θυγατρικό</em> του <code>Gtk.Box</code>. Αυτό επιτρέπει να συμπεριφερθούμε σε όλα τα θυγατρικά ενός γραφικού στοιχείου ως μια ομάδα· για παράδειγμα, μπορείτε να κρύψετε το <code>Gtk.Box</code>, που θα κρύψει επίσης όλα τα θυγατρικά του ταυτόχρονα.</p>
   <p>Τώρα προσθέστε αυτές τις δύο γραμμές, κάτω από αυτές που μόλις προσθέσατε:</p>
   <code mime="application/javascript" style="numbered">
 var open_button = new Gtk.Button ({label: "Open a picture..."});
@@ -265,12 +247,12 @@ main_box.pack_start (open_button, false, false, 0);</code>
   <p>Αυτές οι γραμμές είναι παρόμοιες με τις δυο πρώτες, αλλά αυτή τη φορά δημιουργούν ένα <code>Gtk.Button</code> και το προσθέτουν στο <code>main_box</code>. Σημειώστε ότι ορίζουμε το όρισμα <code>expand</code> (το δεύτερο) στο <code>false</code> εδώ, ενώ είχε οριστεί σε <code>true</code> για το <code>Gtk.Image</code>. Αυτό θα προκαλέσει στην εικόνα να καλύψει όλο το διαθέσιμο χώρο και το κουμπί να πάρει μόνο όσο χρειάζεται. Όταν μεγιστοποιήσετε το παράθυρο, το μέγεθος των κουμπιών θα παραμείνει το ίδιο, ενώ το μέγεθος της εικόνας θα αυξηθεί, καταλαμβάνοντας όλο το υπόλοιπο παράθυρο.</p>
   <p>Τελικά, πρέπει να αλλάξουμε τη γραμμή <code>this.window.show ();</code> για να διαβάσει:</p>
   <code>this.window.show_all ()·</code>
-  <p>Αυτό θα εμφανίσει το θυγατρικό του παραθύρου Gtk και όλα τα θυγατρικά του και τα θυγατρικά των θυγατρικών του κ.ο.κ. (Να θυμάστε ότι τα γραφικά στοιχεία Gtk κρύβονται όλα από προεπιλογή)</p>
+  <p>Αυτό θα εμφανίσει το θυγατρικό του παραθύρου Gtk και όλα τα θυγατρικά του και τα θυγατρικά των θυγατρικών του κ.ο.κ. (Να θυμάστε ότι τα γραφικά συστατικά Gtk κρύβονται όλα από προεπιλογή)</p>
 </section>
 
 <section id="loading2">
   <title>Φόρτωση της εικόνας: Σύνδεση στο σήμα του κουμπιού <code>clicked</code></title>
-  <p>Όταν ο χρήστης πατήσει στο κουμπί <gui>άνοιγμα</gui>, ένας διάλογος θα εμφανιστεί έτσι ώστε ο χρήστης να διαλέξει μια εικόνα. Μόλις διαλέξει, η εικόνα θα φορτωθεί και θα εμφανιστεί στο γραφικό στοιχείο της εικόνας.</p>
+  <p>Όταν ο χρήστης πατήσει στο κουμπί <gui>άνοιγμα</gui>, ένας διάλογος θα εμφανιστεί έτσι ώστε ο χρήστης να διαλέξει μια εικόνα. Μόλις διαλέξει, η εικόνα θα φορτωθεί και θα εμφανιστεί στο γραφικό συστατικό της εικόνας.</p>
   <p>Το πρώτο βήμα είναι να συνδέσουμε το σήμα <code>clicked</code> του κουμπιού με μια συνάρτηση χειριστή σημάτων, την οποία καλούμε με <code>_openClicked</code>. Βάλτε αυτόν τον κώδικα αμέσως μετά την γραμμή <code>var open_button = new Gtk.Button</code> όπου το κουμπί δημιουργήθηκε:</p>
   <code mime="application/javascript">
 open_button.connect ("clicked", Lang.bind (this, this._openClicked));</code>
@@ -350,7 +332,7 @@ open_button.connect ("clicked", Lang.bind (this, this._openClicked));</code>
    </item>
    <item>
    <p>Επιτρέψτε στον χρήστη να φορτώνει εικόνες από μερισμό δικτύου, από σαρωτές και από άλλες περίπλοκες πηγές.</p>
-   <p>You can use <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> to handle network file transfers and the like, and <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> to handle scanning.</p>
+   <p>Μπορείτε να χρησιμοποιήσετε το <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> για χειρισμό μεταφορών αρχείων δικτύου και τα παρόμοια, και τη <link href="http://library.gnome.org/devel/gnome-scan/unstable/">Σάρωση του GNOME</link> για χειρισμό σάρωσης.</p>
    </item>
   </list>
 </section>

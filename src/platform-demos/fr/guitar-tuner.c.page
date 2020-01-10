@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.c" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="guitar-tuner.c" xml:lang="fr">
 
   <info>
     <title type="text">Guitar tuner (C)</title>
@@ -10,47 +10,17 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="review"/>
     <credit type="author">
       <name>Projet de Documentation GNOME</name>
-      <email its:translate="no">gnome-doc-list@gnome.org</email>
+      <email>gnome-doc-list@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
 <title>Guitar tuner</title>
@@ -229,12 +199,12 @@ play_sound (gdouble frequency)
 static gboolean
 pipeline_stop (GstElement* pipeline)
 {
-	gst_element_set_state (pipeline, GST_STATE_NULL);
+	gst_element_set_state (pipeline, GST_STATE_PAUSED);
 	g_object_unref (pipeline);
 
 	return FALSE;
 }]]></code>
-  <p>The call to <code>gst_element_set_state</code> stops the playback of the pipeline and <code>g_object_unref</code> unreferences the pipeline, destroying it and freeing its memory.</p>
+  <p>L'appel à <code>gst_element_set_state</code> met en pause la lecture du pipeline et <code>g_object_unref</code> déréférence le pipeline, le détruisant ainsi et effaçant sa mémoire.</p>
 </section>
 
 <section id="tones">
@@ -254,7 +224,8 @@ pipeline_stop (GstElement* pipeline)
 void on_button_clicked (GtkButton* button,
                         gpointer user_data)
 {
-	const gchar* text = gtk_button_get_label (button);
+	GtkWidget* label = gtk_bin_get_child (GTK_BIN (button));
+	const gchar* text = gtk_label_get_label (GTK_LABEL (label));
 
 	if (g_str_equal (text, _("E")))
 	    play_sound (NOTE_E);
@@ -270,8 +241,8 @@ void on_button_clicked (GtkButton* button,
 	    play_sound (NOTE_e);
 }
 ]]></code>
-  <p>A pointer to the <code>GtkButton</code> that was clicked is passed as an argument (<code>button</code>) to <code>on_button_clicked</code>. We can get the text of that button using <code>gtk_button_get_label</code>.</p>
-  <p>The text is then compared to the notes that we have using <code>g_str_equal</code>, and <code>play_sound</code> is called with the frequency appropriate for that note. This plays the tone; we have a working guitar tuner!</p>
+  <p>Un pointeur vers le bouton <code>GtkButton</code> qui a été cliqué est transmis comme argument (<code>button</code>) à <code>on_button_clicked</code>. On peut obtenir l'étiquette de ce bouton en utilisant <code>gtk_bin_get_child</code> puis en extrayant le texte de cette étiquette avec <code>gtk_label_get_label</code>.</p>
+  <p>On compare ensuite le texte de cette étiquette à la note à l'aide de la fonction <code>g_str_equal</code> et <code>play_sound</code> est appelée avec la fréquence appropriée à cette note. Cela joue la note ; nous avons un accordeur de guitare opérationnel !</p>
 </section>
 
 <section id="run">

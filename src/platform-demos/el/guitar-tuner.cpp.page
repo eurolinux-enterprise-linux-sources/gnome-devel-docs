@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.cpp" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="guitar-tuner.cpp" xml:lang="el">
 
   <info>
     <link type="guide" xref="cpp#examples"/>
@@ -9,40 +9,22 @@
     <revision pkgversion="0.1" version="0.1" date="2011-03-17" status="review"/>
     <credit type="author">
       <name>Έργο τεκμηρίωσης GNOME</name>
-      <email its:translate="no">gnome-doc-list@gnome.org</email>
+      <email>gnome-doc-list@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -107,20 +89,20 @@
 
 <section id="ui">
   <title>Δημιουργία της διεπαφής χρήστη</title>
-  <p>Μια περιγραφή της διεπαφής χρήστη (UI) περιέχεται στο αρχείο GtkBuilder. Για να επεξεργαστείτε τη διεπαφή χρήστη, ανοίξτε το <file>src/guitar_tuner.ui</file>. Θα βρεθείτε στο σχεδιαστή διεπαφής. Το παράθυρο σχεδίασης είναι στο κέντρο· τα γραφικά στοιχεία και οι ρυθμίσεις τους είναι στα αριστερά, η παλέτα με τα διαθέσιμα γραφικά στοιχεία στα δεξιά.</p>
+  <p>Μια περιγραφή της διεπαφής χρήστη (UI) περιέχεται στο αρχείο GtkBuilder. Για να επεξεργαστείτε τη διεπαφή χρήστη, ανοίξτε το <file>src/guitar_tuner.ui</file>. Θα βρεθείτε στο σχεδιαστή διεπαφής. Το παράθυρο σχεδίασης είναι στο κέντρο· τα γραφικά συστατικά και οι ρυθμίσεις τους είναι στα αριστερά, η παλέτα με τα διαθέσιμα γραφικά συστατικά στα δεξιά.</p>
   <p>Η διάταξη κάθε διεπαφής χρήστη σε Gtk+ οργανώνεται σε κουτιά και πίνακες. Ας χρησιμοποιήσουμε εδώ ένα κάθετο <gui>GtkButtonBox</gui> για να τοποθετήσουμε έξι <gui>GtkButtons</gui>, ένα για κάθε μία από τις χορδές της κιθάρας.</p>
 
 <media type="image" mime="image/png" src="media/guitar-tuner-glade.png"/>
 
   <steps>
    <item>
-   <p>Διαλέξτε ένα <gui>GtkButtonBox</gui> από το τμήμα <gui>Container</gui> στην <gui>Παλέτα</gui> στο δεξιά και προσθέστε το στο παράθυρο. Στο φάτνωμα <gui>Ιδιότητες</gui> καθορίστε τον αριθμό των στοιχείων σε 6 (για τις έξι χορδές της κιθάρας) και τον προσανατολισμό σε κάθετο.</p>
+   <p>Διαλέξτε ένα <gui>GtkButtonBox</gui> από το τμήμα <gui>Container</gui> στην <gui>Παλέτα</gui> στο δεξιά και προσθέστε το στο παράθυρο. Στην καρτέλα <gui>Ιδιότητες</gui> καθορίστε τον αριθμό των στοιχείων σε 6 (για τις έξι χορδές της κιθάρας) και τον προσανατολισμό σε κάθετο.</p>
    </item>
    <item>
     <p>Τώρα, διαλέξτε ένα <gui>GtkButton</gui> από την παλέτα και βάλτε το στο πρώτο μέρος του κουτιού.</p>
    </item>
    <item>
-    <p>Έχοντας το κουμπί ακόμα επιλεγμένο, αλλάξτε την ιδιότητα <gui>ετικέτα</gui> στην καρτέλα <gui>γραφικά στοιχεία</gui> σε <gui>E</gui>. Αυτή θα είναι η χαμηλή χορδή Ε. Επίσης αλλάξτε την ιδιότητα <gui>όνομα</gui> σε <gui>button_E</gui>. Με αυτό το όνομα θα αναφερθούμε στο γραφικό στοιχείο αργότερα στον κώδικα.</p>
+    <p>Έχοντας το κουμπί ακόμα επιλεγμένο, αλλάξτε την ιδιότητα <gui>ετικέτα</gui> στην καρτέλα <gui>γραφικά συστατικά</gui> σε <gui>E</gui>. Αυτή θα είναι η χαμηλή χορδή Ε. Επίσης αλλάξτε την ιδιότητα <gui>όνομα</gui> σε <gui>button_E</gui>. Με αυτό το όνομα θα αναφερθούμε στο γραφικό συστατικό αργότερα στον κώδικα.</p>
     </item>
     <item>
     <p>Επαναλάβετε τα παραπάνω βήματα για τα υπόλοιπα κουμπιά, προσθέστε τις επόμενες 5 χορδές με τις ετικέτες <em>A</em>, <em>D</em>, <em>G</em>, <em>B</em>, και <em>e</em> και τα ονόματα <em>button_A</em>, κλπ.</p>
@@ -134,7 +116,7 @@
 <section id="gst">
   <title>Διοχετεύσεις GStreamer</title>
   <p>Το Gtreamer είναι ο σκελετός πολυμέσων του GNOME — μπορείτε να το χρησιμοποιήσετε για να αναπαραγωγή ηχογράφηση και επεξεργασία βίντεο, ήχου, ροών ιστοκάμερας και τα παρόμοια. Εδώ, θα το χρησιμοποιήσουμε για να παράξουμε μονές συχνότητες τόνων. Το GStreamermm είναι ένας σύνδεσμος C++ στο GStreamer που θα χρησιμοποιήσουμε εδώ.</p>
-  <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείς μια <em>διοχέτευση</em> που περιέχει διάφορα επεξεργαζόμενα στοιχεία που πηγαίνουν από την <em>πηγή</em> στην <em>έξοδο</em>. Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή και μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι ένα γραφικό στοιχείο ή η κάρτα ήχου.</p>
+  <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείς μια <em>διοχέτευση</em> που περιέχει διάφορα επεξεργαζόμενα στοιχεία που πηγαίνουν από την <em>πηγή</em> στην <em>έξοδο</em>. Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή και μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι ένα γραφικό συστατικό ή η κάρτα ήχου.</p>
   <p>Ανάμεσα στην πηγή και στην έξοδο, μπορείτε να εφαρμόσετε διάφορα φίλτρα και οι μετατροπείς να χειριστούν εφέ, μετατροπές μορφών και λοιπά. Κάθε στοιχείο της διοχέτευσης έχει ιδιότητες που μπορούν να χρησιμοποιηθούν για να αλλάξουν τη συμπεριφορά τους.</p>
   <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
     <p>Ένα παράδειγμα διοχέτευσης GStreamer.</p>

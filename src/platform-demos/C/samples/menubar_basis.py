@@ -1,16 +1,12 @@
 from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="MenuBar Example", application=app)
         self.set_default_size(200, 200)
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -27,7 +23,7 @@ class MyApplication(Gtk.Application):
         try:
             builder.add_from_file("menubar_basis.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
 
         # we use the method Gtk.Application.set_menubar(menubar) to add the menubar

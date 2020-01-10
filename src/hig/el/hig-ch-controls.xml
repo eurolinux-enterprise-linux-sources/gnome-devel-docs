@@ -1,0 +1,1209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="controls" lang="el">
+  <title>Έλεγχοι</title>
+
+  <sect1 id="controls-usage">
+    <title>Αποτελεσματική χρήση ελέγχων</title>
+
+    <para>Το GNOME παρέχει ένα σύνολο ελέγχων, γνωστών επίσης ως γραφικά συστατικά, που επιτρέπουν στους χρήστες να αλληλεπιδράσουν με τις εφαρμογές σας. Χρησιμοποιώντας αυτούς τους ελέγχους κατάλληλα και χωρίς αλλαγή της τυπικής τους συμπεριφοράς είναι σημαντικό. Αυτό επιτρέπει στους χρήστες να προβλέψουν τα αποτελέσματα των ενεργειών τους και έτσι να μάθουν τη χρήση της εφαρμογής σας πιο γρήγορα και αποτελεσματικά. Οι έλεγχοι που συμπεριφέρονται με άτυπους τρόπους καταστρέφουν το νοητικό πρότυπο εργασίας της εφαρμογής σας στον χρήστη και μειώνουν το νόημα της οπτικής γλώσσας της διεπαφής.</para>
+  </sect1>
+
+  <sect1 id="controls-terminology">
+    <title>Ορολογία</title>
+
+    <para>Αν και είναι γνωστά ως "γραφικά συστατικά" στα APIs του GNOME και στην τεκμηρίωση της ανάπτυξης, μην χρησιμοποιείτε αυτόν τον όρο στη διεπαφή ή την τεκμηρίωση του χρήστη. Να αναφέρεσθε σε αυτά με τα ειδικά ονόματά τους (για παράδειγμα, "κουμπιά" ή "μενού"), ή με το γενικό όνομα "έλεγχοι".</para>
+  </sect1>
+
+  <sect1 id="controls-sensitivity">
+    <title>Ευαισθησία</title>
+
+    <!--      <remark>Do we really want to include GTK calls here? -Seth</remark> -->
+
+    <!--	 CFB have removed the GTK calls for the basic stuff, although left it in for the 
+		 more obscure things that hackers currently aren't doing -->
+
+    <para>Μερικές φορές δεν έχει νόημα να επιτρέπετε στον χρήστη να αλληλεπιδρά με έναν έλεγχο στο τρέχον περιεχόμενο, για παράδειγμα, να πατά ένα κουμπί <guilabel>επικόλλησης</guilabel> όταν το πρόχειρο είναι κενό. Σε αυτές τις περιπτώσεις, απενεργοποιήστε τον έλεγχο για να ελαχιστοποιηθεί ο κίνδυνος σφάλματος του χρήστη. Ενώ ένας έλεγχος είναι ανενεργός, θα εμφανιστεί αμυδρός και δεν θα μπορεί να δεχθεί την εστίαση, αν και βοηθητικές τεχνολογίες όπως αναγνώστες οθόνης θα μπορούν ακόμα να το ανιχνεύσουν και να το αναφέρουν.</para>
+
+    <para>Είναι συνήθως καλύτερο να κάνετε έναν έλεγχο ανενεργό από να τον κρύβετε ολότελα. Έτσι, ο χρήστης μπορεί να μάθει για τη λειτουργικότητα που μπορεί να χρησιμοποιεί αργότερα, ακόμα κι αν δεν είναι διαθέσιμη τώρα αμέσως.</para>
+
+    <figure>
+      <title>Δύο πλαίσια ελέγχου: ενεργό (επάνω) και ανενεργό (κάτω)</title>
+
+      <mediaobject><imageobject> <imagedata depth="76" fileref="images/controls-sensitivity.png" format="PNG" width="258"/> </imageobject> <imageobject> <imagedata fileref="images/controls-sensitivity.eps" format="EPS"/> </imageobject> <textobject> <phrase>Στιγμιότυπο που εμφανίζει την οπτική εμφάνιση των ενεργών και μη ενεργών ελέγχων πλαισίου ελέγχου</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!--
+      <para>Sometimes, however, a large group of controls always become insensitive or sensitive simultaneously as the direct result of user action, such as checking a box or pressing a button.  In this case it is sometimes better to hide or show the controls (for example, using the <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkwidget.html#GTK-WIDGET-SHOW"><function>gtk_widget_show()</function></ulink> and <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkwidget.html#GTK-WIDGET-HIDE"><function> gtk_widget_hide()</function></ulink> functions, for GTK controls) rather than making them sensitive or insensitive.  For example, if all the controls on a <link linkend="controls-notebooks">notebook tab</link> are insensitive, it is usually better to hide the tab altogether.</para>
+-->
+
+    <!-- CB-Ed: Hmm. Not sure about the preceding paragraph and the suggestion it makes.  Usually you don't want to change an interface as drastically as removing an entire tab when a user clicks a button - it's jarring, first of all, and secondly, you want to keep the UI as consistent as possible: one of the reasons for disabling, say, a menu item, and not just making it disappear when it is unavailable, is to train the user's eye and behavior to know where certain things are located. You may want to back this up or verify the suggestion's strength before finalizing the HIG. -->
+
+    <sect2 id="controls-locked">
+      <title>Κλειδωμένοι έλεγχοι</title>
+
+      <para>Σε ένα περιβάλλον που χειρίζεται δίκτυο, όπως έναν υπολογιστή εργαστηρίου, οι διαχειριστές του συστήματος συνήθως θέλουν να "κλειδώσουν" τις τιμές συγκεκριμένων ρυθμίσεων, ή να τις αφαιρέσουν από την διεπαφή του χρήστη ολότελα. Αυτό τους διευκολύνει να ανιχνεύσουν προβλήματα που οι χρήστες τους μπορεί να αντιμετωπίσουν. Στο GNOME, ο σωστός τρόπος για τον διαχειριστή του συστήματος να το κάνει αυτό είναι περιορίζοντας την πρόσβαση εγγραφής στα αντίστοιχα κλειδιά GConf σε αυτές τις ρυθμίσεις.</para>
+
+      <para>Όταν σχεδιάζετε την εφαρμογή σας, σκεφτείτε ποιες ρυθμίσεις ένας διαχειριστής συστήματος μπορεί να θέλει να κάνει μη διαθέσιμες στους χρήστες. Αυτές μπορεί τυπικά να περιλαμβάνουν:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Ρυθμίσεις που, εάν οριστούν εσφαλμένα, μπορούν να αποτρέψουν την εφαρμογή από το να λειτουργήσει. Για παράδειγμα, οι ρυθμίσεις μεσολαβητή σε μια εφαρμογή δικτύου.</para>
+        </listitem>
+
+        <listitem>
+          <para>Ρυθμίσεις που μπορεί να αναφέρονται σε πόρους δικτύου. Για παράδειγμα, ο κατάλογος προτύπων σε μια εφαρμογή γραφείου, όπου κοινόχρηστα πρότυπα όπως φύλλα εξώφυλλου φαξ μπορεί να αποθηκευτούν.</para>
+        </listitem>
+
+        <listitem>
+          <para>Ρυθμίσεις που προσαρμόζουν την διεπαφή χρήστη, άλλες από τις απαιτούμενες για πρόσβαση. Για παράδειγμα, συγκεκριμένα μενού, επιλογές προσαρμογής πληκτρολογίου ή εργαλειοθήκης.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Η εφαρμογή σας χρειάζεται να αποφασίζει κάθε φορά εάν αυτοί οι έλεγχοι θα εμφανίζονται εάν είναι διαθέσιμοι ή όχι για επεξεργασία, ανάλογα με την κατάσταση εγγραψιμότητας του κλειδιού GConf που κρατά την τιμή του. Στην πιο απλή περίπτωση, ο κώδικας σας για κάθε έλεγχο πρέπει να μοιάζει με αυτό στο παρακάτω παράδειγμα.</para>
+
+      <!-- CB-Ed: Again, reconsider who your readers are.  Some may not be comfortable with terms such as "runtime."  Use language that is more inclusive; you may reword the first sentence to say "...decide when you start up your machine whether..." or something along those lines. -->
+
+      <example>
+        <title>Δείγμα τμήματος κώδικα που εμφανίζει πώς να κάνετε έναν έλεγχο κλειδωμένου GConf ανενεργό</title>
+
+        <programlisting>if (!gconf_key_is_writable (http_proxy))
+        gtk_widget_set_sensitive (http_proxy_field, FALSE)·</programlisting>
+      </example>
+
+      <para>Συμπεριλάβετε μια ενότητα για διαχειριστές συστήματος στον οδηγό χρήστη, εξηγώντας ποιες ρυθμίσεις μπορούν να κλειδώσουν και τα αντίστοιχα τους κλειδιά GConf.</para>
+
+      <para>Εξηγείστε στον χρήστη γιατί αυτοί οι έλεγχοι δεν μπορούν να επεξεργαστούν αυτήν τη φορά. Μπορείτε να το κάνετε αυτό με στατικό κείμενο, συμβουλές οθόνης σε δικτυακή βοήθεια, ανάλογα με την κατάσταση. Για παράδειγμα:</para>
+
+      <figure>
+        <title>Παράδειγμα ενός διαλόγου με κλειδωμένους ελέγχους</title>
+
+        <mediaobject><imageobject> <imagedata depth="216" fileref="images/controls-locked.png" format="PNG" width="475"/> </imageobject> <imageobject> <imagedata fileref="images/controls-locked.eps" format="EPS"/> </imageobject> <textobject> <phrase>Στιγμιότυπο που δείχνει ανενεργά στοιχεία ελέγχου μεσολαβητή σε έναν διάλογο ιδιοτήτων του περιηγητή ιστού, κάτω από τον τίτλο "Μόνο ο διαχειριστής του συστήματος μπορεί να αλλάξει αυτές τις ρυθμίσεις"</phrase> </textobject></mediaobject>
+      </figure>
+
+      <!-- CB-Fig: Figure is good, add callouts, taking some text from the caption, and make caption more succinct: "Dialog with locked settings/controls."  When referring to figures, use the figure number, preferably with the following format: chapter_no - figure_no so that figures can be referred to from outside its housing chapter. -->
+
+      <para>Σημειώστε ότι αν και δεν μπορούν να επεξεργαστούν, οι ρυθμίσεις είναι ακόμα ορατές και επιλέξιμες και μπορούν να αντιγραφούν στο πρόχειρο.</para>
+
+      <!-- CB-Ed: Second sentence in above paragraph: "In some cases?"  Please provide solid examples and reasons for why you suggest such a thing as hiding "affected controls."  -->
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-entry">
+    <title>Πεδία εισαγωγής κειμένου</title>
+
+    <para>Πεδία εισαγωγής κειμένου χρησιμοποιούνται για είσοδο μιας ή περισσότερων γραμμών απλού κειμένου. Στο GTK 2, ο έλεγχος <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkentry.html">GtkEntry</ulink> χρησιμοποιείται για εισαγωγή κειμένου μονής γραμμής και το <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtktextview.html">GtkTextView</ulink> για εισαγωγή κειμένου πολλών γραμμών.</para>
+
+    <!-- CB-Ed: The second and third sentences are baffling.  It seems to be just directed at the developer; it is not inclusive to readers who are not coders.  This probably isn't what you want to get people like visual/UI designers to read and use this guide. -->
+
+    <figure>
+      <title>Πεδία εισόδου μονής και πολλών γραμμών</title>
+
+      <mediaobject><imageobject> <imagedata depth="153" fileref="images/controls-text.png" format="PNG" width="545"/> </imageobject> <imageobject> <imagedata fileref="images/controls-text.eps" format="EPS"/> </imageobject> <textobject> <phrase>Στιγμιότυπο μέρους διαλόγου, που περιέχει πεδία καταχωρίσεων και μονών και πολλαπλών γραμμών</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Dialog "fragment?"  Use callouts.  Succinct caption: "Text fields." or "Single and Multi-line Entry Fields"-->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Ονομάστε το πεδίο εισόδου με μια ετικέτα κειμένου από πάνω της ή στα αριστερά της, χρησιμοποιώντας <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη να εστιάσει άμεσα στο πεδίο εισόδου.</para>
+      </listitem>
+
+      <listitem>
+        <para>Στοίχιση στα δεξιά των περιεχομένων των πεδίων εισόδου που χρησιμοποιούνται μόνο για αριθμητική είσοδο, εκτός και η σύμβαση στις τοπικές απαιτήσεις του χρήστη είναι αλλιώς. Αυτό είναι χρήσιμο σε παράθυρα όπου ο χρήστης μπορεί να θέλει να συγκρίνει δύο αριθμητικές τιμές στην ίδια στήλη ελέγχων. Σε αυτήν την περίπτωση, βεβαιωθείτε ότι οι δεξιές άκρες των σχετικών ελέγχων είναι επίσης στοιχισμένες.</para>
+      </listitem>
+
+      <listitem>
+        <para>Όταν ο χρήστης εστιάζει σε ένα πεδίο μιας εισόδου χρησιμοποιώντας το πληκτρολόγιο, τοποθετήστε τον δρομέα κειμένου στο τέλος του υπάρχοντος κειμένου και τονίστε τα περιεχόμενά του (αλλά μην αντικαταστήσετε την υπάρχουσα ΠΡΩΤΕΥΟΥΣΑ επιλογή προχείρου). Αυτό διευκολύνει στην άμεση αντικατάσταση ή προσάρτηση νέου κειμένου, οι δύο πιο κοινές λειτουργίες που εκτελούνται σε πεδία εισόδου.</para>
+      </listitem>
+
+      <listitem>
+        <para>Το μέγεθος των πεδίων εισαγωγής κειμένου να δίνεται σύμφωνα με το πιθανό μέγεθος της καταχώρισης. Αυτό δίνει μια χρήσιμη οπτική ένδειξη της ποσότητας της αναμενόμενης καταχώρισης και διαιρεί τον διάλογο διευκολύνοντας τη σάρωση. Μην κάνετε όλα τα πεδία στον διάλογο με το ίδιο πλάτος απλά για να κάνετε το καθετί σε όμορφη παράταξη.</para>
+      </listitem>
+
+      <!-- CB-Ed: Try to cluster input text fields so that fields of similar "types" end up together, and end up having uniform sizes.  Usually you want to size text entry fields to the width of the largest input expected in each clustering.  A clean and orderly visual flow is indeed important for the user; that is, line things up so that "everything line[s] up nicely" where possible.  The figure (3) actually shows this well. -->
+
+      <listitem>
+        <para>Σε μια στιγμιαία εφαρμογή <link linkend="windows-utility">ιδιότητας ή παραθύρου προτίμησης</link>, επικυρώστε τα περιεχόμενα του πεδίου εισόδου όταν απεστιάζει ή όταν το παράθυρο κλείνει, όχι μετά από κάθε πληκτρολόγηση. Εξαίρεση: εάν το πεδίο δέχεται μόνο ένα σταθερό αριθμό χαρακτήρων, όπως έναν δεκαεξαδικό χρωματικό κώδικα, επικυρώστε και εφαρμόστε την αλλαγή μόλις αυτός ο αριθμός των χαρακτήρων έχει εισαχθεί.</para>
+      </listitem>
+
+      <listitem>
+        <para>Δώστε μια στατική προτροπή κειμένου για πλαίσια κειμένου που απαιτούν καταχώριση για μια συγκεκριμένη μορφή ή σε μια συγκεκριμένη μονάδα μέτρησης. Για παράδειγμα:</para>
+
+        <figure>
+          <title>Το πεδίο εισαγωγής κειμένου με στατική προτροπή κειμένου</title>
+
+          <mediaobject><imageobject> <imagedata depth="31" fileref="images/controls-text-prompt.png" format="PNG" width="130"/> </imageobject> <imageobject> <imagedata fileref="images/controls-text-prompt.eps" format="EPS"/> </imageobject> <textobject> <phrase>Ένα πεδίο καταχώρισης κειμένου στο οποίο ο χρήστης πρέπει να εισάγει χρόνο, με την ετικέτα "ωω:λλ" δίπλα του για να υποδείξει την απαιτούμενη μορφή</phrase> </textobject></mediaobject>
+        </figure>
+
+        <!-- CB-Fig: Good fig, provide callouts to "static text prompt," shorten caption and fix fig no. -->
+      </listitem>
+
+      <listitem>
+        <para>Όπου είναι δυνατό, δώστε έναν πρόσθετο ή εναλλακτικό έλεγχο που περιορίζει την απαιτούμενη καταχώριση σε μια έγκυρη περιοχή. Για παράδειγμα, δώστε ένα <link linkend="controls-spin-boxes">μετρητή</link> ή <link linkend="controls-sliders">ολισθητή</link> εάν η απαιτούμενη καταχώριση είναι μία σταθερής περιοχής ακεραίων, ή δώστε πρόσβαση σε έναν έλεγχο <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkcalendar.html">GtkCalendar</ulink> εάν ο χρήστης πρέπει να εισάγει μια έγκυρη ημερομηνία:</para>
+
+        <figure>
+          <title>Το πεδίο εισαγωγής κειμένου απαιτεί μια ημερομηνία ως καταχώριση, με ένα κουμπί δίπλα του για εμφάνιση του ελέγχου GtkCalendar για απλοποίηση της εργασίας</title>
+
+          <mediaobject><imageobject> <imagedata depth="41" fileref="images/controls-text-choose.png" format="PNG" width="298"/> </imageobject> <imageobject> <imagedata fileref="images/controls-text-choose.eps" format="EPS"/> </imageobject> <textobject> <phrase>Ένα πεδίο καταχώρισης κειμένου στο οποίο ο χρήστης πρέπει να εισάγει μια ημερομηνία, με ένα κουμπί με ετικέτα "Επιλογή" δίπλα του που να ανοίγει ένα στοιχείο ελέγχου GtkCalendar για απλοποίηση της εργασίας</phrase> </textobject></mediaobject>
+        </figure>
+
+        <!-- CB-Fig: Provide a larger image including examples of "spinbox" or "slider." Same comments apply here as to all figuers in the HIG: callouts, shorter caption, figure number. -->
+
+        <para>Αυτό είναι λιγότερο επιρρεπές σε σφάλμα από την αναμονή από τον χρήστη να μορφοποιήσει την εισαγωγή κειμένου του σε κάποια ελεύθερη μορφή. Μπορείτε ακόμα να θέλετε να δώσετε τον έλεγχο πεδίου εισόδου επίσης, όμως, για προχωρημένους χρήστες που είναι εξοικειωμένοι με την απαιτούμενη μορφή.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν εφαρμόσετε ένα πεδίο εισόδου που δέχεται μόνο έγκυρες πληκτρολογήσεις στο περιεχόμενο εργασίας, όπως αριθμούς, παίξτε τον ήχο προειδοποίησης του συστήματος όταν ο χρήστης προσπαθεί να πληκτρολογήσει έναν άκυρο χαρακτήρα. Εάν ο χρήστης πληκτρολογήσει τρεις άκυρους χαρακτήρες στη σειρά, εμφανίστε μια <link linkend="windows-alert">ειδοποίηση</link> που εξηγεί τις έγκυρες καταχωρίσεις για αυτό το πεδίο κειμένου.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ο ρυθμός αναλαμπής του δρομέα ορίζεται γενικά από τα XSettings "gtk-cursor-blink" και "gtk-cursor-blink-time". Οι τυπικοί έλεγχοι πακέτου εργαλείου τα χρησιμοποιούν και δεν πρέπει να αλλαχτούν καθόλου σε εφαρμογές. Νέοι έλεγχοι με δρομείς κειμένου πρέπει να σέβονται αυτές τις γενικές τιμές.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="controls-text-return">
+      <title>Συμπεριφορά του πλήκτρου επιστροφής</title>
+
+      <para>Κανονικά, πατώντας <keycap>επιστροφή</keycap> σε έναν διάλογο θα πρέπει να ενεργοποιήσει το προεπιλεγμένο κουμπί του διαλόγου, εκτός και ο εστιασμένος έλεγχος χρησιμοποιεί την <keycap>επιστροφή</keycap> για τους δικούς του σκοπούς. Θα πρέπει συνεπώς να ορίσετε την ιδιότητα <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkentry.html#GTK-ENTRY-SET-ACTIVATES-DEFAULT"><function>activates-default</function></ulink> των περισσότερων πεδίων εισόδου σε TRUE. (Σημειώστε ότι το GtkTextView δεν έχει τέτοια ρύθμιση - πατώντας <keycap>επιστροφή</keycap> εισάγει πάντα μια νέα γραμμή.).</para>
+
+      <para>Όμως, εάν ο διάλογος σας περιέχει αρκετά πεδία εισόδου που συνήθως συμπληρώνονται σε σειρά, για παράδειγμα <guilabel>όνομα</guilabel>, <guilabel>διεύθυνση</guilabel> και <guilabel>αριθμός τηλεφώνου</guilabel>, σκεφτείτε την ρύθμιση της ιδιότητας <function>activates-default</function> σε αυτά τα πεδία εισόδου σε FALSE. Πατώντας <keycap>επιστροφή</keycap> θα πρέπει τότε να μετακινήσετε την εστίαση στον επόμενο έλεγχο. Κάνοντας το θα βοηθήσει την αποφυγή του τυχαίου κλεισίματος του παραθύρου πριν να εισαχθούν όλες οι επιθυμητές πληροφορίες από τον χρήστη.</para>
+
+      <para>Ως παραπέρα προστασία, να θυμάστε να μην ρυθμίζετε το προεπιλεγμένο κουμπί σε έναν διάλογο μέχρι το ελάχιστο ποσό της απαιτούμενης πληροφορίας να έχει εισαχθεί, για παράδειγμα, αμφότερα τα όνομα χρήστη και κωδικός σε έναν διάλογο σύνδεσης. Πάλι, σε αυτήν την περίπτωση θα πρέπει να μετακινήσετε την εστίαση στον επόμενο έλεγχο όταν ο χρήστης πατά <keycap>επιστροφή</keycap>, αντί για απλή παράβλεψη της πληκτρολόγησης.</para>
+
+      <para>Εάν χρειάζεται να δώσετε μια συντόμευση πληκτρολογίου που ενεργοποιεί το προεπιλεγμένο κουμπί ενώ ο έλεγχος GtkTextView έχει εστίαση, χρησιμοποιήστε <keycombo><keycap>Ctrl</keycap><keycap>επιστροφή</keycap></keycombo>.</para>
+
+      <note>
+        <title>Σημείωση</title>
+
+        <para>Το Gtk προς το παρόν δεν μετακινεί την εστίαση στον επόμενο έλεγχο όταν πατιέται το <keycap>επιστροφή</keycap> και είτε <function>activates-default=FALSE</function>, είτε δεν υπάρχει προεπιλεγμένο κουμπί στο παράθυρο. Προς το παρόν, η <keycap>επιστροφή</keycap> δεν κάνει τίποτα σε αυτές τις καταστάσεις, έτσι να θυμάστε να εφαρμόζετε την συμπεριφορά αλλαγής εστίασης οι ίδιοι.</para>
+      </note>
+    </sect2>
+
+    <sect2 id="controls-text-tab">
+      <title>Συμπεριφορά του πλήκτρου στηλοθέτη</title>
+
+      <para>Κανονικά, πατώντας <keycap>στηλοθέτης</keycap> σε ένα πεδίο εισόδου μονής γραμμής θα πρέπει να μετακινείται η εστίαση στον επόμενο έλεγχο και σε ένα πεδίο εισόδου πολλών γραμμών θα πρέπει να εισάγεται έναν χαρακτήρα στηλοθέτη. Πατώντας <keycombo><keycap>Ctrl</keycap><keycap>Tab</keycap></keycombo> σε ένα πεδίο εισόδου πολλών γραμμών θα πρέπει να μετακινείται η εστίαση στον επόμενο έλεγχο.</para>
+
+      <para>Εάν χρειάζεται να δώσετε μια συντόμευση πληκτρολογίου που εισάγει έναν χαρακτήρα στηλοθέτη σε ένα πεδίο εισόδου μονής γραμμής, χρησιμοποιήστε <keycombo><keycap>Ctrl</keycap><keycap>Tab</keycap></keycombo>. Όμως, είναι απίθανο να βρείτε πολλές καταστάσεις που αυτό είναι χρήσιμο.</para>
+
+      <remark>There is a patch in bugzilla (bugid=<ulink url="http://bugzilla.gnome.org/show_bug.cgi?id=53763">53763</ulink>)
+      that adds an <function>allow_tab_characters</function> function to
+      GtkEntry controls. This allows you to specify on a per-control basis
+      whether <keycap>Tab</keycap> should insert a tab character or not. It is
+      currently not known whether this patch is likely to make it into a
+      future version of gtk.</remark>
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-spin-boxes">
+    <title>Πλαίσια αυξομείωσης</title>
+
+    <para>Ένα πλαίσιο αυξομείωσης είναι ένα πλαίσιο κειμένου που δέχεται ένα εύρος τιμών. Ενσωματώνει δύο κουμπιά βελών που επιτρέπουν στον χρήστη να αυξήσει ή να μειώσει την τρέχουσα τιμή κατά ένα σταθερό ποσό.</para>
+
+    <figure>
+      <title>Παράδειγμα πλαισίου αυξομείωσης</title>
+
+      <mediaobject><imageobject> <imagedata depth="32" fileref="images/controls-spin-box.png" format="PNG" width="204"/> </imageobject> <imageobject> <imagedata fileref="images/controls-spin-box.eps" format="EPS"/> </imageobject> <textobject> <phrase>Ένα απλό πλαίσιο αυξομείωσης ορίζει το διάστιχο μεταξύ μικροεφαρμογών σε έναν πίνακα</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Callout, shorten caption, fig no -->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Χρησιμοποιήστε πλαίσια αυξομείωσης για αριθμητικές εισαγωγές μόνο. Χρησιμοποιήστε μια λίστα ή μενού επιλογής όταν χρειάζεται ο χρήστης να επιλέξει από σταθερά σύνολα δεδομένων άλλων τύπων.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε ένα πλαίσιο αυξομείωσης εάν η αριθμητική τιμή έχει νόημα ή είναι χρήσιμο για τον χρήστη να το ξέρει και η έγκυρη περιοχή καταχώρισης είναι απεριόριστη ή σταθερή μόνο στο ένα άκρο. Για παράδειγμα, ένας έλεγχος για ορισμό του αριθμού των επαναλήψεων κάποιας ενέργειας, ή η τιμή λήξης χρόνου. Εάν το εύρος είναι σταθερό σε αμφότερα τα άκρα, ή εάν οι αριθμητικές τιμές είναι τυχαίες (για παράδειγμα, ένας έλεγχος έντασης), χρησιμοποιήστε στη θέση του έναν ελεγκτή ολισθητή.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε το πλαίσιο αυξομείωσης με μια ετικέτα κειμένου από πάνω του ή στα αριστερά του, χρησιμοποιώντας <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη να εστιάσει άμεσα στο πλαίσιο με βέλη.</para>
+      </listitem>
+
+      <listitem>
+        <para>Στοίχιση στα δεξιά των περιεχομένων των πλαισίων αυξομείωσης, εκτός και η σύμβαση στις τοπικές απαιτήσεις του χρήστη είναι αλλιώς. Αυτό είναι χρήσιμο σε παράθυρα όπου ο χρήστης μπορεί να θέλει να συγκρίνει δύο αριθμητικές τιμές στην ίδια στήλη ελέγχων. Σε αυτήν την περίπτωση, βεβαιωθείτε ότι οι δεξιές άκρες των σχετικών ελέγχων είναι επίσης στοιχισμένες.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-sliders">
+    <title>Ολισθητές</title>
+
+    <para>Ένας ολισθητής επιτρέπει στον χρήστη να επιλέξει γρήγορα μια τιμή από μια σταθερή περιοχή σε σειρά, ή να αυξήσει ή να μειώσει την τρέχουσα τιμή. Ο έλεγχος φαίνεται όπως ο τύπος του ολισθητή που μπορείτε να βρείτε σε μια επιτραπέζια μείξη ήχου ή σε έναν γραφικό ισοσταθμιστή υψηλής πιστότητας. Στο gtk, εφαρμόζετε έναν ολισθητή χρησιμοποιώντας τους ελέγχους GtkHScale ή GtkVScale, για οριζόντιους ή κάθετους ολισθητές αντίστοιχα.</para>
+
+    <figure id="controls-slider-figure">
+      <title>Ένας απλό στοιχείο ελέγχου ολισθητή</title>
+
+      <mediaobject><imageobject> <imagedata depth="27" fileref="images/controls-slider.png" format="PNG" width="208"/> </imageobject> <imageobject> <imagedata fileref="images/controls-slider.eps" format="EPS"/> </imageobject> <textobject> <phrase>Ένας έλεγχος ολισθητή χρησιμοποιείται για να αλλάξει την στερεοφωνική ηχητική ισορροπία μεταξύ αριστερού και δεξιού ηχείου</phrase> </textobject></mediaobject>
+    </figure>
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Χρήση ολισθητή όταν:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>η ρύθμιση της σχετικής τιμής στην τρέχουσα τιμή της είναι πιο σημαντικό από την επιλογή μιας απόλυτης τιμής. Για παράδειγμα, ένας έλεγχος έντασης: ο μέσος χρήστης θα σκεφτεί συνήθως να μεγαλώσει ή να χαμηλώσει την ένταση για να κάνει τον ήχο δυνατότερο ή ασθενέστερο αντί να ρυθμίσει την έξοδο κορυφής σε μια συγκεκριμένη τιμή ντεσιμπέλ.</para>
+          </listitem>
+
+          <listitem>
+            <para>είναι χρήσιμο για τον χρήστη να ελέγχει τον ρυθμό αλλαγής της τιμής σε πραγματικό χρόνο. Για παράδειγμα, να παρακολουθεί, τα αποτελέσματα μιας αλλαγής χρώματος σε ένα παράθυρο ζωντανής προεπισκόπησης καθώς σύρει τους ολισθητές RGB.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε τον ολισθητή με μια ετικέτα κειμένου από πάνω του ή στα αριστερά του, χρησιμοποιώντας <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη να εστιάσει άμεσα στον ολισθητή.</para>
+      </listitem>
+
+      <listitem>
+        <para>Σημειώστε σημαντικές τιμές μαζί με το μήκος του ολισθητή με σημάδια κειμένου ή υποδιαίρεσης. Για παράδειγμα το αριστερό, δεξιό και κεντρικό σημείο στον έλεγχο ισορροπίας ήχου στο <xref linkend="controls-slider-figure"/>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Για μεγάλο εύρος ακεραίων (περισσότερο από 20) και για εύρος αριθμών κινητής υποδιαστολής, σκεφτείτε να δώσετε ένα πεδίο κειμένου ή πεδίο με βέλη που συνδέεται στην τιμή του ολισθητή. Αυτό επιτρέπει στο χρήστη να ορίζει γρήγορα ή να μικρορυθμίζει πιο εύκολα από ότι θα μπορούσε με απλά έναν ολισθητή ελέγχου.</para>
+
+        <figure>
+          <title>Έλεγχοι ολισθητών με συνδεδεμένα πλαίσια με βέλη</title>
+
+          <mediaobject><imageobject> <imagedata depth="85" fileref="images/controls-slider-spinbox.png" format="PNG" width="356"/> </imageobject> <imageobject> <imagedata fileref="images/controls-slider-spinbox.eps" format="EPS"/> </imageobject> <textobject> <phrase>Τρία στοιχεία ελέγχου ολισθητή χρησιμοποιούνται για αλλαγή τιμών RGB, καθεμιά με ένα πλαίσιο αυξομείωσης δίπλα τους για διευκόλυνση άμεσης αριθμητικής καταχώρισης</phrase> </textobject></mediaobject>
+        </figure>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-buttons">
+    <title>Κουμπιά</title>
+
+    <para>Ένα κουμπί αρχικοποιεί μία ενέργεια όταν ο χρήστης πατά πάνω του.</para>
+
+    <figure>
+      <title>Τυπικά κουμπιά σε έναν αναγκαστικό διάλογο</title>
+
+      <mediaobject><imageobject> <imagedata depth="47" fileref="images/controls-buttons.png" format="PNG" width="190"/> </imageobject> <imageobject> <imagedata fileref="images/controls-buttons.eps" format="EPS"/> </imageobject> <textobject> <phrase>Κουμπιά Εντάξει και Ακύρωση όπως βρίσκονται σε ένα αναγκαστικό διάλογο</phrase> </textobject></mediaobject>
+    </figure>
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Ονομάστε όλα τα κουμπιά με προστακτικά ρήματα, χρησιμοποιώντας <link linkend="layout-capitalization">κεφαλαία κεφαλίδα</link>. Για παράδειγμα, <guilabel>αποθήκευση</guilabel>, <guilabel>ταξινόμηση</guilabel> ή <guilabel>ενημέρωση τώρα</guilabel>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη την άμεση ενεργοποίηση του κουμπιού από το πληκτρολόγιο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μετά το πάτημα ενός κουμπιού, ο χρήστης πρέπει να περιμένει να δει το αποτέλεσμα της ενέργειάς του σε 1 δευτερόλεπτο. Για παράδειγμα, κλείνοντας το παράθυρο ή ανοίγοντας ένα άλλο. Δείτε το <xref linkend="feedback"/> για οδηγίες για τις ενέργειας που απαιτούνται αν η εφαρμογή σας δεν αποκρίνεται σε αυτό γρήγορα.</para>
+      </listitem>
+
+      <!-- CB-Ed: Do you use ms in other parts of the HIG?  Might want to just use ms and not s as a measure, to keep things consistent and in case you need to finer granualarity than this later -->
+
+      <listitem>
+        <para>Χρησιμοποιήστε αποσιωπητικά (...) στο τέλος της ετικέτας αν η ενέργεια απαιτεί παραπέρα εισαγωγή από το χρήστη πριν πραγματοποιηθεί. Για παράδειγμα, <guilabel>Αποθήκευση ως...</guilabel> ή <guilabel>Εύρεση...</guilabel>. Μην χρησιμοποιείτε αποσιωπητικά σε εντολές όπως οι <guilabel>Ιδιότητες</guilabel>, <guilabel>Προτιμήσεις</guilabel>, ή <guilabel>Ρυθμίσεις</guilabel>, επειδή αυτά τα ανοικτά παράθυρα δεν <emphasis>απαιτούν</emphasis> παραπέρα εισαγωγή.</para>
+      </listitem>
+
+      <listitem>
+        <para>Όταν εμφανίζεται ένας διάλογος, μην αλλάζετε το προεπιλεγμένο κουμπί του σε κάποιο άλλο. Μπορείτε να προσθέτετε ή να αφαιρείτε την προεπιλεγμένη κατάσταση από το ίδιο κουμπί, αν αυτό βοηθά στην αποφυγή σφαλμάτων χρήστη, όμως. Αλλάζοντας την προεπιλογή από ένα κουμπί σε ένα άλλο μπορεί να προκληθεί σύγχυση ή αναποτελεσματικότητα, ειδικά για χρήστες που εξαρτώνται από βοηθητικές τεχνολογίες.</para>
+      </listitem>
+
+      <listitem>
+        <para>Αν το κουμπί σας μπορεί να εμφανίζει κείμενο, εικονίδιο, ή και τα δύο, επιλέξτε ποια ετικέτα θα εμφανίζεται στην εκτέλεση σύμφωνα με την προτίμηση του χρήστη στα μενού του GNOME και στο διάλογο για τις προτιμήσεις των εργαλειοθηκών. Όμως, μπορείτε να αντικαθιστάτε αυτή την προτίμηση όταν δεν υπάρχει κατάλληλο εικονίδιο που να περιγράφει γραφικά την ενέργεια του κουμπιού, για παράδειγμα.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην χρησιμοποιείτε περισσότερα από ένα ή δύο πλάτη κουμπιού στο ίδιο παράθυρο και κάντε τα να έχουν το ίδιο ύψος. Αυτό θα σας βοηθήσει να έχετε μία ευχάριστη και ομοιόμορφη οπτική εμφάνιση στο παράθυρό σας ώστε να είναι πιο εύκολη η χρήση του.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην αναθέτετε ενέργειες σε διπλό πάτημα ή δεξί πάτημα σε ένα κουμπί. Οι χρήστες πιθανά να μην μπορούν να ανακαλύψουν αυτές τις ενέργειες και αν το κάνουν, θα παραποιηθούν οι προσδοκίες τους για τα άλλα κουμπιά στην επιφάνεια εργασίας.</para>
+      </listitem>
+
+      <listitem>
+        <para>Κάντε τα άκυρα κουμπιά ανενεργά, αντί να εμφανίζεται ένα μήνυμα σφάλματος όταν ο χρήστης τα πατά.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Σε ένα διάλογο, ένα κουμπί μπορεί να γίνει το προεπιλεγμένο κουμπί, που εμφανίζεται με διαφορετικό περίγραμμα και ενεργοποιείται πατώντας <keycap>επιστροφή</keycap>. Συχνά αυτό θα είναι το <guibutton>εντάξει</guibutton> ή ισοδύναμο κουμπί. Όμως, εάν πατώντας αυτό το κουμπί κατά λάθος μπορεί να προκαλέσει απώλεια δεδομένων, μην ορίσετε ένα προεπιλεγμένο κουμπί για το παράθυρο. Μην κάνετε την <guibutton>ακύρωση</guibutton> το προεπιλεγμένο κουμπί. Δείτε <xref linkend="default-buttons"/> για περισσότερες πληροφορίες.</para>
+
+    <!-- CB-Fig: Add a figure here to illustrate a default button. -->
+
+    <para>Εάν δεν κάνει νόημα να έχετε ένα προεπιλεγμένο κουμπί μέχρι αρκετά πεδία στον διάλογο να έχουν συμπληρωθεί σωστά - για παράδειγμα, αμφότερα τα πεδία <guilabel>όνομα χρήστη</guilabel> και <guilabel>κωδικός</guilabel> σε έναν διάλογο σύνδεσης - μην ορίσετε το προεπιλεγμένο κουμπί μέχρι να έχουν συμπληρωθεί και τα δύο.</para>
+  </sect1>
+
+  <sect1 id="controls-check-boxes">
+    <title>Πεδία επιλογών</title>
+
+    <para>Τα πεδία επιλογών χρησιμοποιούνται για την προβολή ή την αλλαγής κάποιας ρύθμισης. Οι δύο καταστάσεις τους, επιλογή και μη επιλογή, εμφανίζονται από την παρουσία ήτην απουσία του τικ στο επισημασμένο πεδίο.</para>
+
+    <figure>
+      <title>Μία τυπική ομάδα πεδίων ελέγχου</title>
+
+      <mediaobject><imageobject> <imagedata depth="140" fileref="images/controls-check-boxes.png" format="PNG" width="143"/> </imageobject> <imageobject> <imagedata fileref="images/controls-check-boxes.eps" format="EPS"/> </imageobject> <textobject> <phrase>Μια τυπική ομάδα πέντε πλαισίων ελέγχου σε ένα διάλογο</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: callouts. -->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Μην αρχικοποιείτε μια ενέργεια όταν ο χρήστης πατά ένα πλαίσιο ελέγχου. Όμως, εάν χρησιμοποιηθεί σε μια στιγμιαία εφαρμογή <link linkend="windows-utility"> ιδιότητας ή παραθύρου προτίμησης</link>, ενημερώστε την εμφανιζόμενη ρύθμιση από το πλαίσιο ελέγχου αμέσως.</para>
+      </listitem>
+
+      <listitem>
+        <para>Πάτημα ενός πλαισίου ελέγχου δεν πρέπει να επηρεάζει τις τιμές οποιωνδήποτε άλλων ελέγχων. Μπορεί να ενεργοποιήσει, να απενεργοποιήσει, να κρύψει ή να εμφανίσει άλλους ελέγχους, όμως.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν η εναλλαγή ενός πλαισίου ελέγχου επηρεάζει την ευαισθησία άλλων ελέγχων, τοποθετήστε το πλαίσιο ελέγχου αμέσως από πάνω ή στα αριστερά των ελέγχων που επηρεάζει. Αυτό βοηθά να δείξετε ότι οι έλεγχοι εξαρτώνται από την κατάσταση του πλαισίου ελέγχου.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link> για ετικέτες πλαισίου ελέγχου, για παράδειγμα <guilabel>Χρήση προσαρμοσμένης γραμματοσειράς</guilabel>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε τα πλαίσια ελέγχου να δείχνουν σαφώς τα αποτελέσματα αμφότερων των καταστάσεων σημειωμένου και ασημείωτου, για παράδειγμα, <guilabel>προβολή εικονιδίων σε μενού</guilabel>. Όπου αυτό είναι δύσκολο, σκεφτείτε τη χρήση δύο ραδιοπλήκτρων έτσι αμφότερες οι καταστάσεις να μπορούν να πάρουν ετικέτες. Για παράδειγμα:</para>
+
+        <figure>
+          <title>Ασαφές πλαίσιο ελέγχου (κορυφή), τα ραδιοπλήκτρα δουλεύουν καλύτερα σε αυτήν την περίπτωση (πάτος)</title>
+
+          <mediaobject><imageobject> <imagedata depth="70" fileref="images/controls-check-box-ambiguous.png" format="PNG" width="279"/> </imageobject> <imageobject> <imagedata fileref="images/controls-check-box-ambiguous.eps" format="EPS"/> </imageobject> <textobject> <phrase>Δύο εικόνες: η μία δείχνει ένα μονό πλαίσιο ελέγχου με ασαφή ετικέτα "Η γραμμή προόδου στα αριστερά της γραμμής κατάστασης", η άλλη κάνει την επιλογή σαφή με ραδιοπλήκτρα με ετικέτες "αριστερά" και "δεξιά" κάτω από την κεφαλίδα " Η θέση του δείκτη της προόδου της γραμμής κατάστασης:"</phrase> </textobject></mediaobject>
+        </figure>
+
+        <para>Το μονό πλαίσιο ελέγχου σε αυτό το παράδειγμα είναι ασαφές, καθώς δεν είναι καθαρό πού ο "δείκτης προόδου" θα πάει εάν το πλαίσιο είναι ασημείωτο. Δύο ραδιοπλήκτρα είναι καλύτερα σε αυτήν την περίπτωση, καθώς κάνουν τις επιλογές σαφείς.</para>
+      </listitem>
+
+      <!-- CB-Fig: Again, callouts, shorten caption.  The callouts should include other bullet points as well (e.g., access keys).  The referring bullet item is badly phrased.  Perhaps make this the one check box images for the bullets, with different callouts for different bullet points.  -->
+
+      <listitem>
+        <para>Δώστε ένα πλήκτρο πρόσβασης σε όλες τις ετικέτες πλαισίου ελέγχου που επιτρέπει στον χρήστη να ενεργοποιήσει/απενεργοποιήσει το πλαίσιο ελέγχου αμέσως από το πληκτρολόγιο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν το πλαίσιο ελέγχου αναπαριστά μια ρύθμιση σε μια πολλαπλή επιλογή δηλαδή ρύθμιση για μερικά αντικείμενα στην επιλογή και απορρύθμιση για άλλα, εμφανίστε το πλαίσιο ελέγχου στην μεικτή του κατάσταση. Για παράδειγμα:</para>
+
+        <figure>
+          <title>Τα πλαίσια ελέγχου (δεξιά) εμφανίζουν ιδιότητες για μια πολλαπλή επιλογή αρχείων στον Ναυτίλο (αριστερά)</title>
+
+          <mediaobject><imageobject> <imagedata depth="170" fileref="images/controls-check-boxes-mixed.png" format="PNG" width="223"/> </imageobject> <imageobject> <imagedata fileref="images/controls-check-boxes-mixed.eps" format="EPS"/> </imageobject> <textobject> <phrase>Τα πλαίσια ελέγχου εμφανίζουν τις κρυφές, αναγνώσιμες και εγγράψιμες καταστάσεις των δύο επιλεγμένων αρχείων στον Ναυτίλο. Αμφότερα τα αρχεία είναι κρυφά, κανένα δεν είναι εγγράψιμο, αλλά ένα είναι αναγνώσιμο. Το αναγνώσιμο πλαίσιο ελέγχου εμφανίζεται συνεπώς στην μικτή του κατάσταση.</phrase> </textobject></mediaobject>
+        </figure>
+
+        <para>Σε αυτό το παράδειγμα, αμφότερα τα επιλεγμένα αρχεία είναι κρυφά (αφού τα ονόματα αρχείων τους αρχίζουν με ".") και τα εμβλήματα στα εικονίδιά τους εμφανίζουν ότι κανένα αρχείο δεν είναι εγγράψιμο, αλλά ένα είναι αναγνώσιμο. Το πλαίσιο ελέγχου <guilabel>αναγνώσιμο</guilabel> εμφανίζεται συνεπώς στην μικτή του κατάσταση. <remark>At time of writing, the exact visual appearance
+        of a mixed state check box in gtk was undecided</remark>.</para>
+
+        <para>Όταν ένα πεδίο ελέγχου βρίσκεται στη μικτή κατάστασή του:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>πατώντας το πλαίσιο μια φορά θα πρέπει να σημειώσει το πλαίσιο, εφαρμόζοντας αυτήν τη ρύθμιση (όταν επιβεβαιωθεί) σε όλα τα επιλεγμένα αντικείμενα</para>
+          </listitem>
+
+          <listitem>
+            <para>πατώντας το πλαίσιο μια δεύτερη φορά θα πρέπει να ξεσημειώσει το πλαίσιο, αφαιρώντας αυτήν τη ρύθμιση (όταν επιβεβαιωθεί) σε όλα τα επιλεγμένα αντικείμενα</para>
+          </listitem>
+
+          <listitem>
+            <para>πατώντας το πλαίσιο μια τρίτη φορά θα πρέπει να επιστρέψει το πλαίσιο στη μικτή του κατάσταση, επαναφέροντας την αρχική τιμή κάθε επιλεγμένου αντικειμένου για αυτήν τη ρύθμιση (όταν επιβεβαιωθεί)</para>
+          </listitem>
+        </itemizedlist>
+
+        <!-- CB-Ed: Mixed state check boxes are a polemic-ridden issue.  Data to back this up? -->
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε μια ομάδα πλαισίων ελέγχου με μια περιγραφική κεφαλίδα πάνω από ή αριστερά της ομάδας.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε ένα πλαίσιο γύρω από την ομάδα εάν είναι απαραίτητο, αλλά να θυμάστε ότι κενός χώρος δουλεύει συχνά το ίδιο καλά και καταλήγει σε ένα λιγότερο οπτικά άτακτο διάλογο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην τοποθετήστε περισσότερα από περίπου οκτώ πλαίσια ελέγχου κάτω από την ίδια κεφαλίδα ομάδας. Εάν χρειάζεστε περισσότερα από οκτώ, δοκιμάστε να χρησιμοποιήσετε κενό χώρο, ετικέτες κεφαλίδας ή πλαίσια για τη διαίρεση τους σε μικρότερες ομάδες. Αλλιώς, σκεφτείτε τη χρήση μιας λίστας πλαισίου ελέγχου - αλλά προφανώς θα χρειαστείτε επίσης να σκεφτείτε για την απλοποίηση της διεπαφής χρήστη.</para>
+      </listitem>
+
+      <listitem>
+        <para>Δοκιμάστε να στοιχίσετε ομάδες πλαισίων ελέγχου κάθετα αντί για οριζόντια, καθώς αυτό τα κάνει ευκολότερα στην οπτική σάρωση. Χρησιμοποιήστε οριζόντιες ή ορθογώνιες στοιχίσεις μόνο εάν βελτιώνουν πολύ τη διάταξη του παραθύρου.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-radio-buttons">
+    <title>Ραδιοπλήκτρα</title>
+
+    <para>Τα ραδιοπλήκτρα χρησιμοποιούνται σε ομάδες για επιλογή από ένα αμοιβαία αποκλειόμενο σύνολο επιλογών. Μόνο ένα ραδιοπλήκτρο μπορεί να οριστεί μέσα σε μια ομάδα οποτεδήποτε. Όπως με τα πλαίσια ελέγχου, μην χρησιμοποιείτε ραδιοπλήκτρα για αρχικοποίηση ενεργειών.</para>
+
+    <figure>
+      <title>Μία τυπική ομάδα ραδιοπλήκτρων</title>
+
+      <mediaobject><imageobject> <imagedata depth="105" fileref="images/controls-radio-buttons.png" format="PNG" width="352"/> </imageobject> <imageobject> <imagedata fileref="images/controls-radio-buttons.eps" format="EPS"/> </imageobject> <textobject> <phrase>Μια τυπική ομάδα τριών ραδιοπλήκτρων σε ένα διάλογο</phrase> </textobject></mediaobject>
+    </figure>
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Χρησιμοποιήστε μόνο ραδιοπλήκτρα σε ομάδες τουλάχιστον των δύο, μην χρησιμοποιείτε ποτέ ένα μονό ραδιοπλήκτρο. Για αναπαράσταση μιας μοναδικής ρύθμισης, χρησιμοποιήστε ένα πλαίσιο ελέγχου ή δύο ραδιοπλήκτρα, ένα για κάθε κατάσταση.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ένα ακριβώς ραδιοπλήκτρο θα πρέπει να ορίζεται στην ομάδα πάντα. Η μόνη εξαίρεση είναι όταν η ομάδα εμφανίζει τις ιδιότητες μιας πολλαπλής επιλογής, όταν ένα ή περισσότερα από τα κουμπιά μπορούν να είναι στη μικτή τους κατάσταση.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην αρχικοποιείτε μια ενέργεια όταν ο χρήστης πατά ένα ραδιοπλήκτρο. Όμως, εάν χρησιμοποιηθεί σε μια στιγμιαία εφαρμογή <link linkend="windows-utility">ιδιότητας ή παραθύρου προτίμησης</link>, ενημερώστε την εμφανιζόμενη ρύθμιση από το ραδιοπλήκτρο αμέσως.</para>
+      </listitem>
+
+      <listitem>
+        <para>Πάτημα ενός ραδιοπλήκτρου δεν πρέπει να επηρεάζει τις τιμές οποιωνδήποτε άλλων ελέγχων. Μπορεί να ενεργοποιήσει, να απενεργοποιήσει, να κρύψει ή να εμφανίσει άλλους ελέγχους, όμως.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν η εναλλαγή ενός ραδιοπλήκτρου επηρεάζει την ευαισθησία άλλων ελέγχων, τοποθετήστε το ραδιοπλήκτρο αμέσως στα αριστερά των ελέγχων που επηρεάζει. Αυτό βοηθά να δείξετε ότι οι έλεγχοι εξαρτώνται από την κατάσταση του πλαισίου ελέγχου.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link> για ετικέτες ραδιοπλήκτρου, για παράδειγμα <guilabel>αλλαγμένη κίνηση</guilabel>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη να ορίσει το ραδιοπλήκτρο άμεσα από το πληκτρολόγιο.</para>
+      </listitem>
+
+      <!-- CB-Fig: "guilabel" may need to be more generic, like: Button Label, so that people don't get confused when scanning text about literals, particularly because you guys are using a lot of code references and lingo. -->
+
+      <listitem>
+        <para>Εάν το ραδιοπλήκτρο αναπαριστά μια ρύθμιση σε μια πολλαπλή επιλογή δηλαδή ρύθμιση για μερικά αντικείμενα στην επιλογή και απορρύθμιση για άλλα, εμφανίστε το ραδιοπλήκτρο στην μεικτή του κατάσταση. Για παράδειγμα:</para>
+
+        <figure>
+          <title>Τα ραδιοπλήκτρα (δεξιά) εμφανίζουν ιδιότητες για μια πολλαπλή επιλογή σχημάτων σε μια εφαρμογή σχεδίασης (αριστερά)</title>
+
+          <mediaobject><imageobject> <imagedata depth="105" fileref="images/controls-radio-button-mixed.png" format="PNG" width="314"/> </imageobject> <imageobject> <imagedata fileref="images/controls-radio-button-mixed.eps" format="EPS"/> </imageobject> <textobject> <phrase>Τα ραδιοπλήκτρα εμφανίζουν το πάχος, την λεπτότητα και τεχνοτροπίες σχεδίασης με παύλες των δύο επιλεγμένων σχημάτων σε μια εφαρμογή σχεδίασης. Ένα σχήμα σχεδιάζεται στην παχιά τεχνοτροπία, το άλλο στην τεχνοτροπία με παύλες. Τα παχιά και με παύλες ραδιοπλήκτρα εμφανίζονται συνεπώς στη μικτή τους κατάσταση και το λεπτό ραδιοπλήκτρο αναιρείται.</phrase> </textobject></mediaobject>
+        </figure>
+
+        <!-- CB-Fig: Show context for drawing application.  -->
+
+        <para><remark>At time of writing, the exact visual appearance of a
+        mixed state radio button in gtk was undecided</remark>. Σε αυτήν την κατάσταση, πατώντας οποιοδήποτε ραδιοπλήκτρο στην ομάδα θα πρέπει να ορίζει το πατημένο κουμπί και να αναιρεί όλα τα υπόλοιπα. Έπειτα, η ομάδα πρέπει να συμπεριφέρεται όπως μια κανονική ομάδα ραδιοπλήκτρων - δεν υπάρχει τρόπος επαναφοράς ενός ραδιοπλήκτρου στην μικτή του κατάσταση πατώντας πάνω του. Δώστε ένα κουμπί <guibutton>επαναφοράς</guibutton> ή ισοδύναμο στο παράθυρο που επιτρέπει στις προηγούμενες μικτές ρυθμίσεις να επαναφερθούν χωρίς κλείσιμο του παραθύρου ή ακύρωση του διαλόγου.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε μια ομάδα ραδιοπλήκτρων με μια περιγραφική κεφαλίδα πάνω από ή αριστερά της ομάδας.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε ένα πλαίσιο γύρω από την ομάδα εάν είναι απαραίτητο, αλλά να θυμάστε ότι κενός χώρος δουλεύει συχνά το ίδιο καλά και καταλήγει σε ένα λιγότερο οπτικά άτακτο διάλογο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην τοποθετείτε περισσότερα από περίπου οκτώ ραδιοπλήκτρα στην ίδια κεφαλίδα ομάδας. Εάν χρειάζεστε περισσότερα από οκτώ, σκεφτείτε τη χρήση μιας μονής επιλογής <link linkend="controls-lists">λίστας</link> - αλλά προφανώς χρειάζεται επίσης να σκεφτείτε την απλοποίηση της διεπαφής χρήστη.</para>
+      </listitem>
+
+      <listitem>
+        <para>Δοκιμάστε να στοιχίσετε ομάδες ραδιοπλήκτρων κάθετα αντί για οριζόντια, καθώς αυτό τα διευκολύνει στην οπτική σάρωση. Χρησιμοποιήστε οριζόντιες ή ορθογώνιες στοιχίσεις μόνο εάν βελτιώνουν πολύ τη διάταξη του παραθύρου.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-toggle-buttons">
+    <title>Κουμπιά εναλλαγής</title>
+
+    <para>Τα κουμπιά εναλλαγής μοιάζουν με τα κανονικά <link linkend="controls-buttons">κουμπιά</link>, αλλά χρησιμοποιούνται για να εμφανίσουν ή να αλλάξουν μια κατάσταση αντί να αρχικοποιήσουν μια ενέργεια. Ένα κουμπί εναλλαγής δύο καταστάσεων, ορισμός και αναίρεση, εμφανίζονται από την εμφάνισή του "πατημένο" ή "ανυψωμένο" αντίστοιχα.</para>
+
+    <figure>
+      <title>Μία τυπική ομάδα κουμπιών εναλλαγής</title>
+
+      <mediaobject><imageobject> <imagedata depth="46" fileref="images/controls-toggle-buttons.png" format="PNG" width="137"/> </imageobject> <imageobject> <imagedata fileref="images/controls-toggle-buttons.eps" format="EPS"/> </imageobject> <textobject> <phrase>Μια ομάδα τεσσάρων πλήκτρων εναλλαγής που αναπαριστά μια επιλογή μονάδων μέτρησης: ίντσες, εκατοστά, πόδια και μέτρα</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: callouts -->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Μην χρησιμοποιείτε ομάδες κουμπιών εναλλαγής σε διαλόγους εκτός και περιορισμοί χώρου σας αναγκάζουν, ή χρειάζεστε να δώσετε συνέπεια με μια εργαλειοθήκη στην εφαρμογή σας. <link linkend="controls-check-boxes">πλαίσια ελέγχου</link> ή <link linkend="controls-radio-buttons">ραδιοπλήκτρα</link> είναι συνήθως προτιμητέα, καθώς επιτρέπουν περισσότερο περιγραφικές ετικέτες και λιγότερο μπερδεμένες μα άλλους τύπους ελέγχου.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε κουμπιά εναλλαγής μόνο σε ομάδες, έτσι δεν παίρνονται ως κανονικά κουμπιά. Κάντε την ομάδα να συμπεριφερθεί όπως είτε μια ομάδα πλαισίων ελέγχου είτε μια ομάδα ραδιοπλήκτρων, όπως απαιτείται.</para>
+      </listitem>
+
+      <listitem>
+        <para>Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα όλων των κουμπιών εναλλαγής που επιτρέπουν στον χρήστη να ενεργοποιήσει/απενεργοποιήσει το κουμπί αμέσως από το πληκτρολόγιο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε μια ομάδα κουμπιών εναλλαγής με μια περιγραφική κεφαλίδα από πάνω ή αριστερά της ομάδας, όπως θα κάνατε με μια ομάδα πλαισίων ελέγχου ή ραδιοπλήκτρων.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε ένα πλαίσιο γύρω από την ομάδα των κουμπιών εάν είναι απαραίτητο, αλλά να θυμάστε ότι κενός χώρος δουλεύει συχνά το ίδιο καλά και καταλήγει σε ένα λιγότερο οπτικά άτακτο διάλογο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Δοκιμάστε να στοιχίσετε τις ομάδες των κουμπιών εναλλαγής οριζόντια αντί για κάθετα. Αυτό είναι πώς κανονικά εμφανίζονται τα κουμπιά εναλλαγής σε μια εργαλειοθήκη, έτσι ώστε ο χρήστης να εξοικειώνεται περισσότερο με αυτήν την διάταξη.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην αφήνετε χώρο μεταξύ κουμπιών εναλλαγής σε μια ομάδα, αλλιώς μπορεί να φαίνονται άσχετα ή μπορεί να εκληφθούν ως κανονικά κουμπιά.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα της κεφαλίδας</link> για ετικέτες κουμπιού εναλλαγής, για παράδειγμα <guibutton>Χωρίς ταπετσαρία</guibutton>, <guibutton>Ανάγλυφος λογότυπος</guibutton>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν το κουμπί εναλλαγής σας μπορεί να εμφανίσει κείμενο, εικονίδιο ή αμφότερα, επιλέξτε ποιο θα εμφανίσει στην εκτέλεση σύμφωνα με τη ρύθμιση του χρήστη στα μενού και τους διαλόγους προτίμησης εργαλειοθηκών του GNOME.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε το ίδιο κείμενο ή γραφική ετικέτα για ένα κουμπί εναλλαγής εάν ενεργοποιηθεί/απενεργοποιηθεί.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν το κουμπί εναλλαγής αναπαριστά μια ρύθμιση σε μια πολλαπλή επιλογή δηλαδή ορισμό για μερικά αντικείμενα στην επιλογή και αναίρεση για άλλα, εμφανίστε το κουμπί στην μεικτή του κατάσταση. Για παράδειγμα:</para>
+
+        <figure>
+          <title>Τα κουμπιά εναλλαγής (δεξιά) εμφανίζουν ιδιότητες για μια πολλαπλή επιλογή σχημάτων σε μια εφαρμογή σχεδίασης (αριστερά)</title>
+
+          <mediaobject><imageobject> <imagedata depth="108" fileref="images/controls-toggle-button-mixed.png" format="PNG" width="467"/> </imageobject> <imageobject> <imagedata fileref="images/controls-toggle-button-mixed.eps" format="EPS"/> </imageobject> <textobject> <phrase>Τα κουμπιά εναλλαγής εμφανίζουν το πάχος, την λεπτότητα και τεχνοτροπίες σχεδίασης με παύλες των δύο επιλεγμένων σχημάτων σε μια εφαρμογή σχεδίασης. Ένα σχήμα σχεδιάζεται στην παχιά τεχνοτροπία, το άλλο στην τεχνοτροπία με παύλες. Τα παχιά και με παύλες κουμπιά εναλλαγής εμφανίζονται συνεπώς στη μικτή τους κατάσταση και το λεπτό κουμπί εναλλαγής αναιρείται.</phrase> </textobject></mediaobject>
+        </figure>
+
+        <!-- CB-Fig: There's probably a better figure for fig 16 than this one. Also, my 2 cents on the mixed state visual issue: mixed state MUST be visually DISTINCT from "set." What I see here isn't enough (I know this isn't set yet.) -->
+
+        <remark>At time of writing, the exact visual appearance of mixed state
+        toggle buttons was undecided. A mixed state toggle button should
+        behave exactly as a mixed state check box or radio button, depending
+        on whether the toggle button choices are independent or mutually
+        exclusive, respectively.</remark>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-option-menus">
+    <title>Πτυσσόμενες λίστες</title>
+
+    <para>Οι πτυσσόμενες λίστες χρησιμοποιούνται για επιλογή από ένα αμοιβαία αποκλειόμενο σύνολο επιλογών. Μπορεί να είναι χρήσιμες όταν υπάρχει ανεπαρκής χώρος σε ένα παράθυρο για να χρησιμοποιηθεί μια ομάδα ραδιοπλήκτρων ή μια λίστα μονής επιλογής, με την οποία είναι λειτουργικά ισοδύναμο.</para>
+
+    <figure>
+      <title>Μια πτυσσόμενη λίστα εμφανίζει την τρέχουσα επιλογή (αριστερά) και τη λίστα των διαθέσιμων επιλογών όταν πατιέται (δεξιά)</title>
+
+      <mediaobject><imageobject> <imagedata depth="178" fileref="images/controls-option-menu.png" format="PNG" width="377"/> </imageobject> <imageobject> <imagedata fileref="images/controls-option-menu.eps" format="EPS"/> </imageobject> <textobject> <phrase>Δύο εικόνες, μία μιας πτυσσόμενης λίστας εμφανίζει τις τρέχουσες ρυθμίσεις της και η άλλη εμφανίζει το αναδυόμενο μενού της των διαθέσιμων επιλογών όταν πατιέται</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Callouts, shortened caption.  This can probably be collapsed into one snapshot. -->
+
+    <para>Συστάσεις:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Μην χρησιμοποιείτε πτυσσόμενες λίστες με λιγότερα από τρία στοιχεία, ή περισσότερα από περίπου δέκα. Για να δώσετε μια δυνατότητα δύο επιλογών, χρησιμοποιήστε <link linkend="controls-radio-buttons">ραδιοπλήκτρα</link> ή <link linkend="controls-toggle-buttons">κουμπιά εναλλαγής</link>. Για να δώσετε μια δυνατότητα περισσότερων από δέκα επιλογών, χρησιμοποιήστε μια <link linkend="controls-lists">λίστα</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην αρχικοποιείτε μια ενέργεια όταν ο χρήστης επιλέγει ένα στοιχείο από μια πτυσσόμενη λίστα. Όμως, εάν χρησιμοποιηθεί σε μια στιγμιαία εφαρμογή <link linkend="windows-utility">ιδιότητας ή παραθύρου προτίμησης</link>, ενημερώστε την ρύθμιση που το μενού αντιπροσωπεύει αμέσως.</para>
+      </listitem>
+
+      <listitem>
+        <para>Η επιλογή ενός στοιχείου από μια πτυσσόμενη λίστα δεν πρέπει να επηρεάζει τις τιμές οποιωνδήποτε άλλων ελέγχων. Μπορεί να ενεργοποιήσει, να απενεργοποιήσει, να κρύψει ή να εμφανίσει άλλους ελέγχους, όμως.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε την πτυσσόμενη λίστα με μια ετικέτα κειμένου από πάνω της ή στα αριστερά της, χρησιμοποιώντας <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη να εστιάσει άμεσα στην πτυσσόμενη λίστα.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link> για στοιχεία πτυσσόμενης λίστας, για παράδειγμα <guilabel>αλλαγμένης κίνησης</guilabel></para>
+      </listitem>
+
+      <!-- CB-Ed: Change guilabel to something less literal-seeming: Menu item. -->
+
+      <listitem>
+        <para>Δώστε ένα πλήκτρο πρόσβασης σε κάθε στοιχείο πτυσσόμενης λίστας. Βεβαιωθείτε ότι κάθε πλήκτρο πρόσβασης είναι μοναδικό μες το περιβάλλον παράθυρο ή διάλογο, όχι απλά μες το μενού.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην δίνετε πλήκτρα συντόμευσης σε στοιχεία πτυσσόμενης λίστας από προεπιλογή. Ο χρήστης μπορεί να δώσει τα δικά του πλήκτρα συντόμευσης με τον συνήθη τρόπο εάν επιθυμεί, όμως.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην χρησιμοποιείτε μια πτυσσόμενη λίστα σε μια κατάσταση όπου μπορεί να πρέπει να εμφανίσετε μια ιδιότητα ή μια πολλαπλή επιλογή, καθώς οι πτυσσόμενες λίστες δεν γνωρίζουν τη μικτή κατάσταση. Χρησιμοποιήστε μια ομάδα ραδιοπλήκτρων ή πλήκτρων εναλλαγής στη θέση της, καθώς αυτά μπορούν να εμφανίσουν καταστάσεις ορισμού, αναίρεσης ή μικτές.</para>
+      </listitem>
+
+      <!-- CB-Fig: The bullet points probably could be illustrated in a main drop-down lists figure (17 would work) -->
+
+      <listitem>
+        <para>Μην χρησιμοποιείτε υπομενού σε μία πτυσσόμενη λίστα.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Κανονικά θα πρέπει να χρησιμοποιήσετε <link linkend="controls-radio-buttons">ραδιοπλήκτρα</link> ή μια <link linkend="controls-lists">λίστα</link> αντί για πτυσσόμενες λίστες, καθώς αυτοί οι έλεγχοι παρουσιάζουν όλες τις διαθέσιμες επιλογές μονομιάς χωρίς παραπέρα αλληλεπίδραση. Όμως, οι πτυσσόμενες λίστες μπορεί να προτιμούνται σε ένα παράθυρο όπου:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>υπάρχει λίγος διαθέσιμος χώρος</para>
+      </listitem>
+
+      <listitem>
+        <para>η λίστα επιλογών μπορεί να αλλάξει με τον χρόνο</para>
+      </listitem>
+
+      <listitem>
+        <para>τα περιεχόμενα του κρυφού μέρους του μενού είναι φανερά από την ετικέτα του και το ένα επιλεγμένο στοιχείο. Για παράδειγμα, εάν έχετε ένα μενού επιλογής με ετικέτα "μήνας:" με το στοιχείο "Ιανουάριος" επιλεγμένο, ο χρήστης μπορεί να συμπεράνει λογικά ότι το μενού περιέχει τους 12 μήνες του έτους χωρίς να πρέπει να κοιτάξει.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Οι πτυσσόμενες λίστες μπορεί επίσης να είναι χρήσιμες σε εργαλειοθήκες, για αντικατάσταση μιας ομάδας αρκετών αμοιβαία αποκλειόμενων κουμπιών εναλλαγής.</para>
+  </sect1>
+
+  <sect1 id="controls-combo-boxes">
+    <title>Πτυσσόμενα σύνθετα πλαίσια</title>
+
+    <!-- CB-Fig: Be aware that some people may not distinguish between drop-down lists and combo boxes; that is, they are taken as two types of combo boxes, editable and uneditable (see JLF DG). -->
+
+    <!-- How odd, the whole point of a combo box is that it's a combination of a text field and a list... as such, therefore there is no such thing as an 'uneditable combo box' :o)  -->
+
+    <para>Τα πτυσσόμενα σύνθετα πλαίσια συσχετίζουν ένα πεδίο εισαγωγής κειμένου και μια πτυσσόμενη λίστα προκαθορισμένων τιμών. Η επιλογή προκαθορισμένων τιμών ορίζει το πεδίο εισόδου σε αυτήν την τιμή.</para>
+
+    <figure>
+      <title>Ένα πτυσσόμενο σύνθετο πλαίσιο πριν και μετά την πτυσσόμενη λίστα του εμφανίζεται</title>
+
+      <mediaobject><imageobject> <imagedata depth="200" fileref="images/controls-combo.png" format="PNG" width="304"/> </imageobject> <imageobject> <imagedata fileref="images/controls-combo.eps" format="EPS"/> </imageobject> <textobject> <phrase>Δύο εικόνες, μία ενός πτυσσόμενου σύνθετου πλαισίου πεδίου καταχώρισης που εμφανίζει την τρέχουσα επιλογή και η άλλη εμφανίζει την πτυσσόμενη λίστα της των διαθέσιμων επιλογών όταν πατηθεί</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: callouts, shorten caption. -->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Χρησιμοποιήστε μόνο ένα πτυσσόμενο σύνθετο πλαίσιο αντί για λίστα, πτυσσόμενη λίστα ή ομάδα ραδιοπλήκτρων όταν είναι σημαντικό ο χρήστης να μπορεί να εισάγει μια νέα τιμή που δεν είναι ήδη μεταξύ των προκαθορισμένων επιλογών.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην αρχικοποιείτε μια ενέργεια όταν ο χρήστης επιλέγει ένα στοιχείο από τη λίστα σε ένα πτυσσόμενο σύνθετο πλαίσιο. Εάν χρησιμοποιείται σε μια στιγμιαία εφαρμογή <link linkend="windows-utility">ιδιότητας ή παραθύρου προτίμησης</link>, ενημερώστε τη ρύθμιση που αντιπροσωπεύεται από το πτυσσόμεν σύνθετο πλαίσιο αμέσως εάν είναι δυνατό. Εάν αυτό δεν είναι δυνατό επειδή τα περιεχόμενα του πεδίου καταχώρισης είναι άκυρα ενώ ο χρήστης πληκτρολογεί ακόμα σε αυτό, ενημερώστε τη σχετική ρύθμιση όταν το πτυσσόμενο σύνθετο πλαίσιο χάσει την εστίαση.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν ο χρήστης πληκτρολογεί μια τιμή στο πτυσσόμενο σύνθετο πλαίσιο που δεν είναι ήδη στην πτυσσόμενη λίστα, προσθέστε το στη λίστα όταν το πτυσσόμενο σύνθετο πλαίσιο χάνει την εστίαση, έτσι ώστε να μπορεί να επιλεγεί την επόμενη φορά.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ερμηνεύετε την καταχώριση χρήστη σε ένα πτυσσόμενο σύνθετο πλαίσιο με τρόπο ανεξάρτητο από πεζά/κεφαλαία. Για παράδειγμα, εάν ο χρήστης πληκτρολογήσει <userinput>γαλάζιο</userinput>, <userinput>Γαλάζιο</userinput> και <userinput>ΓΑΛΑΖΙΟ</userinput> στο ίδιο πτυσσόμενο σύνθετο πλαίσιο σε διαφορετικές περιπτώσεις, αποθηκεύστε μόνο μία από αυτές στην πτυσσόμενη λίστα του σύνθετου πλαισίου, εκτός και η εφαρμογή σας ξεχωρίζει μεταξύ των διαφορετικών μορφών (που συνήθως είναι κακή ιδέα).</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε το πτυσσόμενο σύνθετο πλαίσιο με μια ετικέτα κειμένου από πάνω του ή στα αριστερά του, χρησιμοποιώντας <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη να εστιάσει άμεσα στο πτυσσόμενο σύνθετο πλαίσιο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link> για στοιχεία πτυσσόμενης λίστας, για παράδειγμα <guilabel>αλλαγμένης κίνησης</guilabel>.</para>
+      </listitem>
+
+      <!-- CB-Ed: Make guilabel less literal: "List item." -->
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-scrollbars">
+    <title>Γραμμές κύλισης</title>
+
+    <para>Συχνά ένα αντικείμενο (όπως ένα έγγραφο ή μια λίστα) δεν προσαρμόζονται μέσα στους περιορισμούς του ελέγχου προβολής. Σε αυτές τις περιπτώσεις μια γραμμή κύλισης μπορεί να προσαρτηθεί στον έλεγχο προβολής. Η γραμμή κύλισης αλλάζει το μέρος του αντικειμένου που είναι προς το παρόν ορατό μέσα στον έλεγχο προβολής: ολισθαίνει την προβολή κατά μήκος του αντικειμένου σε έναν άξονα (οριζόντιο ή κάθετο).</para>
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Εμφανίστε γραμμές κύλισης μόνο όταν απαιτούνται για ολίσθηση της προβολής. Εάν ένα αντικείμενο ταιριάζει μες τον έλεγχο προβολής, μην σχεδιάζετε γραμμές κύλισης. Εάν χρησιμοποιείτε ένα GtkScrolledWindow, καλέστε τη ρύθμιση <function>gtk_scrolled_window_set_policy</function> του κατάλληλου άξονα (ή αξόνων) σε GTK_POLICY_AUTOMATIC.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis>Μην</emphasis> χρησιμοποιείτε γραμμές κύλισης ως αντικατάσταση για έναν <link linkend="controls-sliders">ολισθητή</link>. Οι γραμμές κύλισης θα πρέπει να χρησιμοποιούνται μόνο για προσάρτηση σε μια προβολή που αλλάζουν ενεργά και όχι ως ένας γενικός συνεχής έλεγχος εισαγωγής.</para>
+      </listitem>
+
+      <listitem>
+        <para>Προσαρτήστε τις γραμμές κύλισης στα δεξιά του ελέγχου προβολής (για κάθετη ολίσθηση της προβολής), ή στο τέλος (για οριζόντια προβολή). <emphasis>Μην</emphasis> προσαρτάτε γραμμές κύλισης στην κορυφή ή στα αριστερά του ελέγχου προβολέα.</para>
+      </listitem>
+
+      <listitem>
+        <para>Οι γραμμές κύλισης πρέπει να στοιχίζονται σε αμφότερες τις κατευθύνσεις με την προσαρτώμενη προβολή στον άξονα που ελέγχουν. Με άλλα λόγια, οι οριζόντιες γραμμές κύλισης πρέπει να καλύπτουν το πλήρες μήκος του ελέγχου προβολέα και οι κάθετες γραμμές κύλισης πρέπει να καλύπτουν το πλήρες ύψος του ελέγχου προβολέα.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν αμφότερες οι γραμμές κύλισης οριζόντια και κάθετη δρουν στην προβολή, η στοίχιση θα απαιτεί το μικρό ορθογώνιο στην κάτω δεξιά γωνία όπου η οριζόντια και η κάθετη γραμμή κύλισης συναντώνται να είναι κενό. Αυτό είναι εντάξει.</para>
+      </listitem>
+       
+      <listitem>
+        <para>Οι γραμμές κύλισης πρέπει να επηρεάζουν την προβολή στην οποία προσαρτώνται σε πραγματικό χρόνο: καθώς ο χρήστης σύρει ή πατά η προβολή πρέπει να αλλάζει. Το μεσοδιάστημα θα είναι ενοχλητικό και επιδρά αρνητικά στην ικανότητα των χρηστών να περιηγούνται το περιεχόμενο μες την προβολή.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+
+
+  <sect1 id="controls-lists">
+    <title>Λίστες</title>
+
+    <para>Μια λίστα ελέγχων επιτρέπει στον χρήστη να επιθεωρήσει, να χειριστεί ή να επιλέξει από μια λίστα στοιχείων. Οι λίστες μπορούν να έχουν μία ή περισσότερες στήλες και να περιέχουν κείμενο, γραφικά, απλούς ελέγχους ή ένα συνδυασμό και των τριών.</para>
+
+    <!-- CB-Fig: Looks like a table, to me, complete with table row striping and column headers.  Lists are usually one column, scrollable... lists! Of text or, rarely, graphics which can be selected in order to be manipulated. Sorting also happens in tables, not lists, from my experience. -->
+
+    <!-- CFB: It's not a table because there is no way to select or manipulate individual cells, only complete rows. -->
+
+    <figure>
+      <title>Μία απλή λίστα δύο στηλών</title>
+
+      <mediaobject><imageobject> <imagedata depth="149" fileref="images/controls-list.png" format="PNG" width="179"/> </imageobject> <imageobject> <imagedata fileref="images/controls-list.eps" format="EPS"/> </imageobject> <textobject> <phrase>Εικόνα του στοιχείου ελέγχου που περιέχει δύο αταξινόμητες στήλες κειμένου</phrase> </textobject></mediaobject>
+    </figure>
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Δώστε πάντα μια ετικέτα στους ελέγχους λίστας, τοποθετημένες πάνω από ή αριστερά της λίστας με <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη να εστιάσει άμεσα στη λίστα.</para>
+      </listitem>
+
+      <listitem>
+        <para>Κάντε τον έλεγχο λίστας αρκετά μεγάλο που να μπορεί να εμφανίσει τουλάχιστον τέσσερα στοιχεία τη φορά χωρίς κύλιση. Για λίστες δέκα ή περισσότερων στοιχείων, αυξήστε αυτό το ελάχιστο μέγεθος κατάλληλα.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν η λίστα εμφανίζεται σε έναν διάλογο ή βοηθητικό παράθυρο, σκεφτείτε να κάνετε το παράθυρο και τη λίστα μέσα της κλιμακώσιμη έτσι ώστε ο χρήστης να μπορεί να διαλέξει πόσα στοιχεία λίστας θα είναι ορατά τη φορά χωρίς κύλιση. Κάθε φορά που ο χρήστης ανοίγει αυτόν τον διάλογο, ορίστε τις διαστάσεις του σε αυτές που ο χρήστης έχει αυξομειώσει τελευταία.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην χρησιμοποιείτε λίστες με λιγότερα από περίπου πέντε στοιχεία, εκτός και ο αριθμός των στοιχείων μπορεί να αυξηθεί με τον χρόνο. Χρησιμοποιήστε <link linkend="controls-check-boxes">πλαίσια ελέγχου</link>, <link linkend="controls-radio-buttons">ραδιοπλήκτρα</link> ή μια <link linkend="controls-option-menus">πτυσσόμενη λίστα</link> εάν υπάρχουν λιγότερα στοιχεία.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρήση μόνο επικεφαλίδων στηλών όταν:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>η λίστα έχει περισσότερες από μία στήλες, ή</para>
+          </listitem>
+
+          <listitem>
+            <para>η λίστα έχει μόνο μία στήλη, αλλά ο χρήστης μπορεί να θέλει την αναδιάταξη της λίστας. (Αυτό σπάνια είναι χρήσιμο με απλές λίστες στηλών).</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Στις περισσότερες άλλες καταστάσεις, οι κεφαλίδες στήλης καταλαμβάνουν περιττό χώρο και η πρόσθετη ετικέτα προσθέτει οπτική αταξία.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε πάντα τις κεφαλίδες στήλης όταν χρησιμοποιούνται. Εάν η στήλη είναι υπερβολικά στενή για μια λογική ετικέτα, δώστε μια συμβουλή οθόνης για τη στήλη. Πέρα από την προφανή της χρήση, αυτό θα βοηθήσει να επιβεβαιώσετε ότι οι βοηθητικές τεχνολογίες μπορούν να περιγράψουν τη χρήση της στήλης σε οπτικά εξασθενημένους χρήστες.</para>
+      </listitem>
+
+      <listitem>
+        <para>Σκεφτείτε τη χρήση μιας λίστας πλαισίων ελέγχων για λίστες πολλαπλών επιλογών, καθώς αυτές το κάνουν πιο φανερό από ότι η πολλαπλή επιλογή μπορεί:</para>
+
+        <figure>
+          <title>Μία απλή λίστα πλαισίων ελέγχου</title>
+
+          <mediaobject><imageobject> <imagedata depth="133" fileref="images/controls-list-checkbox.png" format="PNG" width="160"/> </imageobject> <imageobject> <imagedata fileref="images/controls-list-checkbox.eps" format="EPS"/> </imageobject> <textobject> <phrase>Εικόνα λίστας στοιχείου ελέγχου με δύο στήλες. Η πρώτη στήλη αποτελείται από πλαίσια ελέγχου που δείχνουν εάν το αντίστοιχο στοιχείο στη δεύτερη στήλη επιλέγεται ή όχι για παραπέρα ενέργεια.</phrase> </textobject></mediaobject>
+        </figure>
+
+        <para>Για να το κάνετε αυτό, πρέπει κανονικά να ορίσετε ο ίδιος έλεγχος λίστας να είναι μονής επιλογής, αλλά αυτό εξαρτάται από την συγκεκριμένη εργασία για την οποία θα χρησιμοποιηθεί.</para>
+      </listitem>
+
+      <listitem>
+        <para>Για λίστες πολλαπλών επιλογών, εμφανίστε τον επιλεγμένο αριθμό των στοιχείων προς το παρόν σε μια στατική ετικέτα κειμένου κάτω από τη λίστα, για παράδειγμα, <guilabel>Επιλεγμένα ονόματα: 3</guilabel>. Μια τέτοια ετικέτα κάνει πιο φανερό ότι η πολλαπλή επιλογή είναι δυνατή.</para>
+      </listitem>
+
+      <listitem>
+        <para>Σκεφτείτε να δώσετε κουμπιά <guibutton>Επιλογή όλων</guibutton> και <guibutton>Αποεπιλογή όλων</guibutton> δίπλα στις λίστες πολλαπλής επιλογής, εάν είναι δυνατό.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="controls-lists-sortable">
+      <title>Ταξινομήσιμες λίστες</title>
+      <para>Οι χρήστες συχνά προτιμούν να ταξινομούν μεγάλες λίστες, είτε αλφαβητικά είτε αριθμητικά, για να διευκολύνουν την εύρεση στοιχείων. Επιτρέψτε στους χρήστες να ταξινομούν μεγάλες ή πολλαπλές στήλες λιστών πατώντας στην κεφαλίδα της στήλης που θέλουν να ταξινομήσουν.</para>
+      <itemizedlist><title>Κατευθυντήριες γραμμές</title>
+	      <listitem><para>Δείξτε ποια στήλη είναι προς το παρόν ταξινομημένη εμφανίζοντας ένα ανοδικό ή καθοδικό βέλος στην κεφαλίδα της:</para>
+	  <informaltable frame="all">
+            <tgroup align="left" cols="2">
+                <thead>
+	              <row>
+		      <entry>Σειρά ταξινόμησης</entry>
+                      <entry>Διεύθυνση βέλους</entry>
+		      <entry>Παράδειγμα</entry>
+                    </row>
+                </thead>
+            <tbody>
+                  <row>
+		  <entry>Φυσικό</entry>
+		  <entry>Κάτω</entry>
+		 <entry>Αλφαβητικά· πρώτα ο μικρότερος αριθμός· πρώτα η πιο πρόσφατη ημερομηνία· πρώτα τα σημειωμένα στοιχεία</entry>
+                </row>
+                  <row>
+		  <entry>Αντιστροφή</entry>
+		  <entry>Πάνω</entry>
+		  <entry>Αντίστροφα αλφαβητικά· πρώτα ο μεγαλύτερος αριθμός· πρώτα η πιο πρόσφατη ημερομηνία· πρώτα τα ασημείωτα στοιχεία</entry>
+                </row>
+            </tbody>
+             </tgroup>
+              </informaltable>
+      </listitem>
+      <listitem><para>Πατώντας μια αταξινόμητη κεφαλίδα στήλης ταξινομεί τη στήλη με φυσική σειρά, που δείχνεται με την εμφάνιση ενός καθοδικού βέλους στην κεφαλίδα της.</para></listitem>
+
+      <listitem><para>Πατώντας μια ταξινομημένη κεφαλίδα στήλης με φυσική σειρά την αναταξινομεί με αντίστροφη σειρά, που δείχνεται με ένα ανοδικό βέλος στην κεφαλίδα της.</para>
+	      
+		      <note><title>Αποταξινόμηση λιστών</title>
+	    		<para>Ενίοτε, μια αταξινόμητη κατάσταση μπορεί να είναι χρήσιμη, για παράδειγμα για την εμφάνιση στοιχείων στη σειρά με την οποία ο χρήστης τα προσέθεσε στη λίστα. Σε τέτοιες περιπτώσεις, πατώντας μια ταξινομημένη στήλη με αντιστροφή σειρά πρέπει να την αποταξινομεί, που δείχνεται από την αφαίρεση του βέλους από την κεφαλίδα της στήλης.</para>
+	    	      <para>Συνήθως, όμως, αυτό πετυχαίνεται καλύτερα προσθέτοντας μια πρόσθετη στήλη που ο χρήστης μπορεί να ταξινομήσει με τον συνήθη τρόπο, όπως μια στήλη σειράς αριθμών σε αυτό το παράδειγμα.</para></note>
+	</listitem>
+
+	</itemizedlist>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-trees">
+    <title>Δένδρα</title>
+
+    <para>Ένα δένδρο ελέγχων επιτρέπει στον χρήστη να επιθεωρήσει, να χειριστεί ή να επιλέξει από μια ιεραρχική λίστα στοιχείων. Τα δένδρα μπορούν να έχουν μία ή περισσότερες στήλες και να περιέχουν κείμενο, γραφικά, απλούς ελέγχους ή ένα συνδυασμό και των τριών.</para>
+
+    <tip>
+      <title>Χρήση των δένδρων με προσοχή!</title>
+
+      <para>Λόγω της συνθετότητας τους συγκρινόμενα με τους άλλους ελέγχους, αρχάριοι και κάποιοι ενδιάμεσοι χρήστες έχουν συχνά προβλήματα χρήσης και κατανόησης των ελέγχων δένδρου. Εάν η εφαρμογή σας σχεδιάστηκε για αυτόν τον τύπο χρήστη, ίσως θελήσετε να σκεφτείτε εναλλακτικούς τρόπους παρουσίασης της πληροφορίας, όπως η λίστα Ναυτίλου ή η προβολή εικονιδίου, ή οι ιεραρχικές λίστες περιηγητή που βρίσκονται στον <ulink url="http://www.gnustep.it/enrico/gworkspace/viewer.html">προβολέα αρχείου του GNUstep</ulink>.</para>
+    </tip>
+
+    <figure>
+      <title>Ένας απλός έλεγχος δένδρου με ένα επίπεδο ιεραρχίας</title>
+
+      <mediaobject><imageobject> <imagedata depth="277" fileref="images/controls-tree.png" format="PNG" width="343"/> </imageobject> <imageobject> <imagedata fileref="images/controls-tree.eps" format="EPS"/> </imageobject> <textobject> <phrase>Εικόνα του στοιχείου ελέγχου δένδρου που εμφανίζει τους μήνες του χρόνου ως κόμβους κορυφαίου επιπέδου και τις επίσημες αργίες σε αυτούς τους μήνες ως θυγατρικές τους</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Trees are usually used for navigation, so it's probably best to illustrate a tree in that context (GnomeCC, for example). -->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Δώστε πάντα μια ετικέτα στους ελέγχους δένδρου, τοποθετημένες πάνω από ή αριστερά του δένδρου με <link linkend="layout-capitalization">κεφαλαίο το πρώτο γράμμα</link>. Δώστε ένα πλήκτρο πρόσβασης στην ετικέτα που επιτρέπει στον χρήστη να εστιάσει άμεσα στο δένδρο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρήση επικεφαλίδων στηλών όταν:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>το δένδρο έχει περισσότερες από μία στήλες</para>
+          </listitem>
+
+          <listitem>
+            <para>το δένδρο έχει μόνο μία στήλη, αλλά ο χρήστης ίσως επιθυμεί να αναταξινομήσει το δένδρο. Αυτό θα πρέπει σπάνια να συμβαίνει σε μονά δένδρα στηλών.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Στις περισσότερες άλλες καταστάσεις, οι κεφαλίδες στήλης καταλαμβάνουν περιττό χώρο και η πρόσθετη ετικέτα προσθέτει οπτική αταξία.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε πάντα τις κεφαλίδες στήλης όταν χρησιμοποιούνται. Εάν η στήλη είναι υπερβολικά στενή για μια λογική ετικέτα, δώστε μια συμβουλή οθόνης για τη στήλη. Πέρα από την προφανή της χρήση, αυτό θα βοηθήσει να επιβεβαιώσετε ότι οι βοηθητικές τεχνολογίες μπορούν να περιγράψουν τη χρήση της στήλης σε οπτικά εξασθενημένους χρήστες.</para>
+      </listitem>
+
+      <listitem>
+        <para>Σκεφτείτε τη χρήση ενός δένδρου πλαισίων ελέγχων για δένδρα πολλαπλών επιλογών, καθώς αυτές το κάνουν πιο φανερό από όσο η πολλαπλή επιλογή μπορεί:</para>
+
+        <figure>
+          <title>Ένα απλό δένδρο πεδίου ελέγχου</title>
+
+          <mediaobject><imageobject> <imagedata depth="297" fileref="images/controls-tree-checkbox.png" format="PNG" width="349"/> </imageobject> <imageobject> <imagedata fileref="images/controls-tree-checkbox.eps" format="EPS"/> </imageobject> <textobject> <phrase>Εικόνα του στοιχείου ελέγχου με δύο στήλες. Η πρώτη στήλη αποτελείται από πλαίσια ελέγχου που εμφανίζουν εάν το αντίστοιχο στοιχείο στη δεύτερη στήλη επιλέγεται ή όχι για παραπέρα ενέργεια.</phrase> </textobject></mediaobject>
+        </figure>
+
+        <para>Για να το κάνετε αυτό, πρέπει κανονικά να ορίσετε ο ίδιος έλεγχος δένδρου να είναι μονής επιλογής, αλλά αυτό εξαρτάται από την συγκεκριμένη εργασία για την οποία θα χρησιμοποιηθεί.</para>
+      </listitem>
+
+      <listitem>
+        <para>Για δένδρα πολλαπλών επιλογών, εμφανίστε τον επιλεγμένο αριθμό των στοιχείων προς το παρόν σε μια στατική ετικέτα κειμένου κάτω από το δένδρο, για παράδειγμα, <guilabel>Επιλεγμένα ονόματα: 3</guilabel>. Μια τέτοια ετικέτα κάνει πιο φανερό ότι η πολλαπλή επιλογή είναι δυνατή.</para>
+      </listitem>
+
+      <listitem>
+        <para>Σκεφτείτε να δώσετε κουμπιά <guibutton>Επιλογή όλων</guibutton> και <guibutton>Αποεπιλογή όλων</guibutton> δίπλα στα δένδρα πολλαπλής επιλογής, εάν είναι δυνατό στην εργασία.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="controls-trees-sortable">
+	    <title>Ταξινομήσιμα δένδρα</title>
+	    <para>Όπως με τις λίστες, ο χρήστης μπορεί να βρει χρήσιμη την ταξινόμηση δένδρων μεγάλων ή πολλαπλών στηλών. Δείτε τον οδηγό στο <xref linkend="controls-lists-sortable"/> για περισσότερες πληροφορίες.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-notebooks">
+    <title>Σημειωματάρια με καρτέλες</title>
+
+    <para>Ένας έλεγχος σημειωματάριου με καρτέλες είναι ένας βολικός τρόπος παρουσίασης σχετικών πληροφοριών στο ίδιο παράθυρο, χωρίς να πρέπει να το εμφανίζετε όλο ταυτόχρονα. Είναι ανάλογο με τις καρτέλες διαίρεσης σε ένα ντοσιέ δακτυλίου ή ένα αρχειοθήκη.</para>
+
+    <figure>
+      <title>Ένας τυπικός έλεγχος σημειωματαρίου με τρεις καρτέλες</title>
+
+      <mediaobject><imageobject> <imagedata depth="270" fileref="images/controls-notebook.png" format="PNG" width="341"/> </imageobject> <imageobject> <imagedata fileref="images/controls-notebook.eps" format="EPS"/> </imageobject> <textobject> <phrase>Εικόνα στοιχείου ελέγχου σημειωματαρίου με τρεις καρτέλες</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Maybe I'm off, so if I am, then just ignore, but I'm concerned with terminology in the HIG at this point; maybe it's just one of those wizard/druid issues that are just here to stay because GNOME is GNOME, but I think people are more familiar with the term "Tabs" instead of the term "Pages," and "Tabbed pane" instead of "notebooks."  That's what they are called in JLF, anyway.   Callouts would also be nice here. -->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Μην βάζετε υπερβολικές σελίδες στο ίδιο σημειωματάριο. Εάν δεν μπορείτε να δείτε όλες τις καρτέλες χωρίς κύλιση ή διαίρεση τους σε πολλαπλές γραμμές, χρησιμοποιείτε προφανώς υπερβολικές και θα πρέπει να χρησιμοποιήσετε έναν έλεγχο λίστας στη θέση τους. Δείτε το <link linkend="controls-too-many-tabs">παρακάτω παράδειγμα</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ονομάστε τις ετικέτες με <link linkend="layout-capitalization">κεφαλαία κεφαλίδα</link> και χρησιμοποιήστε ουσιαστικά αντί για ρήματα, για παράδειγμα <guilabel>γραμματοσειρά</guilabel> ή <guilabel>στοίχιση</guilabel>. Δοκιμάστε να κρατήσετε όλες τις ετικέτες σε ένα σημειωματάριο με το ίδιο γενικό μήκος.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην αποδίδετε πλήκτρα πρόσβασης σε ετικέτες καρτελών, καθώς αυτό σημαίνει ότι δεν μπορείτε να χρησιμοποιήσετε αυτά τα πλήκτρα πρόσβασης για οποιοδήποτε άλλο έλεγχο σε <emphasis>οποιαδήποτε</emphasis> σελίδα του σημειωματαρίου χωρίς διένεξη. Ακόμα κι αν μπορείτε να αποδώσετε πλήκτρα πρόσβασης που δεν συγκρούονται, είναι καλύτερο να μην το κάνετε επειδή μπορεί να είναι αδύνατη η αποφυγή διένεξης όταν η εφαρμογή σας μεταφράζεται σε άλλες γλώσσες. Δώστε ένα πλήκτρο πρόσβασης σε κάθε άλλο έλεγχο σε κάθε σελίδα, όμως.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην σχεδιάζετε ένα σημειωματάριο που αλλάζοντας ελέγχους σε μια σελίδα να επηρεάζει τους ελέγχους σε οποιαδήποτε άλλη σελίδα. Οι χρήστες είναι απίθανο να ανακαλύψουν τέτοιες εξαρτήσεις.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν ένας έλεγχος επηρεάζει μόνο μια σελίδα σημειωματαρίου, τοποθετήστε τον σε αυτήν τη σελίδα του σημειωματαρίου. Εάν επηρεάζει κάθε σελίδα, τοποθετήστε τον έξω από τον έλεγχο του σημειωματαρίου, για παράδειγμα δίπλα στα κουμπιά του παραθύρου <guibutton>εντάξει</guibutton> και <guibutton>ακύρωση</guibutton>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε καρτέλες που είναι ανάλογες με το πλάτος των ετικετών τους. Μην ορίζετε απλά όλες τις καρτέλες στο ίδιο πλάτος, καθώς αυτό κάνει πιο δύσκολη την οπτική σάρωση και περιορίζει τον αριθμό των καρτελών που μπορείτε να προσαρμόσετε σε ένα σημειωματάριο χωρίς κύλιση. Για παράδειγμα:</para>
+
+        <figure>
+          <title>Καρτέλες σταθερού -και ανάλογου- πλάτους (προτείνεται)</title>
+
+          <mediaobject><imageobject> <imagedata depth="92" fileref="images/controls-notebook-tabs.png" format="PNG" width="475"/> </imageobject> <imageobject> <imagedata fileref="images/controls-notebook-tabs.eps" format="EPS"/> </imageobject> <textobject> <phrase>Σύγκριση πλάι-πλάι ενός σημειωματάριου του οποίου οι καρτέλες είναι όλες του ίδιου πλάτους και μία από αυτές τις καρτέλες είναι αρκετά πλατιά μόνο για να χωρέσει τις ετικέτες καρτέλας. Η δεύτερη καταλαμβάνει περίπου 33% λιγότερο χώρο οθόνης.</phrase> </textobject></mediaobject>
+        </figure>
+      </listitem>
+
+      <!-- CB-Fig: callouts, shorter caption -->
+
+      <listitem>
+        <para>Αν και τα περιεχόμενα κάθε σελίδας σε ένα σημειωματάριο καταλαμβάνουν διαφορετικό ποσό χώρου, μην χρησιμοποιείτε μεγαλύτερο από το κανονικό διάκενο γύρω από τους ελέγχους στις "πιο άδειες" σελίδες και μην κεντράρετε τους ελέγχους στη σελίδα.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν οι ετικέτες καρτέλας περιέχουν εικονίδια, επιλέξτε εάν θα εμφανίζονται ή όχι τα εικονίδια με βάση τον χρόνο εκτέλεσης στις προτιμήσεις του χρήστη στους διαλόγους μενού GNOME και προτιμήσεων επιφάνειας εργασίας εργαλειοθηκών. Να δείχνετε πάντα το μέρος του κειμένου της ετικέτας, όμως.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Εάν έχετε περισσότερες από περίπου έξι καρτέλες σε ένα σημειωματάριο, χρησιμοποιήστε έναν έλεγχο λίστας αντί για καρτέλες για εναλλαγή μεταξύ των σελίδων των ελέγχων. Για παράδειγμα:</para>
+
+    <figure id="controls-too-many-tabs">
+      <title>Χρησιμοποιήστε έναν έλεγχο λίστας όπου θα μπορούσαν να υπάρξουν υπερβολικές καρτέλες για την άνετη προσαρμογή σε ένα σημειωματάριο</title>
+
+      <mediaobject><imageobject> <imagedata depth="200" fileref="images/controls-notebook-list.png" format="PNG" width="370"/> </imageobject> <imageobject> <imagedata fileref="images/controls-notebook-list.eps" format="EPS"/> </imageobject> <textobject> <phrase>Μέρος ενός παραθύρου που περιλαμβάνει ένα στοιχείο ελέγχου λίστας με 7 στοιχεία, κάθε στοιχείο αναπαριστά μια κατηγορία ρυθμίσεων όπως "εμφάνιση" και "περιήγηση". Τα στοιχεία ελέγχου στο υπόλοιπο παράθυρο αλλάζουν ανάλογα με το ποιο στοιχείο επιλέγεται στη λίστα.</phrase> </textobject></mediaobject>
+    </figure>
+
+    <para>Όπως σε αυτό το παράδειγμα, τοποθετήστε το στοιχείο ελέγχου της λίστας στα αριστερά του παραθύρου, με το δυναμικό τμήμα του παραθύρου αμέσως στα δεξιά του. <remark>Should this be reversed for right-to-left locales?</remark></para>
+
+	<sect2 id="controls-tab-status">
+	  <title>Ενδείξεις κατάστασης</title>
+	  <remark>This section needs more concrete recommendations, it's currently (almost) taken verbatim from Sebastian's patch in bug #72101.</remark>
+	  <para>Σε μερικά παράθυρα με καρτέλες, όπως στα παράθυρα προτίμησης, μπορεί να είναι επιθυμητό να δείξετε την κατάσταση της συγκεκριμένης καρτέλας. Αυτό μπορεί να χρησιμοποιηθεί ως ειδοποίηση στον χρήστη ότι μια ιστοσελίδα φορτώνεται ακόμα ή έχει φορτωθεί, ως ένα νέο μήνυμα που περιμένει σε μια συγκεκριμένη συζήτηση άμεσου μηνύματος, ή ότι ένα έγγραφο δεν έχει αποθηκευτεί. Ένας δείκτης μιας τέτοιας κατάστασης πρέπει να είναι ένα εικονίδιο που τοποθετείται αμέσως στα αριστερά της ετικέτας καρτέλας. Επιπρόσθετα, το χρώμα της ετικέτας της καρτέλας μπορεί να αλλαχθεί για να δείξει μια συγκεκριμένη κατάσταση. Μην βασίζεστε απλά σε διαφορετικά χρωματικά σχήματα για την ένδειξη της κατάστασης.</para>
+	</sect2>
+  </sect1>
+
+  <sect1 id="controls-progress-bars">
+    <title>Γραμμές προόδου</title>
+
+    <para>Οι γραμμές προόδου είναι οπτικές ενδείξεις της προόδου μιας εργασίας που εκτελείται από την εφαρμογή και παρέχει σημαντική <link linkend="feedback-types">ανάδραση</link>. Για πληροφορίες χρήσης μιας γραμμής προόδου μέσα σε ένα παράθυρο προόδου, δείτε <xref linkend="windows-progress"/>.</para>
+
+    <para>Μπορείτε να χρησιμοποιήσετε δύο κύριους τύπους γραμμών προόδου στις γραμμές μέτρησης προόδου εφαρμογής και αόριστες γραμμές προόδου (το είδος που αναπηδά πίσω και μπρος). Επιπλέον υπάρχουν τρεις τύποι μετρημένων γραμμών προόδου.</para>
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Χρησιμοποιήστε πάντα μια γραμμή μέτρησης προόδου όταν το μήκος μιας εργασίας μπορεί να προβλεφθεί ακριβώς ή περίπου. Αλλιώς, χρησιμοποιήστε έναν <link linkend="indeterminate-progress">αόριστο δείκτη προόδου</link> ή ένα <link linkend="progress-checklists">παράθυρο λίστας ελέγχων</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Βεβαιωθείτε ότι μια γραμμή μέτρησης προόδου μετρά τον ολικό χρόνο ή ολική εργασία μιας λειτουργίας, όχι απλά αυτόν ενός μονού βήματος. Μια εξαίρεση είναι μια γραμμή προόδου που μετρά τον ολικό χρόνο ή ολική εργασία του τρέχοντος βήματος σε μια λίστα ελέγχων προόδου.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="time-remaining">
+      <title>Δείκτης προόδου υπολειπόμενου χρόνου</title>
+
+      <para>Μια κίνηση που αποτελείται από μια γραμμή που αλλάζει μήκος δείχνει πόσος χρόνος παραμένει σε μια λειτουργία και το κείμενο δηλώνει πόσος χρόνος παραμένει πριν την ολοκλήρωση της λειτουργίας. Οι γραμμές υπολειπόμενου χρόνου είναι ο πιο χρήσιμος τύπος γραμμής προόδου.</para>
+
+      <figure>
+        <title>Μία απλή γραμμή προόδου για τον 'υπολειπόμενο χρόνο'</title>
+
+        <mediaobject><imageobject> <imagedata width="386" fileref="images/controls-progress-time.png" format="PNG" depth="38"/> </imageobject> <imageobject> <imagedata fileref="images/controls-progress-time.eps" format="EPS"/> </imageobject> <textobject> <phrase>Ένας απλός διάλογος προόδου υπολειπόμενου χρόνου</phrase> </textobject></mediaobject>
+      </figure>
+
+      <para>Χρησιμοποιήστε τη γραμμή υπολειπόμενου χρόνου εάν η εφαρμογή σας θα εμφανίσει μια αρχική εκτίμηση του υπολειπόμενου χρόνου μιας λειτουργίας και έπειτα περιοδική εμφάνιση ενημερωμένων εκτιμήσεων. Κάθε ενημερωμένη εκτίμηση πρέπει να βασίζεται σε αλλαγές που συνέβησαν και θα προκαλέσει τον γρηγορότερο ή καθυστερημένο τερματισμό της λειτουργίας. Εάν η λειτουργία τελειώσει πιο αργά, η εφαρμογή σας μπορεί να εμφανίσει μια ενημερωμένη εκτίμηση ότι απαιτούμενος χρόνος θα είναι μεγαλύτερος από την προηγούμενη εκτίμηση.</para>
+    </sect2>
+
+    <sect2 id="typical-time">
+      <title>Δείκτης προόδου τυπικού χρόνου</title>
+
+      <para>Μια γραμμή της οποίας η αλλαγή μήκους δείχνει πόσος χρόνος παραμένει εάν μια λειτουργία παίρνει όσο συνήθως κάνει. Οι γραμμές τυπικού χρόνου είναι οι λιγότερο ακριβείς τύποι γραμμών μέτρησης προόδου, αλλά είναι πιο χρήσιμες από τις γραμμές αόριστης προόδου.</para>
+
+      <figure>
+        <title>Μία απλή γραμμή προόδου 'τυπικού υπολειπόμενου χρόνου'</title>
+
+        <mediaobject><imageobject> <imagedata depth="32" fileref="images/controls-progress-typical.png" format="PNG" width="385"/> </imageobject> <imageobject> <imagedata fileref="images/controls-progress-typical.eps" format="EPS"/> </imageobject> <textobject> <phrase>Ένας απλός διάλογος προόδου 'τυπικού υπολειπόμενου χρόνου'</phrase> </textobject></mediaobject>
+      </figure>
+
+      <para>Για μερικές λειτουργίες, δεν μπορείτε να εκτιμήσετε τον υπολειπόμενο χρόνο ή τον λόγο της ολοκληρωμένης εργασίας. Όμως, εάν μπορείτε να εκτιμήσετε τον τυπικό χρόνο για αυτήν τη λειτουργία, μπορείτε να ανατροφοδοτήσετε με μια γραμμή τυπικού χρόνου.</para>
+
+      <para>Εάν η εφαρμογή σας υπερεκτιμά την ολοκληρωμένη εργασία, το μήκος της γραμμής μπορεί να δείχνει "σχεδόν ολοκληρώθηκε" μέχρι η λειτουργία να ολοκληρωθεί. Εάν η εφαρμογή σας υποτιμά την ολοκλήρωση της εργασίας, η εφαρμογή μπορεί να συμπληρώσει το υπολειπόμενο τμήμα της γραμμής όταν η λειτουργία ολοκληρωθεί.</para>
+    </sect2>
+
+    <sect2 id="indeterminate-progress">
+      <title>Δείκτης αόριστης προόδου</title>
+
+      <para>Μια γραμμή κίνησης δείχνει μόνο ότι μια λειτουργία συνεχίζεται, όχι πόσο θα κρατήσει. Ένα παράδειγμα είναι ο "παλμός" σε έναν περιηγητή ιστού. Οι γραμμές αόριστης προόδου είναι ο λιγότερο ακριβής τύπος γραμμής προόδου.</para>
+
+      <figure>
+        <title>Μια απλή γραμμή προόδου 'αόριστου χρόνου'· ο ολισθητής μετακινείται από αριστερά προς τα δεξιά και πάλι πίσω μέχρι την ολοκλήρωση της λειτουργίας</title>
+
+        <mediaobject><imageobject> <imagedata depth="210" fileref="images/controls-progress-indeterminate.png" format="PNG" width="409"/> </imageobject> <imageobject> <imagedata fileref="images/controls-progress-indeterminate.eps" format="EPS"/> </imageobject> <textobject> <phrase>Ένας απλός διάλογος προόδου 'ενδιάμεσου χρόνου', που εμφανίζει έναν ολισθητή να κινείται μπρος-πίσω μέχρι να ολοκληρωθεί η λειτουργία</phrase> </textobject></mediaobject>
+      </figure>
+
+      <!-- CB-Fig: Above figure may benefit from showing the slider away from the right or left edge; otherwise it looks like the other progress bars, slightly modified. -->
+
+      <para>Χρήση μιας γραμμής αόριστης προόδου για ανάδραση μόνο για λειτουργίες των οποίων η διάρκεια δεν μπορεί να εκτιμηθεί καθόλου.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-status-bars">
+    <title>Γραμμές κατάστασης</title>
+
+    <para>Μια γραμμή κατάστασης είναι μια περιοχή στο τέλος ενός παραθύρου που μπορεί να χρησιμοποιηθεί για την προβολή σύντομων πληροφοριών για την εφαρμογή.</para>
+
+    <figure>
+      <title>Μία απλή γραμμή κατάστασης</title>
+
+      <mediaobject><imageobject> <imagedata depth="53" fileref="images/controls-status-bar.png" format="PNG" width="244"/> </imageobject> <imageobject> <imagedata fileref="images/controls-status-bar.eps" format="EPS"/> </imageobject> <textobject> <phrase>Μια γραμμή κατάστασης στο τέλος του παραθύρου εγγράφου, που εμφανίζει το τρέχον επίπεδο εστίασης και ένα μήνυμα κατάστασης που δείχνει ότι το έγγραφο τροποποιήθηκε από την τελευταία αποθήκευσή του</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!-- CB-Fig: callouts -->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Χρησιμοποιήστε γραμμές κατάστασης μόνο σε εφαρμογή ή παράθυρα εγγράφου. Μην τις χρησιμοποιείτε σε διαλόγους, ειδοποιήσεις ή άλλα δευτερεύοντα παράθυρα.</para>
+      </listitem>
+
+      <listitem>
+        <para>Τοποθετήστε μόνο μια γραμμή κατάστασης στο τέλος ενός παραθύρου.</para>
+      </listitem>
+
+      <listitem>
+        <para>Χρησιμοποιήστε γραμμές κατάστασης μόνο για προβολή μη κρίσιμων πληροφοριών. Αυτό μπορεί να περιλαμβάνει:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>γενικές πληροφορίες για το έγγραφο ή την εφαρμογή. Για παράδειγμα, η κατάσταση τρέχουσας σύνδεσης σε μια εφαρμογή δικτύου, ή το μέγεθος του τρέχοντος εγγράφου σε έναν επεξεργαστή κειμένου.</para>
+          </listitem>
+
+          <listitem>
+            <para>πληροφορίες για την εργασία του χρήστη που εκτελούνται τώρα. Για παράδειγμα, ενώ χρησιμοποιείτε το εργαλείο επιλογής σε μια εφαρμογή σχεδίασης, "κρατήστε πατημένο το Shift για επέκταση της επιλογής"</para>
+          </listitem>
+
+          <listitem>
+            <para>πρόοδο μιας λειτουργίας παρασκηνίου. Για παράδειγμα, "αποστολή στον εκτυπωτή", "σελίδα εκτύπωσης 10 από 20", "ολοκλήρωση εκτύπωσης".</para>
+          </listitem>
+
+          <listitem>
+            <para>μια περιγραφή του ελέγχου ή της περιοχής του παραθύρου κάτω από τον δείκτη ποντικιού. Για παράδειγμα, "απόθεση αρχείων εδώ για ανέβασμα τους"</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Να θυμάστε ότι οι γραμμές κατάστασης είναι κανονικά στην περιφερειακή όραση του χρήστη, και μπορεί ακόμα και να απενεργοποιηθεί ολότελα χρησιμοποιώντας το στοιχείο μενού της εφαρμογής <menuchoice><guimenu>προβολή</guimenu><guimenuitem>γραμμή κατάστασης</guimenuitem></menuchoice>. Ο χρήστης μπορεί συνεπώς να μην κοιτάξει ποτέ οτιδήποτε εμφανίζετε εκεί, εκτός και γνωρίζουν πότε και πού να το κοιτάξουν.</para>
+      </listitem>
+
+      <listitem>
+        <para>Όταν δεν υπάρχει ενδιαφέρουσα κατάσταση να αναφερθεί, αφήστε το πλαίσιο της γραμμής κατάστασης κενό αντί να εμφανίσετε κάτι χωρίς πληροφορία όπως "έτοιμο". Έτσι, όταν εμφανίζεται κάτι ενδιαφέρον στη γραμμή κατάστασης, ο χρήστης είναι πιο πιθανό να το παρατηρήσει.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν θέλετε να κάνετε όλη ή μέρος της γραμμής κατάστασης διαδραστική, χρησιμοποιήστε τις ακόλουθες συμβάσεις:</para>
+
+        <itemizedlist>
+          <!--<listitem><para>Raised or button-like appearance for areas that respond to a single click</para></listitem>-->
+
+          <listitem>
+            <para>Ένθετη εμφάνιση για περιοχές που αποκρίνονται σε διπλό πάτημα</para>
+          </listitem>
+
+          <listitem>
+            <para>Επίπεδη εμφάνιση για περιοχές που δεν είναι διαδραστικές</para>
+          </listitem>
+        </itemizedlist>
+
+        <!-- CB-Ed: I have never seen a button in a statusbar area before.  I'll bet this is deprecated, or should be.  Do you have data to back this up?  And doesn't this conflict with one of the previous bullet points: Only use statusbars to display non-critical information?  A cancel button is certainly not trivial. -->
+
+        <!-- CFB: removed this recommendation for now -->
+
+        <para>Στο <xref linkend="status-bar-figure"/> η εμφάνιση δείχνει ότι η αριστερή περιοχή θα αποκριθεί σε ένα διπλό πάτημα (ίσως αποθηκεύοντας το έγγραφο) και ο δείκτης προόδου στα δεξιά είναι μη διαδραστικός.</para>
+
+        <figure id="status-bar-figure">
+          <title>Μία διαδραστική γραμμή κατάστασης</title>
+
+          <mediaobject><imageobject> <imagedata depth="58" fileref="images/controls-status-bar-interactive.png" format="PNG" width="461"/> </imageobject> <imageobject> <imagedata fileref="images/controls-status-bar-interactive.eps" format="EPS"/> </imageobject> <textobject> <phrase>Μια γραμμή κατάστασης με πλαίσιο κειμένου που αποκρίνεται σε διπλοπάτημα, ένα κουμπί που αποκρίνεται σε μονό πάτημα και μια μη διαδραστική περιοχή προόδου</phrase> </textobject></mediaobject>
+        </figure>
+
+        <para>Βεβαιωθείτε ότι το διπλοπάτημα στην περιοχή κατάστασης δεν δίνει καμιά λειτουργία που είναι επίσης διαθέσιμη στη γραμμή μενού της κύριας εφαρμογής, ή με κάποιο άλλο προσβάσιμο μέσο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Δώστε μια λαβή συρσίματος στην κάτω δεξιά γωνία της γραμμής κατάστασης των κλιμακώσιμων παραθύρων. Υποκλάσεις του GtkStatusbar πρέπει να χρησιμοποιούν την παρεχόμενη λαβή συρσίματος από αυτήν την κλάση. Μια επανεφαρμογή της γραμμής κατάστασης, που αποθαρρύνεται, πρέπει επίσης να επανεφαρμόζει τη λαβή συρσίματος GtkStatusbar και στην εμφάνιση και τη συνάρτηση.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-frames">
+    <title>Πλαίσια και διαχωριστές</title>
+
+    <para>Ένα πλαίσιο είναι ένα κουτί με έναν τίτλο που μπορείτε να σχεδιάσετε με ελέγχους για να τους οργανώσετε σε λειτουργικές ομάδες. Ένας διαχωριστής είναι μια μονή οριζόντια ή κάθετη γραμμή που μπορείτε να χρησιμοποιήσετε για διαίρεση παραθύρων σε λειτουργικές ομάδες.</para>
+
+    <para>Τα πλαίσια με ένα περίγραμμα γύρω από την περίμετρο τους χρησιμοποιούνται παραδοσιακά για να δείξουν ομάδες σχετικών ελέγχων. Αυτό είναι πλεονεκτικό επειδή διαχωρίζει φυσικά ανόμοιους ελέγχους και επίσης αποφεύγει την επανάληψη της ετικέτας του πλαισίου σε ξεχωριστές ετικέτες ελέγχων μέλους. Δυστυχώς, προσθέτουν οπτικό θόρυβο που μπορεί και να κάνει ένα παράθυρο να φαίνεται πιο σύνθετο από ότι είναι πραγματικά και να μειώσει την ικανότητα γρήγορης σάρωσης στοιχείων του παραθύρου.</para>
+
+    <para>Αντί να χρησιμοποιείτε πλαίσια με περίγραμμα, χρησιμοποιήστε πλαίσια χωρίς περιγράμματα, έντονες ετικέτες για να κάνετε τις κατηγορίες να στέκονται και περιεχόμενα με εσοχές. Αυτό, συνδυασμένο με καλή διάταξη και διάκενο, είναι συνήθως μια καλύτερη λύση αντί για πλαίσια με περιγράμματα.</para>
+
+    <figure>
+      <title>Προτιμητέα τεχνοτροπία πλαισίου, χρησιμοποιώντας έντονες ετικέτες, διάκενο και εσοχές</title>
+
+      <mediaobject><imageobject> <imagedata depth="256" fileref="images/controls-frames.png" format="PNG" width="288"/> </imageobject> <imageobject> <imagedata fileref="images/controls-frames.eps" format="EPS"/> </imageobject> <textobject> <phrase>Το πλαίσιο εμφανίζει την προτιμώμενη τεχνοτροπία που περιγράφεται παραπάνω</phrase> </textobject></mediaobject>
+    </figure>
+
+    <figure>
+      <title>Παραδοσιακή τεχνοτροπία πλαισίου, χρησιμοποιώντας περιγράμματα (παρωχημένο)</title>
+
+      <mediaobject><imageobject> <imagedata depth="275" fileref="images/controls-old-frames.png" format="PNG" width="296"/> </imageobject> <imageobject> <imagedata fileref="images/controls-old-frames.eps" format="EPS"/> </imageobject> <textobject> <phrase>Το πλαίσιο εμφανίζει την παραδοσιακή τεχνοτροπία που περιγράφεται παραπάνω</phrase> </textobject></mediaobject>
+    </figure>
+
+    <!--    <para>See <xref linkend="window-layout-spacing"/> for technical details on implementing the preferred frame style in gtk.</para> -->
+
+    <itemizedlist>
+      <title>Κατευθυντήριες γραμμές</title>
+
+      <listitem>
+        <para>Πριν την προσθήκη πλαισίου με ορατό περίγραμμα ή διαχωριστή σε οποιοδήποτε παράθυρο, σκεφτείτε προσεκτικά εάν το χρειάζεστε πραγματικά. Είναι συνήθως καλύτερα να μην το κάνετε, εάν οι ομάδες μπορούν να διαχωριστούν μόνο με κενό. Μην χρησιμοποιείτε πλαίσια και διαχωριστές για αντιστάθμιση φτωχής διάταξης ελέγχου ή στοίχισης.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην ανακατεύετε ομάδες με και χωρίς πλαίσια στο ίδιο παράθυρο.</para>
+      </listitem>
+
+      <listitem>
+        <para>Μην βάζετε ένα πλαίσιο μέσα σε ένα άλλο. Αυτό καταλήγει σε οπτική αταξία.</para>
+      </listitem>
+
+      <listitem>
+        <para>Εάν όλα τα στοιχεία σε μια ομάδα είναι ανενεργά, απενεργοποιήστε και τον τίτλο της ομάδας.</para>
+      </listitem>
+
+    </itemizedlist>
+  </sect1>
+</chapter>

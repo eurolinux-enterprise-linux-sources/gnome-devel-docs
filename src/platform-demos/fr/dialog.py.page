@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="dialog.py" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="dialog.py" xml:lang="fr">
   <info>
     <title type="text">Dialog (Python)</title>
     <link type="guide" xref="beginner.py#windows"/>
@@ -9,73 +9,39 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Une fenêtre surgissante</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
   <title>Boîte de dialogue</title>
   <media type="image" mime="image/png" src="media/dialog.png"/>
-  <p>Une boîte de dialogue avec le signal de réponse connecté à une fonction de rappel.</p>
+  <p>A dialog with the response signal connected to a callback function.</p>
 
   <links type="section"/>
 
   <section id="code">
-  <title>Code utilisé pour générer cet exemple</title>
+  <title>Code used to generate this example</title>
 
   <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
     # construct a window (the parent window)
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="GNOME Button", application=app)
         self.set_default_size(250, 50)
 
         # a button on the parent window
         button = Gtk.Button("Click me")
-        # connect the signal "clicked" of the button with the function
-        # on_button_click()
+        # connect the signal "clicked" of the button with the function on_button_click()
         button.connect("clicked", self.on_button_click)
         # add the button to the window
         self.add(button)
 
-    # callback function for the signal "clicked" of the button in the parent
-    # window
+    # callback function for the signal "clicked" of the button in the parent window
     def on_button_click(self, widget):
         # create a Gtk.Dialog
         dialog = Gtk.Dialog()
@@ -87,8 +53,7 @@ class MyWindow(Gtk.ApplicationWindow):
         dialog.set_modal(True)
         # add a button to the dialog window
         dialog.add_button(button_text="OK", response_id=Gtk.ResponseType.OK)
-        # connect the "response" signal (the button has been clicked) to the
-        # function on_response()
+        # connect the "response" signal (the button has been clicked) to the function on_response()
         dialog.connect("response", self.on_response)
 
         # get the content area of the dialog, add a label to it
@@ -99,14 +64,12 @@ class MyWindow(Gtk.ApplicationWindow):
         dialog.show_all()
 
     def on_response(self, widget, response_id):
-        print("response_id is", response_id)
+        print "response_id is", response_id
         # destroy the widget (the dialog) when the function on_response() is called
         # (that is, when the button of the dialog has been clicked)
         widget.destroy()
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -114,7 +77,7 @@ class MyApplication(Gtk.Application):
         win = MyWindow(self)
         win.show_all()
 
-    def do_startup(self):
+    def do_startup (self):
         Gtk.Application.do_startup(self)
 
 app = MyApplication()
@@ -125,16 +88,16 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-  <title>Méthodes utiles pour un élément graphique BoiteDeDialogue</title>
+  <title>Useful methods for a Dialog widget</title>
     <p>In line 16 the signal <code>"clicked"</code> is connected to the callback function <code>on_button_click()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
   <list>
-    <item><p>Au lieu de <code>set_modal(True)</code>, nous pouvons avoir <code>set_modal(False)</code> suivi de la méthode <code>set_destroy_with_parent(True)</code>, qui détruit la boîte de dialogue quand on ferme la fenêtre principale.</p></item>
-    <item><p>La méthode <code>add_button(button_text="The Answer", response_id=42)</code>, où <code>42</code> est un nombre entier, est une alternative à la fonction <code>add_button(button_text="text", response_id=Gtk.ResponseType.RESPONSE)</code>, où <code>RESPONSE</code> peut être l'une des valeurs <code>OK, CANCEL, CLOSE, YES, NO, APPLY, HELP</code> qui correspondent aux nombres entiers <code>-5, -6,..., -11</code>.</p></item>
+    <item><p>Instead of <code>set_modal(True)</code> we could have <code>set_modal(False)</code> followed by <code>set_destroy_with_parent(True)</code> that would destroy the dialog window if the main window is closed.</p></item>
+    <item><p><code>add_button(button_text="The Answer", response_id=42)</code>, where <code>42</code> is any integer, is an alternative to <code>add_button(button_text="text", response_id=Gtk.ResponseType.RESPONSE)</code>, where <code>RESPONSE</code> could be one of <code>OK, CANCEL, CLOSE, YES, NO, APPLY, HELP</code>, which in turn correspond to the integers <code>-5, -6,..., -11</code>.</p></item>
   </list>
   </section>
 
   <section id="references">
-  <title>Références API</title>
+  <title>API References</title>
   <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
   <list>
     <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkDialog.html">GtkDialog</link></p></item>

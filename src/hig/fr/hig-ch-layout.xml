@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="design" lang="fr">
+
+  <title>Conception visuelle</title>
+
+  <para>La conception visuelle ne consiste pas qu'à rendre votre application séduisante. Une bonne conception visuelle concerne la communication. Une application bien conçue facilite la compréhension de l'information présentée à l'utilisateur et lui affiche clairement le comment d'une interaction avec cette même information. Si vous parvenez à cet objectif, votre application <emphasis>sera</emphasis> jolie pour l'utilisateur, même si elle n'a pas de graphiques sophistiqués ou de logos animés.</para>
+  <!-- GJM: This kind of folksy remark really is not appropriate at all. -->
+  <!-- TODO:
+  - More than any other section this needs to be liberally sprinkled with examples
+  -->
+
+  <!-- Color section based on Coleen's HTML draft -->
+
+  <sect1 id="design-color">
+    <title>Couleur</title>
+
+    <para>La couleur est un bon outil pour communiquer des informations dans une interface utilisateur. Par exemple, elle peut être utilisée pour :</para>
+
+    <itemizedlist>
+      <listitem><para>renforcer l'apparence d'un bureau en améliorant un thème,</para></listitem>
+      <listitem><para>accentuer une alerte dynamique dans une application de gestion de système,</para></listitem>
+      <listitem><para>mettre en valeur un élément dans une longue liste pour faciliter sa lecture,</para></listitem>
+      <listitem><para>ajouter une touche esthétique agréable à une icône.</para></listitem>
+    </itemizedlist>
+
+    <para>Cependant, la couleur doit toujours être vue comme un complément utile au design et non pas comme une nécessité. Ne tablez jamais uniquement sur la couleur pour afficher les informations importantes ; gardez à l'esprit que votre application doit toujours être utilisable, même si les couleurs ne peuvent pas être perçues correctement (par exemple, si l'utilisateur a un système 8-bits ou est daltonien).</para>
+
+    <sect2 id="Palette">
+      <title>Palette</title>
+      
+      <!-- primary contributor to the href="http://primates.ximian.com/~tigert/new_stock_project/" GNOME stock icon repository -->
+      
+      <para>Une palette de 32 couleurs a été développée pour le bureau GNOME. La palette peut être téléchargée sur <ulink url="http://developer.gnome.org/projects/gup/images/ximian-palette">http://developer.gnome.org/projects/gup/images/ximian-palette</ulink>. Pour l'utiliser dans The GIMP, enregistrez-la dans votre dossier <filename>gimp_1.2/palettes</filename> et redémarrez The GIMP. Une palette unique utilisée de manière cohérente aide à donner une apparence uniforme au bureau en minimisant les distractions visuelles. Si vous avez besoin d'une couleur plus foncée ou plus claire que les couleurs de cette palette basique (par ex. pour l'anticrénelage) choisissez une couleur qui est la plus proche de la teinte dont vous avez besoin puis assombrissez ou éclaircissez comme vous le souhaitez.</para>
+
+      <figure><title>La palette de base à 32 couleurs de GNOME</title>
+	<mediaobject>
+	  <imageobject><imagedata fileref="images/visdes-palette.png" format="PNG"/></imageobject>
+	  <imageobject><imagedata fileref="images/visdes-palette.eps" format="EPS"/></imageobject>
+	  <textobject><phrase>The basic GNOME 32-color palette</phrase></textobject>
+	</mediaobject>
+      </figure>
+      
+      <table frame="none"> 
+	<title>Valeurs RVB et hexadécimales de la palette de base</title> 
+	<tgroup cols="8" colsep="1" rowsep="0" align="left">
+	  <thead> 
+	    <row rowsep="1" valign="top"> 
+	      <entry>Couleur</entry> 
+	      <entry>Description</entry>
+	      <entry>RVB</entry>
+	      <entry>Hex</entry>
+	      <entry>Couleur</entry>
+	      <entry>Description</entry>
+	      <entry>RVB</entry>
+	      <entry>Hex</entry>
+	    </row>
+	  </thead>
+	  <tbody valign="middle">
+	    <row>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-1.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-1.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>3D basique clair</entry>
+	      <entry>234 232 227</entry>
+	      <entry>#EAE8E3</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-2.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-2.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>3D basique moyen</entry>
+	      <entry>186 181 171</entry>
+	      <entry>#BAB5AB</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-3.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-3.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>3D basique foncé</entry>
+	      <entry>128 125 116</entry>
+	      <entry>#807D74</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-4.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-4.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>3D basique obscur</entry>
+	      <entry>86 82 72</entry>
+	      <entry>#565248</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-5.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-5.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Vert clair</entry>
+	      <entry>197 210 200</entry>
+	      <entry>#C5D2C8</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-6.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-6.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Vert moyen</entry>
+	      <entry>131 166 127</entry>
+	      <entry>#83A67F</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-7.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-7.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Vert foncé</entry>
+	      <entry>93 117 85</entry>
+	      <entry>#5D7555</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-8.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-8.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Vert obscur</entry>
+	      <entry>68 86 50</entry>
+	      <entry>#445632</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-9.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-9.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Rouge clair</entry>
+	      <entry>224 182 175</entry>
+	      <entry>#E0B6AF</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-10.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-10.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Rouge moyen</entry>
+	      <entry>193 102 90</entry>
+	      <entry>#C1665A</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-11.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-11.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Rouge foncé</entry>
+	      <entry>136 70 49</entry>
+	      <entry>#884631</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-12.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-12.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Rouge obscur</entry>
+	      <entry>102 56 34</entry>
+	      <entry>#663822</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-13.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-13.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Violet clair</entry>
+	      <entry>173 167 200</entry>
+	      <entry>#ADA7C8</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-14.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-14.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Violet moyen</entry>
+	      <entry>136 127 163</entry>
+	      <entry>#887FA3</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-15.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-15.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Violet foncé</entry>
+	      <entry>98 91 129</entry>
+	      <entry>#625B81</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-16.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-16.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Violet obscur</entry>
+	      <entry>73 64 102</entry>
+	      <entry>#494066</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-17.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-17.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Bleu clair</entry>
+	      <entry>157 184 210</entry>
+	      <entry>#9DB8D2</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-18.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-18.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Bleu moyen</entry>
+	      <entry>117 144 174</entry>
+	      <entry>#7590AE</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-19.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-19.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Bleu foncé</entry>
+	      <entry>75 105 131</entry>
+	      <entry>#4B6983</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-20.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-20.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Bleu obscur</entry>
+	      <entry>49 78 108</entry>
+	      <entry>#314E6C</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-21.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-21.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Chair claire</entry>
+	      <entry>239 224 205</entry>
+	      <entry>#EFE0CD</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-22.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-22.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Chair moyenne</entry>
+	      <entry>224 195 158</entry>
+	      <entry>#E0C39E</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-23.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-23.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Chair foncée</entry>
+	      <entry>179 145 105</entry>
+	      <entry>#B39169</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-24.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-24.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Chair obscure</entry>
+	      <entry>130 102 71</entry>
+	      <entry>#826647</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-25.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-25.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Rouge vif</entry>
+	      <entry>223 66 30</entry>
+	      <entry>#DF421E</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-26.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-26.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Rouge vif foncé</entry>
+	      <entry>153 0 0</entry>
+	      <entry>#990000</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-27.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-27.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Jaune vif</entry>
+	      <entry>238 214 128</entry>
+	      <entry>#EED680</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-28.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-28.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Jaune vif foncé</entry>
+	      <entry>209 148 12</entry>
+	      <entry>#D1940C</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-29.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-29.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Vert vif</entry>
+	      <entry>70 160 70</entry>
+	      <entry>#46A046</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-30.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-30.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Vert vif foncé</entry>
+	      <entry>38 199 38</entry>
+	      <entry>#267726</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-31.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-31.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Blanc</entry>
+	      <entry>255 255 255</entry>
+	      <entry>#ffffff</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-32.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-32.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Noir</entry>
+	      <entry>0 0 0</entry>
+	      <entry>#000000</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+      
+    </sect2>
+    
+    <sect2 id="hsv">
+      <title>Teinte, luminosité, contraste</title>
+      
+      <para>Les utilisateurs ayant des problèmes de vision, tels que les daltoniens ou les mal-voyants, ont besoin d'alternatives aux réglages par défaut. Une bonne interface utilisateur anticipe ces besoins en fournissant des préférences personnalisées et une prise en charge des thèmes favorisant l'accessibilité. Meilleure encore est une application déjà configurée par défaut avec un choix soigneux des couleurs et des contrastes.</para>
+
+      <para>Il est estimé que 11 % de la population mondiale a des problèmes de vision des couleurs. Les personnes atteintes ont typiquement des problèmes pour distinguer certaines teintes comme le rouge et le vert (deutéranopie ou protanopie) ou le bleu et le jaune (tritanopie). Par conséquent, il est nécessaire de permettre à l'utilisateur de personnaliser les couleurs dans toutes les parties de votre application qui transmettent des informations importantes. Cela signifie que votre application doit effectivement transmettre les informations en utilisant uniquement les couleurs d'un thème que l'utilisateur choisirait.</para>
+      
+      <para>Un outil important pour passer en revue les informations sur le daltonisme et vérifier l'éligibilité des images pour les utilisateurs mal-voyants est <ulink url="http://www.vischeck.com/">Vischeck</ulink>, un outil en ligne qui simule la façon dont une image ou un site Web apparaît pour un utilisateur atteint de deutéranopie, protanopie ou tritanopie.</para>
+
+      <figure><title>Comment la terre apparaît pour un utilisateur avec une vision normale des couleurs (à gauche), deutéranopie (au milieu) et tritanopie (à droite) (images extraites de <ulink url="http://www.vischeck.com">http://www.vischeck.com</ulink>).</title>
+	
+	<informaltable frame="none">
+	  <tgroup cols="3" align="center">
+	    <tbody valign="top">
+	      <row>
+		<entry>
+	          <mediaobject>
+		    <imageobject><imagedata fileref="images/visdes-colorblind-normal.png" format="PNG"/></imageobject>
+		    <imageobject><imagedata fileref="images/visdes-colorblind-normal.eps" format="EPS"/></imageobject>
+		    <textobject><phrase>Photo of earth as a normally-sighted user would see it</phrase></textobject>
+		  </mediaobject>
+	        </entry>
+		
+		<entry>
+	          <mediaobject>
+		    <imageobject><imagedata fileref="images/visdes-colorblind-deutan.png" format="PNG"/></imageobject>
+		    <imageobject><imagedata fileref="images/visdes-colorblind-deutan.eps" format="EPS"/></imageobject>
+		    <textobject><phrase>Photo of earth as a user with red-green color-blindness would see it</phrase></textobject>
+		  </mediaobject>
+	        </entry>
+		<entry>
+	          <mediaobject>
+		    <imageobject><imagedata fileref="images/visdes-colorblind-tritan.png" format="PNG"/></imageobject>
+		    <imageobject><imagedata fileref="images/visdes-colorblind-tritan.eps" format="EPS"/></imageobject>
+		    <textobject><phrase>Photo of earth as a user with blue-yellow color-blindness would see it</phrase></textobject>
+		  </mediaobject>
+	        </entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+      </figure>
+
+
+      <para>D'autres utilisateurs ont plutôt plus de problèmes avec les niveaux de contraste qu'avec la couleur à l'écran. Certains utilisateurs ont besoin d'un fort niveau de contraste entre les couleurs de l'arrière-plan et du premier plan, telles que noir sur blanc, blanc sur noir ou une autre combinaison à fort contraste. D'autres ressentent un inconfort à moins d'utiliser un réglage à faible contraste, tel que texte gris sur un arrière-plan gris clair.</para>
+
+      <para>Vous pouvez répondre à ces besoins en vous assurant que votre application prend en charge les thèmes accessibles de GNOME (que l'on peut trouver dans le module gnome-themes dans cvs) ; il inclut des thèmes à fort et faible contraste et des thèmes à grande taille. Cela signifie que vous devez fournir les tailles par défaut et les grandes tailles pour l'ensemble des icônes à contraste fort, faible et normal avec l'application.</para>
+
+      <itemizedlist><title>Conseils</title>
+	<listitem><para>Utilisez la palette de couleur GNOME. Si vous avez besoin d'une teinte plus foncée ou plus claire partez d'une des couleurs de la palette et assombrissez ou éclaircissez suivant le besoin.</para></listitem>
+
+	<listitem><para>N'utilisez pas la couleur comme seul moyen de distinguer les éléments d'informations. Toutes les informations doivent également être fournies par au moins une autre méthode telle que la forme, la position ou une description textuelle.</para></listitem>
+
+	<listitem><para>Assurez-vous que votre application ne dépend pas d'un thème particulier. Testez-la avec différents thèmes, plus particulièrement les thèmes d'accessibilité à fort et faible contraste qui utilisent moins de couleurs, pour vérifier que votre application respecte les réglages. Par exemple, tous les textes doivent apparaître avec couleur de premier plan sur couleur d'arrière-plan spécifiées dans le thème choisi.</para></listitem>
+
+	<listitem><para>Choisissez les couleurs avec soin. Lorsqu'elles doivent être différentes de manière reconnaissable, choisissez les couleurs claires parmi l'orange, jaune, vert ou bleu-vert, les foncées parmi le bleu, violet, mauve ou rouge car la plupart de gens atteints de daltonisme voient le bleu, violet, mauve et rouge aussi foncé que les couleurs normales.</para></listitem>
+
+      </itemizedlist>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="design-window">
+    <title>Agencement des fenêtres</title>
+    
+    <sect2>
+      <title>Généralités</title> 
+
+      <para>Le positionnement des composants visuels dans une application est important parce que les relations entre éléments dépendent de leurs positions. C'est ce qui s'appelle « l'agencement » dans la conception d'interface.</para>
+
+      <para>Un agencement propre est crucial pour créer un flux visuel régulier d'informations pour l'utilisateur. Cette section décrit le positionnement correct des composants et l'espacement à utiliser dans les applications GNOME. Les principaux composants détaillés sont l'étiquette, l'icône, le bouton radio et la case à cocher, le champ texte, le bouton de commande et le menu déroulant.</para>
+
+    </sect2>
+
+    <sect2 id="layout-dialogs">
+      <title>Boîtes de dialogue</title>
+      
+      <para>Lorsqu'un utilisateur parcourt une boîte de dialogue Préférences complexe, composée de nombreuses étiquettes et leurs cases à cocher associées, de champs de texte et de zones de liste déroulante modifiable, il est facile de voir comment elle peut rapidement être encombrée si l'agencement est pauvre au niveau de la conception visuelle. Pour des informations sur l'agencement des alertes, consultez la <xref linkend="alert-spacing"/>.</para>
+
+      <figure id="improved-layout-figure"><title>Agencement de fenêtre amélioré</title>
+	
+	<informaltable frame="none">
+	  <tgroup cols="2" align="center">
+	    <tbody valign="top">
+	      <row>
+		<entry>
+	          <mediaobject>
+		    <imageobject><imagedata fileref="images/visdes-layout-poor.png" format="PNG"/></imageobject>
+		    <imageobject><imagedata fileref="images/visdes-layout-poor.eps" format="EPS"/></imageobject>
+		    <textobject><phrase>Initial layout with poor alignment and limited use of white space</phrase></textobject>
+		  </mediaobject>
+	        </entry>
+		
+		<entry>
+	          <mediaobject>
+		    <imageobject><imagedata fileref="images/visdes-layout-good.png" format="PNG"/></imageobject>
+		    <imageobject><imagedata fileref="images/visdes-layout-good.eps" format="EPS"/></imageobject>
+		    <textobject><phrase>Improved layout with fewer alignment points, frames removed to relieve clutter, and clearer grouping with use of white space</phrase></textobject>
+		  </mediaobject>
+	        </entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+      </figure>
+
+      <!-- picture here of a complex preferences dialog, badly designed: right-aligned similar length labels, very little spacing between elements (vertically), varying spaces between elements (horizontally) -->
+
+      <para>Dans la <xref linkend="improved-layout-figure"/>, la boîte de dialogue sur la gauche présente des étiquettes qui ne sont pas alignées à gauche. L'œil de l'utilisateur n'a pas de repère visuel correct pour parcourir la boîte de dialogue rapidement.</para>
+
+      <para>Comme les étiquettes sont toutes de longueur voisine, elles doivent être alignées à gauche. Maintenant l'utilisateur a une marge gauche ferme pour accrocher l'œil et parcourir plus facilement la liste des éléments verticaux. Si la plupart des étiquettes d'un groupement ont des longueurs différentes, alignez-les plutôt à droite afin que les contrôles ne finissent pas par être trop loin des étiquettes correspondantes.</para>
+
+      <para>L'utilisation de cadres avec des bordures visibles pour séparer des groupes dans une fenêtre est déconseillée. Utilisez des espaces et des en-têtes en gras à la place. C'est plus efficace parce qu'il y a moins de lignes inutiles pour distraire l'utilisateur du contenu principal de la fenêtre. Consultez la <xref linkend="controls-frames"/> pour plus de détails.</para>
+
+      <para>Essayez de conserver une certaine concordance entre composants en terme de taille et d'alignement. Ceci est particulièrement important dans un groupe de contrôles pour que la capacité de l'utilisateur à rapidement parcourir l'information ne soit pas sacrifiée. Réduisez autant que possible le besoin de l'œil de l'utilisateur de s'éparpiller lorsqu'il parcourt un agencement.</para>
+      
+      <figure id="layout-callouts-figure"><title>Spécifications de l'agencement</title>
+	
+	<mediaobject>
+	  <imageobject><imagedata fileref="images/visdes-layout-annotated.png" format="PNG"/></imageobject>
+	  <imageobject><imagedata fileref="images/visdes-layout-annotated.eps" format="EPS"/></imageobject>
+	  <textobject><phrase>Improved layout with fewer alignment points, frames removed to relieve clutter, and clearer grouping with use of white space</phrase></textobject>
+	</mediaobject>
+      </figure>
+      
+      <!-- Figure here of the above paragraph, giving examples -->
+
+      <itemizedlist> <title>Conseils</title>
+	<listitem><para>Laissez une bordure de 12 pixels entre le bord de la fenêtre et les contrôles les plus proches.</para></listitem>
+	<listitem><para>Laissez un espace horizontal de 12 pixels entre un contrôle et son étiquette (l'espace peut être plus grand pour d'autres contrôles du même groupe à cause des différences de longueur entre étiquettes).</para></listitem>
+	<listitem><para>Les étiquettes doivent être courtes et garder un sens sorties du contexte. Sinon les utilisateurs qui utilisent des lecteurs d'écran ou des technologies d'assistance similaires ne seront pas capables de comprendre immédiatement la relation entre un contrôle et ceux qui l'entourent.</para></listitem>
+	<!--		<listitem><para>Assign access keys to all editable controls.  Ensure that labels immediately precede their associated control in the tab order, so that the access key will focus to or activate the correct control when pressed.</para></listitem>
+	<remark>GJM: I almost missed this instance of this error which is repeated below; except that it says mnemonic instead of access key. This entire section is a repeat, it seems. Adding restated listitem.</remark>
+	-->
+	<listitem><para>Fournissez des touches d'accès pour tous les contrôles modifiables. Vérifiez que l'utilisation des touches d'accès donne bien le focus aux contrôles associés.</para></listitem>
+      </itemizedlist>
+
+    </sect2>
+
+<!-- 
+I'm commenting out this section for the HIG 2.8 release pending "still needs more work" -Seth
+
+    <sect2 id="layout-window-size">
+	<title>Size</title>
+	<remark>This section taken from Alan's draft in bug #111772, still needs some work</remark>
+	<para>GNOME is used on by many different people on a wide variety of
+different hardware.  This includes people with older hardware and 
+small displays.  Laptop users and users of other portable devices also
+need to be able to work on smaller screens. Users who require large fonts, or assistive technologies that take over part of the screen, also have a correspondingly smaller area in which to display application windows and dialogs.</para> 
+
+<para>While these space restrictions are intended primarily to allow people
+with smaller displays to use Gnome it is also good discipline to keep
+windows and dialogs clear with not to many concepts all at once. 
+<remark>The sentiment of this
+paragraph might be useful although it would need to be massively
+rephrased-AH.</remark></para>
+
+	<itemizedlist><title>Guidelines</title>
+
+	<listitem><para>Try to ensure that the size of a window is no larger than 480 pixels
+wide and 640 pixels hight in the default theme (including window
+decorations).  Ideally your application should be usable at 600 by 400
+pixels which leaves enough room for both top and bottom Panels.</para></listitem>  
+
+	<listitem><para>The Ratio of the screen width to height is 2:3 and things will look
+aesthetically pleasing if we can keep (near to) this proportion. <remark>This ratio isn't always the case these days, with widescreen monitors and PDA-type devices becoming more common-CB</remark>.  
+<remark> The
+space take by window decorations largely spoils this idealism-AH.</remark>
+Dialogs [like a properties dialog] should [probably] be 300 by 400.  
+Message Dialogs should be 600 by 200.<remark> I'm not sure specifying pixel dimensions for anything we don't really have to is such a good plan- perhaps just stick to the 'golden ratio' guideline that currently lives in next section?- CB.</remark></para></listitem>
+	</itemizedlist>
+
+	</sect2>
+
+-->
+
+    <sect2 id="window-layout-spacing">
+      <title>Espacement et alignement</title>
+      
+      <para>Donnez un espace suffisant entre les contrôles et les groupes de contrôles. Cet espace vide facilite la recherche de l'information utile pour l'utilisateur.</para>
+
+      <itemizedlist><title>Conseils</title>
+
+	<listitem><para>Comme règle de base, laissez de l'espace entre les composants de l'interface utilisateur par incréments croissants de 6 pixels lorsque la relation entre les éléments reliés devient plus distante. Par exemple, entre les étiquettes de l'icône et les graphiques associés dans une icône, 6 pixels sont suffisants. Entre les étiquettes et les composants associés, laissez 12 pixels horizontaux. Pour l'espacement vertical entre les groupes de composants, 18 pixels sont suffisants. Un espacement général de 12 pixels est recommandé entre le contenu d'une boîte de dialogue et les bords de la fenêtre.</para></listitem>
+	
+	<listitem><para>Brisez les longues listes de choix en groupes plus petits. Pour les listes de moins de huit éléments environ, utilisez des boutons radio ou des cases à cocher. Pour les listes plus longues, utilisez un contrôle liste ou une liste déroulante.</para></listitem>
+	
+	<listitem><para>Essayez de garder les éléments du même type alignés à gauche avec les autres. Par exemple, sur la <xref linkend="layout-callouts-figure"/>, les groupes nommés (<guilabel>Général</guilabel> et <guilabel>Actions</guilabel>) sont alignés à gauche et justifiés les uns par rapport aux autres.</para></listitem>
+
+	<listitem><para>Indentez les membres des groupes de 12 pixels pour marquer la hiérarchie et l'association.</para></listitem>
+	<listitem><para>Minimisez le nombre de points d'alignement dans votre fenêtre. Un point d'alignement est une ligne imaginaire verticale ou horizontale qui traverse la fenêtre et qui touche le bord d'un ou de plusieurs étiquettes ou contrôles de la fenêtre.</para></listitem>
+
+	<listitem><para>Une justification à droite dans les groupes ou dans la fenêtre globale (comme indiquée par la ligne nommée « justification » dans la <xref linkend="layout-callouts-figure"/>) est plaisante à l'œil, mais non cruciale.</para></listitem>
+	
+	<listitem><para>Arrangez les composants de gauche à droite, de haut en bas. Généralement, le premier élément que l'utilisateur est sensé rencontrer devrait être en haut à gauche et le dernier en bas à droite. Gardez à l'esprit le fait que lorsqu'ils sont localisés pour les langues non occidentales, les interfaces peuvent être inversées pour être lues de la droite vers la gauche.</para></listitem>
+	
+	<listitem><para>L'utilisation des espaces vides ou « blancs » et de l'indentation pour délimiter les groupes est plus propre et préférable à l'usage de séparateurs graphiques tels que des cadres.</para></listitem>
+	
+	<listitem><para>Alignez les contrôles dans votre agencement très <emphasis>précisément</emphasis>. L'œil est très sensible aux objets alignés ou pas. Si rien ne s'aligne avec rien d'autre dans une fenêtre, il sera très difficile pour l'utilisateur de parcourir son contenu et de trouver l'information qu'il souhaite. Deux choses presque alignées, mais pas exactement, sont également gênantes.</para></listitem>
+	
+	<listitem><para>Soyez cohérent. Utilisez le même espacement, alignement et la même taille de composants dans toutes les boîtes de dialogue apparaissant dans une même application. Les boutons <guibutton>Valider</guibutton> et <guibutton>Annuler</guibutton> par exemple doivent tous apparaître exactement à 12 pixels verticaux et horizontaux du coin inférieur droit de chaque boîte de dialogue.</para></listitem>
+	
+	<listitem><para>Assurez-vous que les zones claires et sombres ainsi que les espaces sont distribués de manière uniforme dans la fenêtre. Gardez en tête que chaque contrôle ou groupe de contrôles dans votre fenêtre possède un « poids » visuel qui dépend de sa taille globale, de sa couleur et de la quantité de blancs qu'il contient. Les zones plus sombres, plus grandes sont plus « lourdes » alors que les plus pâles, plus petites sont plus « légères ».</para></listitem>
+	
+	<listitem><para>Ne concevez pas de fenêtres qui sont plus que 50 % plus longues dans un sens par rapport à l'autre. Les gens se sentent plus à l'aise en regardant des fenêtres et des boîtes de dialogue dont les dimensions respectent le nombre d'or (entre 1,6 et 1), un rapport que les artistes et architectes ont utilisé pour créer des peintures et constructions esthétiquement agréables depuis des milliers d'années.</para></listitem>
+	
+	<!-- <para><listitem>Do not resize components to fit arbitrary or uncommon layout needs. Make it a practice to use GtkTables, GtkVBox and GtkHBox container widgets at their default /* Calum, is there such a thing? */ row, column and border sizes. This will help ensure that a lot of layout and alignment work is done for you automatically.</para></listitem>-->
+	
+      </itemizedlist>
+      <!--
+      <note id="frame-layout-tech"><title>Technical Details for Proper Layout</title>
+      <para>Set <property>Border Width</property> for the GtkDialog to <userinput>12</userinput>. Place a GtkVBox containing as many rows as you wish to have categories inside the control area of the GtkDialog, and set the <property>Spacing</property> for the GtkVBox to <userinput>18</userinput>.</para>
+      <para>In turn, each category should be composed of a GtkVBox with two rows. Set the <property>Spacing</property> to <userinput>6</userinput>.
+      <itemizedlist>
+      <listitem><para>In the top row, place a label for the category header. Make the label bold using the Pango markup <programlisting>&lt;span weight="bold"&gt;<replaceable>Category Header</replaceable>&lt;/span&gt;</programlisting> Set the label property <property>Use Markup</property> to <userinput>Yes</userinput>, and <property>X Align</property> to <userinput>0.0</userinput> to left align the label.</para></listitem>
+      <listitem><para>Place a 2-columned GtkHBox in the lower row of the top-level GtkVBox.
+      <itemizedlist>
+      <listitem><para>In the left column, place a label containing four space characters. This will serve to indent the category contents.</para></listitem>
+      <listitem><para>In the right column, place a GtkVBox containing a row per control you wish to place in the category. Set the <property>Spacing</property> to <userinput>6</userinput>.
+      <itemizedlist>
+      <listitem><para>For left-side labelled controls such as text boxes, drop-down lists, and many others, place a 2 columned GtkHBox inside the row with a label in the left column and the corresponding control in the right. Set the <property>Spacing</property> on the GtkHBox to <userinput>6</userinput>. Place all labels such as this (for the whole window) in the same GtkSizeGroup (there is currently no way to do this using only Glade, you will have to use code as well). This will align the controls to their right, even between categories, which is important for allowing quick visual scans.</para></listitem>
+      <listitem><para>For right-side labelled controls such as check boxes and radio buttons, simply place them directly in the row.</para></listitem>
+    </itemizedlist>
+    </para></listitem>
+    </itemizedlist>
+    </para></listitem>
+    </itemizedlist>
+    </para>
+    </note>
+      -->
+    </sect2>
+    
+  </sect1>
+
+  <sect1 id="design-text-labels">
+    <title>Étiquettes de texte</title>
+    
+    <para>Pour un utilisateur qui possède une vision normale, les sorties texte fournissent la majorité de l'information et de retour dans la plupart des applications. Pour un utilisateur à la vue déficiente, qui n'est peut-être pas capable de voir et comprendre toute sortie graphique supplémentaire, une sortie textuelle claire est un point critique. Vous devez par conséquent choisir et placer le texte soigneusement à l'écran et laisser le choix de la police et de sa taille à l'utilisateur pour s'assurer que tous les utilisateurs sont capables d'utiliser l'application efficacement.</para>
+
+    <sect2 id="layout-label-position">
+      
+      <title>Espacement et alignement</title>
+
+      <para>Utilisez des espacements et alignements de texte uniformes dans toute l'application. Comme règle de base, laissez de l'espace entre les composants de l'interface utilisateur par incréments croissants de 6 pixels lorsque la relation entre les éléments reliés devient plus distante.</para>
+
+      <table id="label-placement-example">
+	<title>Alignement et espacement pour différents éléments texte</title>
+	<tgroup cols="3" align="left">
+	  <thead>
+	    <row>
+	      <entry>Élément</entry>
+	      <entry>Positionnement</entry>
+	      <entry>Exemple</entry>
+	    </row>
+	  </thead>
+	  
+	  <tbody>
+	    <row>
+	      <entry>Grandes icônes (navigateur de fichiers)</entry>
+	      <entry>Centré horizontalement et 6 pixels au dessous des grandes icônes</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-large-icon-label.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-large-icon-label.eps" format="EPS"/></imageobject>
+		  <textobject><phrase>Large icon with text label centered below</phrase></textobject>
+		</mediaobject>
+	      </entry>
+	    </row>
+	    
+	    <row>
+	      <entry>Petites icônes (barre d'outils)</entry>
+	      <entry>Centré verticalement et 6 pixels à droite des petites icônes</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-small-icon-label.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-small-icon-label.eps" format="EPS"/></imageobject>
+		  <textobject><phrase>Small icon with text label to the right</phrase></textobject>
+		</mediaobject>
+	      </entry>
+	    </row>
+	    
+	    <row>
+	      <entry>Étiquette de contrôle liste</entry>
+	      <entry>6 pixels au-dessus et aligné à gauche horizontalement avec le contrôle liste ou 12 pixels sur la gauche et aligné en haut horizontalement avec le contrôle liste </entry>
+	      <entry align="center" valign="middle">
+		<mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-list-label.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-list-label.eps" format="EPS"/></imageobject>
+		  <textobject><phrase>List control with text label horizontally aligned above</phrase></textobject>
+		</mediaobject>
+	      </entry>
+	    </row>
+
+	    <row>
+	      <entry>Étiquettes de case à cocher et bouton radio</entry>
+	      <entry>6 pixels à droite et centré verticalement avec le bouton radio</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-radiobutton-label.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-radiobutton-label.eps" format="EPS"/></imageobject>
+		  <textobject><phrase>Radio button with text label to its right</phrase></textobject>
+		</mediaobject>
+	      </entry>
+
+	    </row>
+
+	    <row> 
+	      <entry>Étiquettes de champ texte</entry>
+	      <entry>6 pixels à gauche et centré verticalement avec le contrôle de champ de texte</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-textbox-label.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-textbox-label.eps" format="EPS"/></imageobject>
+		  <textobject><phrase>Textbox with text label to its left</phrase></textobject>
+		</mediaobject>
+	      </entry>
+	    </row>
+	    
+	    <row>
+	      <entry>Étiquettes de bouton</entry>
+	      <entry>12 pixels de remplissage de chaque côté du texte centré (et de tout graphique accompagnant). S'il apparaît dans un groupe de boutons, l'étiquette du bouton la plus longue définit la taille des boutons, centrez toutes les étiquettes des autres boutons et des graphiques accompagnant dans des boutons de même taille.</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-button-label.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-button-label.eps" format="EPS"/></imageobject>
+		  <textobject><phrase>Buttons with centered text</phrase></textobject>
+		</mediaobject>
+	      </entry>
+	    </row>
+	    <row> 
+	      <entry>Autres étiquettes de composant (par ex. zones de sélection numérique, champs texte)</entry>
+	      <entry>12 pixels entre la plus longue étiquette de texte et son composant associé, toutes les autres étiquettes de texte dans le groupement du composant sont alignées à gauche avec l'étiquette la plus longue. Toutes les étiquettes sont centrées verticalement par rapport à leur composant associé</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-other-labels.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-other-labels.eps" format="EPS"/></imageobject>
+		  <textobject><phrase>Drop-down list with label to its left</phrase></textobject>
+		</mediaobject>
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+
+      
+
+      <itemizedlist><title>Conseils</title>
+	<listitem><para>Si l'étiquette précède le contrôle qu'elle nomme, terminez l'étiquette par deux-points. Par exemple, <guilabel>Courriel :</guilabel> pour nommer un champ de texte dans lequel l'utilisateur doit saisir son adresse électronique. Cela aide à l'identifier comme étant l'étiquette du contrôle au lieu que ce soit un élément indépendant. Certains utilitaires de consultation d'écran pour technologies d'assistance peuvent également utiliser la présence des deux-points pour identifier du texte en tant qu'étiquette de contrôle.</para></listitem>
+	
+	<!--	<listitem><para>When you use static text to label a control, ensure that the label immediately precedes that control in the Tab order. This will ensure that the access key (underlined character) you assign to the label will move focus to or activate the correct control when pressed.</para></listitem> 
+	<remark>GJM: This is just wrong. Glade may have an "auto" target for labels with mnemonics that
+	works this way, but it isn't part of GTK+. Adding the next listitem, though it could be better written.</remark>
+	-->
+	<listitem><para>Assurez-vous qu'une étiquette avec mnémonique est associée aux contrôles qu'elle nomme.</para></listitem>
+
+	<listitem><para>Alignez à gauche les composants et les étiquettes à moins que toutes les étiquettes dans un groupe aient des longueurs très différentes. Dans ce cas, alignez plutôt à droite les étiquettes pour être sûr qu'aucun contrôle ne finisse par être trop éloigné de l'étiquette correspondante.</para></listitem>
+
+	<listitem><para>Choisissez les noms des étiquettes avec soin. Donnez aux objets, même pris hors contexte, un nom porteur de sens. Les utilisateurs qui utilisent des lecteurs d'écran ou d'autres technologies d'assistance ne sont pas toujours capables de comprendre immédiatement la relation entre un contrôle et son environnement.</para></listitem>
+
+	<listitem><para>Soyez cohérent avec l'usage des étiquettes ou leur sémantique. Par exemple, si vous utilisez la même étiquette dans différentes fenêtres, cela aidera si le même sens est utilisé dans les deux cas. De même n'utilisez pas d'étiquettes qui s'épèlent différemment mais se prononcent de la même manière, par ex. « dans » et « dent » ; cela pourrait être source de confusion pour les utilisateurs faisant usage de lecteurs d'écran.</para></listitem>
+
+	<listitem><para>N'utilisez pas la même étiquette plus d'une fois dans une même fenêtre. Des outils comme les loupes ou les lecteurs d'écran ne permettant pas toujours d'informer l'utilisateur du contexte environnant, vous ne faciliteriez pas la tâche de ceux qui en font usage.</para></listitem>
+	
+	<listitem><para>Ne codez pas de manière permanente les styles et tailles des polices de caractères. L'utilisateur doit être capable d'adapter toutes les tailles et tous les styles.</para></listitem>
+	
+	<listitem><para>N'utilisez pas plus de deux ou trois polices de style et tailles différentes dans l'application ; choisissez-les visuellement différentes plutôt que d'aspect similaire dans une même fenêtre. Une profusion de tailles et de styles de police donne l'impression d'une interface encombrée et non-professionnelle ; elle est plus difficile à lire. En général, utilisez toujours des polices du thème actuel et indiquez des tailles relatives plutôt absolues.</para></listitem>
+	
+	<listitem><para>N'utilisez pas de toiles de fond graphiques ou de « filigranes » derrière du texte, autres que ceux définis par le thème choisi par l'utilisateur. Le fond influence le contraste entre texte et arrière-plan. Il peut en résulter des difficultés pour les utilisateurs qui ont des problèmes de vision et qui, par conséquent, habituellement choisissent toujours des thèmes avec des toiles de fond unies.</para></listitem>
+	
+      </itemizedlist>
+      
+    </sect2>
+    
+    
+    <sect2 id="layout-capitalization">
+      
+      <title>Usage des majuscules</title>
+
+      <para>Two styles of capitalization are used in GNOME user interface elements: 
+	<variablelist> 
+	  <varlistentry> 
+	    <term>Header capitalization</term> 
+	    <listitem> 
+	      <para>Capitalize all words in the element, with the following exceptions:
+		
+		<itemizedlist> 
+		  <listitem> 
+		    <para>Articles: <emphasis>a</emphasis>, <emphasis>an</emphasis>, <emphasis>the</emphasis>.</para>
+		  </listitem> 
+		  <listitem> 
+		    <para>
+		      Conjunctions: <emphasis>and</emphasis>,
+		      <emphasis>but</emphasis>, <emphasis>for</emphasis>, <emphasis>not</emphasis>,
+		      <emphasis>so</emphasis>, <emphasis>yet</emphasis> ... 
+		    </para>
+		  </listitem> 
+		  <listitem> 
+		    <para>
+		      Prepositions of three or fewer letters:
+		      <emphasis>at</emphasis>, <emphasis>for</emphasis>, <emphasis>by</emphasis>,
+		      <emphasis>in</emphasis>, <emphasis>to</emphasis> ... 
+		    </para>
+		  </listitem> 
+		</itemizedlist> 
+	      </para>
+	    </listitem> 
+	  </varlistentry> 
+	  <varlistentry> 
+	    <term>Sentence capitalization</term> 
+	    <listitem> 
+	      <para>
+		Capitalize the first letter of the first word, and any other words
+		normally capitalized in sentences, such as application names. 
+	      </para>
+	    </listitem> 
+	  </varlistentry> 
+	</variablelist> 
+      </para>
+     
+	<para>Le tableau suivant indique le style de mise en majuscule à utiliser pour chaque type d'élément de l'interface utilisateur.</para>
+
+      <table frame="topbot"> 
+	<title>Règle de style pour la mise en majuscule des éléments d'interface utilisateur</title> 
+	<tgroup cols="2" colsep="0" rowsep="0" align="left">
+	  <thead>
+	    <row rowsep="1" valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Élément</entry> 
+	      <entry colname="col2" valign="top" align="left">Style</entry>
+	    </row> 
+	  </thead> 
+	  <tbody> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de case à cocher</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de bouton de commande</entry> 
+	      <entry colname="col2" valign="top">En-tête</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes d'en-tête de colonne</entry> 
+	      <entry colname="col2" valign="top">En-tête</entry> 
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Étiquettes d'objet d'arrière-plan du bureau</entry>
+	      <entry colname="col2" valign="top">En-tête</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Messages de boîte de dialogue</entry>
+	      <entry colname="col2" valign="top">Phrase</entry>
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de zone de liste déroulante modifiable</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de boîte de liste déroulante</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de champ</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Noms de fichier</entry>
+	      <entry colname="col2" valign="top">Phrase</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Textes de remplacement de graphique : par exemple, texte « Alt » sur les pages Web</entry>
+	      <entry colname="col2" valign="top">Phrase</entry>
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de cadre ou de boîte de groupement</entry> 
+	      <entry colname="col2" valign="top">En-tête</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Éléments dans les zones de liste déroulante modifiable, les boîtes de liste déroulante et les boîtes de liste</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de boîte de liste</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Éléments de menu</entry>
+	      <entry colname="col2" valign="top">En-tête</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Éléments de menu dans les applications</entry>
+	      <entry colname="col2" valign="top">En-tête</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Intitulés de menus des applications</entry>
+	      <entry colname="col2" valign="top">En-tête</entry>
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de bouton radio</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de glissière</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de zone de sélection numérique</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row> 
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Titres de section d'onglet</entry>
+	      <entry colname="col2" valign="top">En-tête</entry>
+	    </row>
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Étiquettes de boîte de texte</entry> 
+	      <entry colname="col2" valign="top">Phrase</entry> 
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Étiquettes de barre de titre</entry>
+	      <entry colname="col2" valign="top">En-tête</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Étiquettes de bouton de barre d'outils</entry>
+	      <entry colname="col2" valign="top">En-tête</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Infobulles</entry>
+	      <entry colname="col2" valign="top">Phrase</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Titres de page Web et éléments de navigation</entry>
+	      <entry colname="col2" valign="top">En-tête</entry>
+	    </row> 
+	  </tbody> 
+	</tgroup> 
+      </table> 
+	 <note><title>Directives pour la mise en majuscule dans d'autres langues</title>
+	<para>Les langues autres que l'anglais peuvent utiliser des règles différentes pour l'usage des majuscules. Par exemple, le suédois n'a pas le concept d'usage de majuscules dans les titres. Contactez le <ulink url="http://developer.gnome.org/projects/gtp/contact.html">Projet traduction de GNOME</ulink> si vous avez un doute sur la manière de mettre en majuscules dans une langue donnée.</para>
+	</note>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="design-fonts">
+    <title>Polices</title>
+    <para>N'utilisez que des polices que l'utilisateur a définies dans son thème et des tailles relatives à la taille par défaut du thème. Cela offrira un maximum de lisibilité et d'accessibilité à tous les utilisateurs.</para>
+    <para>Ne mélangez pas plus de deux ou trois polices et styles (souligné, gras, italique) dans une même fenêtre : cela donne un aspect non professionnel et distrait l'utilisateur de l'information transmise.</para>
+    <para>Fournissez des alternatives au WYSIWYG (What You See Is What You Get) si possible. Certains utilisateurs peuvent avoir besoin d'imprimer le texte avec des petites polices, mais d'utiliser des grandes polices d'écran pour l'édition, par exemple. Les alternatives possibles comportent, soit l'affichage de tout le texte dans la même police et taille (toutes deux choisies pas l'utilisateur), soit une option « retour à la ligne automatique » qui permet de lire tout le texte d'une fenêtre sans défilement horizontal, soit un affichage en colonne unique (le contenu de la fenêtre est sur une seule colonne bien qu'il soit imprimé sur plusieurs colonnes), soit un affichage texte-seulement pour lequel les graphiques sont remplacés par des substituants ou des descriptions textuelles.</para>
+  </sect1>
+  </chapter>

@@ -21,7 +21,7 @@ public class Main : Object
 		var label = sender.get_child () as Gtk.Label;
 		switch (label.get_label()) {
 			case "E":
-				play_sound (329.63);
+				play_sound (369.23);
 				break;
 			case "A":
 				play_sound (440);
@@ -83,7 +83,7 @@ public class Main : Object
 	    var time = new TimeoutSource(200);
 
 		time.set_callback(() => {
-			pipeline.set_state (Gst.State.NULL);
+			pipeline.set_state (Gst.State.PAUSED);
 		    return false;
 		});
 

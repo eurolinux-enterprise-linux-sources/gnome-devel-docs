@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="keyring" xml:lang="fr">
+<info>
+  <link type="guide" xref="index" group="apps"/>
+  <desc>Enregistrement sécurisé des mots de passe et autres données sensibles</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+</info>
+
+<title>Keyring</title>
+
+<p>GNOME contient un gestionnaire de trousseaux de clés moderne et sécurisé afin de conserver les mots de passe et les autres données sensibles des utilisateurs. Les application peuvent exploiter la bibliothèque du gestionnaire de trousseaux pour sauvegarder et accéder aux mots de passe. Les utilisateurs peuvent gérer leurs mots de passe au moyen de l'application <app>Seahorse</app> de GNOME.</p>
+
+<p>Le gestionnaire de trousseaux peut gérer plusieurs trousseaux, et chaque trousseau peut contenir autant d'éléments que nécessaire. Un élément de trousseau contient une donnée quelconque, souvent un mot de passe. Chaque trousseau est verrouillé individuellement et il est obligatoire de fournir un mot de passe pour le déverrouiller. Lorsque le trousseau est déverrouillé, l'utilisateur peut accéder à tous les éléments qu'il contient.</p>
+
+<p>Le gestionnaire de trousseaux dispose de listes de contrôle d'accès pour chaque élément d'un trousseau, afin de contrôler quelle application peut accéder à un élément. Si une application inconnue tente d'accéder à un élément d'un trousseau, le gestionnaire de trousseaux demande à l'utilisateur s'il doit autoriser ou refuser l'accès par cette application. Cela empêche des programmes malicieux ou mal écrits d'accéder aux données sensibles des utilisateurs.</p>
+
+<p>Les données d'un trousseau enregistrées sur le système de fichiers sont chiffrées par l'algorithme AES block et les attributs de l'élément sont hachés avec SHA1. Grâce au hachage des attributs, le gestionnaire de trousseaux est capable de rechercher des éléments demandés par les applications même sans déverrouiller le trousseau. Le déverrouillage intervient au moment où un élément correspondant est trouvé et qu'il doit être récupéré.</p>
+
+<p>Le gestionnaire de trousseaux gère également un trousseau de session. Les éléments de ce trousseau de session ne sont jamais enregistrés sur le disque, et ils sont effacés dès que la session de l'utilisateur prend fin. Ce trousseau peut être utilisé pour stocker des mots de passe qui ne doivent être utilisés que dans la session actuelle.</p>
+
+<p>Si vous utilisez GIO pour accéder à des serveurs distants, vous profitez automatiquement du gestionnaire de trousseaux. Chaque fois que GVFS doit authentifier l'utilisateur, il offre l'option d'enregistrer le mot de passe, soit dans le trousseau par défaut, soit dans le trousseau de session.</p>
+
+<p>Vous devriez utiliser le gestionnaire de trousseaux chaque fois que votre application a besoin d'enregistrer des mots de passe ou d'autres données sensibles pour les utilisateurs. Cela permet d'améliorer la cohérence générale de l'interface tout en conservant les données de manière sûre.</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/gnome-keyring/stable/">gnome-keyring Reference Manual</link></p></item>
+  <item><p><link href="http://developer.gnome.org/libseahorse/stable/">libseahorse Reference Manual</link></p></item>
+</list>
+
+</page>

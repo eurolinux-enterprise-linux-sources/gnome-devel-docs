@@ -24,7 +24,7 @@
 static gboolean
 pipeline_stop (GstElement* pipeline)
 {
-	gst_element_set_state (pipeline, GST_STATE_NULL);
+	gst_element_set_state (pipeline, GST_STATE_PAUSED);
 	g_object_unref (pipeline);
 
 	/* disconnect handler */
@@ -59,7 +59,8 @@ play_sound (gdouble frequency)
 void on_button_clicked (GtkButton* button,
                         gpointer user_data)
 {
-	const gchar* text = gtk_button_get_label (button);
+	GtkWidget* label = gtk_bin_get_child (GTK_BIN (button));
+	const gchar* text = gtk_label_get_label (GTK_LABEL (label));
 
 	if (g_str_equal (text, _("E")))
 	    play_sound (NOTE_E);

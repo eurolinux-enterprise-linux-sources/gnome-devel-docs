@@ -2,10 +2,9 @@ from gi.repository import Gtk
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
 
-    # constructor for a window (the parent window) with a label
+     # constructor for a window (the parent window) with a label
     def __init__(self, app):
         Gtk.Window.__init__(self, title="GMenu Example", application=app)
         self.set_default_size(400, 200)
@@ -38,19 +37,17 @@ class MyWindow(Gtk.ApplicationWindow):
     def dialog_response(self, widget, response_id):
         # if the button clicked gives response OK (-5)
         if response_id == Gtk.ResponseType.OK:
-            print("*boom*")
-        # if the button clicked gives response CANCEL (-6)
+		    print "*boom*"
+		# if the button clicked gives response CANCEL (-6)
         elif response_id == Gtk.ResponseType.CANCEL:
-            print("good choice")
+            print "good choice"
         # if the messagedialog is destroyed (by pressing ESC)
         elif response_id == Gtk.ResponseType.DELETE_EVENT:
-            print("dialog closed or cancelled")
+            print "dialog closed or cancelled"
         # finally, destroy the messagedialog
         widget.destroy()
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -61,7 +58,7 @@ class MyApplication(Gtk.Application):
     def quit_cb(self, action, parameter):
         self.quit()
 
-    def do_startup(self):
+    def do_startup (self):
         Gtk.Application.do_startup(self)
 
         # create a menu (a Gio.Menu)
@@ -76,7 +73,7 @@ class MyApplication(Gtk.Application):
         # a new simpleaction - for the application
         quit_action = Gio.SimpleAction.new("quit", None)
         quit_action.connect("activate", self.quit_cb)
-        self.add_action(quit_action)
+        self.add_action (quit_action)
 
 app = MyApplication()
 exit_status = app.run(sys.argv)

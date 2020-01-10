@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="label.py" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="label.py" xml:lang="fr">
   <info>
     <title type="text">Label (Python)</title>
     <link type="guide" xref="beginner.py#display-widgets"/>
@@ -10,46 +10,16 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
     <credit type="author">
       <name>Sebastian Pölsterl</name>
-      <email its:translate="no">sebp@k-d-w.org</email>
+      <email>sebp@k-d-w.org</email>
       <years>2012</years>
     </credit>
 
-    <desc>Un élément graphique qui affiche une petite à moyenne quantité de texte</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>A widget that displays a small to medium amount of text</desc>
   </info>
 
   <title>Étiquette</title>
@@ -59,15 +29,13 @@
   <links type="section"/>
 
   <section id="code">
-  <title>Code utilisé pour générer cet exemple</title>
+  <title>Code used to generate this example</title>
 
   <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
     # constructor for a Gtk.ApplicationWindow
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
         self.set_default_size(200, 100)
@@ -79,9 +47,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # add the label to the window
         self.add(label)
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -97,10 +63,7 @@ exit_status = app.run(sys.argv)
 sys.exit(exit_status)
 </code>
 
-    <p>Une autre manière d'obtenir ce que contient cet exemple est de créer l'étiquette comme étant un exemple d'une autre classe et de l'ajouter à <code>MyWindow</code> dans la méthode <code>do_activate(self)</code> :</p>
-    <note>
-      <p>The highlighted lines indicate code that is different from the previous snippet.</p>
-    </note>
+    <p>Another way to obtain what we have in the example is to create the label as an instance of another class and add it to the instance of <code>MyWindow</code> in the <code>do_activate(self)</code> method:</p>
       <code mime="text/x-python">
 # a class to define a window
 class MyWindow(Gtk.ApplicationWindow):
@@ -109,12 +72,10 @@ class MyWindow(Gtk.ApplicationWindow):
         self.set_default_size(200, 100)
 
 # a class to define a label
-<e:hi>
 class MyLabel(Gtk.Label):
     def __init__(self):
         Gtk.Label.__init__(self)
         self.set_text("Hello GNOME!")
-</e:hi>
 
 class MyApplication(Gtk.Application):
     def __init__(self):
@@ -123,42 +84,33 @@ class MyApplication(Gtk.Application):
     def do_activate(self):
         # create an instance of MyWindow
         win = MyWindow(self)
-
         # create an instance of MyLabel
-<e:hi>
         label = MyLabel()
-</e:hi>
         # and add it to the window
-<e:hi>
         win.add(label)
-</e:hi>
         # show the window and everything on it
         win.show_all()</code>
 
   </section>
 
   <section id="methods">
-  <title>Méthodes utiles pour un élément graphique étiquette</title>
-  
-  <note style="tip">
-    <p>An explanation of how to work with strings in GTK+ can be found in <link xref="strings.py"/>.</p>
-  </note>
-
+  <title>Useful methods for a Label widget</title>
+  <p>An explanation of how to deal with strings in GTK+ can be found in <link xref="strings.py"/>.</p>
   <list>
-    <item><p>La fonction <code>set_line_wrap(True)</code> renvoie le texte de l'étiquette à la ligne s'il excède la largeur de l'élément graphique.</p></item>
-    <item><p>La fonction <code>set_justify(Gtk.Justification.LEFT)</code> (ou <code>Gtk.Justification.RIGHT, Gtk.Justification.CENTER, Gtk.Justification.FILL</code>) définit l'alignement des lignes du texte de l'étiquette à une position relative les unes par rapport aux autres. La méthode n'a aucun effet sur une étiquette comportant une seule ligne.</p></item>
-    <item><p>Pour décorer le texte, nous pouvons utiliser <code>set_markup("text")</code>, où <code>"text"</code> est mis en <link href="http://developer.gnome.org/pango/stable/PangoMarkupFormat.html">langage Markup pango</link>. Voici un exemple :</p>
+    <item><p><code>set_line_wrap(True)</code> breaks lines if the text of the label exceeds the size of the widget.</p></item>
+    <item><p><code>set_justify(Gtk.Justification.LEFT)</code> (or <code>Gtk.Justification.RIGHT, Gtk.Justification.CENTER, Gtk.Justification.FILL</code>) sets the alignment of the lines in the text of the label relative to each other. The method has no effect on a single-line label.</p></item>
+    <item><p>For decorated text we can use <code>set_markup("text")</code>, where <code>"text"</code> is a text in the <link href="http://developer.gnome.org/pango/stable/PangoMarkupFormat.html">Pango Markup Language</link>. An example:</p>
       <code mime="text/x-python"><![CDATA[
 label.set_markup("Text can be <small>small</small>, <big>big</big>, "
                  "<b>bold</b>, <i>italic</i> and even point to somewhere "
-                 "on the <a href=\"http://www.gtk.org\" "
-                 "title=\"Click to find out more\">internet</a>.")]]></code>
+                 "in the <a href=\"http://www.gtk.org\" "
+                 "title=\"Click to find out more\">internets</a>.")]]></code>
     </item>
   </list>
   </section>
 
   <section id="references">
-  <title>Références API</title>
+  <title>API References</title>
   <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
   <list>
     <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkLabel.html">GtkLabel</link></p></item>

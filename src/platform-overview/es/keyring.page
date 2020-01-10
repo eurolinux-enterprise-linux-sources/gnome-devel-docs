@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="keyring" xml:lang="es">
+<info>
+  <link type="guide" xref="index" group="apps"/>
+  <desc>Almacenamiento seguro para contraseñas y otros datos</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Jorge González</mal:name>
+      <mal:email>jorgegonz@svn.gnome.org</mal:email>
+      <mal:years>2007-2010</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Carrión</mal:name>
+      <mal:email>mario@monouml.org</mal:email>
+      <mal:years>2006</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Depósito de claves</title>
+
+<p>GNOME proporciona un gestor del depósito de claves moderno y seguro para almacenar las contraseñas y otros datos sensibles del usuario. Las aplicaciones pueden usar la biblioteca del gestor del depósito de claves para almacenar y acceder a las contraseñas, mientras que los usuarios pueden gestionar sus contraseñas usando la aplicación <app>Cifrado y depósitos de claves</app> de GNOME.</p>
+
+<p>El gestor del depósito de claves proporciona cualquier número de depósitos donde cada depósito puede contener cualquier número de elementos. Los elementos en un depósito almacenan una información, generalmente una contraseña. Cada depósito está bloqueado individualmente y los usuarios deben proporcionar una clave para desbloquear el depósito. Una vez que el depósito está desbloqueado, el usuario tiene acceso a todos los elementos de ese depósito.</p>
+
+<p>El gestor del depósito de claves proporciona una lista de control para cada elemento del depósito, controlando a qué aplicaciones se permite el acceso a ese elemento. Si una aplicación desconocida trata de acceder a un elemento del depósito, el gestor del depósito preguntará al usuario si quiere permitir o denegar el acceso de esa aplicación. Esto ayuda a prevenir que programas maliciosos o pobremente escritos accedan a información sensible del usuario.</p>
+
+<p>Los datos del depósito de claves almacenados en el sistema de archivos están cifrados con el cifrado de bloques AES, mientras que el SHA1 se usa para el «hash» de los atributos del elemento. Usando atributos «hash», el gestor del depósito de claves es capaz de mirar elementos que piden las aplicaciones sin necesidad de desbloquear el depósito. El depósito se desbloquea cuando se encuentra un elemento coincidente y se accede a él.</p>
+
+<p>El gestor del depósito de claves también proporciona un depósito de claves para la sesión. Los elementos en el depósito de la sesión nunca se almacenan en el disco y se pierden cuando termina la sesión del usuario. El depósito de la sesión se puede usar para almacenar contraseñas que sólo van a usarse en la sesión actual.</p>
+
+<p>Si usa GIO para acceder a servidores remotos, automáticamente obtiene los beneficios del gestor del depósito de claves. Siempre que GVFS necesite autenticar al usuario, proporciona la opción para almacenar la contraseña, ya sea en el depósito de claves predeterminado o en el depósito de claves de la sesión.</p>
+
+<p>Debería usar el gestor del depósito de claves siempre que su aplicación necesite almacenar contraseñas u otros datos sensibles de los usuarios. Al usar el gestor del depósito de claves se proporciona una mejor experiencia al usuario a la vez que se mantienen seguros los datos del mismo.</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/gnome-keyring/stable/">Manual de referencia de gnome-keyring</link></p></item>
+  <item><p><link href="http://developer.gnome.org/libseahorse/stable/">Manual de referencia de libseahorse</link>.</p></item>
+</list>
+
+</page>

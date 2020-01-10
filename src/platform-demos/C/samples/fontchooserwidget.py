@@ -1,9 +1,7 @@
 from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="FontChooserWidget", application=app)
 
@@ -12,8 +10,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # a default font
         self.font_chooser.set_font("Sans")
         # a text to preview the font
-        self.font_chooser.set_preview_text(
-            "This is an example of preview text!")
+        self.font_chooser.set_preview_text("This is an example of preview text!")
 
         # connect signal from the font chooser to the callback function
         self.font_chooser.connect("notify::font", self.font_cb)
@@ -24,11 +21,9 @@ class MyWindow(Gtk.ApplicationWindow):
     # callback function:
     def font_cb(self, event, user_data):
         # print in the terminal
-        print("You chose the font " + self.font_chooser.get_font())
-
+        print "You chose the font " + self.font_chooser.get_font()
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 

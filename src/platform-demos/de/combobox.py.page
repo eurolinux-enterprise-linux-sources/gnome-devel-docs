@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox.py" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox.py" xml:lang="de">
   <info>
     <title type="text">ComboBox (Python)</title>
     <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
@@ -9,7 +9,7 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -22,7 +22,7 @@
     </mal:credit>
   </info>
 
-  <title>ComboBox (einspaltig)</title>
+  <title>ComboBox (one column)</title>
   <media type="image" mime="image/png" src="media/combobox.png"/>
   <p>This ComboBox prints to the terminal your selection when you change it.</p>
 
@@ -35,9 +35,7 @@ import sys
 
 distros = [["Select distribution"], ["Fedora"], ["Mint"], ["Suse"]]
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
         self.set_default_size(200, -1)
@@ -65,23 +63,20 @@ class MyWindow(Gtk.ApplicationWindow):
         # the first row is the active one by default at the beginning
         combobox.set_active(0)
 
-        # connect the signal emitted when a row is selected to the callback
-        # function
+        # connect the signal emitted when a row is selected to the callback function
         combobox.connect("changed", self.on_changed)
 
         # add the combobox to the window
         self.add(combobox)
 
     def on_changed(self, combo):
-        # if the row selected is not the first one, write its value on the
-        # terminal
+        # if the row selected is not the first one, write its value on the terminal
         if combo.get_active() != 0:
-            print("You chose " + str(distros[combo.get_active()][0]) + ".")
+            print "You chose " + str(distros[combo.get_active()][0]) +"."
         return True
 
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -106,7 +101,7 @@ sys.exit(exit_status)
   </section>
 
   <section id="references">
-    <title>API-Referenzen</title>
+    <title>API References</title>
     <p>In this sample we used the following:</p>
     <list>
       <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkComboBox.html">GtkComboBox</link></p></item>

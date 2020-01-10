@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="image.py" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="image.py" xml:lang="es">
   <info>
     <title type="text">Image (Python)</title>
     <link type="guide" xref="beginner.py#display-widgets"/>
@@ -9,27 +9,22 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
-    </credit>
-    <credit type="editor">
-      <name>Sindhu S</name>
-      <email its:translate="no">sindhus@live.in</email>
-      <years>2014</years>
     </credit>
 
     <desc>Un widget que muestra una imagen</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -50,14 +45,11 @@
   <section id="code">
   <title>Código usado para generar este ejemplo</title>
 
-  <code mime="text/x-python" style="numbered">
-  from gi.repository import Gtk
+  <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
-
 
 class MyWindow(Gtk.ApplicationWindow):
     # create a window
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
         self.set_default_size(300, 300)
@@ -69,9 +61,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # add the image to the window
         self.add(image)
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -85,25 +75,23 @@ class MyApplication(Gtk.Application):
 app = MyApplication()
 exit_status = app.run(sys.argv)
 sys.exit(exit_status)
-
-  </code>
+</code>
 
   <p>Otra manera de obtener lo que se tiene en el ejemplo es crear la imagen como una instancia de otra clase y añadírsela a la instancia de <code>MyWindow</code> en el método <code>do_activate(self)</code>:</p>
-
-  <code mime="text/x-python">
-    # a class to create a window
-    class MyWindow(Gtk.ApplicationWindow):
+      <code mime="text/x-python">
+# a class to create a window
+class MyWindow(Gtk.ApplicationWindow):
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
         self.set_default_size(300, 300)
 
-    # a class to create an image
-    class MyImage(Gtk.Image):
+# a class to create an image
+class MyImage(Gtk.Image):
     def __init__(self):
         Gtk.Image.__init__(self)
         self.set_from_file("gnome-image.png")
 
-    class MyApplication(Gtk.Application):
+class MyApplication(Gtk.Application):
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -113,60 +101,49 @@ sys.exit(exit_status)
         # create an instance of MyImage and add it to the window
         win.add(MyImage())
         # show the window and everything on it
-        win.show_all()
-  </code>
-
-  <note>
-    <p>Para usar este fragmento de código necesitará aádir el código que importa <code>Gtk</code> y <code>GdkPixbuf</code> desde <code>gi.repository</code> y las líneas que crean una instancia de la ventana <code>MyApplication</code>.</p>
-  </note>
+        win.show_all()</code>
   </section>
 
   <section id="methods">
   <title>Métodos útiles para un widget «Image»</title>
 
   <list>
-    <item>
-      <p>Para cargar una imagen por red, use <code>set_from_pixbuf(pixbuf)</code>, donde <code>pixbuf</code> es un <link href="http://developer.gnome.org/gdk-pixbuf/unstable//index.html"> GdkPixbuf</link>.</p>
-      <code mime="text/python">
-        from gi.repository import Gtk
-        from gi.repository import GdkPixbuf
-        import sys
+    <item><p>Para establecer un icono del almacén como imagen, puede usar <code>set_from_stock(id_almacén, tamaño)</code> donde <code>id_almacén</code> es un icono del almacén como <code>Gtk.STOCK_ABOUT</code> (puede encontrar más en <link href="http://developer.gnome.org/gtk3/unstable/gtk3-Stock-Items">Elementos del almacén</link>, teniendo en cuenta que deben modificarse como anteriormente) y un <code>tamaño</code> de icono del almacén, que puede ser <code>Gtk.IconSize.INVALID, Gtk.IconSize.MENU, Gtk.IconSize.SMALL_TOOLBAR, Gtk.IconSize.LARGE_TOOLBAR, Gtk.IconSize.BUTTON, Gtk.IconSize.DND, Gtk.IconSize.DIALOG</code>.</p></item>
+    <item><p>También puede usar <code>set_from_icon_name(nombre_icono, tamaño)</code> donde <code>nombre_icono</code> es un nombre de icono del almacén como <code>«gtk-about»</code> (puede encontrar más como se mencionó) y <code>tamaño</code> es igual que con «set_from_stock».</p></item>
+    <item><p>Para cargar una imagen por red, use <code>set_from_pixbuf(pixbuf)</code>, donde <code>pixbuf</code> es un <link href="http://developer.gnome.org/gdk-pixbuf/unstable//index.html">GdkPixbuf</link>.</p>
+    <code mime="text/python">
+from gi.repository import Gtk
+from gi.repository import GdkPixbuf
+import sys
 
-        class MyWindow(Gtk.ApplicationWindow):
-            # create a window
-            def __init__(self, app):
-                Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
-                self.set_default_size(300, 300)
+class MyWindow(Gtk.ApplicationWindow):
+    # create a window
+    def __init__(self, app):
+        Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
+        self.set_default_size(300, 300)
 
-                # create a pixbuf from file filename="gnome-image.png", with width=32
-                # and height=64 amd boolean preserve_aspect_ratio=False.
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("gnome-image.png", 64, 128, False)
+        # create a pixbuf from file filename="gnome-image.png", with width=32
+        # and height=64 amd boolean preserve_aspect_ratio=False.
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale("gnome-image.png", 64, 128, False)
 
-                # create an image
-                image = Gtk.Image()
-                # set the content of the image as the pixbuf
-                image.set_from_pixbuf(pixbuf)
-                # add the image to the window
-                self.add(image)
-        </code>
-        <p>Si <code>preserve_aspect_ratio=True</code> puede usar <code>new_from_file_at_size(nombre_archivo, anchura, altura)</code>. Si <code>anchura</code> o <code>altura</code> son <code>-1</code>, no se restringen.</p>
-        <p>Para cargar de un flujo de entrada, consulte <code>new_from_stream()</code> y <code>new_from_stream_at_scale()</code> en la documentación.</p>
+        # create an image
+        image = Gtk.Image()
+        # set the content of the image as the pixbuf
+        image.set_from_pixbuf(pixbuf)
+        # add the image to the window
+        self.add(image)</code>
+    <p>Si <code>preserve_aspect_ratio=True</code> puede usar <code>new_from_file_at_size(nombre_archivo, anchura, altura)</code>. Si <code>anchura</code> o <code>altura</code> son <code>-1</code>, no se restringen.</p>
+    <p>Para cargar de un flujo de entrada, consulte <code>new_from_stream()</code> y <code>new_from_stream_at_scale()</code> en la documentación</p>
     </item>
   </list>
   </section>
 
   <section id="references">
-    <title>Referencias de la API</title>
-
-    <p>En este ejemplo se usa lo siguiente:</p>
-    <list>
-      <item>
-        <p><link href="https://developer.gnome.org/gtk3/unstable/GtkImage.html"> GtkImage</link></p>
-      </item>
-      <item>
-        <p><link href="https://developer.gnome.org/gtk3/unstable/GtkWindow.html"> GtkWindow</link></p>
-      </item>
-    </list>
-
+  <title>Referencias de la API</title>
+  <p>En este ejemplo se usa lo siguiente:</p>
+  <list>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkImage.html">GtkImage</link></p></item>
+    <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkWindow.html">GtkWindow</link></p></item>
+  </list>
   </section>
 </page>

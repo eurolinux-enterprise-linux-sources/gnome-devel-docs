@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="aboutdialog.c" xml:lang="gl">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="aboutdialog.c" xml:lang="gl">
   <info>
     <title type="text">AboutDialog (C)</title>
-    <link type="guide" xref="c#windows"/>
+    <link type="guide" xref="beginner.c#windows"/>
     <link type="seealso" xref="dialog.c"/>
     <link type="seealso" xref="messagedialog.c"/>
     <revision version="0.2" date="2012-08-07" status="draft"/>
 
     <credit type="author copyright">
       <name>Monica Kochofar</name>
-      <email its:translate="no">monicakochofar@gmail.com</email>
+      <email>monicakochofar@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -31,6 +31,8 @@
       <code mime="text/x-csrc" style="numbered">
 #include &lt;gtk/gtk.h&gt;
 
+
+
 /* Callback function in which reacts to the "response" signal from the user in
  * the message dialog window.
  * This function is used to destroy the dialog window.
@@ -40,9 +42,12 @@ on_close (GtkDialog *dialog,
           gint       response_id,
           gpointer   user_data)
 {
-  /* This will cause the dialog to be destroyed */
+  /*This will cause the dialog to be destroyed*/
   gtk_widget_destroy (GTK_WIDGET (dialog));
+
 }
+
+
 
 /* Callback function for the response signal "activate" related to the SimpleAction
  * "about_action".
@@ -53,39 +58,41 @@ about_cb (GSimpleAction *simple,
           GVariant      *parameter,
           gpointer       user_data)
 {
-  GtkWidget *about_dialog;
+   GtkWidget *about_dialog;
 
-  about_dialog = gtk_about_dialog_new ();
+   about_dialog = gtk_about_dialog_new ();
 
-  /* Lists of authors/ documentators to be used later, they must be initialized
-   * in a null terminated array of strings.
-   */
-  const gchar *authors[] = {"GNOME Documentation Team", NULL};
-  const gchar *documenters[] = {"GNOME Documentation Team", NULL};
+   /* Lists of authors/ documentators to be used later, they must be initialized
+    * in a null terminated array of strings.
+    */
+   const gchar *authors[] = {"GNOME Documentation Team", NULL};
+   const gchar *documenters[] = {"GNOME Documentation Team", NULL};
 
-  /* We fill in the information for the about dialog */
-  gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (about_dialog), "AboutDialog Example");
-  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_dialog), "Copyright \xc2\xa9 2012 GNOME Documentation Team");
-  gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (about_dialog), authors);
-  gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (about_dialog), documenters);
-  gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_dialog), "GNOME Developer Website");
-  gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_dialog), "http://developer.gnome.org");
+   /* We fill in the information for the about dialog */
+   gtk_about_dialog_set_program_name (GTK_ABOUT_DIALOG (about_dialog), "AboutDialog Example");
+   gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_dialog), "Copyright \xc2\xa9 2012 GNOME Documentation Team");
+   gtk_about_dialog_set_authors (GTK_ABOUT_DIALOG (about_dialog), authors);
+   gtk_about_dialog_set_documenters (GTK_ABOUT_DIALOG (about_dialog), documenters);
+   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_dialog), "GNOME Developer Website");
+   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_dialog), "http://developer.gnome.org");
 
-  /* We do not wish to show the title, which in this case would be
-   * "AboutDialog Example". We have to reset the title of the messagedialog
+  /* We do not wish to show the title, which in this case would be 
+   * "AboutDialog Example". We have to reset the title of the messagedialog 
    * window after setting the program name.
    */
   gtk_window_set_title (GTK_WINDOW (about_dialog), "");
 
-  /* To close the aboutdialog when "close" is clicked we connect the response
+  /* To close the aboutdialog when "close" is clicked we connect the response 
    * signal to on_close
    */
-  g_signal_connect (GTK_DIALOG (about_dialog), "response",
+  g_signal_connect (GTK_DIALOG (about_dialog), "response", 
                     G_CALLBACK (on_close), NULL);
 
   /* Show the about dialog */
-  gtk_widget_show (about_dialog);
+  gtk_widget_show (about_dialog); 
 }
+
+
 
 static void
 activate (GtkApplication *app,
@@ -100,30 +107,32 @@ activate (GtkApplication *app,
   gtk_window_set_title (GTK_WINDOW (window), "AboutDialog Example");
   gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
 
-  /* Create a new simple action, giving it a NULL parameter type. It will
-   * always be NULL for actions invoked from a menu. (e.g clicking on an "ok"
+  /* Create a new simple action, giving it a NULL parameter type. It will 
+   * always be NULL for actions invoked from a menu. (e.g clicking on an "ok" 
    * or "cancel" button)
    */
-  about_action = g_simple_action_new ("about", NULL);
+  about_action = g_simple_action_new ("about", NULL); 
 
-  /* Connect the "activate" signal to the appropriate callback function.
+  /* Connect the "activate" signal to the appropriate callback function. 
    * It will indicate that the action was just activated.
    */
-  g_signal_connect (about_action, "activate", G_CALLBACK (about_cb),
+  g_signal_connect (about_action, "activate", G_CALLBACK (about_cb), 
                     GTK_WINDOW (window));
 
-  /* Adds the about_action to the overall action map. An Action map is an
-   * interface that contains a number of named GAction instances
-   * (such as about_action)
+  /* Adds the about_action to the overall action map. An Action map is an 
+   * interface that contains a number of named GAction instances 
+   * (such as about_action) 
    */
   g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (about_action));
 
   gtk_widget_show_all (window);
 }
 
-/* Callback function for the response signal "activate" from the "quit" action
+
+
+/* Callback function for the response signal "activate" from the "quit" action 
  * found in the function directly below.
- */
+ */ 
 static void
 quit_cb (GSimpleAction *simple,
          GVariant      *parameter,
@@ -134,6 +143,8 @@ quit_cb (GSimpleAction *simple,
   g_application_quit (application);
 }
 
+
+
 /* Startup function for the menu we are creating in this sample */
 static void
 startup (GApplication *app,
@@ -142,15 +153,15 @@ startup (GApplication *app,
   GMenu *menu;
   GSimpleAction *quit_action;
 
-  /* Initialize the GMenu, and add a menu item with label "About" and action
-   * "win.about". Also add another menu item with label "Quit" and action
-   * "app.quit"
+  /* Initialize the GMenu, and add a menu item with label "About" and action 
+   * "win.about". Also add another menu item with label "Quit" and action 
+   * "app.quit" 
    */
   menu = g_menu_new ();
   g_menu_append (menu, "About", "win.about");
   g_menu_append (menu, "Quit", "app.quit");
 
-  /* Create a new simple action for the application. (In this case it is the
+  /* Create a new simple action for the application. (In this case it is the 
    * "quit" action.
    */
   quit_action = g_simple_action_new ("quit", NULL);
@@ -158,13 +169,16 @@ startup (GApplication *app,
   /* Ensure that the menu we have just created is set for the overall application */
   gtk_application_set_app_menu (GTK_APPLICATION (app), G_MENU_MODEL (menu));
 
-  g_signal_connect (quit_action,
-                    "activate",
-                    G_CALLBACK (quit_cb),
+  g_signal_connect (quit_action, 
+                    "activate", 
+                    G_CALLBACK (quit_cb), 
                     app);
 
   g_action_map_add_action (G_ACTION_MAP (app), G_ACTION (quit_action));
+
 }
+
+
 
 /* Startup function for the application */
 int

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="button.py" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="button.py" xml:lang="de">
   <info>
-    <title type="text">Knopf (Python)</title>
+    <title type="text">Button (Python)</title>
     <link type="guide" xref="beginner.py#buttons"/>
     <link type="seealso" xref="signals-callbacks.py"/>
     <link type="next" xref="linkbutton.py"/>
@@ -9,7 +9,7 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -22,7 +22,7 @@
     </mal:credit>
   </info>
 
-  <title>Knopf</title>
+  <title>Button</title>
 
   <media type="image" mime="image/png" src="media/button.png"/>
   <p>A button widget connected to a simple callback function.</p>
@@ -34,10 +34,8 @@
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
     # a window
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="GNOME Button", application=app)
         self.set_default_size(250, 50)
@@ -54,11 +52,9 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback function connected to the signal "clicked" of the button
     def do_clicked(self, button):
-        print("You clicked me!")
-
+        print "You clicked me!"
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -66,8 +62,8 @@ class MyApplication(Gtk.Application):
         win = MyWindow(self)
         win.show_all()
 
-    def do_startup(self):
-        Gtk.Application.do_startup(self)
+    def do_startup (self):
+        Gtk.Application.do_startup (self)
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
@@ -92,7 +88,7 @@ button.set_image(image)</code>
   </section>
   
   <section id="references">
-    <title>API-Referenzen</title>
+    <title>API References</title>
     <p>In this sample we used the following:</p>
     <list>
       <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkButton.html">GtkButton</link></p></item>

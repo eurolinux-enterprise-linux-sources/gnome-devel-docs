@@ -3,9 +3,7 @@ from gi.repository import Gdk
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Toolbar Example", application=app)
         self.set_default_size(400, 200)
@@ -24,15 +22,14 @@ class MyWindow(Gtk.ApplicationWindow):
         try:
             builder.add_from_file("toolbar_builder.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
         # and attach it to the grid
         grid.attach(builder.get_object("toolbar"), 0, 0, 1, 1)
 
         # two buttons that will be used later in a method
         self.fullscreen_button = builder.get_object("fullscreen_button")
-        self.leave_fullscreen_button = builder.get_object(
-            "leave_fullscreen_button")
+        self.leave_fullscreen_button = builder.get_object("leave_fullscreen_button")
 
         # create the actions that control the window, connect their signal to a
         # callback method (see below), add the action to the window:
@@ -49,14 +46,12 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback for undo
     def undo_callback(self, action, parameter):
-        print("You clicked \"Undo\".")
+        print "You clicked \"Undo\"."
 
     # callback for fullscreen
     def fullscreen_callback(self, action, parameter):
-        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which
-        # is a bit flag
-        is_fullscreen = self.get_window().get_state(
-        ) & Gdk.WindowState.FULLSCREEN != 0
+        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which is a bit flag
+        is_fullscreen = self.get_window().get_state() & Gdk.WindowState.FULLSCREEN != 0
         if is_fullscreen:
             self.unfullscreen()
             self.leave_fullscreen_button.hide()
@@ -66,9 +61,7 @@ class MyWindow(Gtk.ApplicationWindow):
             self.fullscreen_button.hide()
             self.leave_fullscreen_button.show()
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -96,11 +89,11 @@ class MyApplication(Gtk.Application):
 
     # callback for new
     def new_callback(self, action, parameter):
-        print("You clicked \"New\".")
+        print "You clicked \"New\"."
 
     # callback for open
     def open_callback(self, action, parameter):
-        print("You clicked \"Open\".")
+        print "You clicked \"Open\"."
 
 app = MyApplication()
 exit_status = app.run(sys.argv)

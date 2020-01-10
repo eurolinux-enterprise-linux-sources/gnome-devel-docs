@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="guitar-tuner.js" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="guitar-tuner.js" xml:lang="el">
   <info>
   <title type="text">Συντονιστής κιθάρας (JavaScript)</title>
     <link type="guide" xref="js#examples"/>
@@ -7,34 +7,16 @@
 
     <credit type="author copyright">
       <name>Susanna Huhtanen</name>
-      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <email>ihmis.suski@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Χρησιμοποιήστε GTK+ και GStreamer για να κατασκευάσετε μια απλή εφαρμογή ρυθμιστή κιθάρας για το GNOME.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -59,7 +41,7 @@
   <section id="gstreamer">
     <title>Διοχετεύσεις GStreamer</title>
     <p>Το Gtreamer είναι ο σκελετός πολυμέσων του GNOME — μπορείτε να το χρησιμοποιήσετε για να αναπαράγετε, ηχογραφήσετε, και να επεξεργαστείτε βίντεο, ήχο, ροές βίντεο και τα λοιπά. Εδώ, θα το χρησιμοποιήσουμε για να παράγουμε μονές-συχνότητες τόνων.</p>
-    <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείς μια <em>διοχέτευση</em> που περιέχει διάφορα επεξεργαζόμενα στοιχεία που πηγαίνουν από την <em>πηγή</em> στην <em>έξοδο</em>. Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή και μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι ένα γραφικό στοιχείο ή η κάρτα ήχου.</p>
+    <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείς μια <em>διοχέτευση</em> που περιέχει διάφορα επεξεργαζόμενα στοιχεία που πηγαίνουν από την <em>πηγή</em> στην <em>έξοδο</em>. Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή και μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι ένα γραφικό συστατικό ή η κάρτα ήχου.</p>
     <p>Ανάμεσα στην πηγή και στην έξοδο, μπορείτε να εφαρμόσετε διάφορα φίλτρα και οι μετατροπείς να χειριστούν εφέ, μετατροπές μορφών και λοιπά. Κάθε στοιχείο της διοχέτευσης έχει ιδιότητες που μπορούν να χρησιμοποιηθούν για να αλλάξουν τη συμπεριφορά τους.</p>
     <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
       <p>Ένα παράδειγμα διοχέτευσης GStreamer.</p>
@@ -116,7 +98,7 @@ guitar_box.add(e);
 guitarwindow.add(guitar_box);
 
 guitar_box.show_all();</code>
-   <p>Επειδή το Gtk.Window μπορεί να περιέχει μόνο ένα γραφικό στοιχείο, χρειάζεται να δημιουργηθεί κάτι από κάτω του για να μπορεί να προσθέσει όλα τα απαραίτητα κουμπιά μέσα του. Σε αυτό το παράδειγμα χρησιμοποιούμε πλαίσιο κουμπιού. Μετά τη δημιουργία του πλαισίου κουμπιού δημιουργούμε κουμπιά με αναγκαίες ετικέτες. Αφού έχουμε τα κουμπιά πρέπει να τα προσθέσουμε στο πλαίσιο κουμπιού και το πλαίσιο κουμπιού πρέπει να προστεθεί στο Gtk.Window και όλα στο πλαίσιο κουμπιού πρέπει να εμφανίζονται.</p>
+   <p>Επειδή το Gtk.Window μπορεί να περιέχει μόνο ένα γραφικό συστατικό, χρειάζεται να δημιουργηθεί κάτι από κάτω του για να μπορεί να προσθέσει όλα τα απαραίτητα κουμπιά μέσα του. Σε αυτό το παράδειγμα χρησιμοποιούμε πλαίσιο κουμπιού. Μετά τη δημιουργία του πλαισίου κουμπιού δημιουργούμε κουμπιά με αναγκαίες ετικέτες. Αφού έχουμε τα κουμπιά πρέπει να τα προσθέσουμε στο πλαίσιο κουμπιού και το πλαίσιο κουμπιού πρέπει να προστεθεί στο Gtk.Window και όλα στο πλαίσιο κουμπιού πρέπει να εμφανίζονται.</p>
    <p>Μετά από αυτό το στάδιο πρέπει να έχετε ένα εμφανιζόμενο παράθυρο στην οθόνη σας που να δείχνει 6 κουμπιά. Τώρα τα κουμπιά δεν κάνουν τίποτα και θα αντιμετωπίσουμε αυτό το θέμα αργότερα. Πριν να μπορέσουμε να συνδέσουμε τα σήματα του κουμπιού με κάτι χρειάζεται να κωδικοποιήσουμε αυτό το κάτι πρώτα.</p>
   </section>
   <section id="playSound">
@@ -126,8 +108,8 @@ var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5
 
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
 
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -136,11 +118,11 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () {
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
   });
 }</code>
-   <p>Το πρώτο πράγμα που χρειαζόμαστε είναι να αποφασίσουμε τι μελωδίες θέλουμε να κάνουμε όταν πατάμε ένα κουμπί. Η λίστα συχνοτήτων το φροντίζει. Μετά από αυτό φροντίζουμε να κάνει στην πραγματικότητα τους ήχους με τη συνάρτηση playSound. Για τη συνάρτηση playSound δίνουμε ως είσοδο μια συχνότητα (που μόλις ορίσαμε στη μεταβλητή συχνοτήτων). Το πρώτο πράγμα που χρειαζόμαστε να κατασκευάσουμε είναι μια διοχέτευση, μια πηγή και μια έξοδο. Για την πηγή ορίζουμε τη συχνότητα. Στη διοχέτευση προσθέτουμε και την πηγή και την έξοδο και έπειτα της λέμε να συνεχίσει να παίζει. Ως τελευταίο πράγμα χρησιμοποιούμε τη σταθερά κύριου βρόχου για να κάνει τη διοχέτευση να σταματήσει μετά από 500ms.</p>
+   <p>Το πρώτο πράγμα που χρειαζόμαστε είναι να αποφασίσουμε τι μελωδίες θέλουμε να κάνουμε όταν πατάμε ένα κουμπί. Η λίστα συχνοτήτων το φροντίζει. Μετά από αυτό φροντίζουμε να κάνει στην πραγματικότητα τους ήχους με τη συνάρτηση playSound. Για τη συνάρτηση playSound δίνουμε ως είσοδο μια συχνότητα (που μόλις ορίσαμε στη μεταβλητή συχνοτήτων). Το πρώτο πράγμα που χρειαζόμαστε να κατασκευάσουμε είναι μια διοχέτευση, μια πηγή και μια έξοδο. Για την πηγή ορίζουμε τη συχνότητα. Στη διοχέτευση προσθέτουμε και την πηγή και την έξοδο και έπειτα της λέμε να συνεχίσει να παίζει. Ως τελευταίο πράγμα χρησιμοποιούμε τη σταθερά κύριου βρόχου για να κάνει παύση η διοχέτευση μετά από 500ms.</p>
    <p>Τώρα έχουμε τη μέθοδο αναπαραγωγής μιας μελωδίας πατώντας ένα κουμπί. Μετά γίνονται οι συνδέσεις μεταξύ πατήματος ενός κουμπιού και αναπαραγωγής του σωστού ήχου από αυτό το κουμπί.</p>
   </section>
   <section id="connecting">
@@ -164,7 +146,7 @@ B.connect("clicked", function(){
 e.connect("clicked", function(){
   playSound(frequencies.e);
 });</code>
-   <p>Η μέθοδος σύνδεσης κουμπιού πατά το playSound με τη σωστή μελωδία γίνεται χρησιμοποιώντας τη μέθοδο σύνδεσης του γραφικού στοιχείου κουμπιού. Έτσι επιλέγουμε ένα κουμπί να συνδεθεί και πληκτρολογούμε <code>E.connect("clicked", function(){playSound(frequencies.E);});</code> Το <code>connect</code> λέει ότι όταν πατάμε Ε, κάτι θα συμβεί. Το <code>clicked</code> λέει τον τύπο του σήματος που κάτι συμβαίνει στο Ε και έπειτα στη <code>function(){};</code> καλούμε το playSound με τη σωστή μελωδία που μπορεί να συσχετιστεί με το κουμπί.</p>
+   <p>Η μέθοδος σύνδεσης κουμπιού πατά το playSound με τη σωστή μελωδία γίνεται χρησιμοποιώντας τη μέθοδο σύνδεσης του γραφικού συστατικού κουμπιού. Έτσι επιλέγουμε ένα κουμπί να συνδεθεί και πληκτρολογούμε <code>E.connect("clicked", function(){playSound(frequencies.E);});</code> Το <code>connect</code> λέει ότι όταν πατάμε Ε, κάτι θα συμβεί. Το <code>clicked</code> λέει τον τύπο του σήματος που κάτι συμβαίνει στο Ε και έπειτα στη <code>function(){};</code> καλούμε το playSound με τη σωστή μελωδία που μπορεί να συσχετιστεί με το κουμπί.</p>
   </section>
   <section id="guitarjs">
     <title>Όλο το πρόγραμμα</title>
@@ -198,8 +180,8 @@ var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
 
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
 
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -208,7 +190,7 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () {
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
 });
 }

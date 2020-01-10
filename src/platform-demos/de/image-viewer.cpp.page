@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.cpp" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="image-viewer.cpp" xml:lang="de">
 
   <info>
     <link type="guide" xref="cpp#examples"/>
@@ -9,15 +9,15 @@
     <revision pkgversion="0.1" version="0.1" date="2011-03-18" status="review"/>
     <credit type="author">
       <name>GNOME-Dokumentationsprojekt</name>
-      <email its:translate="no">gnome-doc-list@gnome.org</email>
+      <email>gnome-doc-list@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
   
@@ -41,7 +41,7 @@
 <media type="image" mime="image/png" src="media/image-viewer.png"/>
 
 <section id="anjuta">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
   <p>Before you start coding, you'll need to set up a new project in Anjuta. This will create all of the files you need to build and run the code later on. It's also useful for keeping everything together.</p>
   <steps>
     <item>
@@ -57,11 +57,11 @@
     </item>
     <item>
     <p>Click <gui>Apply</gui> and the project will be created for you. Open <file>src/main.cc</file> from the <gui>Project</gui> or <gui>File</gui> tabs. You should see some code which starts with the lines:</p>
-    <code mime="text/x-csrc">
-#include &lt;gtkmm.h&gt;
-#include &lt;iostream&gt;
+    <code mime="text/x-csrc"><![CDATA[
+#include <gtkmm.h>
+#include <iostream>
 
-#include "config.h"&gt;</code>
+#include "config.h">]]></code>
     </item>
   </steps>
 </section>
@@ -92,7 +92,7 @@
 <p>Now we will bring life into the empty window. GTKmm organizes the user interface
 with <code>Gtk::Container</code>s that can contain other widgets and even other containers. Here we
 will use the simplest available container, a <code>Gtk::Box</code>:</p>
-<code mime="text/x-csrc">
+<code mime="text/x-csrc"><![CDATA[
 int
 main (int argc, char *argv[])
 {
@@ -102,24 +102,24 @@ main (int argc, char *argv[])
 	main_win.set_title ("image-viewer-cpp");
 
 	Gtk::Box* box = Gtk::manage(new Gtk::Box());
-	box-&gt;set_orientation (Gtk::ORIENTATION_VERTICAL);
-	box-&gt;set_spacing(6);
+	box->set_orientation (Gtk::ORIENTATION_VERTICAL);
+	box->set_spacing(6);
 	main_win.add(*box);
 
 	image = Gtk::manage(new Gtk::Image());
-	box-&gt;pack_start (*image, true, true);
+	box->pack_start (*image, true, true);
 
 	Gtk::Button* button = Gtk::manage(new Gtk::Button("Open Image…"));
-	button-&gt;signal_clicked().connect (
-		sigc::ptr_fun(&amp;on_open_image));
-	box-&gt;pack_start (*button, false, false);
+	button->signal_clicked().connect (
+		sigc::ptr_fun(&on_open_image));
+	box->pack_start (*button, false, false);
 
 	main_win.show_all_children();
 	kit.run(main_win);
 
 	return 0;
 }
-</code>
+]]></code>
   <steps>
     <item>
     <p>The first lines create the widgets we want to use: a button for opening up an image, the image view widget itself and the box we will use as a container. </p>
@@ -147,7 +147,7 @@ main (int argc, char *argv[])
 <p>We will now define the signal handler for the <em>clicked</em> signal or the
 button we mentioned before. Add this code before the <code>main</code>
 method.</p>
-<code mime="text/x-csrc">
+<code mime="text/x-csrc"><![CDATA[
 Gtk::Image* image = 0;
 
 static void
@@ -160,10 +160,10 @@ on_open_image ()
 	dialog.add_button (Gtk::Stock::CANCEL,
 	                   Gtk::RESPONSE_CANCEL);
 
-	Glib::RefPtr&lt;Gtk::FileFilter&gt; filter =
+	Glib::RefPtr<Gtk::FileFilter> filter =
 		Gtk::FileFilter::create();
-	filter-&gt;add_pixbuf_formats();
-	filter-&gt;set_name("Images");
+	filter->add_pixbuf_formats();
+	filter->set_name("Images");
 	dialog.add_filter (filter);
 
 	const int response = dialog.run();
@@ -172,13 +172,13 @@ on_open_image ()
 	switch (response)
 	{
 		case Gtk::RESPONSE_ACCEPT:
-			image-&gt;set(dialog.get_filename());
+			image->set(dialog.get_filename());
 			break;
 		default:
 			break;
 	}
 }
-</code>
+]]></code>
   <p>This is a bit more complicated than anything we've attempted so far, so let's break it down:</p>
   <list>
       <item>
@@ -234,7 +234,7 @@ on_open_image ()
    </item>
    <item>
    <p>Allow the user to load images from network shares, scanners, and other more complicated sources.</p>
-   <p>You can use <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> to handle network file transfers and the like, and <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> to handle scanning.</p>
+   <p>You can use <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> to handle network file tranfers and the like, and <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> to handle scanning.</p>
    </item>
   </list>
 </section>

@@ -20,14 +20,14 @@ var G = new Gtk.Button({label: "G"});
 var B = new Gtk.Button({label: "B"});
 var e = new Gtk.Button({label: "e"});
 
-var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5}
+var frequencies = {E: 369.23, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5}
 
 
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
 
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
     
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -36,7 +36,7 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () { 
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
 });	
 }

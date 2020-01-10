@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="guitar-tuner.js" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="guitar-tuner.js" xml:lang="fr">
   <info>
   <title type="text">Guitar tuner (JavaScript)</title>
     <link type="guide" xref="js#examples"/>
@@ -7,41 +7,11 @@
 
     <credit type="author copyright">
       <name>Susanna Huhtanen</name>
-      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <email>ihmis.suski@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Use GTK+ and GStreamer to build a simple guitar tuner application for GNOME.</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
   <title>Guitar tuner</title>
@@ -84,7 +54,7 @@ var Gtk = imports.gi.Gtk;
 var Gst = imports.gi.Gst;
 
 const Mainloop = imports.mainloop;]]></code>
-    <p>Afin que le programme fonctionne, vous devez importer quelques bibliothèques d'introspection GObject à utiliser. Pour faire une interface graphique, nous avons besoin de Gtk et pour que Gstreamer fonctionne, nous avons besoin de Gst. Elles sont importées au début afin de pouvoir les utiliser partout ensuite. Nous importons également au début une boucle principale Mainloop pour prendre en charge le délai à utiliser avec les sons d'accordage.</p>
+    <p>Afin que le programme fonctionne, vous devez importer quelques  bibliothèques d'introspection GObject à utiliser. Pour faire une interface graphique, nous avons besoin de Gtk et pour que Gstreamer fonctionne, nous avons besoin de Gst. Elles sont importées au début afin de pouvoir les utiliser partout ensuite. Nous importons également au début une boucle principale Mainloop pour prendre en charge le délai à utiliser avec les sons d'accordage.</p>
     </section>
   <section id="mainwindow">
     <title>Création de la fenêtre principale de l'application</title>
@@ -122,7 +92,7 @@ guitar_box.add(e);
 guitarwindow.add(guitar_box);
 
 guitar_box.show_all();]]></code>
-   <p>Puisque Gtk.Window ne peut contenir qu'un seul élément graphique, nous devons créer quelque chose en dessous pour pouvoir ajouter tous les boutons nécessaires à l'intérieur. Dans cet exemple, nous utilisons Buttonbox. Après la création de Buttonbox, nous créons les boutons avec les étiquettes nécessaires. Après l'obtention des boutons, nous devons les ajouter au Buttonbox et celui-ci doit être ajouté au Gtk.Window et tout ce qui est dans Buttonbox doit être affiché.</p>
+   <p>Puisque Gtk.Window ne peut contenir qu'un seul élément graphique, nous devons créer quelque chose en dessous pour pouvoir ajouter tous les boutons nécessaires à l'intérieur. Dans cet exemple, nous utilisons Buttonbox. Après la création de Buttonbox,  nous créons les boutons avec les étiquettes nécessaires. Après l'obtention des boutons, nous devons les ajouter au Buttonbox et celui-ci doit être ajouté au Gtk.Window et tout ce qui est dans Buttonbox doit être affiché.</p>
    <p>Après cette étape, vous devriez voir s'afficher une fenêtre à l'écran avec les 6 boutons. Pour l'instant, les boutons n'ont aucune action et nous verrons cela plus tard. Pour pouvoir connecter les signaux des boutons à quelque chose, il nous faut d'abord coder ce quelque chose.</p>
   </section>
   <section id="playSound">
@@ -132,8 +102,8 @@ var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5
 
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
 
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -142,12 +112,12 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () {
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
   });
 }]]></code>
-   <p>The first thing we need to do is decide what tunes we want to make when we push a button. The frequencies list takes care of that. After that we get to actually making the sounds with the function playSound. For function playSound we give as an input a frequency (that we just defined in the frequencies variable). First thing we need to construct is a pipeline, a source and a sink. For the source we set the frequency. To the pipeline we add both the source and the sink and then we tell it to keep playing. As a last thing we use the const Mainloop to get the pipeline to stop after a 500ms.</p>
-   <p>Now we have the method of playing a tune when clicking a button. Next well make the connections between pushing a button and playing the correct sound from that button.</p>
+   <p>La chose à faire en premier est de décider quel son doit être émis à l'appui sur un bouton. La liste des fréquences gère cela. Ensuite, il nous faut émettre les sons avec la fonction playSound, à laquelle nous donnons en entrée une fréquence (définie par les variables fréquences). Construisons d'abord un pipeline, une source et un collecteur. Définissons la fréquence pour la source, ajoutons la source et le collecteur au pipeline et faisons le jouer. Enfin, utilisons la constante Mainloop pour arrêter l'émission du son après 500ms.</p>
+   <p>Maintenant, nous avons la bonne méthode pour émettre un son après appui sur un bouton. Faisons ensuite la connexion entre l'appui sur un bouton et l'émission du son correct relié à ce bouton.</p>
   </section>
   <section id="connecting">
    <title>Connexion des boutons à playSound</title>
@@ -181,7 +151,7 @@ e.connect("clicked", function(){
   </section>
   <section id="guitarjs">
     <title>Le programme complet</title>
-    <p>So this is what all the parts combined looks like. When running this code, you should be able to tune your guitar (if you have correctly calibrated speakers).</p>
+    <p>Voici donc ce que donne toutes les parties assemblées. Lorsque vous exécutez ce code, vous devriez être capable d'accorder votre guitare (si vous avez correctement calibré vos haut-parleurs).</p>
       <code mime="application/javascript" style="numbered"><![CDATA[
 #!/usr/bin/gjs
 var Gtk = imports.gi.Gtk;
@@ -211,8 +181,8 @@ var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
 
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
 
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -221,7 +191,7 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () {
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
 });
 }

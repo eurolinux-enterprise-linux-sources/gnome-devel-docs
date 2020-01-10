@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="feedback" lang="fr">
+  <title>Retour d'informations</title>
+
+  <sect1 id="feedback-responsiveness">
+    <title>Caractéristiques des applications réactives</title>
+
+    <para>Bien que les applications hautement réactives puissent différer énormément entre elles, ces application ont en commun les caractéristiques suivantes :</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>elles donnent immédiatement un retour d'information aux utilisateurs même si elles ne peuvent pas satisfaire leurs requêtes immédiatement,</para>
+      </listitem>
+
+      <listitem>
+        <para>elles gèrent les requêtes en file d'attente selon les perspectives des utilisateurs, éliminant les requêtes qui ne sont plus pertinentes et les réarrangeant selon les priorités probables des utilisateurs,</para>
+      </listitem>
+
+      <listitem>
+        <para>elles permettent aux utilisateurs de faire d'autres tâches en attendant que les opérations de durée importante soient achevées — surtout celles ne résultant pas d'une demande de l'utilisateur — telles que la récupération de la mémoire non utilisée et autres opérations habituelles de « ménage »,</para>
+      </listitem>
+
+      <listitem>
+        <para>elles donnent des retours d'informations suffisants pour permettre aux utilisateurs de comprendre ce qu'ils font et les organisent selon leurs capacités à les appréhender et à y réagir,</para>
+      </listitem>
+
+      <listitem>
+        <para>elles font savoir aux utilisateurs que le traitement est en cours,</para>
+      </listitem>
+
+      <listitem>
+        <para>elles permettent aux utilisateurs de savoir ou d'estimer le temps que les opérations vont prendre,</para>
+      </listitem>
+
+      <listitem>
+        <para>elles permettent aux utilisateurs, d'une part de définir, lorsque c'est possible, le rythme du travail, d'autre part d'arrêter les tâches initiées mais non achevées.</para>
+      </listitem>
+    </itemizedlist>
+
+    <!-- CB-Ed: Collapse some of the items in the list above, they are similar or have lots of overlap.  -->
+
+    <para>Les applications hautement réactives donnent le contrôle aux utilisateurs en accusant réception de chacune de leurs demandes, en les informant continument sur la progression de la réalisation de chaque requête et en leur permettant d'effectuer les tâches dans un délai acceptable.</para>
+
+    <para>Même les applications avec des interfaces attractives et intuitives peuvent manquer de réactivité. Typiquement, les applications non réceptives possèdent au moins l'un des défauts suivants :</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>elles fournissent un retour d'informations tardif — voire aucun — aux requêtes des utilisateurs, en les laissant se demander ce que l'application a fait ou est en train de faire,</para>
+      </listitem>
+
+      <listitem>
+        <para>lorsqu'elles effectuent des opérations de longue durée, elles empêchent les utilisateurs de faire d'autres tâches ou d'annuler l'opération en cours,</para>
+      </listitem>
+
+      <listitem>
+        <para>elles ne savent pas afficher une estimation de la durée des opérations de longue haleine et forcent les utilisateurs à attendre pour des durées imprévisibles,</para>
+      </listitem>
+
+      <listitem>
+        <para>elles ignorent les demandes utilisateur quand elles font le « ménage courant » sans autorisation et forcent les utilisateurs à attendre un délai imprévu — souvent sans aucun retour.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Il est parfois possible d'améliorer la réactivité d'une application sans accélérer le code de l'application. Pour des astuces sur la façon de faire de telles améliorations, consultez la <xref linkend="feedback-responding-to-user"/>.</para>
+  </sect1>
+
+  <sect1 id="feedback-response-times">
+    <title>Temps de réponse acceptables</title>
+
+    <para>Certains évènements de l'interface utilisateur nécessitent des délais de réponse plus courts que d'autres. Par exemple, la réponse d'une application à un clic de souris de l'utilisateur ou un appui sur une touche doit être beaucoup plus rapide que la réponse à une requête d'enregistrement de fichier. Le tableau ci-dessous affiche le délai de réponse maximum acceptable pour les évènements courants d'interface.</para>
+
+    <table frame="all">
+      <title>Temps de réponse acceptable maximum pour les évènements courants</title>
+
+      <tgroup align="left" cols="2">
+        <thead>
+          <row>
+            <entry>Évènement UI</entry>
+
+            <entry>Temps de réponse maximal acceptable</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>Clic avec la souris, mouvement du pointeur, déplacement ou redimensionnement de fenêtre, appui sur une touche, mouvement de dessin, autre évènement d'entrée UI impliquant une coordination main-œil</entry>
+
+            <entry>0,1 seconde</entry>
+          </row>
+
+          <row>
+            <entry>Affichage d'indicateurs de progression, accomplissement des commandes utilisateur ordinaires (par ex. fermeture de fenêtre), accomplissement des tâches d'arrière-plan (par ex. reformatage d'un tableau) </entry>
+
+            <entry>1,0 seconde</entry>
+          </row>
+
+          <row>
+            <entry>Affichage d'un graphe ou de n'importe quoi d'autre pour lequel l'utilisateur s'attend à ce que ce soit long (par ex. affichage d'une nouvelle liste de toutes les transactions financières d'une entreprise pour une période comptable)</entry>
+
+            <entry>10,0 secondes</entry>
+          </row>
+
+          <row>
+            <entry>Acceptation et traitement de toutes les entrées utilisateur pour une tâche</entry>
+
+            <entry>10,0 secondes</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>Rendez chaque délai de réponse de votre application aussi court que possible, à moins que les utilisateurs n'aient besoin de temps pour consulter les informations affichées avant qu'elles ne soient effacées. Le délai de réponse acceptable pour chaque évènement se fonde sur l'intensité avec laquelle l'utilisateur moyen ressent le fait que tel ou tel évènement est un point logique sur lequel s'arrêter ou faire une pause. Plus ce sentiment est fort, plus l'utilisateur acceptera volontiers d'attendre une réponse. Vérifiez que votre application répond aux demandes des utilisateurs dans les limites énumérées dans le tableau ci-dessus. Si votre application ne peut pas répondre dans ces délais, elle présente probablement un ou plusieurs défauts d'ordre général dans un module ou un algorithme particulier.</para>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Vérifiez que votre application fournit un retour d'information dans les 100 millisecondes (0,1 seconde) après chaque appui sur une touche, mouvement de souris ou autres entrées physiques de l'utilisateur.</para>
+      </listitem>
+
+      <listitem>
+        <para>Vérifiez que votre application fournit un retour d'information dans les 100 millisecondes (0,1 seconde) après chaque modification d'état d'un contrôle qui réagit aux entrées de l'utilisateur — par exemple l'affichage des menus ou l'indication de cibles de dépôt.</para>
+      </listitem>
+
+      <listitem>
+        <para>Vérifiez que votre application prend moins de 1 seconde pour afficher chaque indicateur de progression, réaliser chaque commande utilisateur ordinaire ou réaliser chaque tâche en arrière-plan.</para>
+      </listitem>
+
+      <listitem>
+        <para>Vérifiez que votre application prend moins de 10 secondes pour accepter et traiter toutes les entrées utilisateur pour n'importe quelle tâche — dont les entrées utilisateur de chaque étape d'une tâche en plusieurs étapes, comme celles d'un assistant.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="feedback-responding-to-user">
+    <title>Réponse aux requêtes utilisateur</title>
+
+    <para>Si votre application met trop de temps à répondre, les utilisateurs seront frustrés. Utilisez les techniques suivantes pour améliorer la réactivité de votre application.</para>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Affichez le retour d'information dès que possible.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si vous ne pouvez pas afficher toutes les informations que l'utilisateur demande, affichez les informations les plus importantes d'abord.</para>
+      </listitem>
+
+      <listitem>
+        <para>Gagnez du temps en affichant des résultats approximatifs pendant le calcul des résultats finals.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si les utilisateurs risquent de répéter une commande consommatrice en temps plusieurs fois de suite, gagnez du temps en maquillant les effets de la commande plutôt qu'en relançant de manière répétée le traitement de la commande. Par exemple, si l'utilisateur ajoute plusieurs lignes dans un tableau d'une base de données, vous pouvez afficher chaque nouvelle ligne immédiatement, tout en retardant leur création effective dans la base de données jusqu'à ce que l'utilisateur ait terminé l'ajout de toutes les lignes.</para>
+      </listitem>
+
+      <listitem>
+        <para>Anticipez le travail. Préparez la réalisation de commandes qui, selon toute vraisemblance, succéderont à la commande actuelle. C'est-à-dire, utilisez les temps morts pour anticiper les requêtes que l'utilisateur lancera probablement à la suite. Par exemple, pendant que l'utilisateur d'une application de messagerie est en train de lire le nouveau message affiché, l'application peut préparer l'affichage du nouveau message suivant.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez des traitements en arrière-plan. Réalisez les tâches moins importantes — telles que le ménage courant — en arrière-plan en permettant aux utilisateurs de poursuivre leur travail.</para>
+      </listitem>
+
+      <listitem>
+        <para>Reportez le travail non urgent. Faites-le plus tard, lorsque il y a plus de temps disponible.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne faites pas d'opérations superflues. Par exemple, pour se déplacer de plusieurs pages en arrière dans un navigateur Web, un utilisateur peut faire une succession rapide de clics sur le bouton <guibutton>Précédent</guibutton> du navigateur. Pour afficher plus rapidement la page effectivement demandée, le navigateur peut ne pas afficher les pages intercalées entre la page actuelle et la page finale.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez la gestion dynamique du temps. Au cours de l'exécution, modifiez la façon dont votre application donne la priorité aux entrées utilisateur et aux autres traitements, en se fondant sur l'état actuel de l'application. Par exemple, si un utilisateur est en train d'effectuer de la saisie dans un traitement de texte pendant qu'un document autre est en cours d'impression, l'application de traitement de texte peut retarder la tâche d'impression si l'utilisateur engage une opération de modification (telle que couper et coller du texte) qui nécessite plus de ressources.</para>
+      </listitem>
+
+      <listitem>
+        <para>Dans votre application, affichez une estimation du temps que va nécessiter chaque opération longue.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Si une commande demande une durée supérieure à 5 secondes avant de terminer son travail sur un objet, autorisez les utilisateurs à interagir avec les parties de l'objet ou les parties de l'application qui ne sont pas directement affectées par la commande.</para>
+          </listitem>
+
+          <listitem>
+            <para>Si la sortie d'une commande est de grande taille, affichez des résultats partiels dès leur disponibilité. Faites dérouler les résultats (si nécessaire) jusqu'à ce que l'utilisateur place le focus d'entrée sur un composant (par ex. une barre de défilement ou une zone de texte) impliqué dans le défilement.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="feedback-types">
+    <title>Types de retour d'information visuel</title>
+
+    <para>Vous pouvez utiliser deux types de retour visuel d'informations pour les opérations de votre application — un retour d'information à l'aide du pointeur et d'animations de progression.</para>
+
+    <sect2 id="pointer-feedback">
+      <title>Retour d'information avec le pointeur</title>
+
+      <para>Le retour d'information à l'aide du pointeur de souris consiste à modifier sa forme. Par exemple, un pointeur « occupé » indique une opération en cours ; l'utilisateur ne peut pas faire d'autres tâches. Un pointeur « occupé interactif » indique qu'une opération est en progression, mais que la fenêtre reste toujours interactive.</para>
+
+      <figure>
+        <title>Pointeur occupé (à gauche) et pointeur occupé interactif (à droite)</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="28" fileref="images/feedback-pointers-busy.png" format="PNG" width="58"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/feedback-pointers-busy.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Busy pointer (left) and busy-interactive pointer (right)</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <!-- CB-Fig: Replace above figure with one that is cleaned up.  -->
+    </sect2>
+
+    <sect2 id="progress-animations">
+      <title>Animations de progression</title>
+
+      <para>Les animations de progression affichent, soit la proportion d'opération réalisée, soit seulement le fait que l'opération est en cours. Habituellement, ces animations prennent la forme, soit d'une barre de progression, soit d'une liste de contrôle de progression.</para>
+
+      <itemizedlist>
+        <title>Conseils</title>
+
+        <listitem>
+          <para>Lors de l'affichage d'une animation de progression, ouvrez-là dès le début de l'opération et fermez-la automatiquement dès que l'opération est terminée.</para>
+        </listitem>
+
+        <listitem>
+          <para>Utilisez une barre de progression à mesure si votre application peut estimer, soit la durée de l'opération, soit sa proportion de réalisation.</para>
+        </listitem>
+
+        <listitem>
+          <para>Si votre application ne peut pas faire d'estimation et que l'opération n'a qu'une étape, utilisez un <link linkend="indeterminate-progress">indicateur de progression indéterminée</link>. Pour les opérations à deux ou plusieurs étapes, utilisez une <link linkend="progress-checklists">liste de contrôles de progression</link> qui affiche dynamiquement une coche pour chaque étape réalisée.</para>
+        </listitem>
+      </itemizedlist>
+
+      <sect3 id="progress-bars">
+      <title>Barres de progression</title>
+      <para>Pour des informations sur les différents types de barres de progression et quand les utiliser, consultez la <xref linkend="controls-progress-bars"/>.</para>
+
+        <sect4 id="progress-windows-vs-status-bar">
+          <title>Fenêtres de progression versus barre d'état</title>
+
+          <para>Dans une application dont les <link linkend="windows-primary">fenêtres principales</link> contiennent une <link linkend="controls-status-bars">barre d'état</link> (qui elle-même contient une barre de progression), se pose souvent le cas de présenter le retour d'informations d'une opération, soit dans la barre d'état, soit dans une <link linkend="windows-progress">fenêtre de progression</link>. Une règle d'usage consiste à utiliser la barre d'état lorsqu'une opération doit durer moins de cinq secondes, sinon la fenêtre de progression. Cependant réfléchissez à ce qui suit au moment de faire un choix entre les deux :</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>L'ouverture d'une nouvelle fenêtre, particulièrement lors d'une opération courte, peut, sans nécessité, interrompre le déroulement du travail de l'utilisateur.</para>
+            </listitem>
+
+            <listitem>
+              <para>Les fenêtres de progression peuvent fournir plus d'informations.</para>
+            </listitem>
+
+            <listitem>
+              <para>Plusieurs fenêtres de progression peuvent être ouvertes en même temps alors qu'une barre d'état ne peut afficher qu'une seule et unique opération.</para>
+            </listitem>
+
+            <listitem>
+              <para>Les fenêtres de progression disposent d'un bouton <guibutton>Annuler</guibutton>.</para>
+            </listitem>
+          </itemizedlist>
+        </sect4>
+      </sect3>
+
+      <sect3 id="progress-checklists">
+        <title>Fenêtres à liste de contrôle</title>
+
+        <para>A checklist window shows the sequence of stages in an operation.
+        See <xref linkend="progress-window-checklists"/>.
+	
+	<figure><title>A Checklist Window</title>
+	
+	<mediaobject>
+		<imageobject><imagedata fileref="images/feedback-checklist-running.png" format="PNG" width="336" depth="220"/></imageobject>
+	<textobject><phrase>A
+        checklist window showing a sequence of steps</phrase></textobject>
+	
+	<imageobject>
+            <imagedata fileref="images/feedback-checklist-running.eps" format="EPS"/>
+          </imageobject>
+        </mediaobject>
+	  
+	  </figure></para>
+      </sect3>
+    </sect2>
+  </sect1>
+
+  <sect1 id="feedback-choosing">
+    <title>Choix d'un retour d'information approprié</title>
+
+    <para>Pour déterminer le type de retour d'information à fournir pour une opération particulière, prenez en considération ces facteurs :</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>L'application peut-elle fournir une estimation de la progression de l'opération ou pas.</para>
+      </listitem>
+
+      <listitem>
+        <para>L'opération bloque-t-elle l'utilisateur dans l'exécution d'autres commandes de l'application ou pas.</para>
+      </listitem>
+
+      <listitem>
+        <para>L'application possède-t-elle un espace dédié, tel qu'une barre d'état, pour indiquer l'état des opérations ou pas.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Le tableau ci-dessous affiche le type de retour d'information à utiliser pour les opérations nécessitant plus d'une 1 seconde pour se terminer. Dans la colonne « Retour approprié », le terme « Animations de progression interne » signifie animations de progression affichées dans une zone d'état dédiée d'une application et « Animations de progression externe » signifie animations de progression affichées ailleurs que dans une zone d'état dédiée — typiquement dans une boîte de dialogue d'alerte.</para>
+
+    <table frame="all">
+      <title>Types de retour d'information pour les opérations qui durent plus d'une seconde</title>
+
+      <tgroup align="left" cols="4">
+        <thead>
+          <row>
+            <entry>Durée-type  &gt; 5 s. ?</entry>
+
+            <entry>Blocage pour exécuter d'autres commandes ?</entry>
+
+            <entry>L'application a-t'elle une zone d'état dédiée ?</entry>
+
+            <entry>Retour d'information approprié</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>Oui</entry>
+
+            <entry>Oui</entry>
+
+            <entry>Oui</entry>
+
+            <entry>Animation interne plus retour d'information au pointeur</entry>
+          </row>
+
+          <row>
+            <entry>Oui</entry>
+
+            <entry>Oui</entry>
+
+            <entry>Non</entry>
+
+            <entry>Retour d'information au pointeur</entry>
+          </row>
+
+          <row>
+            <entry>Oui</entry>
+
+            <entry>Non</entry>
+
+            <entry>Oui</entry>
+
+            <entry>Animation interne</entry>
+          </row>
+
+          <row>
+            <entry>Non</entry>
+
+            <entry>Oui</entry>
+
+            <entry>Oui</entry>
+
+            <entry>Animation interne plus retour d'information au pointeur</entry>
+          </row>
+
+          <row>
+            <entry>Non</entry>
+
+            <entry>Oui</entry>
+
+            <entry>Non</entry>
+
+            <entry>Animation externe plus retour d'information au pointeur</entry>
+          </row>
+
+          <row>
+            <entry>Non</entry>
+
+            <entry>Non</entry>
+
+            <entry>Oui</entry>
+
+            <entry>Animation interne</entry>
+          </row>
+
+          <row>
+            <entry>Non</entry>
+
+            <entry>Non</entry>
+
+            <entry>Non</entry>
+
+            <entry>Animation externe</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Utilisez un pointeur occupé lorsque l'interaction de l'utilisateur est bloquée par votre application pendant plus d'une seconde. Affichez le pointeur occupé moins d'une seconde après le début de l'opération.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si une commande doit prendre 10 secondes ou plus pour se terminer, mettez un bouton <guibutton>Arrêter</guibutton> ou <guibutton>Annuler</guibutton> également activable en appuyant sur la touche <keycap>Échap</keycap> ; les utilisateurs peuvent ainsi interrompre le traitement de la commande même si l'application ne peut pas en annuler les effets. Consultez la <xref linkend="feedback-interrupting"/>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Lorsque vous utilisez une animation externe, laissez la fenêtre contenant l'animation à l'écran pendant au moins une seconde après que l'opération soit achevée avec un message de terminaison avec succès. Modifiez les boutons <guibutton>Arrêter</guibutton> ou <guibutton>Annuler</guibutton> en bouton <guibutton>Valider</guibutton> pendant ce temps — un appui sur ce bouton doit fermer la fenêtre immédiatement.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="feedback-interrupting">
+    <title>Autoriser l'arrêt d'une commande</title>
+
+    <para>Les utilisateurs ont parfois besoin d'interrompre une commande — par exemple, parce qu'elle prend trop de temps. L'application doit permettre aux utilisateurs d'arrêter les commandes en cours, même si l'arrêt d'une commande peut ne pas annuler ou « revenir en arrière » sur tous les effets de la commande.</para>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Placez un bouton <guibutton>Arrêter</guibutton> ou <guibutton>Annuler</guibutton> également activable en appuyant sur <keycap>Échap</keycap> à côté de l'animation de progression pour une commande qu'il est possible d'interrompre.</para>
+      </listitem>
+
+      <listitem>
+        <para>Nommez le bouton <guibutton>Annuler</guibutton> si l'opération complète peut être abandonnée proprement sans effet collatéral, en laissant le système dans l'état où il était avant le lancement de l'opération. Terminez la commande immédiatement lorsque l'utilisateur appuie sur le bouton.</para>
+      </listitem>
+
+      <listitem>
+        <para>Nommez le bouton <guibutton>Arrêter</guibutton> si la commande peut être interrompue mais que ses effets jusqu'au moment de l'arrêt ne peuvent pas (ou ne doivent pas) être annulés. Lorsque l'utilisateur appuie sur ce bouton, ouvrez une boîte de dialogue d'alerte prévenant des effets potentiellement risqués d'un arrêt de la commande. La boîte de dialogue d'alerte ne doit comporter que deux boutons : l'un pour continuer le traitement de la commande, l'autre pour la terminer immédiatement.</para>
+      </listitem>
+
+      <!-- CB-Fig: Figure here showing example alertbox in context (overlaying the progress animation in a dialog, etc.) with sample alerbox text. JLFDG AT p. 107 shows this. (Fig 66) -->
+    </itemizedlist>
+
+    <para>Vous disposez également de l'alternative de placer le bouton <guibutton>Arrêter</guibutton> ou <guibutton>Annuler</guibutton> près du contrôle avec lequel l'utilisateur a lancé la commande à arrêter. Ne placez le bouton ici que si :</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>il n'y a aucune animation de progression pour la commande ou</para>
+      </listitem>
+
+      <listitem>
+        <para>l'animation de progression est dans la zone d'état d'une fenêtre ou à un autre endroit qui manque de place pour mettre un bouton <guibutton>Arrêter</guibutton> ou <guibutton>Annuler</guibutton>.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Dans la boîte d'alerte qui apparaît après l'appui sur le bouton <guibutton>Arrêter</guibutton>, assurez-vous que le message et les étiquettes des boutons de la boîte d'alerte sont précis et explicites. Des étiquettes de bouton ambiguës peuvent faire que les utilisateurs mettent fin ou continuent une commande contrairement à leur intention. Par exemple, utilisez :</para>
+
+    <para><screen>Continue deleting files? <guibutton>[Continue Deleting]</guibutton>
+    <guibutton>[Stop Deleting]</guibutton></screen></para>
+
+    <para>plutôt que</para>
+
+    <para><screen>Operation interrupted, continue? <guibutton>[Yes]</guibutton>
+    <guibutton>[No]</guibutton></screen></para>
+
+    <para>car dans ce dernier exemple, il n'est pas clair qu'un clic sur <guibutton>Oui</guibutton> continue l'opération ou continue la suppression (c'est-à-dire, arrête l'opération).</para>
+  </sect1>
+</chapter>

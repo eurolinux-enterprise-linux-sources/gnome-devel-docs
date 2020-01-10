@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="togglebutton.js" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="togglebutton.js" xml:lang="fr">
   <info>
   <title type="text">ToggleButton (JavaScript)</title>
     <link type="guide" xref="beginner.js#buttons"/>
@@ -7,47 +7,17 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
-    <desc>Reste enfoncé jusqu'à ce que vous cliquiez dessus à nouveau</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>Stays pressed until you click it again</desc>
   </info>
 
   <title>ToggleButton</title>
   <media type="image" mime="image/png" src="media/togglebutton.png"/>
-  <p>Un ToggleButton ressemble à un <link xref="button.js">bouton</link> normal, sauf qu'il reste enfoncé après l'avoir cliqué. Vous pouvez l'utiliser comme un commutateur allumé/éteint pour contrôler des éléments comme l'<link xref="spinner.js">indicateur d'activité</link> de cet exemple.</p>
-  <p>La méthode get_active d'un ToggleButton renvoie « true » (vrai) s'il est enfoncé et « false » dans le cas contraire. Utilisez sa méthode set_active si vous souhaitez changer son état sans avoir besoin de cliquer dessus. Quand il passe de l'état « enfoncé » à « relâché » et vice versa, il envoie le signal « toggled » que vous pouvez connecter à une fonction afin d'effectuer une action.</p>
+  <p>A ToggleButton is like a normal <link xref="button.js">Button</link>, except that it stays pressed in when you click it. You can use it like an on/off switch, to control things like the <link xref="spinner.js">Spinner</link> in this example.</p>
+  <p>A ToggleButton's get_active method returns true if it's pressed in, and false if it's not. Its set_active method is used if you want to change its state without needing to click on it. When it changes state from pressed in to popped out and vice-versa, it sends out the "toggled" signal, which you can connect to a function to do something.</p>
     <links type="section"/>
 
   <section id="imports">
@@ -59,11 +29,11 @@ const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 ]]></code>
-    <p>Ce sont les bibliothèques que nous devons importer pour faire fonctionner cette application. N'oubliez pas que la ligne qui informe GNOME que nous allons utiliser Gjs doit toujours se trouver au début.</p>
+    <p>These are the libraries we need to import for this application to run. Remember that the line which tells GNOME that we're using Gjs always needs to go at the start.</p>
     </section>
 
   <section id="applicationwindow">
-    <title>Création de la fenêtre de l'application</title>
+    <title>Creating the application window</title>
     <code mime="application/javascript"><![CDATA[
 const ToggleButtonExample = new Lang.Class({
     Name: 'ToggleButton Example',
@@ -90,7 +60,7 @@ const ToggleButtonExample = new Lang.Class({
         this._buildUI ();
     },
 ]]></code>
-    <p>Tout le code de cet exemple est dans la classe RadioButtonExample. Le code ci-dessus crée un <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pour y mettre nos éléments graphiques et la fenêtre qui les contient.</p>
+    <p>All the code for this sample goes in the RadioButtonExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
     <code mime="application/javascript"><![CDATA[
     // Build the application's UI
     _buildUI: function() {
@@ -104,17 +74,17 @@ const ToggleButtonExample = new Lang.Class({
             border_width: 30,
             title: "ToggleButton Example"});
 ]]></code>
-    <p>La fonction _buildUI est l'endroit où nous mettons tout le code nécessaire à la création de l'interface utilisateur de l'application. La première étape consiste à créer une <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> pour y mettre tous nos éléments graphiques.</p>
+    <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
   </section>
 
   <section id="togglebutton">
-    <title>Création du ToggleButton et des autres éléments graphiques</title>
+    <title>Creating the ToggleButton and other widgets</title>
     <code mime="application/javascript"><![CDATA[
         // Create the spinner that the button stops and starts
         this._spinner = new Gtk.Spinner ({hexpand: true, vexpand: true});
 ]]></code>
 
-    <p>Nous voulons que cet <link xref="spinner.js">indicateur d'activité</link> puisse s'étendre verticalement et horizontalement pour prendre le maximum d'espace disponible dans la fenêtre.</p>
+    <p>We want this <link xref="spinner.js">Spinner</link> to expand vertically and horizontally, to take up as much space as possible inside the window.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Create the togglebutton that starts and stops the spinner
@@ -122,7 +92,7 @@ const ToggleButtonExample = new Lang.Class({
         this._toggleButton.connect ('toggled', Lang.bind (this, this._onToggle));
 ]]></code>
 
-    <p>La création d'un ToggleButton ressemble beaucoup à la création d'un <link xref="button.js">bouton</link> normal. La plus grosse différence réside dans le fait que vous manipulez un signal « toggled » au lieu d'un signal « clicked ». Ce code relie la fonction _onToggle à ce signal, de sorte qu'elle est appelée à chaque fois que le ToggleButton est commuté.</p>
+    <p>Creating a ToggleButton is a lot like creating a normal <link xref="button.js">Button</link>. The biggest difference is that you're handling a "toggled" signal instead of a "clicked" signal. This code binds the _onToggle function to that signal, so that it's called whenever our ToggleButton is toggled.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Create a grid and put everything in it
@@ -132,7 +102,7 @@ const ToggleButtonExample = new Lang.Class({
         this._grid.attach (this._spinner, 0, 0, 1, 1);
         this._grid.attach (this._toggleButton, 0, 1, 1, 1);
 ]]></code>
-    <p>Nous créons ici une simple <link xref="grid.js">grille</link> pour tout ranger dedans, puis nous lui attachons le Spinner (indicateur d'activité) et le ToggleButton.</p>
+    <p>Here we create a simple <link xref="grid.js">Grid</link> to organize everything in, then attach the Spinner and ToggleButton to it.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Add the grid to the window
@@ -142,11 +112,11 @@ const ToggleButtonExample = new Lang.Class({
         this._window.show_all();
     },
 ]]></code>
-    <p>Ensuite, nous ajoutons la grille à la fenêtre et demandons à celle-ci de s'afficher ainsi que ses éléments graphiques enfants quand l'application est démarrée.</p>
+    <p>Now we add the Grid to the Window, and tell the Window to show itself and its child widgets when the application is started.</p>
     </section>
 
     <section id="toggled">
-    <title>Déclenchement d'une action quand le ToggleButton est commuté</title>
+    <title>Making something happen when the ToggleButton is toggled</title>
 
     <code mime="application/javascript"><![CDATA[
     _onToggle: function() {
@@ -160,51 +130,53 @@ const ToggleButtonExample = new Lang.Class({
 
 });
 ]]></code>
-    <p>Chaque fois que quelqu'un commutte le bouton, cette fonction vérifie s'il est enfoncé ou non en utilisant get_active et, selon le cas, démarre ou arrête l'indicateur d'activité. Nous voulons qu'il ne tourne que lorsque le bouton est enfoncé, donc, si get_active renvoie la valeur true (vrai), nous démarrons l'indicateur, sinon, nous lui indiquons de s'arrêter.</p>
+    <p>Whenever someone toggles the button, this function checks what its state is afterwards using get_active and starts or stops the spinner accordingly. We want it to spin only while the button is pressed in, so if get_active returns true we start the spinner. Otherwise, we tell it to stop.</p>
 
     <code mime="application/javascript"><![CDATA[
 // Run the application
 let app = new ToggleButtonExample ();
 app.application.run (ARGV);
 ]]></code>
-    <p>Enfin, nous créons une nouvelle instance de la classe RadioButtonExample et lançons l'application.</p>
+    <p>Finally, we create a new instance of the finished RadioButtonExample class, and set the application running.</p>
   </section>
 
   <section id="complete">
-    <title>Exemple complet de code</title>
+    <title>Complete code sample</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
-
-imports.gi.versions.Gtk = '3.0';
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class ToggleButtonExample {
+const ToggleButtonExample = new Lang.Class({
+    Name: 'ToggleButton Example',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jstogglebutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-        // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -220,7 +192,7 @@ class ToggleButtonExample {
 
         // Create the togglebutton that starts and stops the spinner
         this._toggleButton = new Gtk.ToggleButton ({label: "Start/Stop"});
-        this._toggleButton.connect ('toggled', this._onToggle.bind(this));
+        this._toggleButton.connect ('toggled', Lang.bind (this, this._onToggle));
 
         // Create a grid and put everything in it
         this._grid = new Gtk.Grid ({
@@ -234,9 +206,11 @@ class ToggleButtonExample {
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _onToggle() {
+
+
+    _onToggle: function() {
 
         // Start or stop the spinner
         if (this._toggleButton.get_active ())
@@ -244,7 +218,8 @@ class ToggleButtonExample {
         else this._spinner.stop ();
 
     }
-};
+
+});
 
 // Run the application
 let app = new ToggleButtonExample ();
@@ -253,7 +228,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>Documentation approfondie</title>
+    <title>In-depth documentation</title>
 <list>
   <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
   <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>

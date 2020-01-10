@@ -1,36 +1,38 @@
 #!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
-
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class CheckButtonExample {
+const CheckButtonExample = new Lang.Class({
+    Name: 'CheckButton Example',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jscheckbutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-        // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -49,13 +51,15 @@ class CheckButtonExample {
         this._button.set_active (true);
 
         // Connect the button to a function that does something when it's toggled
-        this._button.connect ("toggled", this._toggledCB.bind(this));
+        this._button.connect ("toggled", Lang.bind (this, this._toggledCB));
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _toggledCB() {
+
+
+    _toggledCB: function () {
 
         // Make the window title appear or disappear when the checkbox is toggled
         if (this._button.get_active() == true)
@@ -65,7 +69,7 @@ class CheckButtonExample {
 
     }
 
-};
+});
 
 // Run the application
 let app = new CheckButtonExample ();

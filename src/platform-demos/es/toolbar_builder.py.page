@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar_builder.py" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar_builder.py" xml:lang="es">
   <info>
     <title type="text">Barra de herramientas creada con Glade (Python)</title>
     <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
@@ -10,34 +10,34 @@
 
     <credit type="author copyright">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <credit type="author copyright edit">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <credit type="author copyright">
       <name>Sebastian Pölsterl</name>
-      <email its:translate="no">sebp@k-d-w.org</email>
+      <email>sebp@k-d-w.org</email>
       <years>2011</years>
     </credit>
 
     <desc>Una barra de botones y otros widgets</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -260,9 +260,7 @@ from gi.repository import Gdk
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Toolbar Example", application=app)
         self.set_default_size(400, 200)
@@ -281,15 +279,14 @@ class MyWindow(Gtk.ApplicationWindow):
         try:
             builder.add_from_file("toolbar_builder.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
         # and attach it to the grid
         grid.attach(builder.get_object("toolbar"), 0, 0, 1, 1)
 
         # two buttons that will be used later in a method
         self.fullscreen_button = builder.get_object("fullscreen_button")
-        self.leave_fullscreen_button = builder.get_object(
-            "leave_fullscreen_button")
+        self.leave_fullscreen_button = builder.get_object("leave_fullscreen_button")
 
         # create the actions that control the window, connect their signal to a
         # callback method (see below), add the action to the window:
@@ -306,14 +303,12 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback for undo
     def undo_callback(self, action, parameter):
-        print("You clicked \"Undo\".")
+        print "You clicked \"Undo\"."
 
     # callback for fullscreen
     def fullscreen_callback(self, action, parameter):
-        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which
-        # is a bit flag
-        is_fullscreen = self.get_window().get_state(
-        ) &amp; Gdk.WindowState.FULLSCREEN != 0
+        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which is a bit flag
+        is_fullscreen = self.get_window().get_state() &amp; Gdk.WindowState.FULLSCREEN != 0
         if is_fullscreen:
             self.unfullscreen()
             self.leave_fullscreen_button.hide()
@@ -323,9 +318,7 @@ class MyWindow(Gtk.ApplicationWindow):
             self.fullscreen_button.hide()
             self.leave_fullscreen_button.show()
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -353,11 +346,11 @@ class MyApplication(Gtk.Application):
 
     # callback for new
     def new_callback(self, action, parameter):
-        print("You clicked \"New\".")
+        print "You clicked \"New\"."
 
     # callback for open
     def open_callback(self, action, parameter):
-        print("You clicked \"Open\".")
+        print "You clicked \"Open\"."
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
@@ -376,7 +369,7 @@ sys.exit(exit_status)
 <item><p><code>add_from_file(filename)</code> carga y procesa el archivo dado y lo une con el contenido actual del Gtk.Builder.</p></item>
 <item><p><code>add_from_string(string)</code> procesa la cadena dada y la une con el contenido actual del Gtk.Builder.</p></item>
 <item><p><code>add_objects_from_file(filename, object_ids)</code> es igual a <code>add_from_file()</code>, pero solo carga los objetos con los ID dados en la lista de <code>object_id</code>.</p></item>
-<item><p><code>add_objects_from_string(string, object_ids)</code> es lo mismo que <code>add_from_string()</code>, pero sólo carga los objetos con los ID dados en la lista de <code>object_id</code>.</p></item>
+<item><p><code>add_objects_from_string(filename, object_ids)</code> es igual a <code>add_from_string()</code>, pero sólo carga los objetos con las ID dadas en la lista de <code>object_id</code>.</p></item>
 <item><p><code>get_object(object_id)</code> obtiene el widget con el ID <code>object_id</code> de los objetos cargados en el constructor.</p></item>
 <item><p><code>get_objects()</code> devuelve todos los objetos cargados.</p></item>
 <item><p><code>connect_signals(handler_object)</code> conecta las señales a los métodos dados en el <code>handler_object</code>. Este puede ser cualquier objeto que contenga claves o atributos que se llamen como los nombres del manejador de señales dados en la descripción de la interfaz, por ejemplo una clase o un diccionario. En la línea 39 la señal <code>"activate"</code> de la acción <code>undo_action</code> se conecta a la función de retorno de llamada <code>undo_callback()</code> usando <code><var>action</var>.connect(<var>señal</var>, <var>función de retorno de llamada</var>)</code>. Consulte la <link xref="signals-callbacks.py"/> para una explicación más detallada.</p>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="buttonbox.py" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="buttonbox.py" xml:lang="es">
   <info>
     <title type="text">Botonera (Python)</title>
     <link type="guide" xref="beginner.py#layout"/>
@@ -9,22 +9,22 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Un contenedor para organizar botones</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -46,9 +46,7 @@
     <code mime="text/python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Calculator", application=app)
         self.set_default_size(350, 200)
@@ -66,17 +64,17 @@ class MyWindow(Gtk.ApplicationWindow):
         # a grid
         grid = Gtk.Grid()
         grid.set_row_spacing(5)
-
+        
         # to attach the entry
         grid.attach(self.entry, 0, 0, 1, 1)
-
+        
         # the labels for the buttons
-        buttons = [7, 8, 9, '/',
-                   4, 5, 6, '*',
-                   1, 2, 3, '-',
-                   'C', 0, '=', '+']
-
-        # each row is a ButtonBox, attached to the grid
+        buttons = [ 7, 8, 9, '/',
+                    4, 5, 6, '*',
+                    1, 2, 3, '-',
+                    'C', 0, '=', '+' ]
+        
+        # each row is a ButtonBox, attached to the grid            
         for i in range(4):
             hbox = Gtk.ButtonBox.new(Gtk.Orientation.HORIZONTAL)
             hbox.set_spacing(5)
@@ -87,7 +85,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 button.set_can_focus(False)
                 button.connect("clicked", self.button_clicked)
                 hbox.add(button)
-
+            
         # some variables for the calculations
         self.first_number = 0
         self.second_number = 0
@@ -101,25 +99,25 @@ class MyWindow(Gtk.ApplicationWindow):
     def button_clicked(self, button):
         # for the operations
         if button.get_label() == '+':
-            self.counter += 1
+            self.counter += 1 
             if self.counter &gt; 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "plus"
         elif button.get_label() == '-':
-            self.counter += 1
+            self.counter += 1 
             if self.counter &gt; 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "minus"
         elif button.get_label() == '*':
-            self.counter += 1
+            self.counter += 1 
             if self.counter &gt; 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "multiplication"
         elif button.get_label() == '/':
-            self.counter += 1
+            self.counter += 1 
             if self.counter &gt; 1:
                 self.do_operation()
             self.entry.set_text('0')
@@ -143,7 +141,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 number = 0
             else:
                 number = int(self.entry.get_text())
-            number = number * 10 + new_digit
+            number = number * 10 + new_digit            
             if self.counter == 0:
                 self.first_number = number
             else:
@@ -172,10 +170,8 @@ class MyWindow(Gtk.ApplicationWindow):
             self.second_number = 0
             self.counter = 0
             self.entry.set_text('error')
-
-
+            
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -193,7 +189,7 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-    <title>Métodos útiles para un widget ButtonBox</title>
+    <title>Métodos útiles para un widget botonera</title>
     <list>
       <item><p>La distribución de la botonera se configura con <code>set_layout(distribución)</code>, donde <code>distribución</code> puede ser <code>Gtk.ButtonBoxStyle.SPREAD</code> (los botones se separan equidistantes a lo largo de la botonera), <code>Gtk.ButtonBoxStyle.EDGE</code> (los botones se ponen en los bordes), <code>Gtk.ButtonBoxStyle.START</code> (los botones se agrupan hacia el comienzo de la botonera), <code>Gtk.ButtonBoxStyle.END</code> (los botones se agrupan hacia el final), <code>Gtk.ButtonBoxStyle.CENTER</code> (los botones se agrupan hacia el centro).</p></item>
       <item><p><code>set_child_secondary(botón, es_secundario)</code> configura si <code>botón</code> debe aparecer en un grupo secundario de hijos. Un uso típico de un hijo secundario es el botón de ayuda en un diálogo. Este grupo aparece después de los otros hijos si el estilo es <code>START</code>, <code>SPREAD</code> o <code>EDGE</code>, y antes de los otros hijos si el estilo es <code>END</code>. Si el estilo es <code>START</code> o <code>END</code>, entonces los hijos secundarios se alinean al otro lado de los hijos principales en la botonera . Para los otros estilos, aparecen inmediatamente a continuación de los hijos principales.</p></item>

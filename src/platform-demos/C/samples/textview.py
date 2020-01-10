@@ -1,9 +1,7 @@
 from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="TextView Example", application=app)
         self.set_default_size(300, 450)
@@ -12,8 +10,7 @@ class MyWindow(Gtk.ApplicationWindow):
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_border_width(5)
         # we scroll only if needed
-        scrolled_window.set_policy(
-            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         # a text buffer (stores text)
         buffer1 = Gtk.TextBuffer()
@@ -28,9 +25,7 @@ class MyWindow(Gtk.ApplicationWindow):
 
         self.add(scrolled_window)
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="window.vala" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="window.vala" xml:lang="el">
   <info>
   <title type="text">Παράθυρο (Vala)</title>
     <link type="guide" xref="beginner.vala#windows"/>
@@ -7,34 +7,16 @@
 
     <credit type="author copyright">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Ένα παράθυρο ανώτατου επιπέδου που μπορεί να περιέχει άλλα γραφικά στοιχεία</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Ένα παράθυρο ανώτατου επιπέδου που μπορεί να περιέχει άλλα γραφικά συστατικά</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -50,39 +32,39 @@
     </td>
   </tr>
 </table>
-<code mime="text/x-csharp" style="numbered">/* Αυτή είναι η εφαρμογή. */
+<code mime="text/x-csharp" style="numbered">/* This is the application. */
 public class Application : Gtk.Application {
 
-	/* Ο κατασκευαστής */
+	/* Constructor */
 	public Application () {
 		Object (application_id: "org.example.window");
 	}
 
-	/* Αντικατάσταση του σήματος 'activate' της GLib.Application,
-	 * που κληρονομήθηκε από την Gtk.Application. */
+	/* Override the 'activate' signal of GLib.Application,
+	 * which is inherited by Gtk.Application. */
 	public override void activate () {
 
 		var window = new Gtk.Window ();
 		window.title = "Welcome to GNOME";
 
-		/* Οι ακόλουθες 3 γραμμές περιλαμβάνονται εδώ για να σας εισάγουν
-		 * τρόπους που μπορείτε να ρυθμίσετε τα ανώτα το επίπεδο παραθύρου για να ταιριάζει
-		 * τις ανάγκες σας.  Αποσχολιάστε τες για να δείτε τι κάνουν.
+		/* The following 3 lines are included here to introduce
+		 * you to ways you can adjust the toplevel window to suit
+		 * your needs.  Uncomment them to see what they do.
 		 */
 
 		//window.border_width = 10;
 		//window.set_default_size (350, 70);
 		//window.window_position = Gtk.WindowPosition.CENTER;
 
-		/* Προσθήκη του παραθύρου σε αυτήν την εφαρμογή. */
+		/* Add the window to this application. */
 		this.add_window (window);
 
-		/* Εμφάνιση του παραθύρου */
+		/* Show the window. */
 		window.show ();
 	}
 }
 
-/* Η κύρια συνάρτηση δημιουργεί την εφαρμογή και την εκτελεί.*/
+/* The main function creates the application and runs it.*/
 int main (string[] args) {
 	var app = new Application ();
 	return app.run (args);
@@ -91,7 +73,7 @@ int main (string[] args) {
 <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
 <list>
   <item><p><link href="http://www.valadoc.org/gtk+-3.0/Gtk.Application.html">Gtk.Application</link></p></item>
-  <item><p>Το γραφικό στοιχείο <link href="http://www.valadoc.org/gtk+-3.0/Gtk.Window.html">Gtk.Window</link></p></item>
+  <item><p>Το γραφικό συστατικό <link href="http://www.valadoc.org/gtk+-3.0/Gtk.Window.html">Gtk.Window</link></p></item>
 
   <item><p>Η αρίθμηση <link href="http://www.valadoc.org/gtk+-3.0/Gtk.WindowPosition.html">Gtk.WindowPosition</link></p></item>
 

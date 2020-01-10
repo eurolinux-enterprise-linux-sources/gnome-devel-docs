@@ -1,0 +1,1582 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="menus" lang="fr">
+    <title>Menus</title>
+
+<remark> Tear| off menus? (These are controlled by gconf in 2.0, so nothing app developer needs to do?)</remark>
+<remark> Menu bar position </remark>
+<remark> Menu bar hiding </remark>
+
+    <para>Les menus présentent l'ensemble complet des commandes d'une application à l'utilisateur et souvent un sous-ensemble de ses préférences. Lorsque vous concevez une nouvelle application, placez les éléments courants du menu aux mêmes endroits où ils apparaissent dans les autres applications, car cela permet à l'utilisateur de les mémoriser plus facilement.</para>
+  
+    <para>Dans la plupart des applications, seules les fenêtres principales doivent avoir une barre de menu. Les <link linkend="windows-utility">fenêtres utilitaires</link> et les <link linkend="windows-dialog">boîtes de dialogue</link> doivent être suffisamment simples pour que leurs fonctions puissent être fournies par des contrôles tels que les boutons placés dans la fenêtre.</para>
+
+    <para>De temps en temps cependant une fenêtre utilitaire ou une boîte de dialogue est tellement complexe qu'il y aurait trop de contrôles de ce type. Dans ce cas, vous pouvez utiliser une barre de menu à condition que :</para>
+
+    <itemizedlist>
+      <listitem><para>les menus suivent l'agencement standard tel que décrit à la <xref linkend="menus-standard"/>,</para></listitem>
+      <listitem><para>la fenêtre ne doit pas comporter la zone des boutons de la boîte de dialogue ou tout bouton qui la fermerait comme <guibutton>Valider</guibutton>, <guibutton>Fermer</guibutton> ou <guibutton>Annuler</guibutton>. Placez ces commandes dans le menu <guimenu>Fichier</guimenu> ou son équivalent à la place.</para></listitem>
+    </itemizedlist>
+
+	<itemizedlist><title>Conseils</title>
+      <listitem><para>Nommez les éléments de menu à l'aide de verbes pour les commandes et d'adjectifs pour les réglages, selon les règles de la <xref linkend="layout-capitalization"/>.</para></listitem>
+
+	<listitem><para>Make a menu item insensitive when its command is unavailable. For example, the <menuchoice><guimenu>Edit</guimenu> <guimenuitem>Copy</guimenuitem></menuchoice> item, which issues the command to copy selected data to the clipboard, should not be active when there is no data selected.</para></listitem>
+
+    <listitem><para>Indiquez une touche d'accès pour tout élément de menu. Vous pouvez utiliser la même touche d'accès dans différents menus de votre application mais évitez de dupliquer les touches d'accès dans un même menu. Notez que contrairement aux autres contrôles, une fois qu'un menu est affiché, ses touches d'accès peuvent être utilisées en saisissant uniquement la lettre ; il n'est pas nécessaire d'appuyer sur la touche <keysym>Alt</keysym> en même temps.</para></listitem>
+
+      <listitem><para>Concevez votre structure de menu pour éviter plus d'un niveau de sous-menus. Les hiérarchies profondes de menu sont plus difficiles à mémoriser et physiquement difficiles à parcourir.</para></listitem>
+
+	<listitem><para>N'ayez pas de menu contenant moins de trois éléments (sauf le menu <guimenu>Aide</guimenu> standard qui ne possède que deux éléments par défaut). Si vous avez un sous-menu avec moins de trois éléments, déplacez-les dans leur menu parent. Si vous avez un menu de haut-niveau avec moins de trois éléments, trouvez un autre menu approprié pour les y ajouter ou trouvez des éléments appropriés d'autres menus à ajouter.</para></listitem>
+
+	</itemizedlist>
+
+
+	<sect1 id="menus-menubar">
+	  <title>Barre de menus</title>
+
+	<figure id="example-menu-bar">
+	<title>Une barre de menus classique</title>
+	<mediaobject>
+	<imageobject><imagedata fileref="images/menus-application.png" width="454" depth="27" format="PNG"/></imageobject>
+	<imageobject><imagedata fileref="images/menus-application.eps" format="EPS"/></imageobject>
+	<textobject><phrase>A typical application menubar, showing File, Edit, View, Insert, Format, Go, Bookmarks, Tools, Windows and Help menus</phrase></textobject>
+	</mediaobject>
+      </figure>
+
+	  <para>La barre de menus propose de nombreux menus déroulants. Seuls les menus titres sont affichés jusqu'à ce que l'utilisateur clique sur l'un d'entre eux.</para>
+
+	<para>La barre de menus est normalement toujours visible et accessible à partir du clavier. Il faut donc rendre toutes les commandes de votre application disponibles dans la barre de menus.</para>
+
+	<note><title>Mode plein écran</title><para>Lorsque votre application est en mode plein écran, masquez la barre de menus par défaut. Cependant, il faut que ses menus et éléments restent accessibles à partir du clavier comme d'habitude. Un appui sur la touche <keycap>Échap</keycap> doit faire quitter le mode plein écran à l'application. Un bouton <guibutton>Quitter le mode plein écran</guibutton> doit être placé dans le coin supérieur droit de la fenêtre. Le bouton doit disparaître lorsque la souris est inutilisée pendant 5 secondes et doit réapparaître lorsque la souris est déplacée. Sinon pour les applications où la souris est fréquemment utilisée en mode plein écran, la totalité du bouton, sauf une ligne de deux pixels, peut se glisser sous le haut de l'écran. Le bouton doit revenir à l'écran lorsque la souris s'approche de lui.</para></note>
+
+	<itemizedlist><title>Conseils</title>
+
+		<listitem><para>Chaque fenêtre principale d'une application doit posséder une barre de menus contenant au moins un menu <guimenu>Fichier</guimenu> et un menu <guimenu>Aide</guimenu>.</para></listitem>
+
+      		<listitem><para>Organisez les titres de menu dans l'ordre standard — consultez la <xref linkend="menus-standard"/></para></listitem>
+
+		 <listitem><para>Ne désactivez pas les titres de menu. L'utilisateur doit pouvoir explorer le menu même s'il n'y a aucun élément disponible dans celui-ci à ce moment-là.</para></listitem>
+
+		  <listitem><para>Les titres de menu d'une barre de menus sont composés d'un seul mot commençant par une majuscule. N'utilisez pas d'espace dans les titres de menu sinon il serait possible de les confondre avec deux titres de menu séparés. N'utilisez pas de mots composés (comme <guimenu>OptionsFenêtre</guimenu>) ou des tirets (comme <guimenu>Options-Fenêtre</guimenu>) pour contourner cette indication.</para></listitem>
+
+		<listitem><para>N'implémentez pas de mécanisme pour masquer la barre des menus, car il risquerait d'être activé accidentellement. Certains utilisateurs risqueraient de ne pas savoir comment retrouver la barre de menus dans ce cas.</para></listitem>
+	
+	</itemizedlist>
+
+	</sect1>
+
+   <sect1 id="menus-types">
+      <title>Types de menu</title>
+
+
+	<sect2 id="menu-type-drop-down">
+	  <title>Menus déroulants</title>
+	<figure id="drop-down-menu">
+	<title>Un menu déroulant classique</title>
+	<mediaobject>
+	  <imageobject><imagedata fileref="images/menus-dropdown.png" format="PNG" width="166" depth="300"/></imageobject>
+	  <imageobject><imagedata fileref="images/menus-dropdown.eps" format="EPS"/></imageobject>
+	  <textobject><phrase>Screenshot of a typical drop-down menu</phrase></textobject>
+	</mediaobject>
+      </figure>
+
+	  <para>Un menu déroulant apparaît quand l'utilisateur clique sur son titre dans la barre de menu ou place le focus sur le titre et appuie sur <keycap>Entrée</keycap>.</para>
+
+<remark> CB-Ed/Fig: Define "post," as no-brainer-ish as it may seem, and also add a figure to show what it means.  A simple menu being shown at the user clicking on a menu title on a menubar, or "posted," makes sense.  </remark>
+<remark> CFB: I've just reworded everything to avoid the use of "post" </remark>
+
+    <itemizedlist><title>Conseils</title>
+
+	<listitem><para>Ne placez dans un menu que des éléments ayant un rapport avec le titre du menu.</para></listitem>
+
+      <listitem><para>Organisez les éléments de menu dans l'ordre classique — consultez la <xref linkend="menus-standard"/>. Pour les éléments propres à l'application pour lesquels il n'y a pas d'ordre défini, classez-les par ordre numérique ou autre façon logique (par exemple, <guimenuitem>50 %</guimenuitem>, <guimenuitem>100 %</guimenuitem>, <guimenuitem>200 %</guimenuitem>), dans l'ordre des tâches (par exemple, <guimenuitem>Compiler</guimenuitem> suivi de <guimenuitem>Déboguer</guimenuitem>) ou suivant la fréquence supposée d'utilisation.</para></listitem>
+
+      <listitem><para>Limitez les menus de haut niveau à un maximum de 15 éléments. Si vous avez plus d'éléments, pensez à déplacer un sous-ensemble d'éléments aux fonctionnalités liées dans un sous-menu ou dans un nouveau menu de haut niveau.</para></listitem>
+
+      <listitem><para>N'ajoutez et ne supprimez pas d'éléments de menu individuels pendant que l'application est lancée, rendez-les plutôt inactifs. Des menus complets peuvent cependant être ajoutés ou supprimés de la barre de menus en cours d'exécution, par exemple dans des applications basées sur des composants.</para></listitem>
+
+      <listitem><para>Mettez immédiatement à jour les éléments de menu qui sont modifiés directement ou indirectement par l'utilisateur, tels que ceux du sous-menu <guisubmenu>Documents récents</guisubmenu> et du menu <guimenu>Signets</guimenu>.</para></listitem>
+
+
+    </itemizedlist>
+  <remark> CB-Ed: As in JLFDG AT p. 33, perhaps provide a table of common access keys, or "mnemonics." </remark>
+  <remark> CFB: the keyboard navigation chapter already does so </remark>
+
+
+	</sect2>
+
+	<sect2 id="menu-type-submenu">
+	  <title>Sous-menus</title>
+
+	<figure id="submenu">
+	<title>Un menu déroulant avec un sous-menu</title>
+	<mediaobject>
+	  <imageobject><imagedata fileref="images/menus-submenu.png" format="PNG" width="352" depth="264"/></imageobject>
+	  <imageobject><imagedata fileref="images/menus-submenu.eps" format="EPS"/></imageobject>
+	  <textobject><phrase>Screenshot of a drop-down menu with a submenu</phrase></textobject>
+	</mediaobject>
+      </figure>
+
+	  <para>Un sous-menu apparaît lorsque l'utilisateur clique sur son titre qui est marqué par un petit symbole de flèche à côté de son étiquette. Vous pouvez gagnez de la place dans les menus avec beaucoup d'articles en regroupant les commandes en relation dans un sous-menu unique.</para>
+
+	<itemizedlist><title>Conseils</title>
+
+		<listitem><para>Utilisez les sous-menus avec parcimonie, car il est foncièrement difficile de s'y déplacer ; la recherche et l'accessibilité des éléments qu'ils contiennent en est rendue malaisée. </para></listitem>
+
+		<listitem><para>Ne créez pas de sous-menus avec moins de trois éléments à moins que les éléments ne soient ajoutés dynamiquement (par exemple le sous-menu <menuchoice><guimenu>Fichier</guimenu><guimenuitem>Nouvel onglet</guimenuitem></menuchoice> dans <application>gnome-terminal</application>).</para></listitem>
+
+		<listitem><para>N'imbriquez pas de sous-menus dans des sous-menus. Il est difficile de se souvenir de plus de deux niveaux de hiérarchie et de naviguer parmi eux.</para></listitem>
+		
+	</itemizedlist>
+
+<remark> CB-Ed/Fig: In JLFDG AT, p. 41, the Most Recently Used (MRU) list is recommended to contain no more than 10 items. Add a figure here, with callouts to point out this rule, among others, if any are developed.  </remark> 
+
+	</sect2>
+
+	<sect2 id="menu-type-popup">
+	  <title>Menus contextuels</title>
+
+	<figure id="popup-menu">
+	<title>Un menu contextuel pour un dossier de courriels</title>
+	<mediaobject>
+	  <imageobject><imagedata fileref="images/menus-popup.png" format="PNG" width="251" depth="233"/></imageobject>
+	  <imageobject><imagedata fileref="images/menus-popup.eps" format="EPS"/></imageobject>
+	  <textobject><phrase>Screenshot of a popup menu for a mail folder, listing the actions that can be performed on that folder</phrase></textobject>
+	</mediaobject>
+      </figure>
+
+	<para>Les menus contextuels fournissent des raccourcis vers des éléments de menu qui ne s'appliquent qu'à l'objet actuellement sélectionné. Un menu contextuel s'affiche lorsque l'utilisateur clique avec le bouton de droite sur un objet ou sélectionne l'objet et appuie sur <keycombo><keycap>Maj</keycap><keycap>F10</keycap></keycombo>.</para>
+
+	<para>Soyez attentif au fait que les menus contextuels sont principalement utilisés par les utilisateurs de niveau intermédiaire et avancé. Même certains utilisateurs qui utilisent des environnements graphiques depuis des années ne connaissent pas les menus contextuels jusqu'à ce que quelqu'un leur montre.</para>
+
+	<itemizedlist><title>Conseils</title>
+		<listitem><para>Dotez d'un menu contextuel chaque objet, chaque élément pouvant être sélectionné et chaque cible d'entrée de texte comme les champs de saisie.</para></listitem>
+		<listitem><para>Indiquez dans chaque élément de menu une touche d'accès. Cependant, pour améliorer le rendement spatial et la lisibilité, n'affichez pas les raccourcis clavier dans les menus contextuels.</para></listitem>
+		
+		<listitem><para>Puisqu'il est possible que l'utilisateur ne soit pas au courant de leur présence, ne créez pas de fonctions accessibles uniquement à partir de menus contextuels à moins d'être sûr que le public ciblé sait utiliser les menus contextuels.</para>
+		<remark>But see http://bugzilla.mozilla.org/show_bug.cgi?id=34357</remark>
+		</listitem>
+
+		<listitem><para>Classez les éléments dans un menu contextuel comme suit :</para>
+		<itemizedlist>
+			<listitem><para>l'action correspondant à un double-clic sur l'objet, si elle existe,</para></listitem>
+			<listitem><para>les autres commandes et paramètres classés par fréquence d'utilisation supposée,</para></listitem>
+			<listitem><para>les commandes de transfert comme <command>Couper</command>, <command>Copier</command> et <command>Coller</command>,</para></listitem>
+			<listitem><para>les <guimenuitem>méthodes d'entrées</guimenuitem> lorsque des <guimenuitem>méthodes d'entrées</guimenuitem> utilisables sont fournies par GTK+ pour prendre en charge des alternatives au clavier pour la saisie (comme celles utilisées par les japonais, les chinois et certaines techniques d'accessibilité).</para></listitem>
+		</itemizedlist>
+		</listitem>
+
+	 	<listitem><para>Les menus contextuels doivent être les plus simples possibles afin d'être efficaces. Ne mettez pas plus d'environ dix éléments dans un menu contextuel et évitez les sous-menus.</para></listitem>
+
+	</itemizedlist>
+
+<remark> CB-Ed: In the previous note, define the Input Methods menu and why it is an exception, for scalability reasons (other items may fall into the same category).  It also sounds like a pretty low-level command; should this be exposed to the user? </remark>
+<remark> SN-Ed: No, it should not be exposed to the user. I'm not really sure what possessed the GTK guys to put this in every right click menu for text boxes. I suppose in this case having it be a submenu is good (if they insist on it existing) because it makes it maximally invisible </remark>
+<remark> GJM: To make this worse, they've added "Insert Unicode control character".</remark>
+	</sect2>
+	</sect1>
+
+	<sect1 id="menus-design">
+	<title>Conception d'un menu</title>
+
+	<sect2 id="menu-grouping">
+	  <title>Regroupement d'éléments de menus</title>
+
+	<figure id="menu-separators">
+	<title>Regroupement d'éléments dans un menu à l'aide de séparateurs</title>
+	<mediaobject>
+	  <imageobject><imagedata fileref="images/menus-dropdown.png" format="PNG" width="166" depth="300"/></imageobject>
+	  <imageobject><imagedata fileref="images/menus-dropdown.eps" format="EPS"/></imageobject>
+	  <textobject><phrase>Screenshot of a menu divided into five logical groups with menu separators</phrase></textobject>
+	</mediaobject>
+      </figure>
+
+	  <para>Les séparateurs de menu sont des lignes horizontales qui séparent visuellement des groupes d'éléments logiquement reliés entre eux dans un menu déroulant, un sous-menu ou un menu contextuel. Par exemple, les séparateurs sur la <xref linkend="menu-separators"/> divisent en cinq groupes de fonctionnalités communes. Un bon usage des séparateurs aide à regrouper l'information dans un menu et le rend plus facile à parcourir et mémoriser.</para>
+	  
+	  <itemizedlist><title>Conseils</title>
+
+	    <listitem><para>La meilleure taille pour un groupe est d'environ 2 à 5 éléments. Il vaut mieux placer les groupes à un seul élément au sommet ou en bas d'un menu sinon essayez de les regrouper avec d'autres éléments uniques du même type dans le même menu.</para></listitem>
+
+	    <listitem><para>Ordonnez les éléments dans un groupe de manière logique, numériquement, dans l'ordre des tâches ou classés par fréquence d'utilisation attendue, selon les circonstances.</para></listitem>
+
+	    <listitem><para>Ne mettez qu'un seul type d'élément de menu dans chaque groupe — <link linkend="menu-item-type-command">commande</link>, <link linkend="menu-item-type-mutable">mutable</link>, <link linkend="menu-item-type-check">case à cocher</link> ou <link linkend="menu-item-type-radio">bouton radio</link>. Par exemple, ne mettez pas des commandes (comme <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Recharger</guimenuitem></menuchoice>) et des paramètres (comme <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Barre d'outils</guimenuitem></menuchoice>) dans le même groupe.</para></listitem>
+
+	    </itemizedlist>	  
+	</sect2>
+
+	<sect2 id="menu-item-types">
+	<title>Types d'élément de menu</title>
+	
+	<sect3 id="menu-item-type-command">
+	  <title>Éléments commande</title>
+
+	<figure id="command-items-figure"><title>Un groupe d'éléments commande dans un menu</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-command-group.png" format="PNG" width="253" depth="105"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-command-group.eps" format="EPS"/></imageobject>
+	    <textobject><phrase>Screenshot of a group on a menu containing only command items: Save, Save As, and Revert</phrase></textobject>
+	  </mediaobject>
+	</figure>
+
+	  <para>Les éléments commandes sont des éléments de menu qui lancent une commande ou réalisent une action telles que <guimenuitem>Enregistrer</guimenuitem>, <guimenuitem>Imprimer</guimenuitem> ou <guimenuitem>Quitter</guimenuitem>. Ils agissent sur le document actuellement actif dans une application basée sur les documents ou sur l'application elle-même.</para>
+
+	<itemizedlist><title>Conseils</title>
+
+		<listitem><para>Associez un raccourci clavier pour les éléments commandes souvent utilisés. Consultez la <xref linkend="shortcuts"/> pour plus d'informations sur le choix des touches de raccourci.</para></listitem>
+	  <!-- <para>Shortcuts consist of the <keysym>Control</keysym> key and an alphanumeric key, or of one of the keys <keysym>F1</keysym>-<keysym>F12</keysym>, <keysym>Insert</keysym>, <keysym>Delete</keysym>, <keysym>Home</keysym>, <keysym>End</keysym>, <keysym>Page Up</keysym> or <keysym>Page Down</keysym>. The <keysym>Shift</keysym> key may be used as an additional modifier for commands which are related to or the opposite of the command accessed without the <keysym>Shift</keysym> key.  See <xref linkend="shortcuts"/> for more information.</para> -->
+	  
+	<listitem><para>Ne supprimez pas les éléments commandes du menu lorsqu'ils ne sont pas disponibles, rendez-les plutôt inactifs. Cela permet à l'utilisateur de déduire la fonctionnalité que l'application fournit même si elle n'est actuellement pas disponible et de conserver une structure de menu statique qui rend plus facile leur mémorisation.</para></listitem>
+
+	  <listitem><para>Ne mettez des points de suspension (« ... ») à la fin de l'étiquette que si la commande a besoin d'entrées supplémentaires de la part d'utilisateur avant d'être exécutée. N'ajoutez pas de points de suspension aux éléments qui n'affichent qu'une boîte de dialogue de confirmation (tel que <guimenuitem>Supprimer</guimenuitem>) ou qui ne <emphasis>nécessitent</emphasis> pas d'entrée supplémentaire (tel que <guimenuitem>Propriétés</guimenuitem>, <guimenuitem>Préférences</guimenuitem> ou <guimenuitem>À propos</guimenuitem>).</para></listitem>
+
+	</itemizedlist>
+	<remark>
+	  Should we reserve <keysym>Alt</keysym> as a modifier for window manager operations? Should we state this here?
+	</remark>
+
+
+<remark> CB-Ed/Fig: Figure would be nice here. </remark>
+	</sect3>
+
+	<sect3 id="menu-item-type-mutable">
+	  <title>Éléments modifiables</title>
+	  <para>Un élément de menu mutable change de dénomination lorsqu'il est sélectionné. Par exemple, <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Recharger</guimenuitem></menuchoice> dans un navigateur peut devenir <guimenuitem>Arrêter</guimenuitem> pour permettre à l'utilisateur d'interrompre l'opération si cela prend trop de temps.</para>
+
+	  <para>Notez qu'un élément de menu mutable peut poser des problèmes car l'utilisateur ne voit jamais le changement ; il ne lui est donc pas évident qu'une fonction différente est maintenant à sa disposition.</para>
+
+	<itemizedlist><title>Conseils</title>
+		<listitem><para>Si vos éléments de menu mutables sont des <link linkend="menu-item-type-command">éléments commandes</link> et que vous avez suffisamment de place dans votre menu, songez plutôt à fournir deux éléments de menu adjacents pour les commandes. Ensuite rendez les éléments actifs ou inactifs en fonction du contexte. Ceci permet également à l'utilisateur de savoir si des raccourcis différents sont disponibles pour chaque commande, par exemple <keycombo><keycap>Ctrl</keycap><keycap>R</keycap></keycombo> pour <guimenuitem>Recharger</guimenuitem> et <keycap>Échap.</keycap> pour <guimenuitem>Arrêter</guimenuitem>.</para></listitem>
+
+		<listitem><para>N'utilisez pas d'élément de menu mutable pour un paramètre à deux états (par exemple <guimenuitem>Afficher la barre d'outils</guimenuitem> et <guimenuitem>Masquer la barre d'outils</guimenuitem>). Affichez plutôt ces éléments comme un simple <link linkend="menu-item-type-check">élément case à cocher</link>.</para></listitem>
+	</itemizedlist>
+
+	</sect3>
+	<sect3 id="menu-item-type-check">
+	  <title>Éléments case à cocher</title>
+
+	<figure id="checkbox-items-figure"><title>Un ensemble d'éléments case à cocher dans un menu</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-checkbox-group.png" format="PNG" width="231" depth="112"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-checkbox-group.eps" format="EPS"/></imageobject>
+	    <textobject><phrase>Screenshot of group on a View menu containing four check box items: Main Toolbar, Side Pane, Location Bar and Status Bar</phrase></textobject>
+	  </mediaobject>
+	</figure>
+
+	  <para>Un élément de menu case à cocher affiche l'état actuel d'un paramètre à deux états et permet à l'utilisateur de le modifier en sélectionnant l'élément de menu.</para>
+
+	<itemizedlist><title>Conseils</title>
+	  
+	  	<listitem><para>Utilisez un élément de menu case à cocher seulement si la signification des états activé et désactivé est évidente d'après la dénomination de l'élément. Cela signifie que les deux états sont logiques et naturellement opposés, tels que « Marche » et « Arrêt ». Si ce n'est pas le cas, utilisez plutôt deux <link linkend="menu-item-type-radio">éléments bouton radio</link>.	</para></listitem>
+		  <listitem><para>Ne modifiez jamais la dénomination d'un élément de menu case à cocher lorsque l'utilisateur le sélectionne.</para></listitem>
+
+	</itemizedlist>
+
+	</sect3>
+	<sect3 id="menu-item-type-radio">
+	  <title>Éléments bouton radio</title>
+
+	<figure id="radiobutton-items-figure"><title>Un ensemble d'éléments bouton radio dans un menu</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-radiobutton-group.png" format="PNG" width="167" depth="117"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-radiobutton-group.eps" format="EPS"/></imageobject>
+	    <textobject><phrase>Screenshot of group on a menu containing three radiobutton items: view as icons, view as list and view details</phrase></textobject>
+	  </mediaobject>
+	</figure>
+
+	  <para>Les éléments de menu bouton radio affichent quel réglage, parmi deux (ou plus) s'excluant mutuellement, est actuellement sélectionné et permettent à l'utilisateur de choisir un réglage différent en sélectionnant l'élément de menu.</para>
+
+	<itemizedlist>
+
+	  	<listitem><para>Si vous devez proposer un choix parmi deux réglages qui s'excluent mutuellement à l'utilisateur, utilisez deux éléments bouton radio au lieu d'un unique élément de menu case à cocher si les réglages ne sont pas clairement opposés. Par exemple, représentez <guimenuitem>Vue en icônes</guimenuitem> et <guimenu>Vue en liste</guimenu> comme deux éléments bouton radio.</para></listitem>
+
+	  <listitem><para>Ne modifiez jamais la dénomination d'un élément bouton radio lorsque l'utilisateur sélectionne ou dé-sélectionne l'élément.</para></listitem>
+
+	</itemizedlist>
+
+<remark>
+	Adam notes that this whole section can be a significant source of
+	nastiness in a UI. We need explicit recommendations here on how to
+	represent different states of a toggled menu item via icons in the UI.
+	We also need to make recommendations to avoid some common mistakes,
+	including:
+	
+	* Confusing menu items acting as radio buttons in a group with menu
+          items acting as check boxes.
+	* Ambiguous names for check box/toggle menu items which make it
+	  difficult to establish the current system state by looking at
+	  the menu.
+</remark>
+
+	</sect3>
+	
+      </sect2>
+
+    </sect1>
+
+    <sect1 id="menus-standard">
+      <title>Menus standards</title>
+      <para>La plupart des applications possèdent beaucoup de fonctionnalités communes telles que <guimenu>Couper</guimenu>, <guimenu>Copier</guimenu>, <guimenu>Coller</guimenu> et <guimenu>Quitter</guimenu>. Pour aider à apprendre et à mémoriser ces éléments de menu et les menus dans lesquels ils apparaissent celles-ci doivent apparaître avec les mêmes étiquettes et dans le même ordre dans toutes les applications. La même commande doit également se comporter de la même façon dans les différentes applications pour éviter des surprises à l'utilisateur.</para>
+
+	<para>Cette section présente les menus et éléments de menu les plus courants ainsi que leur comportement. Vous n'aurez certainement pas besoin de tous ces menus ou éléments de menu dans toutes les applications que vous écrirez mais vous devez conserver l'ordre des titres de menu ou des éléments de menu pour ceux que vous utilisez.</para>
+
+	<itemizedlist><title>Conseils</title>
+		<listitem><para>Mettez les menus spécifiques à votre application après le menu <guimenu>Format</guimenu> et avant le menu <guimenu>Aller à</guimenu>.</para></listitem>
+
+		<listitem><para>Placez les éléments de menu spécifiques à l'application vers le milieu d'un menu standard à moins qu'ils ne trouvent leur place dans l'un des groupes standards déjà présents dans le menu.</para></listitem>
+
+	</itemizedlist>
+
+        
+    <remark>What is the best way to present menus given the known variants? Multiple shots? Segments?</remark>
+
+      <figure id="generic-menu-bar">
+	<title>Une barre de menus affichant tous les titres de menus standards dans le bon ordre</title>
+	<mediaobject>
+	  <imageobject><imagedata fileref="images/menus-application.png" width="454" depth="27" format="PNG"/></imageobject>
+	  <imageobject><imagedata fileref="images/menus-application.eps" format="EPS"/></imageobject>
+	  <textobject>
+	    <simplelist type="horiz" columns="9">
+	      <member><guimenu><accel>F</accel>ile</guimenu></member>
+	      <member><guimenu><accel>E</accel>dit</guimenu></member>
+	      <member><guimenu><accel>V</accel>iew</guimenu></member>
+	      <member><guimenu><accel>I</accel>nsert</guimenu></member>
+	      <member><guimenu>For<accel>m</accel>at</guimenu></member>
+	      <member><guimenu><accel>G</accel>o</guimenu></member>
+	      <member><guimenu><accel>B</accel>ookmarks</guimenu></member>
+	      <!--<member><guimenu><accel>T</accel>ools</guimenu></member>-->
+	      <member><guimenu><accel>W</accel>indows</guimenu></member>
+	      <member><guimenu><accel>H</accel>elp</guimenu></member>
+	    </simplelist>
+	  </textobject>
+	</mediaobject>
+      </figure>
+      
+      <sect2 id="the-file-menu">
+	<title>Fichier</title>
+		<para>Le menu <guimenu>Fichier</guimenu> contient les commandes qui agissent sur le document actuel. C'est l'élément le plus à gauche dans la barre de menus à cause de son importance et de son emploi fréquent et parce que c'est un menu utile dans beaucoup d'applications. Historiquement, parce que la plupart des applications possèdent déjà ce menu et parce que la distinction entre fermeture de documents et fermeture de fenêtres est devenue floue dans le temps, le menu <guimenu>Fichier</guimenu> est également devenu l'emplacement standard pour l'élément de menu <guimenuitem>Quitter</guimenuitem>.</para>
+
+		  <para>Les éléments du menu <guimenu>Fichier</guimenu> sont en général classés par voisinage, le plus proche en premier. C'est-à-dire, les éléments pour enregistrer ou charger un fichier, suivi par l'impression, suivi par l'envoi vers un utilisateur à distance. Essayez de maintenir cet ordre si vous devez ajouter de nouveaux éléments au menu.</para>
+
+	        <para>Si votre application n'opère pas sur des documents, appelez cet élément du nom des éléments affichés. Par exemple, beaucoup de jeux ont un menu <guimenu>Jeu</guimenu> au lieu d'un menu <guimenu>Fichier</guimenu>. Cependant, mettez l'élément de menu <guimenuitem>Quitter</guimenuitem> en dernière position néanmoins.</para>
+		
+<remark>GJM: Quit should be deprecated. Close is often sufficient; especially when
+the application saves state as it should.</remark>
+
+	<figure id="generic-file-menu"><title>Un menu fichier générique</title>
+	<mediaobject>
+	  <imageobject><imagedata fileref="images/menus-file.png" width="290" depth="454" format="PNG"/></imageobject>
+	  <imageobject><imagedata fileref="images/menus-file.eps" format="EPS"/></imageobject>
+	  <textobject>
+<literallayout>
+<guimenu>File</guimenu>
+<guimenuitem><accel>N</accel>ew                  Ctrl+N</guimenuitem>
+<guimenuitem><accel>O</accel>pen...              Ctrl+O</guimenuitem>
+<!--<guimenuitem>Recent <accel>F</accel>iles              &gt; </guimenuitem>-->
+---
+<guimenuitem><accel>S</accel>ave                 Ctrl+S</guimenuitem>
+<guimenuitem>Save <accel>A</accel>s...     Shift+Ctrl+S</guimenuitem>
+<guimenuitem>Sa<accel>v</accel>e a Copy...               </guimenuitem>
+<guimenuitem><accel>R</accel>evert                     </guimenuitem>
+---
+<guimenuitem>Page Set<accel>u</accel>p                 </guimenuitem>
+<guimenuitem>Print Previe<accel>w</accel>  Shift+Ctrl+P</guimenuitem>
+<guimenuitem><accel>P</accel>rint...             Ctrl+P</guimenuitem>
+<guimenuitem><accel>S</accel>end To...              Ctrl+M</guimenuitem>
+---
+<guimenuitem>Proper<accel>t</accel>ies                 </guimenuitem>
+---
+<guimenuitem><accel>1</accel>. Recent Document                 </guimenuitem>
+<guimenuitem><accel>2</accel>. Recent Document                </guimenuitem>
+<guimenuitem><accel>3</accel>. Recent Document                </guimenuitem>
+<guimenuitem><accel>4</accel>. Recent Document                </guimenuitem>
+---
+<guimenuitem><accel>C</accel>lose               Ctrl+W</guimenuitem>
+<guimenuitem><accel>Q</accel>uit                 Ctrl+Q</guimenuitem>
+</literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+
+        
+	<sect3>
+	  <title>Opérations de création et d'ouverture</title>
+	<remark>Adam noted in the last review that we don't make any suggestions for applications  that do not edit document/files. In an OOUI, the Game
+	  menu would have items such as (modulo phraeseology) Open New Game, Open Game Settings, High Scores.</remark>
+	<remark>&gt;For non-game UI there would be at the very least, Open as ... and Open Settings.</remark>
+
+	<table frame="all"> 
+	  <title>Éléments de menu opérations de création et d'ouverture</title> 
+
+	  <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+	      	<entry><guimenuitem><accel>N</accel>ew</guimenuitem></entry>
+	       <entry><keycombo><keycap>Ctrl</keycap><keycap>N</keycap></keycombo></entry>
+		<entry>Creates a new document. Open a new primary window, with the title <replaceable>Document name</replaceable>, containing a blank document.  How this window is displayed, e.g. as a tab or a separate window, is up to the window manager.
+			<para>If your application can create a number of different types of document, you can make the <guimenuitem><accel>N</accel>ew</guimenuitem> item a submenu, containing a menu item for each type. Label these items <guimenuitem>New <replaceable>document type</replaceable></guimenuitem>, make the first entry in the submenu the most commonly used document type, and give it the <keycombo><keycap>Ctrl</keycap><keycap>N</keycap></keycombo> shortcut.</para>
+			<para>Note: A blank document will not necessarily be completely blank. For example, a document created from a template may already contain some data.<!-- FIXME: More on templates --></para>
+		</entry>
+		</row>
+
+		<row>
+		      <entry><guimenuitem><accel>O</accel>pen...</guimenuitem></entry>
+	      		<entry><keycombo><keycap>Ctrl</keycap><keycap>O</keycap></keycombo></entry>
+			<entry>Opens an existing document in a new window. Present the user with a standard Open File dialog <!-- Ref this elsewhere --> from which they can choose an existing file. If the chosen file is already open in the application, raise that window instead of opening a new one. <!-- If the current window contains a blank untitled document then replace it with the selected file. Otherwise open the file in a new window. -->
+		<remark>If your application provides more than two ways to open an object, place all the Open ... items in a submenu, including Recent Files. This keeps the menu less cluttered and in some ways presents a better inteface as the list of recent files is presented in the same menu, and near, the regular open commands. Users hate having to go to the bottom of the file menu to open recent files; the cause of this is that, in the workplace, it is far more common to sort out other peoples already written and saved crap than it is to have to write your own. Most of the users of office application, surveyed in both card sorts and online presentations of speculative menus, do not want or do not even notice when the New... items are absent.</remark>
+		  <remark>&gt;Problem to be solved. It may be desirable to open a second read-only view of the same document. How should this be provided? Non-OOUI are particularly nasty in this regard, as in many others. A "Clone Window" command seems quite nasty.</remark>
+		  <remark>&gt;As I noted in the first review, the blank window should be kept available; in an OOUI this is a more obvious a way of working.</remark>
+			</entry>
+		</row>
+
+	  <!-- I think this is totally broken, I'm moving back to having recent files on the main menu itself. -Seth
+		<row>
+			<entry>Recent Files</entry>
+			<entry>none</entry>	
+			<entry>Allows the user to open a recently used file. The application should maintain a history of recently opened documents and these should be accessible via a submenu. Selecting one of these files should open that file in the same way that <guimenuitem><accel>O</accel>pen</guimenuitem> does.
+			<para>Provide at least ten of the most recent files in the menu; fewer only according to user preferences or absence of recent files.</para>
+			</entry>
+		</row>
+	  -->
+		</tbody>
+		</tgroup>
+	</table>
+	</sect3>
+
+
+	<sect3>
+	  <title>Opérations d'enregistrement d'état</title>
+	    <remark>This section needs a review with an eye to what can actually be done programmatically.</remark>
+
+	<table>
+	  <title>Éléments de menu opération d'enregistrement d'état</title>
+	  <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+		<entry><guimenuitem><accel>S</accel>ave</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>S</keycap></keycombo></entry>
+		<entry>Saves the document with its current filename. If the document already has a filename associated with it, save the document immediately without any further interaction from the user. If there are any additional options involved in saving a file (eg. DOS or UNIX-style line endings in a text file), prompt for these first time the document is saved, but subsequently use the same values each time until the user changes them.
+		<para>If the document has no current filename or is read-only, selecting this item should be the same as selecting <guimenuitem>Save As</guimenuitem>.</para>
+		</entry>
+		</row>
+
+		<row>
+		      <entry><guimenuitem>Save <accel>A</accel>s...</guimenuitem></entry>
+	      		<entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>S</keycap></keycombo></entry>
+			<entry>Enregistre le document sous un nouveau nom. Affiche la boîte de dialogue standard « Enregistrer sous » et enregistre le fichier sous le nom choisi.</entry>
+
+		</row>
+		<row>
+	      		<entry><guimenuitem>S<accel>a</accel>ve a Copy...</guimenuitem></entry>
+	      		<entry>Aucune</entry>
+			<entry>Prompts the user to enter a filename, with which a copy of the document is then saved.  Do not alter either the view or the filename of the original document.  All subsequent changes are still made to the original document until the user specifies otherwise, for example by choosing the <guimenuitem>Save As</guimenuitem> command.
+		<para> Like the <guimenuitem>Save As</guimenuitem> dialog, the <guimenuitem>Save a Copy</guimenuitem> dialog may present different ways to save the data. For example, an image may be saved in a native format or as a PNG.</para></entry>
+	      </row>
+
+	    <row>
+	      	<entry><guimenuitem><accel>R</accel>evert</guimenuitem></entry>
+	      <entry>Aucune</entry>
+		<entry>Rétablit le document dans le dernier état enregistré. Présente à l'utilisateur un avertissement sur le fait que toutes les modifications seront perdues et propose une possibilité d'annulation avant de recharger le fichier.</entry>
+
+		</row>
+
+		<row>
+		      <entry><guimenuitem>Save <accel>V</accel>ersion...</guimenuitem></entry>
+	      		<entry>Aucune</entry>
+			<entry>An alternative to the <guimenuitem>Save a Copy</guimenuitem> command.  Only use this item in conjunction with the <guimenuitem>Restore Version</guimenuitem>.  <remark>Unless we can describe exactly what this ought to do, should we remove it for now?</remark>command.</entry>
+	      </row>
+
+		<row>
+		      <entry><guimenuitem>R<accel>e</accel>store Version...</guimenuitem></entry>
+	      		<entry>Aucune</entry>
+			<entry>Prompts the user for a version of the current document to be restored. Present the user with with a warning that all changes will be lost, and offer the option of cancelling before restoring the version. Only use this item in conjunction with the <guimenuitem>Save Version</guimenuitem> command.</entry>
+		</row>
+	
+		<row>
+		      <entry><guimenuitem><accel>V</accel>ersions...</guimenuitem></entry>
+	      		<entry>Aucune</entry>
+			<entry>An alternative to the <guimenuitem>Save Version</guimenuitem> and <guimenuitem>Restore Version</guimenuitem> commands. Use this when more utilities, such as a diff, are available.</entry>
+	      </row>
+
+		</tbody>
+		</tgroup>
+
+	</table>
+	</sect3>
+
+	<sect3>
+	  <title>Opérations d'exportation</title>
+
+	<table>
+	  <title>Éléments de menu opération d'exportation</title>
+	  <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+	      	<entry><guimenuitem>Page Set<accel>u</accel>p</guimenuitem></entry>
+		<entry>Aucune</entry>
+	      	<entry>Allows the user to control print-related settings. Present the user with a dialog allowing the user to set such options as portrait or landscape format, margins, and so on. <remark>We should have a standard dialog for this.</remark></entry>
+	      </row>
+
+		<row>
+		      <entry><guimenuitem>Print Previe<accel>w</accel></guimenuitem></entry>
+	      		<entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>P</keycap></keycombo></entry>
+			<entry>Montre à l'utilisateur l'aspect du document imprimé. Affiche une nouvelle fenêtre contenant une représentation précise de l'apparence du document tel qu'il sera imprimé. La bibliothèque libgnomeprintui fournit une fenêtre standard d'aperçu avant impression que vous devez utiliser si possible.</entry>
+		</row>
+
+	    <row>
+	    	<entry><guimenuitem><accel>P</accel>rint...</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>P</keycap></keycombo></entry>
+	        <entry>Prints the current document. Present the user with a dialog allowing them to set options like the page range to be printed, the printer to be used, and so on. The dialog must contain a button labelled <guibutton>Print</guibutton> that starts printing and closes the dialog.  The <filename>libgnomeprintui</filename> library provides a standard Print dialog that you should use if possible.</entry>
+	    </row>
+
+	    <row>
+	      <entry><guimenuitem>S<accel>e</accel>nd To...</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>M</keycap></keycombo></entry>
+	      <entry>Provides the user a means to attach or send the current document as an email or email attachment<!-- (launch $MAILER -a $ATTACHMENT)-->, depending on its format.
+		<para>You may provide more than one <guimenuitem>Send</guimenuitem> item depending on which options are available. If there are more than two such items, move them into a submenu. For example, if only <guimenuitem>Send by Email</guimenuitem> and <guimenuitem>Send by Fax</guimenuitem> are available, leave them on the top-level menu  If there is a third option, such as <guimenuitem>Send by FTP</guimenuitem>, place all the options in a <guimenuitem>Send</guimenuitem> submenu.</para>
+	      </entry>
+	    </row>
+	</tbody>
+	</tgroup>
+	</table>
+	</sect3>
+	
+	<sect3>
+	  <title>Propriétés de fichier</title>
+	<table>
+	  <title>Éléments de menu Propriétés</title>
+	  <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+		<entry><guimenuitem>Proper<accel>t</accel>ies</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>Return</keycap></keycombo></entry>
+	        <entry>Opens the document's <guilabel>Properties</guilabel> window.  This may contain editable information, such as the document author's name, or read-only information, such as the number of words in the document, or a combination of both. The <keycombo><keycap>Alt</keycap><keycap>Return</keycap></keycombo> shortcut should not be provided where <keycap>Return</keycap> is most frequently used to insert a new line.</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+	</table>
+	</sect3>
+	
+
+	<sect3>
+	  <title>Opérations de fermeture</title>
+	<table>
+	  <title>Éléments de menu opération de fermeture</title>
+	  <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+		<entry><guimenuitem><accel>C</accel>lose</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>W</keycap></keycombo></entry>
+	        <entry>Closes the current document. If it has unsaved changes, present the user with a <link linkend="alerts-confirmation">confirmation alert</link> giving the option to save changes, discard them, or cancel the action without closing or saving the document.
+		<para>If the window you are closing is the last open document in the application, the correct action depends on your application type:</para>
+		<itemizedlist>
+			<listitem><para>Single document interface: close the application</para></listitem>
+			<listitem><para>Controlled single document interface: leave only the control window open</para></listitem>
+			<listitem><para>Multiple document interface: close the current document and create a new blank document</para></listitem>
+		</itemizedlist>		
+		  <remark>As mentioned on the usability list, Control+W is an Emacs shortcut for Cut. This has already proven deleterious for some users so we should consider dropping the shortcut.  But see also <ulink url="http://bugzilla.gnome.org/show_bug.cgi?id=76761">http://bugzilla.gnome.org/show_bug.cgi?id=76761</ulink></remark>
+	      </entry>
+	    </row>
+	    
+	    <row>
+	      <entry><guimenuitem><accel>Q</accel>uit</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>Q</keycap></keycombo></entry>
+	      <entry><para>Ferme l'application. S'il y a des modifications non enregistrées dans un des documents ouverts, affiche un <link linkend="alerts-confirmation">message d'alerte pour confirmation</link> pour chaque document concerné, permettant à l'utilisateur d'enregistrer les modifications, de les annuler ou d'annuler l'action. S'il n'y a pas de modification non enregistrée, ferme l'application immédiatement sans ouvrir de boîte de dialogue et sans afficher de message.</para>
+		<!-- This para in response to bug #73618--><para>En particulier, les applications non basées sur des documents, par exemple un jeu ou une calculatrice, doivent enregistrer leur état et quitter immédiatement. Cet état doit être restauré à la prochaine ouverture de l'application.</para> 
+		  <remark>Kathy had suggested not providing a shortcut key to Quit. I can find no discussion of this. (And I think it should go away.)</remark>
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+	</table>
+	</sect3>
+	
+      </sect2>
+      <sect2 id="menu-standard-edit">
+	<title>Édition</title>
+
+	<para>Le menu <guimenu>Édition</guimenu> contient les éléments relatifs à la modification du document (gestion du presse-papier, recherche et remplacement et insertion d'objets spéciaux) et des préférences de l'utilisateur. Les préférences sont modifiées ici plutôt que dans un menu <guimenu>Préférences</guimenu> parce que :</para>
+
+	<itemizedlist>
+		<listitem><para>la plupart des fenêtres de préférences des applications sont atteintes via un élément de menu unique et les menus à élément unique ne sont guère pratiques,</para></listitem>
+		<listitem><para>la plupart des applications contiennent un menu <guimenu>Édition</guimenu> adéquat.</para></listitem>
+	</itemizedlist>
+
+	<remark>I think we should move to a MacOS/X concept of having an "AppName" menu that contains things like preferences, about, quit, etc. -Seth</remark>
+
+	<figure id="generic-edit-menu">
+	  <title>Un menu Édition générique</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-edit.png" width="226" depth="417" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-edit.eps" format="EPS"/></imageobject>
+	    <textobject>
+<literallayout class="monospaced">
+<guimenu><accel>E</accel>dit</guimenu>
+<guimenuitem><accel>U</accel>ndo                 Ctrl+Z</guimenuitem>
+<guimenuitem><accel>R</accel>edo           Shift+Ctrl+Z</guimenuitem>
+-
+<guimenuitem>Cu<accel>t</accel>                  Ctrl+X</guimenuitem>
+<guimenuitem><accel>C</accel>opy                 Ctrl+C</guimenuitem>
+<guimenuitem><accel>P</accel>aste                Ctrl+V</guimenuitem>
+<guimenuitem>Paste <accel>S</accel>pecial...                Shift+Ctrl+V</guimenuitem>
+<guimenuitem><accel>D</accel>elete               Del</guimenuitem>
+<guimenuitem><accel>S</accel>elect All           Ctrl+A</guimenuitem>
+<guimenuitem>Du<accel>p</accel>licate           Ctrl+U</guimenuitem>
+<guimenuitem>Dese<accel>l</accel>ect All   Shift+Ctrl+A</guimenuitem>
+-
+<guimenuitem><accel>F</accel>ind...              Ctrl+F</guimenuitem>
+<guimenuitem>Find Ne<accel>x</accel>t            Ctrl+G</guimenuitem>
+<guimenuitem>Find Pre<accel>v</accel>ious  Shift+Ctrl+G</guimenuitem>
+<guimenuitem>R<accel>e</accel>place...              Ctrl+R</guimenuitem>
+-
+<guimenuitem><accel>I</accel>nsert...              </guimenuitem>
+-
+<guimenuitem>Pr<accel>e</accel>ferences</guimenuitem>
+</literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+
+
+	<sect3>
+	  <title>Historique des modifications</title>
+	  <para>Les applications basées sur des documents doivent maintenir un historique des modifications d'un document et l'état du document entre chaque action. Les commandes <guimenuitem>Annuler</guimenuitem> et <guimenuitem>Refaire</guimenuitem> se déplacent en avant ou en arrière dans l'historique.</para>
+
+	<remark>We'd like to see the action name included on the Undo/Redo menu items, but this is currently not easy to do in gtk.</remark>
+
+	<table frame="all"> 
+	  <title>Éléments de menu Historique des modifications</title> 
+
+	  <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+	  	<entry><guimenuitem><accel>U</accel>ndo <replaceable>action</replaceable></guimenuitem></entry>
+	       <entry><keycombo><keycap>Ctrl</keycap><keycap>Z</keycap></keycombo></entry>
+		<entry>Undoes the effect of the previous action in the undo history list. Revert the document to its state before the previous action was performed. If your application supports undo, and the user undoes all changes since it was last saved, treat the document as unmodified.
+		<para>Note: provide a separate <guimenuitem>Undo</guimenuitem> and <guimenuitem>Redo</guimenuitem> menu item even if your application only supports one level of undo.</para></entry>
+	      </row>
+
+		<row>
+	      	  <entry><guimenuitem><accel>R</accel>edo <replaceable>action</replaceable></guimenuitem></entry>
+			<entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>Z</keycap></keycombo></entry>
+	      		<entry>Performs the next action in the undo history list, after the user has moved backwards through the list with the <guimenuitem>Undo</guimenuitem> command.  Move the user one step forwards again, restoring the document to the state it was in after that action was originally performed.
+			<para>Note: provide a separate <guimenuitem>Undo</guimenuitem> and <guimenuitem>Redo</guimenuitem> menu item even if your application only supports one level of undo.</para></entry>
+	      </row>
+		</tbody>
+		</tgroup>
+	</table>
+	</sect3>
+
+	<sect3>
+	  <title>Manipulation des données sélectionnées</title>
+
+	<table frame="all"> 
+	  <title>Éléments de menu Manipulation des données sélectionnées</title> 
+
+	  <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+		<entry><guimenuitem>Cu<accel>t</accel></guimenuitem></entry>
+	      	<entry><keycombo><keycap>Ctrl</keycap><keycap>X</keycap></keycombo></entry>
+		<entry>Removes the selected content and places it onto the clipboard. Visually, remove the content from the document in the same manner as <guimenuitem><accel>D</accel>elete</guimenuitem>.</entry>
+	      </row>
+
+		<row>
+	    		<entry><guimenuitem><accel>C</accel>opy</guimenuitem></entry>
+	      		<entry><keycombo><keycap>Ctrl</keycap><keycap>C</keycap></keycombo></entry>
+			<entry>Copie le contenu sélectionné dans le presse-papier.</entry>
+	      </row>
+	    
+	    <row>
+		<entry><guimenuitem><accel>P</accel>aste</guimenuitem></entry>
+	      <entry><keycombo><keycap>Ctrl</keycap><keycap>V</keycap></keycombo></entry>
+		<entry>Insère le contenu du presse-papier dans le document. S'il n'y a pas de sélection en cours, utilise le curseur comme point d'insertion. S'il y a une sélection en cours, la remplace par le contenu du presse-papier.</entry>
+	    </row>
+	    
+	    <row>
+		<entry><guimenuitem>Paste <accel>S</accel>pecial...</guimenuitem></entry>
+	      <entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>V</keycap></keycombo></entry>
+		<entry>Insère une représentation non usuelle du contenu du presse-papier dans le document. Ouvre une boîte de dialogue présentant une liste des formats disponibles, liste dans laquelle l'utilisateur peut choisir. Par exemple, si le presse-papier contient un fichier PNG copié à partir du gestionnaire de fichiers, l'image peut être intégrée dans le document ou un lien vers le fichier inséré afin que les modifications de l'image sur le disque soient toujours reflétées dans le document.</entry>
+	    </row>
+
+	    <row>
+		<entry><guimenuitem>Du<accel>p</accel>licate</guimenuitem></entry>
+	      <entry><keycombo><keycap>Ctrl</keycap><keycap>U</keycap></keycombo></entry>
+		<entry>Creates a duplicate copy of the selected object.  Do not prompt for a name for the duplicate object, but give it a sensible default (for example, <filename>Copy of ShoppingList.abw</filename>) and allow the user to change it later.  Place the duplicate copy as near the original as possible without overlapping it, even if this means breaking the current sort order within the container, so the user sees it immediately.</entry>
+	    </row>
+
+		<row>
+			<entry><guimenuitem><accel>D</accel>elete</guimenuitem></entry>
+		      <entry><keycap>Delete</keycap></entry>
+			<entry>Removes the selected content without placing it on the clipboard.
+		      <remark>Should Delete be provided on a menu? The command is as obvious as using the arrow keys to move about.</remark></entry>
+	      </row>
+
+		<row>
+		      <entry><guimenuitem>Select <accel>A</accel>ll</guimenuitem></entry>
+	      		<entry><keycombo><keycap>Ctrl</keycap><keycap>A</keycap></keycombo></entry>
+			<entry>Sélectionne tout le contenu du document actuel.</entry>
+	    	</row>
+	    
+		<row>
+		  <entry><guimenuitem><accel>D</accel>eselect All</guimenuitem></entry>
+	      	  <entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>A</keycap></keycombo></entry>
+		<entry>Deselects all content in the current document. Only provide this item in situations when no other method of undoing selection is possible or apparent to the user.  For example, in complex graphics applications where selection and deselection is not usually possible simply by using the cursor keys.
+		<para>Note: Do not provide <guimenuitem>Deselect All</guimenuitem> in text entry fields, as <keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keysym>hex digit</keysym></keycombo> is used to enter unicode characters so its shortcut will not work.</para></entry>
+	      </row>
+
+	    </tbody>
+	  </tgroup>
+	 </table>
+	</sect3>
+
+	<sect3>
+	  <title>Recherche et remplacement</title>
+
+	<table frame="all"> 
+	  <title>Éléments de menu Rechercher et Remplacer</title> 
+
+	  <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+	      <entry>Find... (Trouver)</entry>
+	      <entry><keycombo><keycap>Ctrl</keycap><keycap>F</keycap></keycombo></entry>
+		<entry>Opens a window or dialog allowing the user to search for specific content in the current document.  Highlight each match in-place.
+		<para>If the command allows the user to search for content in places other than the current document, for example other open documents, other documents on disk, or a remote network location, label this item <guimenuitem>Search</guimenuitem> instead of <guimenuitem>Find</guimenuitem>.</para></entry>
+	      </row>
+
+	    <row>
+	      <entry><guimenuitem>Find Ne<accel>x</accel>t</guimenuitem></entry>
+	      <entry><keycombo><keycap>Ctrl</keycap><keycap>G</keycap></keycombo></entry>
+	      <entry>Selects the next instance of the last Find term in the current document.  <remark>What to do if there is no next instance?  Disable the menu item, which could be confusing, or pop up an annoying alert saying 'no matches found'?</remark></entry>
+	      </row>
+
+		<row>
+		      <entry><guimenuitem>Find Pre<accel>v</accel>ious</guimenuitem></entry>
+	      		<entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>G</keycap></keycombo></entry>
+			<entry>Sélectionne la précédente occurrence du dernier terme recherché dans le document actuel.</entry>
+	      </row>
+
+		<row>
+		      <entry><guimenuitem><accel>R</accel>eplace...</guimenuitem></entry>
+	      		<entry><keycombo><keycap>Ctrl</keycap><keycap>H</keycap></keycombo></entry>
+			<entry>Opens a window or dialog allowing the user to search for specific content in the current document, and replace each occurrence with new content. 	    
+		 	<remark>Replace is not always descriptive of what the user may do with the utility window. Formatting a section is also a possibility. Ideally, these would all be merged into a simple utility window</remark>
+		</entry>
+	      </row>
+		</tbody>
+		</tgroup>
+	</table>
+	</sect3>
+
+
+	<sect3>
+	  <title>Insertion d'objets spéciaux</title>
+	  <para>Lorsque cela a un sens, fournissez des éléments de menu <guimenu>Édition</guimenu> qui insèrent des objets spéciaux tels que des images, des liens, des contrôles GUI ou la date et l'heure actuelle.</para>
+
+	<para>Si vous avez jusqu'à trois types d'objets qui peuvent être insérés, ajoutez-les en tant qu'éléments individuels à ce menu, par exemple <guimenuitem>Insérer une image</guimenuitem> ou <guimenuitem>Insérer un lien externe</guimenuitem>. Si vous avez entre trois et six types, placez-les dans un sous-menu <menuchoice><guimenu>Éditer</guimenu><guimenuitem>Insérer</guimenuitem></menuchoice>. Si vous en avez plus de six, ajoutez un <link linkend="menu-standard-insert">menu <guimenu>Insérer</guimenu></link> séparé à la barre de menus.</para>
+
+	</sect3>
+
+
+	<sect3>
+	  <title>Préférences utilisateur</title>
+
+	<table>
+	<title>Éléments de menu préférences utilisateur</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+		      <entry><guimenuitem>Pr<accel>e</accel>ferences</guimenuitem></entry>
+	      		<entry>Aucune</entry>
+			<entry>Opens a <link linkend="preference-windows">preferences window</link> allowing the user to change preferences for the whole application.  Changes will apply to all running and subsequent instances of the application.</entry>
+		</row>
+		</tbody>
+		</tgroup>
+	</table>
+	</sect3>
+
+      </sect2>
+      <sect2 id="menu-standard-view">
+	<title>Affichage</title>
+	<para>Le menu <guimenu>Affichage</guimenu> ne contient que des éléments qui modifient la vue utilisateur du document actuel. Ne mettez pas d'éléments dans le menu <guimenu>Affichage</guimenu> qui modifieraient le contenu du document actuel (exception : <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Recharger</guimenuitem></menuchoice> peut changer le contenu actuel si, par exemple, le document est une page Web récemment mise à jour sur le serveur).</para>
+
+	<figure id="generic-view-menu">
+	  <title>Un menu Affichage générique</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-view.png" width="166" depth="300" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-view.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <literallayout class="monospaced">
+<guimenu><accel>V</accel>iew</guimenu>
+<guimenuitem><accel>T</accel>oolbar</guimenuitem>
+<guimenuitem><accel>S</accel>tatusbar</guimenuitem>
+---
+<guimenuitem><accel>I</accel>cons</guimenuitem>
+<guimenuitem><accel>L</accel>ist</guimenuitem>
+<guimenuitem><accel>D</accel>etails</guimenuitem>
+---
+<guimenuitem><accel>S</accel>ort By...</guimenuitem>
+<guimenuitem><accel>F</accel>ilter...</guimenuitem>
+---
+<guimenuitem><accel>Z</accel>oom in       Ctrl++</guimenuitem>
+<guimenuitem>Zoom <accel>O</accel>ut  Ctrl+-</guimenuitem>
+<guimenuitem><accel>N</accel>ormal Size   Ctrl+=</guimenuitem>
+<guimenuitem><accel>B</accel>est Fit    </guimenuitem>
+---
+<guimenuitem><accel>R</accel>efresh     Ctrl+R</guimenuitem>
+
+	      </literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+
+
+	<sect3>
+	<title>Barre d'outils et barre d'état</title>
+	<table>
+	<title>Élément de menu barre d'outils et barre d'état</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+	      <row>
+	 	      <entry><guimenuitem><accel>T</accel>oolbar</guimenuitem></entry>
+	      		<entry>Aucune</entry>
+			<entry>Shows or hides the application's toolbar.  This is a <link linkend="menu-item-type-check">check box menu item</link>. Include this item in every application that has a single toolbar.  See <xref linkend="toolbars-controlling-display"/> for information on how to deal with multiple toolbars.</entry>
+		</row>
+
+		<!-- Suggest removing this for now, see bug #????
+		<row>
+			<entry><guimenuitem><accel>S</accel>tatusbar</guimenuitem></entry>
+			<entry>None</entry>
+			<entry>Shows or hides the application's statusbar.  This is a <link linkend="menu-item-type-check">check box menu item</link>.  Include this item in every application that has a statusbar.</entry>
+		</row>
+		-->
+
+		</tbody>
+		</tgroup>
+	</table>
+	</sect3>
+
+	<sect3>
+	<title>Présentation du contenu</title>
+	<table>
+	<title>Éléments de menu Présentation du contenu</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+
+		<row>
+			<entry><guimenuitem><accel>I</accel>cons</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Shows the contents of the selected container as rows and columns of large icons, each with its name underneath.  This is a <link linkend="menu-item-type-radio">radio button menu item</link>.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>L</accel>ist</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Shows the contents of the selected container as a list of small icons, possibly in multiple columns, each with its name on its right-hand side.  This is a <link linkend="menu-item-type-radio">radio button menu item</link>.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>D</accel>etails</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Shows the contents of the selected container as single column of small icons, each with its name on its right-hand side.  Additional columns give extra information about the object each icon represents, for example the size and modification date of files in a file manager.  This is a <link linkend="menu-item-type-radio">radio button menu item</link>.
+			<para>If your application has no need for both <guimenu>List</guimenu> and <guimenu>Details</guimenu> modes, use the <guimenu>List</guimenu> item for whichever of the two modes you support.</para></entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem>S<accel>o</accel>rt By...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Trie le contenu du conteneur en suivant les critères définis par l'utilisateur. Ouvre une boîte de dialogue permettant à l'utilisateur de choisir parmi des méthodes de tri pré-définies (par exemple : nom, taille ou date de modification dans un gestionnaire de fichiers) ou de spécifier leur propre méthode de tri lorsque cela a un sens.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>F</accel>ilter...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Masque les objets qui n'offrent pas d'intérêt pour l'utilisateur. Ouvre une boîte de dialogue permettant à l'utilisateur de choisir dans une liste les types d'objets qu'il veut afficher ou de saisir ses propres critères (par exemple, une expression régulière correspondant à une propriété particulière d'objets).</entry>
+		</row>
+
+
+		<row>
+			<entry><guimenuitem><accel>Z</accel>oom In</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>+</keycap></keycombo></entry>
+			<entry>Zooms into the document.  Make the center of the new view the same as the center of the previous view. <remark>Should probably encourage apps to support Ctrl+= as well.</remark></entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem>Zoom <accel>O</accel>ut</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>-</keycap></keycombo></entry>
+			<entry>Zoom en arrière du document. Conservez la position du centre du document au cours du zoom. </entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>N</accel>ormal Size</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>0</keycap></keycombo></entry>
+			<entry>Réinitialise le niveau de zoom à sa valeur par défaut, normalement 100 %. Conservez la position du centre du document au cours du zoom.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>B</accel>est Fit</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Le document remplit la fenêtre. Affichez le document, ou la page actuelle du document, avec un niveau de zoom dont la hauteur correspond au remplissage complet de la fenêtre par une vue non défilante de la totalité du document ou de la page.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>R</accel>efresh</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>R</keycap></keycombo></entry>
+			<entry>Redessine la vue actuelle du document à partir de l'enregistrement local. Par exemple, dans un navigateur Web, cela redessine la page à partir du cache des pages du navigateur.</entry>
+		</row>
+		<row>
+			<entry><guimenuitem><accel>R</accel>eload</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>R</keycap></keycombo></entry>
+
+			<entry>Redraws the current view of the document, checking the data source for changes first.  For example, checks the web server for updates to the page before redrawing it.
+			<para>If your application requires both <guimenuitem>Reload</guimenuitem> and <guimenuitem>Refresh</guimenuitem>, use <keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>R</keycap></keycombo> as the shortcut for <guimenuitem>Reload</guimenuitem>.</para></entry>
+		</row>
+
+		</tbody>
+		</tgroup>
+	</table>
+	</sect3>
+      </sect2>
+
+      <sect2 id="menu-standard-insert">
+	<title>Insérer</title>
+	<para>Le menu <guimenuitem>Insérer</guimenuitem> liste le type des objets spéciaux qui peuvent être insérés dans le document à la position actuelle du curseur, par exemple des images, liens, sauts de page ou objets GUI. Ne fournissez ce menu que si vous avez plus d'environ six types d'objets insérables sinon placez les éléments individuels pour chaque type dans le <link linkend="menu-standard-edit">menu <guimenu>Édition</guimenu></link>.</para>
+
+	<figure id="generic-insert-menu">
+	  <title>Un menu insertion générique</title>
+	  <mediaobject>
+	  <imageobject><imagedata fileref="images/menus-insert.png" width="118" depth="245" format="PNG"/></imageobject>
+	  <imageobject><imagedata fileref="images/menus-insert.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <literallayout class="monospaced">
+<guimenu><accel>P</accel>age Break</guimenu>
+<guimenuitem><accel>D</accel>ate and Time...</guimenuitem>
+<guimenuitem><accel>S</accel>ymbol...</guimenuitem>
+---
+<guimenuitem><accel>S</accel>heet...</guimenuitem>
+<guimenuitem><accel>R</accel>ows...</guimenuitem>
+<guimenuitem><accel>C</accel>olumns...</guimenuitem>
+---
+<guimenuitem><accel>I</accel>mage...</guimenuitem>
+<guimenuitem><accel>G</accel>raph...</guimenuitem>
+---
+<guimenuitem><accel>F</accel>rom File...</guimenuitem>
+<guimenuitem>E<accel>x</accel>ternal Link...</guimenuitem>
+
+	      </literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+	
+	<para>Les types d'objets changent en fonction des applications mais le tableau ci-dessous affiche les types courants qui peuvent s'envisager.</para>
+
+	<table>
+	<title>Éléments de menu Insérer</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+
+		<row>
+			<entry><guimenuitem><accel>P</accel>age Break</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Insère un saut de page à l'emplacement du curseur texte. Affichez le saut de page de manière visible, par exemple sous forme d'une ligne pointillée en travers de la page, à moins que l'utilisateur n'ait indiqué qu'il ne voulait pas les voir.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>D</accel>ate and Time...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Insère la date et/ou l'heure à l'emplacement du curseur texte. Ouvrez une boîte de dialogue permettant de choisir les formats de date et heure. S'il y a lieu, offrez également le choix d'une insertion comme texte simple afin que la date et l'heure spécifiée apparaissent toujours dans le document ou comme un champ spécial qui se met à jour à chaque fois que le document est ouvert, rafraîchi ou imprimé.</entry>
+			</row>
+
+		<row>
+			<entry><guimenuitem>Sy<accel>m</accel>bol...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Insère un symbole spécial, tel qu'un symbole mathématique ou un caractère étranger à l'emplacement du curseur texte. Ouvrez une boîte de dialogue affichant tous les symboles sous la forme d'un tableau à partir duquel l'utilisateur peut choisir. L'utilisateur doit être capable d'ajouter plusieurs symboles dans le document en une seule fois sans avoir à fermer et ouvrir à nouveau la boîte de dialogue.</entry>
+			</row>
+
+		<row>
+			<entry><guimenuitem><accel>S</accel>heet...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Adds a new sheet to the current workbook.  Do not prompt for a name, but choose a sensible default (such as <guilabel>Sheet-2</guilabel>) and allow the user to change it later.</entry>
+			</row>
+
+		<row>
+			<entry><guimenuitem><accel>R</accel>ows...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Ajoute de nouvelles lignes dans un tableau dans lequel une ou plusieurs lignes ou cellules sont actuellement sélectionnées. Ouvrez une boîte de dialogue demandant s'il faut insérer les lignes au dessus ou en dessous de la sélection actuelle et toutes autres informations utiles. Reprenez le format de ligne de la dernière ou de la première ligne de la sélection actuelle respectivement, à moins que l'utilisateur ne spécifie autre chose.</entry>
+			</row>
+
+		<row>
+			<entry><guimenuitem><accel>C</accel>olumns...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Ajoute de nouvelles colonnes dans un tableau dans lequel une ou plusieurs colonnes ou cellules sont actuellement sélectionnées. Ouvrez une boîte de dialogue demandant s'il faut insérer les colonnes à gauche ou à droite de la sélection actuelle et toutes autres informations utiles. Reprenez le format de ligne de la ligne la plus à droite ou la plus à gauche de la sélection actuelle respectivement, à moins que l'utilisateur ne spécifie autre chose.</entry>
+			</row>
+
+		<row>
+			<entry><guimenuitem><accel>I</accel>mage...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Insère une image dans le document à partir d'un fichier. Affichez une boîte de dialogue « Ouverture de fichiers » standard filtrée sur les types de fichiers acceptables, à partir de laquelle l'utilisateur peut choisir un fichier image à insérer.</entry>
+			</row>
+
+		<row>
+			<entry><guimenuitem><accel>G</accel>raph...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Insère un graphique dans le document. Ouvrez une boîte de dialogue ou un assistant qui permet à l'utilisateur de construire (ou ouvrir dans un fichier) un graphique de son choix, en utilisant la sélection actuelle comme indication de valeurs, étiquettes d'axes et étiquettes de données à utiliser.</entry>
+			</row>
+
+		<row>
+			<entry><guimenuitem><accel>F</accel>rom FIle...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Insère un objet à partir d'un type de fichier acceptable, par exemple du texte simple, du texte formaté ou une image. Affichez une boîte de dialogue « Ouverture de fichiers » standard filtrée sur les types de fichiers acceptables, à partir de laquelle l'utilisateur peut choisir un fichier à insérer.</entry>
+			</row>
+
+		<row>
+			<entry><guimenuitem>E<accel>x</accel>ternal Link...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Insère un lien vers un objet enregistré dans un autre fichier ou sur un système distant. L'objet n'est pas intégré ou enregistré dans le document mais seulement lié vers celui-ci. Affichez une boîte de dialogue dans laquelle l'utilisateur peut saisir ou choisir le nom de l'objet, par exemple un nom de fichier ou un URL de page Web. Affichez le lien dans le document de manière la plus informative possible. Par exemple, affichez un lien vers une image à l'aide d'une vignette de cette image à moins que l'utilisateur ne spécifie autre chose.</entry>
+			</row>
+
+		</tbody>
+		</tgroup>
+	</table>
+
+
+      </sect2>
+
+
+      <sect2 id="menu-standard-format">
+	<title>Format</title>
+
+		<para>Un menu <guimenu>Format</guimenu> contient les commandes pour modifier l'apparence visuelle du document. Par exemple, changement de police, de couleur ou d'espacement de lignes de la sélection de texte.</para>
+		<para>La différence entre ces commandes et celles du <link linkend="menu-standard-view">menu <guimenuitem>Affichage</guimenuitem></link> est que les changements réalisés avec les commandes Format sont persistants et enregistrés en tant que partie du document, par exemple sous la forme d'étiquettes HTML ou RTF.</para>
+
+	<figure id="generic-format-menu">
+	  <title>Un menu Format générique</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-format.png" width="163" depth="265" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-format.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <literallayout class="monospaced">
+<guimenu><accel>S</accel>tyle...</guimenu>
+---
+<guimenuitem><accel>F</accel>ont...</guimenuitem>
+<guimenuitem><accel>P</accel>aragraph...</guimenuitem>
+---
+<guimenuitem><accel>B</accel>old	Ctrl+B</guimenuitem>
+<guimenuitem><accel>I</accel>talic	Ctrl+I</guimenuitem>
+<guimenuitem><accel>U</accel>nderline	Ctrl+U</guimenuitem>
+---
+<guimenuitem><accel>C</accel>ells...</guimenuitem>
+<guimenuitem><accel>L</accel>ist...</guimenuitem>
+---
+<guimenuitem>L<accel>ayer</accel>...</guimenuitem>
+<guimenuitem>P<accel>a</accel>ge...</guimenuitem>
+
+	      </literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+
+
+	<para>Les éléments trouvés dans le menu <guimenu>Format</guimenu> sont très spécifiques à l'application mais un certain nombre d'éléments courants sont listés dans le tableau ci-dessous.</para>
+
+	<table>
+	<title>Éléments de menu Format</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+
+		<row>
+			<entry><guimenuitem><accel>S</accel>tyle...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Définit les attributs de style du texte ou des objets sélectionnés soit de manière individuelle ou par le nom d'un style prédéfini. Affichez une boîte de dialogue permettant à l'utilisateur de définir des attributs tels que gras, italique, taille et espacement individuellement et de créer et nommer son propre style si c'est possible.</entry>
+
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>F</accel>ont...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Définit les propriétés de la police du texte ou des objets sélectionnés. Affichez une boîte de dialogue permettant à l'utilisateur de choisir police, taille, couleur ou d'autres attributs qui peuvent s'appliquer.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>P</accel>aragraph...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Définit les propriétés du paragraphe sélectionné. Affichez une boîte de dialogue permettant à l'utilisateur de choisir style, interligne, tabulations ou d'autres attributs qui peuvent s'appliquer.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>B</accel>old</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>B</keycap></keycombo></entry>
+			<entry>Met en gras ou pas la sélection de texte actuelle. Si une partie de la sélection est actuellement en gras et pas le reste, cette commande doit mettre en gras le texte sélectionné.</entry>
+
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>I</accel>talic</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>I</keycap></keycombo></entry>
+			<entry>Met en italique ou pas la sélection de texte actuelle. Si une partie de la sélection est actuellement en italique et pas le reste, cette commande doit mettre en italique le texte sélectionné.</entry>
+
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>U</accel>nderline</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>U</keycap></keycombo></entry>
+			<entry>Souligne ou pas la sélection de texte actuelle. Si une partie de la sélection est actuellement soulignée et pas le reste, cette commande doit souligner le texte sélectionné.</entry>
+
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>C</accel>ells...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Définit les propriétés des cellules sélectionnées du tableau. Affichez une boîte de dialogue permettant à l'utilisateur de choisir alignement, ombrage, style de texte, format des nombres ou d'autres attributs qui peuvent s'appliquer.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>L</accel>ist...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Définit les propriétés de la liste sélectionnée ou transforme les paragraphes sélectionnés en liste si ce n'est pas déjà le cas. Affichez une boîte de dialogue permettant à l'utilisateur de choisir le style énumération ou puce, espacement, tabulations ou d'autres attributs qui peuvent s'appliquer.</entry>
+		</row>
+
+
+		<row>
+			<entry><guimenuitem>Laye<accel>r</accel>...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Définit les propriétés de tous les calques ou de ceux sélectionnés pour un document à plusieurs calques. Affichez une boîte de dialogue permettant à l'utilisateur de choisir nom, taille, visibilité, opacité, ordre suivant z ou d'autres attributs qui peuvent s'appliquer.</entry>
+		</row>
+
+
+		<row>
+			<entry><guimenuitem>P<accel>a</accel>ge...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Définit les propriétés de toutes les pages ou de celles sélectionnées dans le document. Affichez une boîte de dialogue permettant à l'utilisateur de choisir taille du papier, orientation, nombre de colonnes, marges ou d'autres attributs qui peuvent s'appliquer.</entry>
+		</row>
+
+		</tbody>
+		</tgroup>
+	</table>
+
+      </sect2>
+
+
+      <sect2 id="menu-standard-bookmarks">
+	<title>Signets</title>
+
+	<para>Fournissez un menu <guimenu>Signets</guimenu> dans toute application permettant à l'utilisateur de consulter des fichiers ou des dossiers, des documents d'aide, des pages Web ou n'importe quel autre large champ d'informations.</para>
+	<note><title>Icônes</title><para>Affichez des icônes pour les entrées du menu Signets pour indiquer le type du signet même si l'utilisateur a éliminé globalement l'affichage des icônes dans les autres éléments de menu du bureau.</para></note>
+
+	<figure id="generic-bookmarks-menu">
+	  <title>Un menu Signet générique</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-bookmarks.png" width="190" depth="49" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-bookmarks.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <literallayout class="monospaced">
+<guimenu><accel>B</accel>ookmarks</guimenu>
+<guimenuitem><accel>A</accel>dd Bookmark   </guimenuitem><keycombo><keycap>Ctrl</keycap><keycap>D</keycap></keycombo>
+<guimenuitem><accel>E</accel>dit Bookmarks </guimenuitem><keycombo><keycap>Ctrl</keycap><keycap>B</keycap></keycombo>
+	      </literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+
+	<table>
+	<title>Éléments de menu Signet</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+
+		<row>
+			<entry><guimenuitem><accel>A</accel>dd Bookmark</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>D</keycap></keycombo></entry>
+			<entry>Adds a bookmark for the current document to the default bookmark list.  Do not pop up a dialog asking for a title or location for the bookmark, instead choose sensible defaults (such as the document's title or filename as the bookmark name) and allow the user to change them later using the <guimenuitem>Edit Bookmarks</guimenuitem> feature.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>E</accel>dit Bookmarks</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>B</keycap></keycombo></entry>
+			<entry>Permet à l'utilisateur de modifier la liste des signets de l'application. Affichez une boîte de dialogue permettant à l'utilisateur de classer les signets de manière hiérarchique, de les déplacer, copier et supprimer et de modifier leurs propriétés.</entry>
+		</row>
+		<row>
+			<entry><emphasis>Bookmark List</emphasis></entry>
+			<entry>Aucune</entry>
+			<entry>La liste actuelle des signets de l'utilisateur de l'application</entry>
+		</row>
+		</tbody>
+		</tgroup>
+	</table>
+
+      </sect2>
+      <sect2 id="menu-standard-go">
+
+	<title>Aller à</title>
+
+	<para>Un menu <guimenu>Aller à</guimenu> fournit des commandes pour naviguer rapidement dans un document ou un ensemble de documents ou un espace d'informations tels qu'une structure de répertoires ou le Web.</para>
+
+	<para>Le contenu des menus dépendra du type d'application. Différents menus standards sont présentés ici pour les applications basées sur des documents ou de type navigateur, mais votre application peut avoir besoin d'une combinaison des deux.</para>
+
+	<figure id="generic-browser-go-menu">
+	  <title>Un menu Aller à générique pour un navigateur</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-go-browser.png" width="178" depth="127" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-go-browser.eps" format="EPS"/></imageobject>
+	    <textobject>
+<literallayout class="monospaced">
+<guimenu><accel>G</accel>o</guimenu>
+<guimenuitem><accel>B</accel>ack       Alt+Left</guimenuitem>
+<guimenuitem><accel>F</accel>orward	Alt+Right    </guimenuitem>
+<guimenuitem><accel>U</accel>p		Alt+Up         </guimenuitem>
+---
+<guimenuitem><accel>H</accel>ome	Alt+Home       </guimenuitem>
+<guimenuitem><accel>L</accel>ocation...  Ctrl+L</guimenuitem>
+</literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+
+
+	<table>
+	<title>Éléments de menu Aller à pour un navigateur</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+
+		<row>
+			<entry><guimenuitem><accel>B</accel>ack</guimenuitem></entry>
+			<entry><keycombo><keycap>Alt</keycap><keycap>Left</keycap></keycombo></entry>
+			<entry>Se rend dans le document précédent dans l'historique du navigateur.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>F</accel>orward</guimenuitem></entry>
+			<entry><keycombo><keycap>Alt</keycap><keycap>Right</keycap></keycombo></entry>
+			<entry>Se rend dans le document suivant dans l'historique du navigateur.</entry>		
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>U</accel>p</guimenuitem></entry>
+			<entry><keycombo><keycap>Alt</keycap><keycap>Up</keycap></keycombo></entry>
+			<entry>Se rend dans le document (ou dossier) parent du document (ou du dossier) actuel. Pour un navigateur, tel qu'un visionneur d'aide en ligne, cela signifie habituellement naviguer vers la sous-section, section, chapitre ou page de sommaire qui comprend le document actuel.</entry>		
+		</row>
+	
+		<row>
+			<entry><guimenuitem><accel>H</accel>ome</guimenuitem></entry>
+			<entry><keycombo><keycap>Alt</keycap><keycap>Home</keycap></keycombo></entry>
+			<entry>Se rend à la page d'accueil définie par l'utilisateur ou l'application.</entry>
+		</row>
+
+
+		<row>
+			<entry><guimenuitem><accel>L</accel>ocation...</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>L</keycap></keycombo></entry>
+			<entry>Se rend vers un URI spécifié par l'utilisateur. Ouvrez une boîte de dialogue dans laquelle l'utilisateur peut saisir un URI approprié ou en sélectionner un dans une liste si c'est possible (par exemple, une boîte de dialogue de sélection de fichiers pour les applications qui prennent en charge les URI).</entry>		
+		</row>
+
+			</tbody>
+		</tgroup>
+	</table>
+
+	<figure id="generic-document-go-menu">
+	  <title>Un menu Aller à générique pour une application basée sur des documents</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-go-document.png" width="206" depth="127" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-go-document.eps" width="210" depth="121" format="EPS"/></imageobject>
+	    <textobject>
+<literallayout class="monospaced">
+<guimenu><accel>G</accel>o</guimenu>
+<guimenuitem><accel>P</accel>revious Page 	PgUp </guimenuitem>
+<guimenuitem><accel>N</accel>ext Page      		PgDn</guimenuitem>
+<guimenuitem><accel>G</accel>o to Page...</guimenuitem>
+-
+<guimenuitem><accel>F</accel>irst Page    		Ctrl+Home </guimenuitem>
+<guimenuitem><accel>L</accel>ast Page		Ctrl+End</guimenuitem>
+</literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+
+	<table>
+	<title>Éléments de menu Aller à pour une application basée sur des documents</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+
+		<row>
+			<entry><guimenuitem><accel>P</accel>revious Page</guimenuitem></entry>
+			<entry><keycap>PageUp</keycap></entry>
+			<entry>Se rend à la page précédente du document.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>N</accel>ext Page</guimenuitem></entry>
+			<entry><keycap>PageDown</keycap></entry>
+			<entry>Se rend à la page suivante du document.</entry>		
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>G</accel>o to Page...</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Navigates to a user-specified page number.  Open a dialog into which the user can type a page number.
+			<para>Text-based applications may also include a <guimenuitem>Go  to Line...</guimenuitem> menu item, which allows the user to jump to a specified line number.</para></entry>		
+		</row>
+	
+		<row>
+			<entry><guimenuitem><accel>F</accel>irst Page</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>Home</keycap></keycombo></entry>
+			<entry>Se rend à la première page du document.</entry>
+		</row>
+
+
+		<row>
+			<entry><guimenuitem><accel>L</accel>ast Page</guimenuitem></entry>
+			<entry><keycombo><keycap>Ctrl</keycap><keycap>End</keycap></keycombo></entry>
+			<entry>Se rend à la dernière page du document.</entry>		
+		</row>
+
+			</tbody>
+		</tgroup>
+	</table>
+
+      </sect2>
+
+<!-- CFB Commenting out until we have anything to go on it :/
+      <sect2 id="menu-standard-tools">
+	<title>Tools</title>
+	<figure id="generic-tools-menu">
+	  <title>A generic Tools menu</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/generic-tools-menu.png" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/generic-tools-menu.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <literallayout class="monospaced">
+<guimenu><accel>T</accel>ools</guimenu>
+	      </literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+	<para>FIXME</para>
+      </sect2>
+
+-->
+
+      <sect2 id="application-windows-menu">
+	<title>Fenêtres</title>
+		<para>Le menu Fenêtres contient les commandes qui s'appliquent à toutes les fenêtres ouvertes de l'application. N'utilisez un menu Fenêtres que dans les applications à <link linkend="mdi">interface multi documents</link> (MDI).</para>
+
+      <note><title>Applications MDI</title><para>L'utilisation d'application MDI n'est pas recommandée en raison des nombreux problèmes d'ergonomie inhérents au type.</para></note>
+	
+		<para>Vous pouvez également nommer ce menu <guimenu><accel>D</accel>ocuments</guimenu>, <guimenu><accel>T</accel>ampons</guimenu> ou autrement selon le type de document pris en charge par l'application.</para>
+	
+	<para>Le dernier élément de ce menu est une liste numérotée des fenêtres principales de l'application, par exemple <guimenuitem><accel>1</accel>listedecourses.abw</guimenuitem>. La sélection de l'un des éléments amène la fenêtre correspondante au premier plan.</para>
+
+	<figure id="generic-windows-menu">
+	  <title>Un menu Fenêtres générique</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-windows.png" width="151" depth="172" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-windows.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <literallayout class="monospaced">
+<guimenu><accel>W</accel>indows</guimenu>
+<guimenuitem><accel>S</accel>ave All</guimenuitem>
+<guimenuitem><accel>C</accel>lose All</guimenuitem>
+	      </literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+	
+
+<table>
+	<title>Éléments de menu Fenêtres</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+		<row>
+			<entry><guimenuitem><accel>S</accel>ave All</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Enregistre tous les documents ouverts. Si des documents n'ont pas de nom courant de fichier, invitez l'utilisateur à en donner un pour chacun d'entre eux tour à tour avec la boîte de dialogue standard Enregistrement.</entry>		
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>C</accel>lose All</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Closes all open documents.  If there are any unsaved changes in any documents, post a <link linkend="alerts-confirmation">confirmation alert</link> for each one in turn.</entry>
+		</row>
+		<row>
+			<entry><guimenuitem><accel>1</accel>. <replaceable>first open window title</replaceable></guimenuitem>
+			<para><guimenuitem><accel>2</accel>. <replaceable>second open window title</replaceable></guimenuitem></para>
+			<para>etc.</para></entry>
+			<entry>Aucune</entry>
+			<entry>Amène au premier plan la fenêtre correspondante.</entry>
+		</row>
+			</tbody>
+		</tgroup>
+	</table>
+
+	
+      </sect2>
+      <sect2 id="menu-standard-help">
+	<title>Aide</title>
+	<para>Le menu <guimenu>Aide</guimenu> donne accès à toute la documentation en ligne de l'application, y compris, à la fois, au guide utilisateur et à la fenêtre <guimenuitem>À propos</guimenuitem> qui comporte une brève description des fonctionnalités de l'application.</para>
+
+	<figure id="generic-help-menu">
+	  <title>Un menu Aide générique</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/menus-help.png" width="118" depth="45" format="PNG"/></imageobject>
+	    <imageobject><imagedata fileref="images/menus-help.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <literallayout class="monospaced">
+<guimenu><accel>H</accel>elp</guimenu>
+<!--<guimenuitem><accel>S</accel>earch</guimenuitem>-->
+<guimenuitem><accel>C</accel>ontents      F1</guimenuitem>
+<guimenuitem><accel>A</accel>bout</guimenuitem>
+	      </literallayout>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+
+	<table>
+	<title>Éléments de menu Aide</title>
+	 <tgroup cols="3" align="left">
+	    <thead> 
+	      <row> 
+		<entry>Dénomination</entry> 
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+		</row>
+	      </thead>
+	    <tbody valign="top">
+
+		<row>
+			<entry><guimenuitem><accel>C</accel>ontents</guimenuitem></entry>
+			<entry><keycap>F1</keycap></entry>
+			<entry>Ouvre le navigateur par défaut à la page du sommaire de l'application.</entry>
+		</row>
+
+		<row>
+			<entry><guimenuitem><accel>A</accel>bout</guimenuitem></entry>
+			<entry>Aucune</entry>
+			<entry>Ouvre la boîte de dialogue À propos de l'application. Utilisez la boîte de dialogue standard fournie par les bibliothèques GNOME ; elle contient le nom et le numéro de version de l'application, une brève description de ses fonctionnalités, la manière de contacter l'auteur, le message de copyright et un pointeur vers la licence sous laquelle l'application est disponible.</entry>		
+		</row>
+
+			</tbody>
+		</tgroup>
+	</table>
+
+	<remark>We originally wanted a Search item on here too, but it's not technically possible to implement it right now.</remark>
+
+      </sect2>
+    </sect1>
+  </chapter>

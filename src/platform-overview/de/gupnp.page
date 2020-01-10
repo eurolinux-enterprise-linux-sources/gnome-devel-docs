@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="gupnp" xml:lang="de">
+<info>
+  <link type="guide" xref="index" group="gstreamer"/>
+  <desc>Ein einfach zu benutzendes, effizientes und flexibles UPnP-Framework</desc>
+  <revision pkgversion="1.0" date="2011-05-17" status="candidate"/>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2009-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Christian Kirbach</mal:name>
+      <mal:email>christian.kirbach@gmail.com</mal:email>
+      <mal:years>2011, 2012.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Aljosha Papsch</mal:name>
+      <mal:email>al@rpapsch.de</mal:email>
+      <mal:years>2012</mal:years>
+    </mal:credit>
+  </info>
+
+<title>GUPnP</title>
+
+<p>GUPnP ist ein objektorientiertes Open-Source-Framework zum Erstellen von UPnP-Geräten und Kontrollpunkten. Es ist in C geschrieben und benutzt GObject und libsoup. Die GUPnP-API soll einfach zu benutzen, effizient und flexibel sein.</p>
+
+<p>Das GUPnP-Framework besteht aus den folgenden Komponenten bzw. Paketen:</p>
+
+<list>
+
+<item><p>GSSDP: Die systemnahe Bibliothek, die Ressourcenermittlung und Ankündigung im Netzwerk durch das SSDP-Protokoll implementiert.</p></item>
+
+<item><p>GUPnP: Kernbibliothek, welche die UPnP-Spezifikation implementiert: Ressourcenermittlung und Ankündigung, Beschreibung, Kontrolle, Ereignisbenachrichtigung und Darstellung (GUPnP beinhaltet grundlegende Webserverfunktionalität durch libsoup). GUPnP beinhaltet keine Helfer für die Konstruktion oder Kontrolle bestimmter standardisierter Ressourcen (z.B. MediaServer); das wird höheren Bibliotheken überlassen, die das GUPnP-Framework einsetzen.</p></item>
+
+<item><p>GUPnP A/V: Eine kleine Hilfsbibliothek mit der die Implementation von UPnP-A/V-Profilen vereinfacht werden soll.</p></item>
+
+<item><p>GUPnP DLNA: Eine kleine Hilfsbibliothek mit der DLNA-verwandte Aufgaben wie dem Erraten von Medienprofilen, Umkodieren zu einem gegebenen Profil, etc. vereinfacht werden sollen.</p></item>
+
+<item><p>GUPnP IGD: Eine Bibliothek mit der Port-Zuordnungen bei UPnP-Internet-Gateway-Geräten gehandhabt werden.</p></item>
+
+<item><p>GUPnP Vala: Vala-Bindungen für GUPnP-Bibliotheken.</p></item>
+
+<item><p>GUPnP-Werkzeuge: Freie Werkzeuge unter Verwendung von GUPnP als Ersatz für UPnP-Werkzeuge von Intel. Sie stellen die folgenden Werkzeuge für Clients und Server bereit, mit denen das Testen und Diagnostizieren von UPnP-Geräten und Kontrollpunkten ganz einfach ist:</p>
+
+<list>
+
+<item><p>Universal Control Point (etwa »Universeller Kontrollpunkt«): Ein Werkzeug das UPnP-Geräte und Dienste entdeckt, Informationen über diese empfängt, Ereignisse abonniert und Aktionen aktiviert.</p></item>
+
+<item><p>Network Light (etwa »Netzwerklampe«): Eine virtuelle Glühlampe die es Kontrollpunkten erlaubt sie an- und auszuschalten, ihren Helligkeitsregler zu ändern und ihren aktuellen Status abzurufen. Sie stellt auch eine einfache Benutzeroberfläche bereit, mit der alle im Netzwerk verfügbaren Netzwerklampen kontrolliert werden können.</p></item>
+
+<item><p>AV Control Point (etwa »AV-Kontrollpunkt«): Eine einfache Oberfläche für einen Medienabspieler mit dem im Netzwerk verfügbare Multimediainhalte entdeckt werden und abspielt werden können. Es ist streng genommen ein Kontrollpunkt und verfügt daher selbst über keinerlei Abspielmöglichkeiten, sondern verlässt sich auf externe UPnP-MediaRenderer-Geräte für die Wiedergabe.</p></item>
+
+<item><p>Upload: Ein einfaches Dienstprogramm für die Befehlszeile um Dateien zu bekannten MediaServers hochzuladen. Benutzen Sie Universal Control Point zum Entdecken der MediaServers.</p></item>
+
+</list>
+
+</item>
+
+</list>
+
+<p>Das GUPnP-Framework wurde aus Frustration mit libupnp und der einhergehenden Benutzung von Threads geboren. GUPnP ist vollständig ein einziger Thread (jedoch asynchron), integriert sich in die GLib-Hauptschleife und stellt die gleichen Funktionen wie libupnp bereit, während die meisten Internas von UPnP durch ein elegantes objektorientiertes Design versteckt werden.</p>
+
+<p>GUPnP ist freie Software. Alle Bibliotheken sind unter der GNU LGPL veröffentlicht, während Werkzeuge von GUPnP unter der GNU GPL lizenziert sind.</p>
+
+<p>Sie sollten GUPnP immer dann benutzen, wenn Ihr Code mit UPnP- oder DLNA-Geräten kommunizieren soll. Beispiele für solche Geräte sind z.B. Sony Playstation 3 und Bravia Fernsehgeräte, Samsung Fernseher und Mobiltelefone, Microsoft XBox und alle modernen Router etc. Eine Liste solcher Geräte ist riesig und ständig wachsend.</p>
+
+<p>Neben der Benutzung existierender UPnP-Geräte, kann GUPnP sehr effektiv dazu eingesetzt werden, einfach benutzerdefinierte Heimnetzwerklösungen zu erstellen, in denen sich Geräte/Dienste ohne Konfiguration durch den Benutzer ermitteln und interagieren können.</p>
+
+<p>Für umfassende Informationen über GUPnP besuchen Sie bitte die <link href="http://ww.gupnp.org">Projekt-Startseite</link>.</p>
+</page>

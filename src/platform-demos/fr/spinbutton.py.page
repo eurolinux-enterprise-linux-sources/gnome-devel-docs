@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.py" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.py" xml:lang="fr">
   <info>
     <title type="text">SpinButton (Python)</title>
     <link type="guide" xref="beginner.py#entry"/>
@@ -9,41 +9,11 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Renvoie un entier ou un nombre à virgule flottante de l'utilisateur.</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>Renvoie un entier ou un nombre flottant de l'utilisateur.</desc>
   </info>
 
   <title>SpinButton</title>
@@ -53,13 +23,11 @@
   <links type="section"/>
 
   <section id="code">
-    <title>Code utilisé pour générer cet exemple</title>
+    <title>Code used to generate this example</title>
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="SpinButton Example", application=app)
         self.set_default_size(210, 70)
@@ -91,15 +59,11 @@ class MyWindow(Gtk.ApplicationWindow):
 
         self.add(grid)
 
-    # callback function: the signal of the spinbutton is used to change the
-    # text of the label
+    # callback function: the signal of the spinbutton is used to change the text of the label
     def spin_selected(self, event):
-        self.label.set_text(
-            "The number you selected is " + str(self.spin.get_value_as_int()) + ".")
-
+        self.label.set_text("The number you selected is " + str(self.spin.get_value_as_int()) + ".")
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -117,18 +81,18 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-    <title>Méthodes utiles pour un élément graphique BoutonDactivité</title>
-    <p>Il faut une valeur Gtk.Adjustment pour construire le Gtk.SpinButton. C'est la représentation d'une valeur avec une limite supérieure et une limite inférieure, avec des incréments d'étape et de page, avec une taille de page et elle se présente sous la forme <code>Gtk.Adjustment(valeur, inferieure, superieure, step_increment, page_increment, page_size)</code> où les champs sont du type <code>float</code> ; <code>step_increment</code> est l'incrément ou le décrément obtenu en agissant sur les touches du curseur ou sur les boutons du BoutonDactivité. Notez que les valeurs <code>page_increment</code> et <code>page_size</code> ne sont pas utilisés dans ce cas et qu'ils doivent être définis à <code>0</code>.</p>
+    <title>Useful methods for a SpinButton widget</title>
+    <p>A Gtk.Adjustment is needed to construct the Gtk.SpinButton. This is the representation of a value with a lower and upper bound, together with step and page increments, and a page size, and it is constructed as <code>Gtk.Adjustment(value, lower, upper, step_increment, page_increment, page_size)</code> where the fields are of type <code>float</code>; <code>step_increment</code> is the increment/decrement that is obtained by using the cursor keys or the buttons of the spinbutton. Note that <code>page_increment</code> and <code>page_size</code> are not used in this case, and they should be set to <code>0</code>.</p>
     <p>In line 23 the signal <code>"value-changed"</code> is connected to the callback function <code>spin_selected()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
     <list>
-      <item><p>Si vous voulez que la valeur du BoutonDactivité aille à la ligne quand elle dépasse les limites supérieure ou inférieure, définissez la fonction <code>set_wrap(True)</code> sur vrai. Le signal <code>"wrapped"</code> est alors émis quand cela se produit.</p></item>
-      <item><p>La méthode <code>set_digits(caracteres)</code> définit la précision d'affichage du BoutonDactivité, jusqu'à 20 caractères.</p></item>
-      <item><p>Pour avoir la valeur du BoutonDactivité sous forme d'un nombre entier, utilisez <code>get_value_as_int()</code>.</p></item>
+      <item><p>If you want the value of the spinbutton to wrap around when they exceed the maximum or the minimum, set <code>set_wrap(True)</code>. The <code>"wrapped"</code> signal is emitted when this happens.</p></item>
+      <item><p><code>set_digits(digits)</code> sets the precision to be displayed by the spinbutton, up to 20 digits.</p></item>
+      <item><p>To get the value of the spinbutton as an integer, use <code>get_value_as_int()</code>.</p></item>
     </list>
   </section>
 
   <section id="references">
-    <title>Références API</title>
+    <title>API References</title>
     <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
     <list>
       <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkSpinButton.html">GtkSpinButton</link></p></item>

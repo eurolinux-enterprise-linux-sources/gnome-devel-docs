@@ -1,45 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scrolledwindow.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scrolledwindow.py" xml:lang="el">
   <info>
-    <title type="text">Κυλιόμενο παράθυρο (ScrolledWindow) (Python)</title>
+    <title type="text">ScrolledWindow (Python)</title>
     <link type="guide" xref="beginner.py#scrolling"/>
     <link type="next" xref="paned.py"/>
     <revision version="0.1" date="2012-05-26" status="draft"/>
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Προσθέτει γραμμές κύλισης στο θυγατρικό του γραφικό στοιχείου</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Προσθέτει γραμμές κύλισης στο θυγατρικό του γραφικό συστατικού</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Κυλιόμενο παράθυρο (ScrolledWindow)</title>
+  <title>ScrolledWindow</title>
   <media type="image" mime="image/png" src="media/scrolledwindow.png"/>
   <p>Μια εικόνα σε κυλιόμενο παράθυρο.</p>
 
@@ -50,21 +32,16 @@
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
-        Gtk.Window.__init__(
-            self, title="ScrolledWindow Example", application=app)
+        Gtk.Window.__init__(self, title="ScrolledWindow Example", application=app)
         self.set_default_size(200, 200)
 
         # the scrolledwindow
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_border_width(10)
-        # there is always the scrollbar (otherwise: AUTOMATIC - only if needed
-        # - or NEVER)
-        scrolled_window.set_policy(
-            Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS)
+        # there is always the scrollbar (otherwise: AUTOMATIC - only if needed - or NEVER)
+        scrolled_window.set_policy(Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS)
 
         # an image - slightly larger than the window...
         image = Gtk.Image()
@@ -76,9 +53,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # add the scrolledwindow to the window
         self.add(scrolled_window)
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -95,12 +70,12 @@ sys.exit(exit_status)
 </code>
   </section>
   <section id="methods">
-    <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο ScrolledWindow</title>
+    <title>Χρήσιμες μέθοδοι για ένα γραφικό συστατικό ScrolledWindow</title>
     <list>
       <item><p><code>set_policy(hscrollbar_policy, vscrollbar_policy)</code> όπου όλα τα ορίσματα είναι ένα από τα <code>Gtk.Policy.AUTOMATIC, Gtk.Policy.ALWAYS, Gtk.Policy.NEVER</code> ρυθμίζει εάν οι οριζόντιες και κάθετες γραμμές κύλισης πρέπει να εμφανίζονται: με <code>AUTOMATIC</code> θα εμφανίζονται μόνο εάν χρειάζεται, <code>ALWAYS</code> και <code>NEVER</code> είναι αυτονόητα.</p></item>
       <item><p><code>add_with_viewport(widget)</code> χρησιμοποιείται για να προσθέσει το Gtk.Widget <code>widget</code> χωρίς εγγενείς δυνατότητες κύλισης μέσα στο παράθυρο.</p></item>
       <item><p><code>set_placement(window_placement)</code> ορίζει την τοποθέτηση των περιεχομένων σχετικά με τις γραμμές κύλισης για το κυλιόμενο παράθυρο. Οι επιλογές για το όρισμα είναι <code>Gtk.CornerType.TOP_LEFT</code> (προεπιλογή: οι γραμμές κύλισης είναι στο τέλος και στα δεξιά του παραθύρου), <code>Gtk.CornerType.TOP_RIGHT, Gtk.CornerType.BOTTOM_LEFT, Gtk.CornerType.BOTTOM_RIGHT</code>.</p></item>
-      <item><p><code>set_hadjustment(adjustment)</code> και <code>set_vadjustment(adjustment)</code> ορίζει το Gtk.Adjustment <code>adjustment</code>. Αυτή είναι η αναπαράσταση μιας τιμής με ένα κάτω και ένα πάνω όριο, μαζί με αυξήσεις βήματος και σελίδας και ένα μέγεθος σελίδας και δομείται ως <code>Gtk.Adjustment(value, lower, upper, step_increment, page_increment, page_size)</code> όπου τα πεδία είναι του τύπου <code>float</code>. (Σημειώστε ότι <code>step_increment</code> δεν χρησιμοποιείται σε αυτήν την περίπτωση, μπορεί να οριστεί σε <code>0</code>.)</p></item>
+      <item><p><code>set_hadjustment(adjustment)</code> and <code>set_vadjustment(adjustment)</code> ορίζει το Gtk.Adjustment <code>adjustment</code>. Αυτή είναι η αναπαράσταση μιας τιμής με ένα κάτω και ένα πάνω όριο, μαζί με αυξήσεις βήματος και σελίδας και ένα μέγεθος σελίδας και δομείται ως <code>Gtk.Adjustment(value, lower, upper, step_increment, page_increment, page_size)</code> όπου τα πεδία είναι του τύπου <code>float</code>. (Σημειώστε ότι <code>step_increment</code> δεν χρησιμοποιείται σε αυτήν την περίπτωση, μπορεί να οριστεί σε <code>0</code>.)</p></item>
     </list>
   </section>
   <section id="references">

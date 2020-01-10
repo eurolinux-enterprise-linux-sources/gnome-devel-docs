@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="fontchooserwidget.py" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="fontchooserwidget.py" xml:lang="fr">
   <info>
     <title type="text">FontChooserWidget (Python)</title>
     <link type="guide" xref="beginner.py#font-selectors"/>
@@ -9,58 +9,26 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Un élément graphique pour choisir une police</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>A widget to choose a font</desc>
   </info>
 
-  <title>Élément graphique GtkFontChooser</title>
+  <title>FontChooserWidget</title>
 
   <media type="image" mime="image/png" src="media/fontchooserwidget.png"/>
-  <p>Un élément graphique GtkFontChooser avec une fonction de rappel.</p>
+  <p>A FontChooserWidget with a callback function.</p>
 
   <links type="section"/>
 
   <section id="code">
-    <title>Code utilisé pour générer cet exemple</title>
+    <title>Code used to generate this example</title>
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="FontChooserWidget", application=app)
 
@@ -69,8 +37,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # a default font
         self.font_chooser.set_font("Sans")
         # a text to preview the font
-        self.font_chooser.set_preview_text(
-            "This is an example of preview text!")
+        self.font_chooser.set_preview_text("This is an example of preview text!")
 
         # connect signal from the font chooser to the callback function
         self.font_chooser.connect("notify::font", self.font_cb)
@@ -81,11 +48,9 @@ class MyWindow(Gtk.ApplicationWindow):
     # callback function:
     def font_cb(self, event, user_data):
         # print in the terminal
-        print("You chose the font " + self.font_chooser.get_font())
-
+        print "You chose the font " + self.font_chooser.get_font()
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -102,16 +67,16 @@ sys.exit(exit_status)
 </code>
   </section>
   <section id="methods">
-    <title>Méthodes utiles pour un élément graphique GtkFontChooser</title>
+    <title>Useful methods for a FontChooserWidget</title>
     <p>In line 16 the <code>"notify::font"</code> signal from the widget is connected to the callback function <code>font_cb()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
     <list>
-      <item><p>Pour définir la police initiallement sélectionnée, utilisez la méthode <code>set_font(font)</code> (où <code>font</code> est le nom de la police), ou <code>set_font_desc(font)</code> (où <code>font</code> est la PangoFontDescription).</p></item>
-      <item><p>Pour obtenir la police sélectionnée, utilisez l'une des deux méthodes <code>get_font()</code> ou <code>get_font_desc()</code>.</p></item>
-      <item><p>Pour modifier le texte affiché dans la position précédente, utilisez la méthode <code>set_preview_text()</code>.</p></item>
+      <item><p>To set the font which is initially selected, use <code>set_font(font)</code> (where <code>font</code> is the font name) or <code>set_font_desc(font)</code> (where <code>font</code> is the PangoFontDescription).</p></item>
+      <item><p>To get the selected font use <code>get_font()</code> or <code>get_font_desc()</code>.</p></item>
+      <item><p>To change the text which is shown in the preview area, use <code>set_preview_text()</code>. </p></item>
     </list>
   </section>
   <section id="references">
-    <title>Références API</title>
+    <title>API References</title>
     <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
     <list>
       <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkFontChooserWidget.html">GtkFontChooserWidget</link></p></item>

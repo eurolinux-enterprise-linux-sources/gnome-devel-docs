@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.py" xml:lang="ca">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinbutton.py" xml:lang="ca">
   <info>
     <title type="text">SpinButton (Python)</title>
     <link type="guide" xref="beginner.py#entry"/>
@@ -9,7 +9,7 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -27,9 +27,7 @@
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="SpinButton Example", application=app)
         self.set_default_size(210, 70)
@@ -61,15 +59,11 @@ class MyWindow(Gtk.ApplicationWindow):
 
         self.add(grid)
 
-    # callback function: the signal of the spinbutton is used to change the
-    # text of the label
+    # callback function: the signal of the spinbutton is used to change the text of the label
     def spin_selected(self, event):
-        self.label.set_text(
-            "The number you selected is " + str(self.spin.get_value_as_int()) + ".")
-
+        self.label.set_text("The number you selected is " + str(self.spin.get_value_as_int()) + ".")
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.vala" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.vala" xml:lang="fr">
   <info>
   <title type="text">GMenu (Vala)</title>
 	  <link type="guide" xref="beginner.vala#menu-combo-toolbar"/>
@@ -8,46 +8,16 @@
 
     <credit type="author copyright">
       <name>Ryan Lortie</name>
-      <email its:translate="no">desrt@desrt.ca</email>
+      <email>desrt@desrt.ca</email>
       <years>2012</years>
    </credit>
 
     <credit type="author">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
     </credit>
 
     <desc>Une implémentation simple de GMenuModel</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
   <title>GMenu</title>
@@ -55,7 +25,10 @@
     <note style="important">
        <p><em style="strong">You need to be running GTK+-3.4 or later for this to work</em></p>
     </note>
-    <p>Une application Gtk avec un GMenu de base et des SimpleActions</p>
+    <note style="bug">
+      <p>Ce programme ne se compilera pas avec l'action « quitter » connectée, tant que le <link href="https://bugzilla.gnome.org/show_bug.cgi?id=674090">Bug #674090</link> ne sera pas résolu. En conséquence, la ligne posant problème a été mise en commentaire.</p>
+    </note>
+    <p>Une application Gtk avec un GMenu de base et SimpleActions</p>
 
 <code mime="text/x-csharp" style="numbered">/* A window in the application. */
 public class Window : Gtk.ApplicationWindow {
@@ -108,7 +81,7 @@ public class Application : Gtk.Application {
 		this.app_menu = menu;
 
 		var quit_action = new SimpleAction ("quit", null);
-		quit_action.activate.connect (this.quit);
+		//quit_action.activate.connect (this.quit);
 		this.add_action (quit_action);
 	}
 }

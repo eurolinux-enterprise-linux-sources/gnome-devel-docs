@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="03_getting_the_signal.js" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="03_getting_the_signal.js" xml:lang="es">
   <info>
     <link type="guide" xref="beginner.js#tutorials"/>
     <link type="seealso" xref="button.js"/>
@@ -10,22 +10,22 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
     <desc>Crear botones y otros widgets que efectúan acciones cuando los pulsa.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -56,33 +56,35 @@
     <code mime="application/javascript">
 #!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
+
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
+    _onStartup: function() {
         this._buildUI ();
-    }
+    },
 </code>
-    <p>Eche un vistazo a la parte que usa el método «connect» de la aplicación y «bind», para conectar sus señales «activate» y «startup» a las funciones que presentan la ventana y construyen la IU. Va a hacer lo mismo con el botón cuando llegue a él, excepto que conectará la señal «clicked» en su lugar.</p>
+    <p>Eche un vistazo a la parte que usa el método «connect» de la aplicación y «Lang.bind», para conectar sus señales «activate» y «startup» a las funciones que presentan la ventana y construyen la IU. Va a hacer lo mismo con el botón cuando llegue a él, excepto que conectará la señal «clicked» en su lugar.</p>
   </section>
 
   <section id="button">
@@ -91,7 +93,7 @@ class GettingTheSignal {
     <p>Como siempre, se pondrá todo el código para crear el botón y los otros widgets dentro de la función «_buildUI», que se llama cuando la aplicación arranca.</p>
     <code mime="application/javascript">
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 </code>
 
     <p>Primero, se crea la ventana en sí:</p>
@@ -118,7 +120,7 @@ class GettingTheSignal {
         this._cookieButton = new Gtk.Button ({ label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 </code>
     <p>Finalmente, se crea una rejilla, se le adjuntan la etiqueta y el botón, se añade a la ventana y se le dice que se muestre con su contenido. Eso es todo lo que necesita dentro de la función «_buildUI», por lo que se cierra con un paréntesis y un punto y coma que le dice a GNOME que continúe con la siguiente función. Tenga en cuenta que incluso a pesar de que se escribió el código de la etiqueta primero, igual se puede adjuntar a la rejilla de forma tal que quede en la parte inferior.</p>
     <code mime="application/javascript">
@@ -138,7 +140,7 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 </code>
     <p>Ahora, se escribe la función «_getACookie». Cada vez que el botón envíe su señal «clicked», se ejecutará el código de esta función. En este caso, todo lo que hace es incrementar el número de galletas en 1, y actualizar la etiqueta para que muestre el número nuevo. Esto se hace usando el método «set_label» de la etiqueta.</p>
     <note style="tip"><p>Muchos widgets tienen las mismas propiedades y métodos. Tanto las etiquetas como los botones, por ejemplo, tienen una propiedad «label» que dice qué texto va dentro de ellos, y métodos «get_label» y «set_label» que le permiten verificar cuál es el texto y cambiarlo, respectivamente. Por lo que si aprende cómo funciona un widget, también aprenderá cómo funcionan otros similares.</p></note>
@@ -151,7 +153,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 </code>
 
     <p>Finalmente, se ejecuta la aplicación, usando el mismo tipo de código que en el tutorial anterior.</p>
@@ -170,6 +172,8 @@ app.application.run (ARGV);
 
     <p>Un interruptor tiene dos posiciones, «apagado» y «encendido». Cuando un interruptor está encendido, su texto y color de fondo cambian, indicando en qué posición está.</p>
 
+    <media type="image" mime="image/png" src="media/03_jssignal_02b.png"/>
+
     <p>Puede haber visto interruptores como estos en el menú de accesibilidad de GNOME, que le permiten conmutar características como texto grande y el teclado en pantalla. En este caso, el interruptor controla un dispensador de galletas imaginario. Si el interruptor está encendido, puede obtener galletas pulsando el botón «Get a cookie». Si está apagado, pulsar el botón no hará nada.</p>
     <note style="tip"><p>Puede llegar al menú de accesibilidad pulsando el contorno de un humano, cerca de su nombre en la esquina superior derecha de la pantalla.</p></note>
     <p>Aquí se muestra cómo crear el interruptor:</p>
@@ -181,7 +185,7 @@ app.application.run (ARGV);
     <p>En realidad no se necesita conectar el interruptor a nada. Todo lo que hay que hacer es escribir una declaración «if» en la función «_getACookie», para verificar si el interruptor está encendido. Si quisiera hacer que algo suceda tan pronto como se acciona el interruptor, conectaría su señal «notify::active», así:</p>
     <code mime="application/javascript">
         // Connect the switch to the function that handles it
-        this._cookieSwitch.connect ('notify::active', this._cookieDispenser.bind(this));
+        this._cookieSwitch.connect ('notify::active', Lang.bind (this, this._cookieDispenser));
 </code>
 
     <p>De manera predeterminada, un interruptor está apagado. Si quisiera que el interruptor arrancara encendido, establecería el valor de su propiedad «active» a «true» cuando lo crea.</p>
@@ -219,7 +223,7 @@ app.application.run (ARGV);
     <p>Ahora se cambia la función «_getACookie» para que verifique si el dispensador de galletas está encendido. Se hace usando el método «get_active» del interruptor. Devuelve «true» si está encendido, y «false» si está apagado.</p>
     <note style="tip"><p>Cuando un método se usa en una declaración «if» como esta, el código dentro de la declaración «if» se ejecuta si el método devuelve «true».</p></note>
     <code mime="application/javascript">
-    _getACookie() {
+    _getACookie: function() {
 
         // Is the cookie dispenser turned on?
         if (this._cookieSwitch.get_active()) {
@@ -257,11 +261,11 @@ app.application.run (ARGV);
     <p>Después de eso, se crean los botones de radio. ¿Recuerda cómo se crean en grupos? Eso se hace estableciendo la propiedad «group» de cada botón de radio al nombre de otro.</p>
     <code mime="application/javascript">
         // Create the radio buttons
-        this._cookieRadio = new Gtk.RadioButton ({ label: "Cookie" });
+        this._cookieButton = new Gtk.RadioButton ({ label: "Cookie" });
         this._notCookieOne = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
         this._notCookieTwo = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
 </code>
 
     <p>A continuación, se crea una rejilla para los botones de radio. Recuerde, no es necesario ordenar cosas en rejillas en el mismo orden que se crean.</p>
@@ -269,7 +273,7 @@ app.application.run (ARGV);
         // Arrange the radio buttons in their own grid
         this._radioGrid = new Gtk.Grid ();
         this._radioGrid.attach (this._notCookieOne, 0, 0, 1, 1);
-        this._radioGrid.attach (this._cookieRadio, 0, 1, 1, 1);
+        this._radioGrid.attach (this._cookieButton, 0, 1, 1, 1);
         this._radioGrid.attach (this._notCookieTwo, 0, 2, 1, 1);
 </code>
 
@@ -290,10 +294,10 @@ app.application.run (ARGV);
 
     <p>Y después se cambia la función «_getACookie» para probar si el botón de la galleta es el que está seleccionado.</p>
     <code mime="application/javascript">
-    _getACookie() {
+    _getACookie: function() {
 
         // Did you select "cookie" instead of "not cookie"?
-        if (this._cookieRadio.get_active()) {
+        if (this._cookieButton.get_active()) {
 
             // Increase the number of cookies by 1 and update the label
             cookies++;
@@ -330,7 +334,7 @@ app.application.run (ARGV);
     <p>Y ahora se modifica la declaración «if» de «_getACookie» nuevamente, usando el método «get_text» del «Entry» para obtener el texto que introdujo y verificar si deletreó «cookie» correctamente. No importa si utiliza mayúsculas, por lo que se usa el método «toLowerCase» integrado de JavaScript para cambiar todo el texto del «Entry» a minúsculas dentro de la declaración «if».</p>
     <note style="tip"><p>Un widget «Entry» no tiene una propiedad «label», que es una cadena de texto establecida que el usuario no puede cambiar (normalmente no puede cambiar la etiqueta de un botón, por ejemplo). En su lugar, tiene una propiedad «text», que cambia de acuerdo a lo que el usuario introduce.</p></note>
     <code mime="application/javascript">
-    _getACookie() {
+    _getACookie: function() {
 
         // Did you spell "cookie" correctly?
         if ((this._spellCookie.get_text()).toLowerCase() == "cookie") {
@@ -348,7 +352,7 @@ app.application.run (ARGV);
 
   <section id="whats_next">
     <title>¿Qué viene ahora?</title>
-    <p>Siga leyendo, si quiere ver el código completo para cada versión de la aplicación creadora de galletas.</p>
+    <p><link xref="04_popup_dialog_boxes.js">Pulse aquí</link> para ir al siguiente tutorial. O siga leyendo, si quiere ver el código completo para cada versión de la aplicación creadora de galletas.</p>
     <note style="tip"><p>La página principal de tutoriales de JavaScript tiene <link xref="beginner.js#buttons">ejemplos de código más detallados</link> para cada widget de entrada, incluyendo varios no cubiertos aquí.</p></note>
 
   </section>
@@ -363,35 +367,38 @@ app.application.run (ARGV);
       <media type="image" mime="image/png" src="media/03_jssignal_01.png"/>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -409,7 +416,7 @@ class GettingTheSignal {
         this._cookieButton = new Gtk.Button ({ label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create a grid to arrange everything inside
         this._grid = new Gtk.Grid ({
@@ -427,9 +434,11 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Increase the number of cookies by 1 and update the label
         cookies++;
@@ -437,7 +446,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();
@@ -450,35 +459,38 @@ app.application.run (ARGV);
       <media type="image" mime="image/png" src="media/03_jssignal_02.png"/>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -497,7 +509,7 @@ class GettingTheSignal {
             label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create the switch that controls whether or not you can win
         this._cookieSwitch = new Gtk.Switch ();
@@ -532,9 +544,11 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Is the cookie dispenser turned on?
         if (this._cookieSwitch.get_active()) {
@@ -547,7 +561,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();
@@ -560,35 +574,38 @@ app.application.run (ARGV);
       <media type="image" mime="image/png" src="media/03_jssignal_03.png"/>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -600,16 +617,16 @@ class GettingTheSignal {
             title: "Choose the one that says 'cookie'!"});
 
         // Create the radio buttons
-        this._cookieRadio = new Gtk.RadioButton ({ label: "Cookie" });
+        this._cookieButton = new Gtk.RadioButton ({ label: "Cookie" });
         this._notCookieOne = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
         this._notCookieTwo = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
 
         // Arrange the radio buttons in their own grid
         this._radioGrid = new Gtk.Grid ();
         this._radioGrid.attach (this._notCookieOne, 0, 0, 1, 1);
-        this._radioGrid.attach (this._cookieRadio, 0, 1, 1, 1);
+        this._radioGrid.attach (this._cookieButton, 0, 1, 1, 1);
         this._radioGrid.attach (this._notCookieTwo, 0, 2, 1, 1);
 
         // Set the button that will be at the top to be active by default
@@ -620,7 +637,7 @@ class GettingTheSignal {
             label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create the label
         this._cookieLabel = new Gtk.Label ({
@@ -643,12 +660,14 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Did you select "cookie" instead of "not cookie"?
-        if (this._cookieRadio.get_active()) {
+        if (this._cookieButton.get_active()) {
 
             // Increase the number of cookies by 1 and update the label
             cookies++;
@@ -658,7 +677,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();
@@ -671,35 +690,38 @@ app.application.run (ARGV);
       <media type="image" mime="image/png" src="media/03_jssignal_04.png"/>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -718,7 +740,7 @@ class GettingTheSignal {
             label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create the label
         this._cookieLabel = new Gtk.Label ({
@@ -741,9 +763,11 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Did you spell "cookie" correctly?
         if ((this._spellCookie.get_text()).toLowerCase() == "cookie") {
@@ -756,7 +780,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();

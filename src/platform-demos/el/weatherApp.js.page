@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="weatherApp.js" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="weatherApp.js" xml:lang="el">
   <info>
   <title type="text">Εφαρμογή καιρού (JavaScript)</title>
     <link type="guide" xref="js#examples"/>
@@ -7,12 +7,12 @@
 
     <credit type="author copyright">
       <name>Susanna Huhtanen</name>
-      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <email>ihmis.suski@gmail.com</email>
       <years>2012</years>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
 
@@ -20,27 +20,9 @@
 
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -53,7 +35,7 @@
       <item><p><link xref="#asynchronous">Ασύγχρονες κλήσεις</link></p></item>
       <item><p><link xref="#main">Το κύριο αρχείο του προγράμματος</link></p></item>
       <item><p><link xref="#main">Τοπική βιβλιοθήκη GeoNames</link></p></item>
-      <item><p><link xref="#main">Αυτόματα εργαλεία και εικονίδια</link></p></item>
+      <item><p><link xref="#main">Autotools και εικονίδια</link></p></item>
     </list>
   </synopsis>
 
@@ -62,7 +44,7 @@
 
   <section id="planningUi">
     <title>Σχεδιασμός της γραφικής διεπαφής χρήστη</title>
-    <p>Δομώντας μια εφαρμογή για το GNOME 3 σημαίνει τη χρήση του <link href="http://developer.gnome.org/platform-overview/stable/gtk">GTK+</link>. Το πιο σημαντικό πράγμα είναι να θυμόσαστε ότι το κύριο παράθυρο θα αποδεχθεί μόνο ένα γραφικό στοιχείο. Πρέπει να σχεδιάσετε τη δομή σας ανάλογα (αυτό το παράδειγμα χρησιμοποιεί Gtk.Grid). Μια χρήσιμη μέθοδος είναι η σχεδίαση του κύριου παραθύρου και η τοποθέτηση κάθε απαιτούμενου γραφικού στοιχείου μέσα σε αυτό το πλαίσιο. Κοιτώντας μια εικόνα της μελλοντικής σας εφαρμογής είναι ευκολότερο να πείτε ποιες είναι οι σχέσεις μεταξύ γραφικών στοιχείων. Για παράδειγμα Gtk.Grid τοποθετεί τα γραφικά στοιχεία σας σε σχέση με τα άλλα γραφικά στοιχεία, έτσι μετά τη τοποθέτηση του πρώτου γραφικού στοιχείου στη θέση του, η τοποθέτηση των γραφικών στοιχείων μπορεί να γίνει σε σχέση με οποιοδήποτε γραφικό στοιχείο στο πλέγμα.</p>
+    <p>Δομώντας μια εφαρμογή για το GNOME 3 σημαίνει τη χρήση του <link href="http://developer.gnome.org/platform-overview/stable/gtk">GTK+</link>. Το πιο σημαντικό πράγμα είναι να θυμόσαστε ότι το κύριο παράθυρο θα αποδεχθεί μόνο ένα γραφικό συστατικό. Πρέπει να σχεδιάσετε τη δομή σας ανάλογα (αυτό το παράδειγμα χρησιμοποιεί Gtk.Grid). Μια χρήσιμη μέθοδος είναι η σχεδίαση του κύριου παραθύρου και η τοποθέτηση κάθε απαιτούμενου γραφικού συστατικού μέσα σε αυτό το πλαίσιο. Κοιτώντας μια εικόνα της μελλοντικής σας εφαρμογής είναι ευκολότερο να πείτε ποιες είναι οι σχέσεις μεταξύ γραφικών συστατικών. Για παράδειγμα Gtk.Grid τοποθετεί τα γραφικά συστατικά σας σε σχέση με τα άλλα γραφικά συστατικά, έτσι μετά τη τοποθέτηση του πρώτου γραφικού συστατικού στη θέση του, η τοποθέτηση των γραφικών συστατικών μπορεί να γίνει σε σχέση με οποιοδήποτε γραφικό συστατικό στο πλέγμα.</p>
   </section>
   <section id="asynchronous">
     <title>Ασύγχρονες κλήσεις</title>

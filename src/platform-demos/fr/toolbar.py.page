@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar.py" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="toolbar.py" xml:lang="fr">
   <info>
     <title type="text">Toolbar (Python)</title>
     <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
@@ -9,61 +9,29 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Une barre de boutons et autres éléments graphiques</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>A bar of buttons and other widgets</desc>
   </info>
 
-  <title>Barre d'outils</title>
+  <title>Toolbar</title>
 
   <media type="image" mime="image/png" src="media/toolbar.png"/>
-  <p>Un exemple de barre d'outils avec des boutons (à partir des icônes de la collection).</p>
+  <p>An example of toolbar with buttons (from stock icons).</p>
 
   <links type="section"/>
 
   <section id="code">
-    <title>Code utilisé pour générer cet exemple</title>
+    <title>Code used to generate this example</title>
 
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Toolbar Example", application=app)
         self.set_default_size(400, 200)
@@ -103,7 +71,7 @@ class MyWindow(Gtk.ApplicationWindow):
         toolbar = Gtk.Toolbar()
 
         # which is the primary toolbar of the application
-        toolbar.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR)
+        toolbar.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
 
         # create a button for the "new" action, with a stock image
         new_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW)
@@ -132,8 +100,7 @@ class MyWindow(Gtk.ApplicationWindow):
         undo_button.set_action_name("win.undo")
 
         # button for the "fullscreen/leave fullscreen" action
-        self.fullscreen_button = Gtk.ToolButton.new_from_stock(
-            Gtk.STOCK_FULLSCREEN)
+        self.fullscreen_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_FULLSCREEN)
         self.fullscreen_button.set_is_important(True)
         toolbar.insert(self.fullscreen_button, 3)
         self.fullscreen_button.set_action_name("win.fullscreen")
@@ -143,14 +110,12 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback method for undo
     def undo_callback(self, action, parameter):
-        print("You clicked \"Undo\".")
+        print "You clicked \"Undo\"."
 
     # callback method for fullscreen / leave fullscreen
     def fullscreen_callback(self, action, parameter):
-        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which
-        # is a bit flag
-        is_fullscreen = self.get_window().get_state(
-        ) &amp; Gdk.WindowState.FULLSCREEN != 0
+        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which is a bit flag
+        is_fullscreen = self.get_window().get_state() &amp; Gdk.WindowState.FULLSCREEN != 0
         if not is_fullscreen:
             self.fullscreen_button.set_stock_id(Gtk.STOCK_LEAVE_FULLSCREEN)
             self.fullscreen()
@@ -158,9 +123,7 @@ class MyWindow(Gtk.ApplicationWindow):
             self.fullscreen_button.set_stock_id(Gtk.STOCK_FULLSCREEN)
             self.unfullscreen()
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -186,11 +149,11 @@ class MyApplication(Gtk.Application):
 
     # callback method for new
     def new_callback(self, action, parameter):
-        print("You clicked \"New\".")
+        print "You clicked \"New\"."
 
     # callback method for open
     def open_callback(self, action, parameter):
-        print("You clicked \"Open\".")
+        print "You clicked \"Open\"."
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
@@ -199,22 +162,22 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-    <title>Méthodes utiles pour un élément graphique barre d'outils</title>
+    <title>Useful methods for a Toolbar widget</title>
     <p>In line 32 the signal <code>"activate"</code> from the action <code>undo_action</code> is connected to the callback function <code>undo_callback()</code> using <code><var>action</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
 
     <list>
-      <item><p>La méthode <code>insert(tool_item, position)</code> insère l'élément <code>tool_item</code> à sa place <code>position</code>. Si <code>position</code> est négatif, l'élément est ajouté à la fin de la barre d'outils.</p></item>
-      <item><p>La méthode <code>get_item_index(tool_item)</code> récupère la position de l'élément <code>tool_item</code> dans la barre d'outils.</p></item>
-      <item><p>La méthode <code>get_n_items()</code> renvoie le nombre d'éléments de la barre d'outils ; <code>get_nth_item(position)</code> renvoie l'élément placé à <code>position</code>.</p></item>
-      <item><p>S'il n'y a pas assez de place dans la barre d'outils pour tous les éléments du menu, et si l'affichage de la flèche est sur <code>set_show_arrow(True)</code>, les éléments en surplus sont affichés dans un menu de dépassement.</p></item>
-      <item><p>La méthode <code>set_icon_size(icon_size)</code> définit la taille des icônes de la barre d'outils ; <code>icon_size</code> peut être : <code>Gtk.IconSize.INVALID, Gtk.IconSize.MENU, Gtk.IconSize.SMALL_TOOLBAR, Gtk.IconSize.LARGE_TOOLBAR, Gtk.IconSize.BUTTON, Gtk.IconSize.DND, Gtk.IconSize.DIALOG</code>. Cette option ne doit être utilisée que pour des barres d'outils spéciales. Les barres d'outils des applications normales doivent respecter le choix des préférences des utilisateurs en ce qui concerne la taille des icônes. La fonction <code>unset_icon_size()</code> désactive les préférences définies avec <code>set_icon_size(icon_size)</code> afin que les préférences de l'utilisateur soient utilisées pour déterminer la taille des icônes.</p></item>
-      <item><p>La méthode <code>set_style(style)</code>, où <code>style</code> peut être <code>Gtk.ToolbarStyle.ICONS, Gtk.ToolbarStyle.TEXT, Gtk.ToolbarStyle.BOTH, Gtk.ToolbarStyle.BOTH_HORIZ</code>, définit si la barre d'outils affiche seulement les icônes, seulement du texte ou les deux à la fois (placés verticalement ou les uns à côté des autres). Pour que les préférences utilisateur déterminent le style de la barre et annule un style de barre d'outils ainsi défini, utilisez <code>unset_style()</code>.</p></item>
+      <item><p>Use <code>insert(tool_item, position)</code> to insert the <code>tool_item</code> at <code>position</code>. If <code>position</code> is negative, the item is appended at the end of the toolbar.</p></item>
+      <item><p><code>get_item_index(tool_item)</code> retrieves the position of <code>tool_item</code> on the toolbar.</p></item>
+      <item><p><code>get_n_items()</code> returns the number of items on the toolbar; <code>get_nth_item(position)</code> returns the item in position <code>position</code>.</p></item>
+      <item><p>If the toolbar does not have room for all the menu items, and <code>set_show_arrow(True)</code>, the items that do not have room are shown through an overflow menu.</p></item>
+      <item><p><code>set_icon_size(icon_size)</code> sets the size of icons in the toolbar; <code>icon_size</code> can be one of <code>Gtk.IconSize.INVALID, Gtk.IconSize.MENU, Gtk.IconSize.SMALL_TOOLBAR, Gtk.IconSize.LARGE_TOOLBAR, Gtk.IconSize.BUTTON, Gtk.IconSize.DND, Gtk.IconSize.DIALOG</code>. This should be used only for special-purpose toolbars, normal application toolbars should respect user preferences for the size of icons. <code>unset_icon_size()</code> unsets the preferences set with <code>set_icon_size(icon_size)</code>, so that user preferences are used to determine the icon size.</p></item>
+      <item><p><code>set_style(style)</code>, where <code>style</code> is one of <code>Gtk.ToolbarStyle.ICONS, Gtk.ToolbarStyle.TEXT, Gtk.ToolbarStyle.BOTH, Gtk.ToolbarStyle.BOTH_HORIZ</code>, sets if the toolbar shows only icons, only text, or both (vertically stacked or alongside each other). To let user preferences determine the toolbar style, and unset a toolbar style so set, use <code>unset_style()</code>.</p></item>
     </list>
 
   </section>
 
   <section id="reference">
-    <title>Références API</title>
+    <title>API References</title>
     <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
     <list>
       <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkToolbar.html">GtkToolbar</link></p></item>

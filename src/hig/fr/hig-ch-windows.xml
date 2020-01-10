@@ -1,0 +1,1713 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="windows" lang="fr">
+  <title>Fenêtres</title>
+
+  <sect1 id="windows-properties">
+    <title>Composants des fenêtres et interactions avec le système</title>
+
+    <sect2 id="window-props-titles">
+      <title>Titres</title>
+
+      <para>Donnez un titre à chaque fenêtre (à l'exception des <link linkend="windows-alert">alertes</link> et des <link linkend="toolbox-windows">boîtes à outils</link>). Un bon titre de fenêtre contient une information pertinente pour l'utilisateur et permet de distinguer une fenêtre particulière des autres fenêtres ouvertes. Ne mettez pas d'information qui n'aiderait pas à faire ce choix, par exemple le numéro de version de l'application ou le nom du fournisseur.</para>
+
+      <figure>
+        <title>Exemple de titre de fenêtre</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="28" fileref="images/windows-titlebar.png" format="PNG" width="379"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-titlebar.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot showing a window title bar with title
+            "Parts of Windows and System Interaction - Mozilla Firefox"</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <para>Consultez la description des formats de titre pour chaque type particulier de fenêtre.</para>
+    </sect2>
+
+    <sect2 id="window-props-borders">
+      <title>Encadrements et commandes de fenêtre</title>
+
+      <para>La plupart des fenêtres possèdent un cadre, sauf certaines fenêtres mises en forme et certaines fenêtres détachées (torn-off). N'essayez pas de dessiner vos propres cadres de fenêtre, mais au contraire indiquez au gestionnaire de fenêtre le type de cadre souhaité.</para>
+
+      <para>Chaque type de fenêtre dispose de commandes appropriées. Consultez la description de chaque type particulier de fenêtre pour obtenir la liste des commandes de fenêtre en relation. Voici les commandes de fenêtre possibles :</para>
+
+      <itemizedlist>
+        <listitem>
+          <formalpara>
+            <title>Fermeture</title>
+
+            <para>Ferme la fenêtre. Représentez-la <emphasis>toujours</emphasis> sous forme d'un bouton en bord de fenêtre, si cela correspond au type de la fenêtre.</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Maximisation</title>
+
+            <para>Agrandit la fenêtre de façon à ce qu'elle occupe tout l'espace libre de l'écran.</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Minimisation</title>
+
+            <para>Masque temporairement la fenêtre. Elle continue à apparaître dans la liste des fenêtres du bureau.</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Enrouler/Dérouler</title>
+
+            <para>N'affiche que la barre de titre de la fenêtre comme si elle avait été « enroulée ».</para>
+          </formalpara>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2 id="window-props-modality">
+      <title>Modalité</title>
+
+      <para>Une fenêtre <emphasis role="bold">non modale</emphasis> n'interdit en aucune façon l'interaction de l'utilisateur avec les autres fenêtres ouvertes du bureau. L'utilisation de fenêtres non-modales offre à l'utilisateur la souplesse maximale pour réaliser des tâches dans l'application dans n'importe quel ordre et de la façon qu'il veut.</para>
+
+      <para>Une fenêtre <emphasis role="bold">modale applicative</emphasis>, tant qu'elle est ouverte, empêche l'utilisateur d'interagir avec les autres fenêtres de la même application.</para>
+
+      <para>Une fenêtre <emphasis role="bold">modale système</emphasis>, tant qu'elle est ouverte, empêche l'utilisateur d'interagir avec n'importe quelle autre fenêtre de n'importe quelle application, dont le bureau lui-même.</para>
+
+      <itemizedlist>
+        <title>Conseils</title>
+
+        <listitem>
+          <para>N'utilisez de fenêtre modale applicative que si l'autorisation d'interagir avec d'autres parties de l'application pendant que la fenêtre est ouverte risque de provoquer des pertes de données ou d'autres problèmes sérieux. Proposez une façon claire de quitter la fenêtre modale comme un bouton <guibutton>Annuler</guibutton> dans une alerte.</para>
+        </listitem>
+
+        <listitem>
+          <para>N'utilisez pas de fenêtre modale système.</para>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2 id="window-props-focus">
+      <title>Focus</title>
+
+      <para>Le focus est le moyen utilisé par l'utilisateur pour indiquer la fenêtre qui doit recevoir les données du clavier, de la souris ou d'autres périphériques d'entrée. Si vous utilisez un lecteur d'écran ou d'autres outils d'accessibilité, le focus peut également indiquer la fenêtre dont l'utilisateur veut recevoir de l'information. La fenêtre qui a le focus est considérée comme la fenêtre dans laquelle l'utilisateur « travaille » actuellement.</para>
+
+      <para>Assurez-vous que votre application réagit correctement aux trois mécanismes différents par lesquels les fenêtres peuvent recevoir le focus dans GNOME :</para>
+
+      <itemizedlist>
+        <listitem>
+          <formalpara>
+            <title>Cliquer pour recevoir le focus (click-to-focus)</title>
+
+            <para>Une fenêtre reçoit le focus si vous cliquez dessus.</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Pointer pour recevoir le focus (point-to-focus)</title>
+
+            <para>Une fenêtre reçoit le focus lorsque le pointeur de la souris se trouve au dessus d'elle. Parfois connu sous le nom de « sloppy focus ».</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Focus au clavier (keyboard focus)</title>
+
+            <para>Une fenêtre reçoit le focus à l'aide d'un raccourci clavier tel que <keycombo><keycap>Alt</keycap><keycap>Tab</keycap></keycombo>.</para>
+          </formalpara>
+        </listitem>
+      </itemizedlist>
+
+      <note>
+        <title>Restrictions spéciales pour « point to focus »</title>
+
+        <para>Notez que « point-to-focus » impose un grand nombre de restrictions pour les applications GNOME, restrictions qui n'existent pas dans des environnements tel que MacOS ou Windows. Par exemple, des fenêtres d'utilitaires partagées par plusieurs fenêtres de documents, comme les boîtes à outils de l'éditeur d'image GIMP, ne peuvent pas être sensibles au contexte — ainsi, elles ne peuvent pas initier une action comme <guibutton>Enregistrer</guibutton> le document actuel. En déplaçant la souris du document actuel à la fenêtre utilitaire, l'utilisateur pourrait par inadvertance déplacer le pointeur sur une autre fenêtre de document, par conséquent changer le focus et peut-être enregistrer le mauvais document.</para>
+      </note>
+    </sect2>
+
+    <sect2 id="windows-show-hide">
+	<title>Affichage et masquage des fenêtres</title>
+	<para>La façon dont votre application affiche ou masque les fenêtres peut grandement affecter la perception de votre application par l'utilisateur, plus particulièrement de ses performances.</para>
+	<itemizedlist><title>Conseils</title>
+		<listitem><para>Affichez toujours une fenêtre dès que possible mais vérifiez bien que votre fenêtre possède la bonne taille avant de l'afficher. Redimensionner une fenêtre une fois qu'elle est visible, désoriente et donne un aspect brouillon à votre application.</para></listitem>
+		<listitem><para>Si une fenêtre contient des informations qui prennent quelques secondes à calculer et à afficher, il est souvent mieux de ne pas la remplir complètement avant de commencer à l'afficher. Par exemple, une fenêtre destinée à contenir une grande zone de texte peut être affichée rapidement, et ensuite le texte inséré après coup (à condition que cela ne provoque pas un redimensionnement de la fenêtre). Cela donnera l'impression que votre application est plus réactive que si vous n'affichez pas la fenêtre avant qu'elle ne soit complètement remplie.</para></listitem>
+		<listitem><para>Masquez une fenêtre le plus rapidement possible après sa fermeture. À moins qu'un message d'avertissement ne soit affiché, masquez immédiatement une fenêtre que l'utilisateur a fermée en cliquant sur le bouton Fermer en bordure de la fenêtre ; votre application peut continuer à réaliser des opérations internes de nettoyage par la suite. En plus de donner l'apparence que le système est lent, ne pas faire cela peut donner l'impression au gestionnaire de fenêtres que l'application ne répond plus et provoquer l'affichage d'une fenêtre d'avertissement inutile pour l'utilisateur.</para></listitem>
+	</itemizedlist> 
+
+    </sect2>
+
+  </sect1>
+
+  <sect1 id="windows-primary">
+    <title>Fenêtres principales</title>
+
+    <para>Une fenêtre principale présente habituellement une vue des données de l'utilisateur, tel que le document texte dans une application de traitement de texte, une image dans un programme de dessin ou des calculs dans un tableur ou une calculatrice. Cela peut également être une vue de quelque chose plus abstrait, comme un jeu. Une instance unique d'une application peut posséder plus d'une fenêtre principale et plus d'un type de fenêtre principale.</para>
+
+    <para>Une fenêtre principale apparaît toujours dans la liste des fenêtres du tableau de bord.</para>
+
+    <figure>
+      <title>Une fenêtre principale classique (gedit)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="372" fileref="images/windows-primary.png" format="PNG" width="397"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/windows-primary.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>A typical primary window: the gedit document view</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <para>Une fenêtre principale d'application possède normalement un encadrement, une barre de menu et peut également contenir une ou plusieurs barres d'outils.</para>
+
+    <sect2 id="primary-window-titles">
+      <title>Titre</title>
+
+      <para>L'élément le plus important dans le titre d'une fenêtre d'une application basée sur des documents est le nom du document ouvert. Pour les autres applications, c'est généralement le nom de l'application.</para>
+
+      <itemizedlist><title>Conseils</title>
+
+	<listitem><para>Utilisez le <replaceable>nom du fichier</replaceable> comme titre de fenêtre pour les applications basées sur des documents. N'utilisez pas le chemin complet car le nom du fichier seul est plus facile à distinguer parmi les titres des autres fenêtres ouvertes, par exemple dans la liste des fenêtres.</para>
+      	<example>
+        <title>Utilisation des noms de documents comme titres de fenêtre</title>
+
+        <informaltable frame="all">
+          <tgroup align="left" cols="2">
+            <thead>
+              <row>
+                <entry>Application</entry>
+
+                <entry>Exemple de titre de fenêtre</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>AbiWord</entry>
+
+                <entry>Mon rapport.abw</entry>
+              </row>
+
+              <row>
+                <entry>Evolution</entry>
+
+                <entry>Boîte de réception</entry>
+              </row>
+
+              <row>
+                <entry>Lecteur de musique</entry>
+
+                <entry>Téléphone - Dure limite</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+      	</example>
+	<para>Si le chemin est important, par exemple si l'utilisateur a ouvert deux documents portant le même nom dans des répertoires différents dans la même application, affichez le nom complet dans la barre d'état.</para>
+	</listitem>
+	
+	<listitem><para>Avant qu'un document ne soit enregistré pour la première fois, paramétrez le titre de la fenêtre à <replaceable>&lt;Type de document&gt; non enregistré</replaceable>. Par exemple, <replaceable>Dessin non enregistré</replaceable>, <replaceable>Feuille de calcul non enregistré</replaceable> ou de manière plus générique <replaceable>Document non enregistré</replaceable>.</para>
+	</listitem>
+
+
+
+      	<listitem><para>Lorsqu'un document possède des modifications non enregistrées, insérez un astérisque (*) au début du titre de la fenêtre. Par exemple, <replaceable>*Dessin non enregistré</replaceable>, <replaceable>*Rapport Annuel</replaceable></para></listitem>
+      
+	<listitem><para>Pour une application non basée sur des documents, utilisez le <replaceable>nom de l'application</replaceable> comme titre de fenêtre.</para>
+
+      	<example>
+        <title>Utilisation des noms d'applications comme titre de fenêtre</title>
+
+        <informaltable frame="all">
+          <tgroup align="left" cols="2">
+            <thead>
+              <row>
+                <entry>Application</entry>
+
+                <entry>Titre de fenêtre</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Dictionnaire</entry>
+
+                <entry>Dictionnaire</entry>
+              </row>
+
+              <row>
+                <entry>Calculatrice</entry>
+
+                <entry>Calculatrice</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+      </example>
+      </listitem>
+
+      <listitem><para>Ne mettez pas de numéros de version, noms de société ou d'autres informations qui ne sont pas immédiatement utiles à l'utilisateur dans le titre de la fenêtre. Cela prend de la place, rend les titres dans un espace limité tel que la liste des fenêtres du système moins lisibles et ajoute du texte supplémentaire que l'utilisateur doit parcourir pour trouver l'information utile. Dans une version « bêta » où les numéros de version sont critiques pour les informations de bogues, mettre des numéros de version peut être utile, mais retirez-les dans les versions stables. Placez plutôt les informations de version dans la boîte de dialogue « À propos ».</para></listitem>
+
+     </itemizedlist>
+
+      <para>Bien que les noms de document soient les plus pertinents pour les utilisateurs, nous comprenons que les développeurs d'applications souhaitent augmenter la visibilité de leur application. Si vous avez l'intention d'ajouter le nom de votre programme dans le titre de la fenêtre principale, utilisez le format suivant : <replaceable>Nom du document</replaceable> - <replaceable>Nom de l'application</replaceable>. Cela permet de s'assurer que le nom du document restera visible dans les cas où l'espace est limité, comme la liste des fenêtres du système.</para>
+
+      <warning><para>Inclure le nom de l'application dans le titre d'une application basée sur des documents n'est <emphasis role="bold">pas</emphasis> recommandé.</para></warning>
+
+      <tip><para>Quand vous donnez un nom à vos fenêtres, placez-vous dans le contexte de la liste des fenêtres du tableau de bord. Sur un écran classique avec un nombre relativement petit de fenêtres ouvertes, une fenêtre disposera de 20-30 caractères de texte et d'une icône. Pensez au texte qui donnera le plus rapidement des indices parlants à un utilisateur qui rechercherait une fenêtre donnée.</para></tip>
+
+    </sect2>
+
+    <sect2 id="primary-window-commands">
+      <title>Commandes de fenêtre</title>
+
+      <para>Fermer, maximiser/restaurer, minimiser, enrouler/dérouler</para>
+    </sect2>
+
+    <sect2 id="document-interface-types">
+      <title>Relation entre les documents et les fenêtres</title>
+
+      <sect3 id="sdi">
+        <title>Interface à document unique (SDI)</title>
+
+        <para>Une interface à document unique place chaque document dans sa propre fenêtre principale. Les boîtes à outils et autres fenêtres utilitaires peuvent être partagées entre plusieurs documents d'interface SDI mais leur fermeture ne doit pas avoir d'effet sur les fenêtres de document. Utilisez des interfaces SDI pour vos applications GNOME à moins qu'il y ait une raison valable de ne pas le faire.</para>
+
+        <figure>
+          <title>Une application typique SDI (Eye of GNOME)</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="226" fileref="images/windows-sdi.png" format="PNG" width="268"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/windows-sdi.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>A typical SDI application: Eye of GNOME being used to
+              inspect an icon</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+      </sect3>
+
+      <sect3 id="mdi">
+        <title>Interface à plusieurs documents (MDI)</title>
+
+        <para>Une interface à documents multiples affiche une représentation de chacun d'entre eux dans un panneau, sous un onglet ou quelque chose de similaire dans une fenêtre unique.</para>
+
+        <figure>
+          <title>Une application MDI typique (gedit) affichant trois documents ouverts dans des onglets</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="349" fileref="images/windows-mdi.png" format="PNG" width="372"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/windows-mdi.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>A typical MDI application: gedit with three open
+              documents in the same window</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <para>Les interfaces MDI présentent plusieurs problèmes d'ergonomie sous-jacents, donc nous déconseillons leur utilisation dans les applications. Il est préférable d'ouvrir chaque document dans une nouvelle fenêtre principale, avec sa propre barre de menu, ses barres d'outils et sa barre d'état ou d'autoriser le lancement simultané de plusieurs instances de l'application. Dans l'un ou l'autre cas, le gestionnaire de fenêtres (en agissant sur les préférences de l'utilisateur) décidera à la place de votre application de la manière de regrouper et présenter les fenêtres des documents d'une même application.</para>
+      </sect3>
+
+      <sect3 id="csdi">
+        <title>Interface à document unique contrôlé (CSDI)</title>
+        <para>Dans une application SDI type, les fenêtres document sont traitées en tant que fenêtres principales. Par exemple, quand l'ensemble des fenêtres document ont été fermées, l'application (y compris les fenêtres utilitaires) se ferment également. Dans une interface CSDI, une fenêtre utilitaire est considérée comme fenêtre principale. Par exemple, la fermeture de cette fenêtre utilitaire ferme toutes les fenêtres document et quitte l'application.</para>
+
+        <warning><para>L'utilisation d'interface CSDI n'est <emphasis role="bold">pas</emphasis> recommandée.</para></warning>
+
+        <para>Les interfaces CSDI sont parfois utilisées parce que les fenêtres document sont trop petites pour posséder des barres de menu. Ce n'est habituellement pas le cas normal d'utilisation des applications, mais cela pourrait représenter une minorité non négligeable. Par exemple, si un éditeur d'image est utilisé pour modifier les petits éléments graphiques d'une page Web, il pourrait souvent en résulter de très petites fenêtres document qui ne peuvent même pas être accompagnées d'une barre de titre.</para>
+
+        <remark>We should really have a way of doing overflow automatically
+                in GTK+.</remark>
+
+        <para>Le meilleur moyen pour résoudre ce problème est de permettre aux éléments de barres de menus de se « rassembler » dans un bouton de dépassement, tout comme les boutons de barres d'outils font lorsque la largeur de la fenêtre est trop petite pour accueillir tous les boutons de la barre d'outils. Cela autorise les petites fenêtres tout en suggérant à l'utilisateur l'endroit où ont été rangés les éléments de menu.</para>
+
+        <tip><para>Notez que si votre application a comme <emphasis>principale</emphasis> utilisation le traitement de tous petits éléments, vous devriez rechercher un moyen d'éviter complètement les fenêtres. La fenêtre n'est pas l'interface efficace pour traiter un grand nombre de petits éléments. Pensez à rechercher un système d'agencement fixe ou automatique de présentation des « documents ». Considérez également que, si les « documents » étaient regroupés dans une entité de plus haut niveau, ce regroupement pourrait dans ce cas devenir le document.</para></tip>
+      </sect3>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="windows-utility">
+    <title>Fenêtres utilitaires</title>
+
+    <para>Les fenêtres utilitaires, telles que les palettes et les boîtes à outils, possèdent normalement des encadrements. Elles ne contiennent ni barre de menus, ni barre d'outils, ni barre d'état.</para>
+    <para>Une fenêtre utilitaire ne doit pas apparaître dans la liste des fenêtres du tableau de bord à moins que ce ne soit la seule fenêtre affichée par l'application. Par contre, la fenêtre utilitaire doit apparaître au dessus de l'application lorsque la fenêtre de l'application est elle-même sélectionnée parmi la liste des fenêtres.</para>
+
+    <sect2 id="windows-instant-apply">
+      <title>Fenêtres à application immédiate</title>
+
+      <para>Pour les fenêtres permettant à l'utilisateur de modifier des valeurs ou des réglages, telles que les fenêtres de propriétés ou de préférences, mettez à jour ces valeurs ou réglages immédiatement pour refléter les modifications dans la fenêtre. Ce fait est connu en anglais sous le terme « instant apply (application immédiate) ». N'obligez pas l'utilisateur à cliquer sur un bouton <guibutton>Valider</guibutton> ou <guibutton>Appliquer</guibutton> pour rendre les modifications effectives à moins que :</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>les modifications ne prennent plus d'une seconde à s'exécuter, car, dans ce cas, l'application des modifications pourrait donner l'impression que le système est lent ou ne répond pas,</para>
+        </listitem>
+
+        <listitem>
+          <para>les modifications de la fenêtre doivent être appliquées simultanément pour éviter que le système n'entre potentiellement dans un état instable. Par exemple, les champs de nom d'hôte et de serveur mandataire dans une fenêtre des propriétés de réseau.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Si l'une ou l'autre de ces conditions n'affectent qu'un nombre limité de contrôles dans la fenêtre, rassemblez ces contrôles dans un ou plusieurs groupes, chacun d'entre eux possédant son propre bouton <guibutton>Appliquer</guibutton>. Laissez le reste des autres contrôles en application immédiate.</para>
+
+      <remark>FIXME: screenshot of such a window here</remark>
+
+	<itemizedlist>
+		<title>Conseils</title>
+		
+        	<listitem><para>N'essayez pas de valider ou d'appliquer les changements résultant des modifications d'un contrôle de saisie avant que l'utilisateur n'ait déplacé le focus vers un autre contrôle de la fenêtre ou bien que la fenêtre ne soit fermée. Une validation après chaque appui sur une touche est généralement agaçante et inutile. Une exception : si le champ n'accepte qu'un nombre fixé de caractères, comme un code hexadécimal de couleur, validez et appliquez la modification dès que le nombre correct de caractères a été saisi.</para></listitem>
+		<listitem><para>Lorsque l'utilisateur déplace le focus vers un autre contrôle, n'indiquez pas une entrée non valide en affichant un message d'avertissement ou en annulant la modification que l'utilisateur a effectuée. Ces deux façons de faire sont particulièrement perturbantes pour les utilisateurs qui utilisent le focus sous le pointeur ; pour ces utilisateurs, le focus peut quitter le contrôle plus souvent que dans le cas d'un utilisateur qui clique pour recevoir le focus.</para></listitem>
+	</itemizedlist>
+	<remark>We need to suggest what to do here, instead of just saying what not to do.</remark>
+      </sect2>
+
+	<sect2 id="windows-explicit-apply">
+		<title>Fenêtres à application explicite</title>
+      <para>Si la plupart des contrôles de votre fenêtre ne sont pas adaptés à une application immédiate, songez à rendre la totalité de la fenêtre à « application explicite ». Une fenêtre à application explicite dispose de trois boutons dans sa boîte de groupement, plus en option le bouton <guibutton>Aide</guibutton> :</para>
+
+      <itemizedlist>
+        <listitem>
+          <formalpara>
+            <title>Appliquer</title>
+
+            <para>Applique tous les réglages de la fenêtre, mais ne la ferme pas au cas où l'utilisateur souhaiterait changer d'avis.</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Annuler</title>
+
+            <para>Annule tous les réglages de la fenêtre et revient à ceux en cours lors de l'ouverture de la fenêtre. Remarque : cela doit annuler les effets de tous les clics sur le bouton <guibutton>Appliquer</guibutton> depuis l'ouverture de la fenêtre et non uniquement le plus récent.</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Valider</title>
+
+            <para>Applique tous les réglages de la fenêtre et ferme la fenêtre.</para>
+          </formalpara>
+        </listitem>
+      </itemizedlist>
+
+      <figure id="explicit-apply-figure">
+        <title>Boutons dans une fenêtre à application explicite</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="55" fileref="images/windows-explicit-apply.png" format="PNG" width="387"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-explicit-apply.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot showing correct positions for Help, Apply,
+            Cancel and OK buttons in a dialog</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <remark>FIXME: better example of such a window here</remark>
+    </sect2>
+
+    <sect2 id="default-buttons">
+      <title>Boutons par défaut</title>
+
+      <para>Lorsque vous concevez une boîte de dialogue ou une fenêtre utilitaire, vous pouvez associer la touche <keycap>Entrée</keycap> à l'activation d'un bouton particulier de la fenêtre. GNOME indique ce bouton à l'utilisateur en dessinant une bordure différente autour de celui-ci. Par exemple le bouton <guibutton>Aide</guibutton> sur la figure <xref linkend="explicit-apply-figure"/>.</para>
+
+      <para>Choisissez comme bouton par défaut celui qui correspond à l'action la plus probable, telle qu'une action de confirmation ou une action qui applique les modifications dans les fenêtres utilitaires. Ne choisissez pas comme bouton par défaut, un bouton dont l'action est irréversible, destructive ou bien inopportune pour l'utilisateur. Si aucun bouton n'est approprié dans votre fenêtre comme bouton par défaut, n'en paramétrez aucun.</para>
+
+      <para>En particulier, il n'est actuellement <emphasis>pas</emphasis> recommandé de paramétrer le bouton <guibutton>Fermer</guibutton> comme bouton par défaut dans une fenêtre à <link linkend="windows-instant-apply">application immédiate</link> ; cela pourrait amener les utilisateurs à fermer la fenêtre accidentellement avant d'avoir fini de l'utiliser.</para>
+    </sect2>
+
+    <sect2 id="property-windows">
+      <title>Fenêtres Propriétés</title>
+
+      <para>Les fenêtres Propriétés permettent à l'utilisateur d'afficher et de modifier les caractéristiques d'un objet tel qu'un document, un fichier, un dessin ou un lanceur d'application.</para>
+
+      <figure>
+        <title>Exemple de fenêtres de propriétés</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-properties.png" format="PNG" width="302" depth="335"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-properties.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot showing the "file properties" window
+            from Nautilus</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <formalpara>
+        <title>Format du titre :</title>
+
+        <para>Propriétés de <replaceable>nom de l'objet</replaceable></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Commandes de la fenêtre :</title>
+
+        <para>Fermer, minimiser, enrouler/dérouler</para>
+      </formalpara>
+
+      <formalpara>
+        <title>Boutons :</title>
+
+        <para>Placez un bouton <guibutton>Fermer</guibutton> dans l'angle inférieur droit. Il est possible de mettre un bouton <guibutton>Aide</guibutton> dans l'angle inférieur gauche.</para>
+      </formalpara>
+    </sect2>
+
+    <sect2 id="preference-windows">
+      <title>Fenêtres Préférences</title>
+
+      <para>Les fenêtres Préférences permettent à l'utilisateur de modifier l'apparence d'une application ainsi que la façon dont elle se comporte.</para>
+      <remark>Much more information needed here!</remark>
+
+      <figure>
+        <title>Exemple d'une fenêtres préférences</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="249" fileref="images/windows-preferences.png" format="PNG" width="354"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-preferences.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot showing the Gnibbles preferences window</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <formalpara>
+        <title>Format du titre :</title>
+
+        <para>Préférences de <replaceable>nom de l'application</replaceable></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Commandes de la fenêtre :</title>
+
+        <para>Fermer, minimiser, enrouler/dérouler</para>
+      </formalpara>
+
+      <formalpara>
+        <title>Boutons :</title>
+
+        <para>Placez un bouton <guibutton>Fermer</guibutton> dans l'angle inférieur droit. Il est possible de mettre un bouton <guibutton>Aide</guibutton> dans l'angle inférieur gauche.</para>
+      </formalpara>
+
+      <sect3 id="preference-windows-overriding-colors">
+        <title>Personnalisation des polices et des couleurs</title>
+
+	<para>Si votre fenêtre préférences permet à l'utilisateur de personnaliser les polices et les couleurs, utilisez les termes et dispositions suivants comme guide pour ces contrôles :</para>
+	
+	<example>
+		<title>Termes recommandés pour modifier des éléments du thème - à remplacer par une capture d'écran</title>	
+		<programlisting>
+	(o) Utiliser la police du thème
+	(o) Utiliser cette police : [ Sélecteur de police ]
+
+	(o) Utiliser les couleurs du thème
+	(o) Utiliser ces couleurs :
+		Arrière-plan: [ Sélecteur de couleur ]
+		Couleur de police: [ Sélecteur de couleur ]
+		</programlisting>
+	</example>
+
+	<para>La terminologie des boutons radio peut être encore plus précise là où c'est requis, par exemple, « Utiliser la police à chasse fixe du thème » ou « Utiliser la couleur d'arrière-plan du thème ».</para>
+      </sect3>
+
+    </sect2>
+
+    <sect2 id="toolbox-windows">
+      <title>Boîtes à outils</title>
+
+      <para>Une boîte à outils fournit un accès pratique à un ensemble d'actions ou de bascules à travers un ensemble de petits boutons style barre à outils. Les boîtes à outils peuvent être utilisées pour fournir un regroupement spécialisé d'outils pour compléter une barre d'outils contenant des éléments plus généraux tels que des boutons <guibutton>Enregistrer</guibutton> et <guibutton>Ouvrir</guibutton>. Une boîte à outils peut être partagée entre plusieurs documents pour gagner de la place à l'écran.</para>
+
+      <figure id="toolbox-figure">
+        <title>Un exemple de boîte à outils</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="89" fileref="images/windows-toolbox-small.png" format="PNG" width="136"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-toolbox-small.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>A screenshot of a toolbox with eight buttons arranged into
+            two rows</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <formalpara>
+        <title>Format du titre :</title>
+
+        <para>Les boîtes à outils n'ont pas de titre</para>
+      </formalpara>
+
+      <remark>How then does a screenreader user differentiate between
+      toolboxes? --Calum.</remark>
+
+      <remark>ATK hints? How does Windows do this (or does it) ? There's
+      not room for a title bar. Maybe we can have apps set the title bar but
+      teach the WM to not draw it or something. In any case, for sighted users
+      there's not even *room* for a titlebar in a toolbox. -Seth</remark>
+
+      <remark>A toolbox still needs to have an appropriate accessible
+      description, so a screenreader user hears some information about its
+      content when they focus it. -Calum</remark>
+
+      <remark>I think having the title set but having the WM ignore it might
+      be the best way to do this? I'll talk to Havoc. -Seth</remark>
+
+      <formalpara>
+        <title>Commandes de la fenêtre :</title>
+
+        <para>Fermer, enrouler/dérouler</para>
+      </formalpara>
+
+      <formalpara>
+        <title>Boutons :</title>
+
+        <para>Les boîtes à outils n'ont pas de boutons</para>
+      </formalpara>
+
+      <formalpara>
+        <title>Redimensionnement :</title>
+
+        <para>Il faut que les boîtes à outils puissent être redimensionnées, mais uniquement par multiples entiers de la longueur des éléments de la boîte à outils. Autrement dit, l'utilisateur peut configurer la taille de la boîte à outils à un, deux ou trois éléments de large, etc. mais pas une fois et demie.</para>
+      </formalpara>
+
+      <itemizedlist>
+        <title>Conseils</title>
+
+        <listitem>
+          <para>Ne mettez pas de boutons qui ouvrent une autre fenêtre dans une boîte à outils.</para>
+        </listitem>
+
+        <listitem>
+          <para>Il est préférable d'utiliser les boîtes à outils pour des boutons de changement de mode, boutons qui modifient la nature de l'opération réalisable avec la souris dans le document, tel qu'un jeu de boutons pour sélectionner entre un pinceau, une gomme ou des modes de remplissage dans une application de dessin. Les boutons qui lancent des actions lorsqu'ils sont pressés (comme un bouton enregistrer) sont plus à leur place dans les barres d'outils.</para>
+        </listitem>
+
+        <listitem>
+          <para>Assurez-vous que la fermeture d'une boîte à outils ne ferme ou ne modifie aucune des fenêtres principales auxquelles elle est associée.</para>
+        </listitem>
+
+        <listitem>
+          <para>Ne placez pas les boîtes à outils dans la liste des fenêtres du système. Les boîtes à outils doivent toujours rester au dessus de toutes les fenêtres principales auxquelles elles sont associées.</para>
+        </listitem>
+
+        <listitem>
+          <para>Si toutes les fenêtres principales associées à une boîte à outils sont fermées ou minimisées, masquez la boîte à outils également. Affichez la boîte à outils à nouveau dès qu'une des fenêtres principales est ouverte ou restaurée.</para>
+        </listitem>
+
+        <listitem>
+          <para>Faites des boîtes à outils de deux éléments sur la largeur par défaut, excepté si elle est divisée en <link linkend="toolbox_windows_categories">catégories</link> ; dans ce dernier cas, faites des boîtes à outils de quatre éléments sur la largeur par défaut.</para>
+        </listitem>
+      </itemizedlist>
+
+      <sect3 id="toolbox_windows_categories">
+        <title>Boîte à outils à catégories</title>
+
+        <para>Même si les boîtes à outils à catégories ne sont pas visuellement aussi séduisantes qu'une boîte à outils remplie de manière homogène avec de belles icônes, elles facilitent la gestion des grosses boîtes à outils. Pointer sur une petite icône parmi plus de quinze autres éléments est une tâche difficile. De plus, les catégories permettent aux utilisateurs de masquer des groupes d'outils qui ne sont pas pertinents pour la tâche en cours.</para>
+
+        <figure id="example-toolbox-figure">
+          <title>Une grande boîte à outils divisée en catégories</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="156" fileref="images/windows-toolbox-large.png" format="PNG" width="136"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/windows-toolbox-large.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase/>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <itemizedlist>
+          <title>Conseils</title>
+
+          <listitem>
+            <para>Divisez en catégories les boîtes à outils qui possèdent plus de seize éléments. La meilleure taille pour une catégorie se situe entre quatre et dix éléments.</para>
+          </listitem>
+
+          <listitem>
+            <para>Donnez à chaque catégorie une étiquette et une flèche d'enroulement/déroulement. En cliquant sur l'étiquette ou la flèche, les boutons de la catégorie sont alternativement masqués ou apparents.</para>
+          </listitem>
+        </itemizedlist>
+      </sect3>
+    </sect2>
+
+    <!-- FIXME - should eventually give general guidelines for other sorts of utility window
+    <sect2 id="other-windows">
+      <title>Other</title>
+      <para>FIXME</para>
+    </sect2>
+    -->
+  </sect1>
+
+  <sect1 id="windows-alert">
+    <title>Alertes</title>
+
+    <para>Une alerte fournit des informations sur l'état de l'application ou demande des informations essentielles sur la manière de réaliser une tâche particulière. Elle se distingue des autres types de fenêtre par le fait qu'elle n'est pas directement demandée par l'utilisateur et qu'elle contient habituellement un message ou une question plutôt que des contrôles modifiables. Comme les alertes sont des intrusions importunes dans le travail de l'utilisateur, ne les utilisez pas à moins que cela ne soit nécessaire pour éviter des éventuelles pertes de données ou d'autres problèmes importants.</para>
+
+    <para>Une alerte possède une bordure similaire à celle d'une boîte de dialogue et est un objet modal.</para>
+    <para>Une alerte ne doit pas apparaître dans la liste des fenêtres du tableau de bord à moins qu'elle ne soit, ou puisse être, la seule fenêtre affichée par l'application. Par exemple, une alerte concernant un rappel de rendez-vous peut être affichée après que la fenêtre principale de l'application calendrier a été fermée.</para>
+    <para>De plus, une alerte doit apparaître au dessus de l'application lorsque la fenêtre de l'application elle-même est sélectionnée dans la liste des fenêtres.</para>
+
+    <figure id="example-alert-figure">
+      <title>Un exemple d'alerte</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/windows-alert-information.png" width="251" depth="123" format="PNG"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/windows-alert-information.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>An example of an alert, showing the text "You have an
+          appointment with George Wells in 15 minutes", and with an OK
+          button to dismiss the window.</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!--<remark>FIXME: need to redo the spacing and icons in the alert shots. I think I have a glade file for these somewhere. -Seth</remark>-->
+
+    <formalpara>
+      <title>Format du titre</title>
+
+      <para>Les fenêtres d'alerte ne possèdent pas de titre car le titre ne ferait que dupliquer inutilement le texte principal de l'alerte. De cette manière, les utilisateurs peuvent lire et répondre à l'alerte plus rapidement car il y a moins de bruit visuel et de texte confus.</para>
+    </formalpara>
+
+    <remark>Without a title, how does a screenreader user identify an alert
+    window? -Calum</remark>
+
+    <remark>The screen-reader finds out its an alert (do we need a WM
+    mechanism for this?) and reads the primary text to identify the alert. The
+    whole point for removing the title is that its redundant with the primary
+    text, and puts more crap on the screen to be read. This problem applies
+    double to users with screenreaders (i.e. reducing extra crap helps them
+    even more). -Seth</remark>
+
+    <remark>An alert still needs to have an appropriate accessible description
+    (perhaps the primary text of the alert itself?), so a screenreader user
+    hears some information about its content when they focus it. -Calum</remark>
+
+    <remark>I'll talk to Havoc about this. -Seth</remark>
+
+    <formalpara>
+      <title>Redimensionnement</title>
+
+      <para>Les fenêtres d'alerte ne peuvent pas être redimensionnées. Si l'utilisateur a besoin de les redimensionner, c'est que le texte n'est probablement pas assez concis.</para>
+    </formalpara>
+
+    <formalpara>
+      <title>Commandes de la fenêtre :</title>
+
+      <para>Aucune</para>
+    </formalpara>
+
+    <caution>
+      <title>Les alertes doivent être disposées au dessus de leur parent</title>
+
+      <para>Les alertes n'apparaissent pas dans la liste des fenêtres du système. En conséquence, prenez bien soin de vérifier que les alertes sont au dessus de leur fenêtre parent. Sinon les utilisateurs perdront probablement l'alerte et trouveront que votre application ne répond plus sans raison apparente. Les fenêtres modales doivent toujours rester au dessus des fenêtres qu'elles bloquent.</para>
+    </caution>
+
+    <!--    
+    <para role="library-problem">Buttons in GTK dialogues end up the same size (sized to the button with the longest text label). This is wrong, and looks bad.</para>
+    <para role="library-problem">Automatic wrapping of labels happens at funny places and ends up looking wrong. Labels should wrap before the last whole word that does not fit in the allotted space.</para> 
+      -->
+
+    <!--
+  <para>FIXME - reduced or no frame; one or two buttons: <guibutton>OK</guibutton> for informing alerts, and effectively <guibutton>Cancel</guibutton> and <guibutton>OK</guibutton> for confirmation. No other controls: especially not the "Do not show this again" checkbutton. Perhaps locally modal, rarely globally modal.</para>
+    -->
+
+    <sect2 id="alert-text">
+      <title>Texte d'alerte</title>
+
+      <para>Une alerte peut contenir à la fois un texte principal et un texte secondaire. Le texte principal résume brièvement la situation. Le texte secondaire fournit des informations supplémentaires.</para>
+
+	<para>À la fois, le texte principal et le texte secondaire doivent pouvoir être sélectionnés. Cela facilite pour l'utilisateur la copie et le collage du texte dans une autre fenêtre telle qu'un message de courriel.</para>
+
+      <figure id="alert-text-figure">
+        <title>Positionnement du texte principal et secondaire</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-alert-text.png" width="446" depth="178" format="PNG"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-alert-text.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot of an alert showing example of primary text in
+            bold, and secondary text in a smaller font underneath.</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <formalpara>
+        <title>Texte principal</title>
+
+        <para>Le texte principal fournit à l'utilisateur en une seule phrase un résumé de l'information ou de l'action suggérée. Ce résumé doit contenir de manière concise les détails essentiels concernant le problème ou la suggestion. Toutes les alertes possèdent un texte principal, affiché avec une police grasse plus grande que celle par défaut. La ponctuation du texte principale est dans le style de celui d'un « titre de journal », c'est-à-dire, il ne possède pas de point terminal mais il peut se terminer par un point d'interrogation.</para>
+      </formalpara>
+
+      <para role="technical-note">Denote primary text with the pango markup:
+      <programlisting>&lt;span weight="bold"
+      size="larger"&gt;<replaceable>Primary Text</replaceable>&lt;/span&gt;</programlisting></para>
+
+      <formalpara>
+        <title>Texte secondaire</title>
+
+        <para>Le texte secondaire fournit une description un peu plus approfondie du problème et de l'action suggérée, y compris les possibles effets collatéraux. Il peut également fournir des informations susceptibles d'aider l'utilisateur à prendre une décision de manière avertie. Dans la plupart des situations, l'utilisateur ne devrait avoir besoin que du texte principal pour prendre une décision rapide, mais il peut lire le texte secondaire s'il n'est pas sûr du moyen d'action correct ou s'il a besoin de détails supplémentaires. Le texte secondaire est optionnel mais, s'il est utilisé, positionnez-le à une distance égale à la hauteur d'une ligne en dessous du texte principal en utilisant la taille et la graisse de la police par défaut.</para>
+      </formalpara>
+    </sect2>
+
+    <sect2 id="alert-button-order">
+      <title>Boutons d'alerte</title>
+
+      <para>Placez dans toutes les alertes un bouton de confirmation qui ferme l'alerte et réalise l'action suggérée par le texte principal. Mettez un bouton <guibutton>Annuler</guibutton> pour toutes les alertes affichées en réponse aux actions de l'utilisateur, tel que <guimenuitem>Quitter</guimenuitem>. Si l'alerte concerne un problème technique ou autre situation qui pourrait provoquer des pertes d'informations, placez un bouton <guibutton>Aide</guibutton> donnant plus d'informations sur la situation particulière et expliquant les possibilités offertes à l'utilisateur. Vous pouvez également mettre des boutons pour réaliser des actions alternatives offrant des variantes possibles, résolvant des problèmes potentiels ou bien ouvrant des boîtes de dialogue ou des programmes en relation.</para>
+
+      <figure id="alert-buttons-figure">
+        <title>Ordre et positionnement des boutons pour les alertes</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-alert-buttons.png" format="PNG" width="425" depth="62"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-alert-buttons.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot showing ordering and placement of alert
+            buttons: Help button in bottom left, and Alternate, Cancel and
+            Affirmative buttons in bottom right.</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <formalpara>
+        <title>Rédaction des intitulés de boutons</title>
+
+        <para>En anglais, rédigez les étiquettes de boutons avec des verbes à l'impératif, par exemple <guibutton>Save (Enregistrer)</guibutton>, <guibutton>Print (Imprimer)</guibutton>. Cela permet aux utilisateurs de choisir l'action avec moins d'hésitations. Également, la forme active, contrairement à la passive, est mieux adaptée au rôle du bouton qui est d'initier une action. Par exemple, <guibutton>Find (Chercher)</guibutton> et <guibutton>Log In (Se connecter)</guibutton> sont des boutons plus explicites que <guibutton>Yes (Oui)</guibutton> et <guibutton>OK (Valider)</guibutton>.</para>
+      </formalpara>
+
+      <itemizedlist>
+        <listitem>
+          <formalpara>
+            <title>Bouton de confirmation</title>
+
+            <para>Placez le bouton de confirmation dans l'angle inférieur droit de l'alerte. Le bouton de confirmation accepte l'action proposée par l'alerte ou simplement ferme l'alerte si aucune action n'est suggérée (comme c'est le cas pour une <link linkend="alerts-information">alerte informative</link>).</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Bouton Annuler</title>
+
+            <para>Si l'alerte a été provoquée en réponse à une action de l'utilisateur, placez un bouton <guibutton>Annuler</guibutton> immédiatement à la gauche du bouton de confirmation. Ce bouton d'annulation est un échappatoire pour les utilisateurs ; il permet de stopper l'action en réponse à une nouvelle information ou simplement en cas de clic accidentel. Un clic sur le bouton <guibutton>Annuler</guibutton> remet l'application dans l'état précédant l'action de l'utilisateur.</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Bouton Aide</title>
+
+            <para>Un bouton <guibutton>Aide</guibutton> peut s'utiliser pour expliciter les alertes qui avertissent d'options potentiellement destructrices. Placez le bouton <guibutton>Aide</guibutton> dans l'angle inférieur gauche de l'alerte. Lorsqu'il est cliqué, une fenêtre d'aide s'ouvre éclairant la situation, détaillant les actions inférées par les autres boutons et expliquant tout effet collatéral induit par chaque action.</para>
+          </formalpara>
+        </listitem>
+
+        <listitem>
+          <formalpara>
+            <title>Autres boutons</title>
+
+            <para>Des boutons supplémentaires peuvent s'utiliser pour fournir une alternative à l'action principale proposée par le texte de l'alerte. Placez ces boutons à gauche du bouton <guibutton>Annuler</guibutton> ou du bouton de confirmation si le bouton <guibutton>Annuler</guibutton> n'existe pas. Un exemple trivial d'action alternative est donné par le bouton <guibutton>Quitter sans enregistrer</guibutton> dans une alerte de confirmation d'enregistrement. C'est une alternative à l'action principale suggérée <guibutton>Enregistrer</guibutton> et au bouton <guibutton>Annuler</guibutton>.</para>
+          </formalpara>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2 id="alert-spacing">
+      <title>Espacement et positionnement dans les fenêtres d'alertes</title>
+
+      <para>L'utilisation d'un espacement clair et cohérent dans les alertes rend le message plus facile à comprendre et les réponses disponibles plus évidentes.</para>
+
+      <figure id="alert-spacing-figure">
+        <title>Espacement dans une fenêtre d'alerte</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-alert-spacing.png" format="PNG" width="530" depth="250"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-alert-spacing.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Diagram showing correct spacing to use between controls
+            and buttons in an alert window. This is detailed in the guidelines
+            below.</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <itemizedlist>
+        <title>Conseils</title>
+
+        <listitem>
+          <para>La bordure sur les côtés de la fenêtre d'alerte, de même qu'espacement entre icône et texte, ont une largeur de 12 pixels.</para>
+        </listitem>
+
+        <listitem>
+          <para>L'espacement horizontal entre boutons est de 6 pixels.</para>
+        </listitem>
+
+        <listitem>
+          <para>Ajoutez un saut de ligne de la taille de la police standard au dessous à la fois du texte principal et du texte secondaire, ou bien de 24 pixels si vous utilisez Glade.</para>
+        </listitem>
+
+        <listitem>
+          <para>Alignez le haut de l'icône avec le haut du texte principal.</para>
+        </listitem>
+
+        <listitem>
+          <para>Alignez à gauche le texte du message pour les langues occidentales.</para>
+        </listitem>
+      </itemizedlist>
+
+      <tip>
+        <title>Détails techniques pour un agencement correct</title>
+
+        <para>Créez une nouvelle fenêtre GtkDialog en précisant le nombre de boutons que vous souhaitez que l'alerte contienne (et un bouton d'aide si nécessaire). L'objet GtkDialog contient un conteneur GtkVBox avec la ligne du haut vide et celle du bas contenant un objet GtkButtonBox contenant lui-même les boutons. Dans la partie vide du haut, placez un nouveau conteneur GtkHBox. Dans la colonne de gauche du GtkHBox, placez un objet GtkImage. Dans la colonne de droite du GtkHBox, placez un objet GtkLabel. À l'intérieur du GtkLabel, placez le <replaceable>texte principal</replaceable> d'abord (avec la balise Pango appropriée, consultez la <xref linkend="alert-text"/>), puis deux retours à la ligne (Entrée), puis placez le <replaceable>texte secondaire</replaceable>. Ensuite modifiez les propriétés de chaque contrôle selon ce tableau :</para>
+
+        <table frame="topbot" pgwide="0">
+          <title>Propriétés du GtkDialog</title>
+
+          <tgroup align="left" cols="2" colsep="0" rowsep="0">
+            <thead>
+              <row valign="top">
+                <entry>Propriété</entry>
+
+                <entry>Valeur</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Titre</entry>
+
+                <entry>(aucun)</entry>
+              </row>
+
+              <row>
+                <entry>Largeur de bordure</entry>
+
+                <entry>6</entry>
+              </row>
+
+              <row>
+                <entry>Type</entry>
+
+                <entry>Premier niveau</entry>
+              </row>
+
+              <row>
+                <entry>Redimensionnable</entry>
+
+                <entry>Non</entry>
+              </row>
+
+              <row>
+                <entry>Has Separator</entry>
+
+                <entry>Non</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <table frame="topbot" pgwide="0">
+          <title>Propriétés du GtkVBox (inclus par défaut dans la boîte de dialogue)</title>
+
+          <tgroup align="left" cols="2" colsep="0" rowsep="0">
+            <thead>
+              <row valign="top">
+                <entry>Propriété</entry>
+
+                <entry>Valeur</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Espacement</entry>
+
+                <entry>12</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <table frame="topbot" pgwide="0">
+          <title>Propriétés du GtkHBox</title>
+
+          <tgroup align="left" cols="2" colsep="0" rowsep="0">
+            <thead>
+              <row valign="top">
+                <entry>Propriété</entry>
+
+                <entry>Valeur</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Espacement</entry>
+
+                <entry>12</entry>
+              </row>
+
+              <row>
+                <entry>Largeur de bordure</entry>
+
+                <entry>6</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <table frame="topbot" pgwide="0">
+          <title>Propriétés du GtkImage</title>
+
+          <tgroup align="left" cols="2" colsep="0" rowsep="0">
+            <thead>
+              <row valign="top">
+                <entry>Propriété</entry>
+
+                <entry>Valeur</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Alignement Y</entry>
+
+                <entry>0.00</entry>
+              </row>
+
+              <row>
+                <entry>Taille d'icône</entry>
+
+                <entry>Dialogue</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <table frame="topbot" pgwide="0">
+          <title>Propriétés pour le GtkLabel</title>
+
+          <tgroup align="left" cols="2" colsep="0" rowsep="0">
+            <thead>
+              <row valign="top">
+                <entry>Propriété</entry>
+
+                <entry>Valeur</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Utilisation de balise</entry>
+
+                <entry>Oui</entry>
+              </row>
+
+              <row>
+                <entry>Retour à la ligne du texte</entry>
+
+                <entry>Oui</entry>
+              </row>
+
+              <row>
+                <entry>Alignement Y</entry>
+
+                <entry>0.00</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </tip>
+    </sect2>
+
+    <sect2 id="alerts-information">
+      <title>Alertes informatives</title>
+
+      <para>Utilisez une alerte informative lorsque l'utilisateur doit prendre connaissance d'informations affichées avant de continuer ou lorsqu'il a précisément demandé des informations. Présentez les informations moins importantes par d'autres biais tels qu'un message de barre d'état.</para>
+
+      <figure id="information-alert-figure">
+        <title>Une alerte informative</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="123" fileref="images/windows-alert-information.png" format="PNG" width="251"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-alert-information.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase/>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <itemizedlist>
+        <title>Une alerte informative...</title>
+
+        <listitem>
+          <para>utilise l'icône information de la collection (stock icon),</para>
+        </listitem>
+
+        <listitem>
+          <para>présente un message qui peut être sélectionné et un bouton <guibutton>OK (Valider)</guibutton>. Le bouton est placé dans le coin inférieur droite de l'alerte. Un appui sur <keysym>Entrée</keysym> ou <keysym>Échap</keysym> ferme l'alerte.</para>
+        </listitem>
+
+        <listitem>
+          <para>peut être munie d'un bouton pratique qui donne accès à un objet pertinent. Par exemple, un bouton <guibutton>Détails</guibutton> dans une alerte de rappel de rendez-vous qui ouvre une fenêtre des caractéristiques du rendez-vous. Placez ce bouton à gauche du bouton de confirmation.</para>
+
+          <!-- FIXME: Reword -->
+        </listitem>
+      </itemizedlist>
+
+      <formalpara>
+        <title>Commandes de la fenêtre :</title>
+
+        <para>Enrouler/Dérouler, Minimiser (si l'alerte ne possède pas de fenêtre parent), Fermer</para>
+      </formalpara>
+    </sect2>
+
+    <sect2 id="alerts-error">
+      <title>Alertes d'erreur</title>
+
+      <para>Affichez une alerte d'erreur lorsqu'une opération demandée par l'utilisateur ne peut pas être réalisée avec succès. Présentez les erreurs causées par des opérations non demandées par l'utilisateur d'une autre manière à moins que l'erreur ne puisse provoquer des pertes de données ou d'autres problèmes sérieux. Par exemple, une erreur rencontrée pendant une vérification de présence de courriels initiée par l'utilisateur en cliquant un bouton de la barre d'outils doit être affichée à l'aide d'une alerte d'erreur. Cependant il est plus approprié de présenter une erreur rencontrée dans une vérification automatique et périodique du courriel par un message dans la barre d'état.</para>
+
+      <figure id="error-alert-figure">
+        <title>Une alerte d'erreur</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-alert-error.png" width="287" depth="156" format="PNG"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-alert-error.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase/>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <itemizedlist>
+        <title>Une alerte d'erreur...</title>
+
+        <listitem>
+          <para>utilise l'icône erreur de la collection (stock icon),</para>
+        </listitem>
+
+        <listitem>
+          <para>présente un message qui peut être sélectionné et un bouton <guibutton>OK (Valider)</guibutton>. Le bouton est placé dans le coin inférieur droit de l'alerte. Un appui sur <keysym>Entrée</keysym> peut fermer l'alerte d'erreur.</para>
+        </listitem>
+
+        <listitem>
+          <para>peut être muni d'un bouton pratique pour permettre la gestion immédiate de l'erreur. Par exemple, un bouton <guibutton>Format...</guibutton> dans une alerte « Le disque n'est pas formaté ». Placez ce bouton à gauche du bouton de confirmation.</para>
+        </listitem>
+      </itemizedlist>
+
+      <formalpara>
+        <title>Commandes de la fenêtre :</title>
+
+        <para>Enrouler/Dérouler</para>
+      </formalpara>
+    </sect2>
+
+    <sect2 id="alerts-confirmation">
+      <title>Alertes de confirmation</title>
+
+      <para>Présentez une alerte de confirmation lorsque la commande de l'utilisateur peut supprimer des données, créer un risque au niveau de la sécurité ou nécessiter plus de 30 secondes de travail de l'utilisateur pour retrouver l'état initial si la commande résulte d'une erreur.</para>
+
+      <figure id="confirmation-alert-figure">
+        <title>Une alerte pour confirmation</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-alert-confirmation.png" contentwidth="450" contentdepth="162" format="PNG"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-alert-confirmation.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase/>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <itemizedlist>
+        <title>Une alerte pour confirmation...</title>
+
+        <listitem>
+          <para>utilise l'icône avertissement de la collection (stock icon),</para>
+        </listitem>
+
+        <listitem>
+          <para>présente un message pouvant être sélectionné avec, soit un bouton étiqueté d'un verbe ou d'une phrase verbale décrivant l'action à confirmer, soit le bouton <guibutton>OK (Valider)</guibutton> si l'étiquette nécessite plus de trois mots. Ce bouton est placé dans l'angle inférieur droit de l'alerte.</para>
+        </listitem>
+
+        <listitem>
+          <para>présente un bouton <guibutton>Annuler</guibutton> qui empêche l'exécution de la commande de l'utilisateur. Ce bouton est placé immédiatement à gauche du bouton <guibutton>OK (Valider)</guibutton> ou du bouton équivalent.</para>
+        </listitem>
+
+        <listitem>
+          <para>peut présenter un bouton d'action alternative ou un bouton pratique. Positionnez ce bouton à gauche du bouton <guibutton>Cancel (Annuler)</guibutton>.</para>
+        </listitem>
+      </itemizedlist>
+
+
+      <formalpara>
+        <title>Commandes de la fenêtre :</title>
+
+        <para>Enrouler/Dérouler</para>
+      </formalpara>
+
+      <sect3 id="save-confirmation-alerts">
+        <title>Alertes pour confirmation d'enregistrement</title>
+
+        <para>Les alertes pour confirmation d'enregistrement aident à s'assurer que les utilisateurs ne perdent pas les modifications de leur document lorsqu'ils ferment les applications. Cela rend l'opération de fermeture moins risquée.</para>
+
+        <figure id="save-alert-figure">
+          <title>Une alertes pour confirmation d'enregistrement</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/windows-alert-save.png" width="500" depth="194" format="PNG"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/windows-alert-save.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Save confirmation alert: "[ Close without Saving] [
+              Cancel ] [[ Save ]] "</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <formalpara>
+          <title>Texte principal</title>
+
+          <para>Enregistrer les modifications du document <replaceable>Nom du document</replaceable> avant de fermer ?</para>
+        </formalpara>
+
+        <para>Vous pouvez remplacer <quote>document</quote> par une description plus exacte, par exemple <quote>image</quote> ou <quote>diagramme</quote> si le document en question n'est pas principalement du texte.</para>
+
+        <formalpara>
+          <title>Texte secondaire</title>
+
+          <para>Si vous fermez sans enregistrer, les modifications effectuées lors de la dernière <replaceable>session</replaceable> seront définitivement perdues.</para>
+        </formalpara>
+
+        <para role="explanation">Le texte secondaire indique à l'utilisateur un contexte à propos des modifications qui pourraient être perdues.</para>
+
+        <formalpara>
+          <title>Boutons</title>
+
+          <para><guibutton>Fermer sans enregistrer</guibutton>, <guibutton>Annuler</guibutton>, <guibutton>Enregistrer</guibutton></para>
+        </formalpara>
+      <para>Lorsqu'une alerte de confirmation est nécessaire, affichez-la immédiatement. Si l'utilisateur confirme la fermeture sans enregistrement, masquez l'alerte et le document ou la fenêtre de  l'application immédiatement avant de faire le ménage interne nécessaire. Si l'utilisateur choisit d'enregistrer avant de fermer, masquez l'alerte immédiatement, mais affichez la fenêtre du document jusqu'à ce que l'enregistrement soit terminé au cas où des erreurs apparaîtraient. Masquez la fenêtre du document immédiatement après qu'il a été enregistré avec succès.</para>
+      </sect3>
+    </sect2>
+
+    <sect2 id="alerts-authentication">
+      <title>Alertes d'authentification</title>
+
+      <para>Les alertes d'authentification demandent à l'utilisateur les informations nécessaires pour obtenir l'accès à des ressources protégées, telles que le nom d'utilisateur ou le mot de passe. Les alertes pour authentification sont un type spécial d'alerte : elles sont à la fois habituelles et grandement inévitables. Tout doit être tenté pour retenir aussi longtemps que possible les informations saisies dans une alerte d'authentification tout en respectant les contraintes de sécurité.</para>
+
+      <figure id="authentication-alert-figure">
+        <title>Une alerte d'authentification</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-alert-authentication.png" width="460" depth="279" format="PNG"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-alert-authentication.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase/>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <para><itemizedlist><title>Conseils</title><listitem><para>Utilisez l'icône authentification de la collection (stock icon),</para></listitem><listitem><para>Affichez un champ de saisie avec étiquette pour chaque élément d'information requis. Les champs suggérés sont <guilabel>Nom d'utilisateur</guilabel> et <guilabel>Mot de passe</guilabel> (dans cet ordre) si besoin.</para></listitem><listitem><para>Si le fait de retenir le nom d'utilisateur plus longtemps que le mot de passe n'affecte pas la sécurité, pré-remplissez le champ nom d'utilisateur et donnez le focus au champ du mot de passe à l'affichage de l'alerte.</para></listitem><listitem><para>Affichez, soit un bouton étiqueté à l'aide d'un verbe ou d'une phrase verbale décrivant l'action d'authentification, soit le bouton <guibutton>OK (Valider)</guibutton> s'il n'y a pas d'expression appropriée ou si la longueur de la phrase excède trois mots. Ce bouton est placé dans l'angle inférieur droit de l'alerte.</para></listitem><listitem><para>N'activez pas le bouton <guibutton>Valider</guibutton> ou son équivalent tant que tous les champs requis ne sont pas saisis par l'utilisateur. Souvenez-vous cependant qu'il est possible que tous les champs ne soient pas nécessaires, par exemple un mot de passe vide peut être accepté dans certaines applications.</para></listitem><listitem><para>Affichez un bouton <guibutton>Annuler</guibutton> qui empêche l'authentification et ferme l'alerte. Placez ce bouton immédiatement à gauche du bouton <guibutton>Valider</guibutton> ou de son équivalent.</para></listitem><listitem><para>Placez tout bouton d'action alternative ou bouton pratique à gauche du bouton <guibutton>Annuler</guibutton>.</para></listitem><listitem><para>Lorsque l'utilisateur appuie sur la touche <keycap>Entrée</keycap> dans le dernier champ, activez le bouton par défaut. Lorsque l'utilisateur appuie sur <keycap>Entrée</keycap> dans tout autre champ, placez le focus dans le champ suivant.</para></listitem></itemizedlist></para>
+
+      <formalpara>
+        <title>Commandes de la fenêtre :</title>
+
+        <para>Enrouler/Dérouler</para>
+      </formalpara>
+    </sect2>
+  </sect1>
+
+  <sect1 id="windows-progress">
+    <title>Fenêtres de progression</title>
+
+    <para>Une fenêtre de progression peut être utilisée pour donner un <link linkend="feedback">retour d'informations</link> pendant une opération qui prend plus de quelques secondes. Consultez la <xref linkend="controls-progress-bars"/> pour plus de détails sur un usage correct des barres de progression.</para>
+		
+    <para>Une fenêtre de progression doit toujours apparaître comme une fenêtre indépendante dans une liste de fenêtre. Si la progression d'une tâche rend une fenêtre temporairement inutilisable, ne présentez pas une fenêtre de progression de type boîte de dialogue modale au dessus d'elle. Affichez plutôt la progression quelque part dans la fenêtre originale en rendant tous ses autres éléments temporairement insensibles. Cela aide à réduire l'encombrement visuel.</para>
+
+    <figure id="example-progress-figure">
+      <title>Un exemple de fenêtre de progression</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/windows-progress.png" width="425" depth="159" format="PNG"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/windows-progress.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>An example of a progress window</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <formalpara>
+      <title>Format du titre</title>
+
+      <para>Les fenêtres de progression doivent posséder un titre représentant l'opération complète : par exemple, <guilabel>Copie des fichiers</guilabel>, <guilabel>Installation</guilabel> ou <guilabel>Appel</guilabel>. Tout comme les autres titres de fenêtres, ne les terminez pas par des points de suspension.</para>
+    </formalpara>
+
+    <formalpara>
+      <title>Redimensionnement</title>
+
+      <para>Les fenêtres de progression peuvent être redimensionnables si elles contiennent des informations non statiques que l'utilisateur pourrait vouloir copier (par exemple, l'URL source d'une fenêtre de progression de téléchargement). Sinon elles ne doivent pas être redimensionnables.</para>
+    </formalpara>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Il est souvent préférable d'utiliser la barre de progression contenue dans beaucoup de barres d'état de fenêtres principales plutôt qu'une fenêtre de progression. Consultez la <xref linkend="progress-windows-vs-status-bar"/> pour des détails sur le choix à faire.</para>
+      </listitem>
+
+      <listitem>
+        <para>Les fenêtres de progression doivent utiliser texte principal et secondaire de la même façon qu'une alerte. Consultez la <xref linkend="alert-text"/>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Le texte de la barre de progression doit donner une idée de la quantité de travail déjà effectuée. Il est préférable de fournir une information précise plutôt qu'un pourcentage sans unités. Par exemple, « 13 sur 19 images pivotées » ou « 12,1 sur 30 Mio téléchargés » plutôt que « 13 % de réalisé ».</para>
+      </listitem>
+
+      <listitem>
+        <para>Si possible, une estimation du temps restant avant que l'opération ne soit terminée, doit également être incluse dans le texte de la barre de progression. Indiquez que la « durée restante » est estimée en utilisant le mot « environ ».</para>
+      </listitem>
+
+      <listitem>
+        <para>Immédiatement dessous la barre de progression, placez du texte en italique indiquant la sous-opération actuellement en cours. Cela peut être une étape d'une séquence « Connexion à la tour de contrôle pour obtenir la permission d'atterrir » ou cela peut être l'objet actuellement traité dans une opération volumineuse « Rotation de Monalisa.png », « Rotation de StarryNight.png ».</para>
+      </listitem>
+
+      <listitem>
+        <para>If the operation in progress is potentially hazardous
+        (destructive, costly, etc) or heavily taxes a limited resource for
+        more than ten seconds (network bandwidth, hard disk, CPU, etc),
+        consider placing a <guibutton>Pause</guibutton> <link linkend="controls-toggle-buttons">toggle button</link> to the right of
+        the <guibutton>Cancel</guibutton> button. When paused, the italicized
+        current sub-operation text should have " (Paused)" appended.
+        This will allow users to perform important tasks requiring that
+        resource, or give them time to think whether they want to procede with
+        a dangerous operation they inadvertantly triggered.</para>
+      </listitem>
+    </itemizedlist>
+
+    <figure id="example-complex-progress-figure">
+      <title>Une fenêtre de progression pour une opération de copie de fichier</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/windows-progress-copy-file.png" width="408" depth="227" format="PNG"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/windows-progress-copy-file.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>A progress window for a copy operation</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <sect2 id="progress-window-checklists">
+      <title>Fenêtres à liste de contrôle</title>
+
+      <para>Parfois, une procédure est composée d'une suite d'actions à réaliser par l'utilisateur. Dans ce cas, et plus particulièrement lorsqu'il est souhaitable que l'utilisateur devienne coutumier des actions concernant cette procédure, il peut être fait usage de fenêtres à liste de contrôle.</para>
+
+      <example>
+        <title>Assistant de configuration de pare-feu</title>
+
+        <para>Un assistant de configuration personnelle de pare-feu peut installer le paquet « firewall », ajouter des entrées pour le pare-feu dans /etc/xinetd.conf, redémarrer le super-démon internet et configurer le navigateur Web de l'utilisateur pour qu'il opère à travers le pare-feu. Il peut être souhaitable que l'utilisateur connaisse la série d'actions impliquées dans la configuration du pare-feu pour augmenter ses chances de réussite dans ce processus s'il veut opérer des modifications ultérieurement.</para>
+      </example>
+
+      <figure id="example-checklist-start-figure">
+        <title>Une exemple de fenêtre à liste de contrôle (avant lancement)</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-progress-checklist-start.png" width="422" depth="249" format="PNG"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-progress-checklist-start.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>A checklist window</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <figure id="example-checklist-in-progress-figure">
+        <title>Une exemple de fenêtre à liste de contrôle (progression en cours)</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-progress-checklist.png" width="336" depth="220" format="PNG"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-progress-checklist.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>A checklist window</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+      
+      <figure id="example-checklist-done-figure">
+        <title>Un exemple de fenêtre à liste de contrôle (terminée)</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-progress-checklist-done.png" width="356" depth="223" format="PNG"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-progress-checklist-done.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>A checklist window</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <itemizedlist>
+        <title>Conseils</title>
+
+        <listitem>
+          <para>Si la connaissance de la série d'étapes d'une opération n'est pas très utile à l'utilisateur, n'utilisez qu'une fenêtre de progression classique. Souvenez-vous que vous êtes probablement plus intéressé par ces informations que la plupart des utilisateurs, la plupart trouveront ces étapes techniques plus déroutantes qu'utiles.</para>
+        </listitem>
+
+        <listitem>
+          <para>Contrairement aux fenêtres de progression classiques, les fenêtres à liste de contrôle ne doivent pas se fermer automatiquement lorsque l'opération est terminée et doivent avoir besoin d'entrées explicites de l'utilisateur avant de commencer car, l'un de leurs buts est l'information de l'utilisateur à propos des étapes constitutives de l'opération.</para>
+        </listitem>
+
+        <listitem>
+          <para>La barre de progression indique la progression globale de l'opération et non pas de chaque étape. Bien que cela soit plus difficile à programmer, c'est l'information la plus utile à l'utilisateur. Estimez simplement la durée relative de chacune des étapes et attribuez-leur le quota fixe correspondant de progression dans l'avancement de la barre.</para>
+        </listitem>
+
+        <listitem>
+          <para>N'utilisez <emphasis>pas</emphasis> de fenêtre à liste de contrôle pour une série d'étapes internes à la programmation, utilisez une fenêtre de progression classique. Par exemple « Connexion au serveur de courriel », « Authentification avec le serveur de courriel », « Téléchargement des messages », « Déconnexion » n'est <emphasis>pas</emphasis> une série appropriée d'étapes pour une fenêtre à liste de contrôle, mais serait une série appropriée d'étapes de sous-opérations pour une fenêtre de progression classique.</para>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+  </sect1>
+
+  <sect1 id="windows-dialog">
+    <title>Boîtes de dialogue</title>
+
+    <para>Une boîte de dialogue fournit un échange d'informations, ou dialogue, entre l'utilisateur et l'application. Utilisez une boîte de dialogue pour obtenir de la part de l'utilisateur des informations supplémentaires nécessaires à la réalisation d'une commande ou d'une tâche particulière.</para>
+	<para>Une boîte de dialogue ne doit pas apparaître dans la liste des fenêtres du tableau de bord. Toute boîte de dialogue doit apparaître au dessus de l'application lorsque la fenêtre de l'application elle-même est sélectionnée dans la liste des fenêtres.</para>
+
+    <figure>
+      <title>Un exemple de boîte de dialogue</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/windows-dialog-tabbed.png" width="357" depth="322" format="PNG"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/windows-dialog-tabbed.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>An example of a tabbed dialog: the GNOME print dialog</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <formalpara>
+      <title>Format du titre :</title>
+
+      <para><replaceable>Nom de la commande qui ouvre la boîte de dialogue</replaceable> (sans points de suspension à la fin)</para>
+    </formalpara>
+
+    <formalpara>
+      <title>Commandes de la fenêtre :</title>
+
+      <para>Minimiser, enrouler/dérouler</para>
+    </formalpara>
+
+    <formalpara>
+      <title>Boutons :</title>
+
+      <para>Suivez les conseils donnés pour les boutons des alertes, consultez la <xref linkend="alert-button-order"/>.</para>
+    </formalpara>
+
+    <para>Votre boîte de dialogue peut indiquer un bouton par défaut, c'est-à-dire activé lorsque l'utilisateur appuie sur la touche <keycap>Entrée</keycap>. Consultez la <xref linkend="default-buttons"/> pour des conseils sur le choix approprié d'un bouton par défaut.</para>
+
+    <sect2 id="dialog-buttons">
+      <title>Boutons supplémentaires</title>
+
+      <para>Vous pouvez ajouter d'autres boutons dans la zone principale des boutons de la boîte de dialogue en plus du bouton de confirmation et du bouton <guibutton>Annuler</guibutton>, mais plus d'un ou deux boutons ajoutés rendront la boîte de dialogue compliquée et difficile à utiliser. Comme pour tous les autres boutons, utilisez des étiquettes aussi concises que possible pour minimiser ces effets.</para>
+
+      <itemizedlist>
+        <title>Conseils</title>
+
+        <listitem>
+          <para>Placez les boutons qui concernent l'ensemble de la boîte de dialogue dans la zone principale des boutons au bas de la boîte de dialogue, à gauche du bouton <guibutton>Annuler</guibutton>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Placez les boutons qui se rapportent à un ou plusieurs contrôles à côté des contrôles concernés. Par exemple, placez un bouton <guibutton>Rechercher...</guibutton> à la suite du champ texte qu'il contrôle.</para>
+        </listitem>
+      </itemizedlist>
+    </sect2>
+
+    <sect2 id="dialog-layout">
+      <title>Agencement</title>
+
+      <para>Un agencement propre et logique de boîte de dialogue aide l'utilisateur à comprendre rapidement quelles informations lui sont demandées.</para>
+
+      <itemizedlist><title>Conseils</title>
+
+      <listitem><para>Disposez les contrôles dans votre boîte de dialogue dans le sens habituel de lecture des personnes. Dans les environnements linguistiques européens, c'est en général de la gauche vers la droite, de haut en bas. Placez les contrôles principaux avec lequel les utilisateurs interagiront aussi près que possible de l'angle supérieur gauche. Suivez les mêmes conseils pour disposer les contrôles dans les groupes de la boîte de dialogue et utilisez la touche <keycap>Tab</keycap> pour indiquer l'ordre de parcours des contrôles.</para></listitem>
+
+      <listitem><para>Lors de l'ouverture d'une boîte de dialogue, donnez le focus initial au composant que, selon vous, l'utilisateur traitera en premier. Ce focus est particulièrement important pour les utilisateurs qui doivent utiliser un clavier pour naviguer dans votre application.</para></listitem>
+
+      <listitem><para>Placez et affichez, dès l'ouverture, des valeurs par défaut judicieuses dans les contrôles, pour autant que ce soit possible, afin que l'utilisateur n'ait pas à créer de l'information à partir de rien. Ces valeurs par défaut peuvent provenir des paramètres du système (par exemple, nom d'hôte ou adresse IP) ou d'informations que l'utilisateur a saisies auparavant dans cette application ou dans une autre (par exemple, une adresse électronique ou un serveur mandataire de réseau).</para></listitem>
+	</itemizedlist>
+
+      <para>Consultez le <xref linkend="design"/> pour plus d'informations détaillées sur la disposition des contrôles dans les boîtes de dialogue.</para>
+
+      <para>Consultez la <xref linkend="controls-notebooks"/> pour des informations sur l'usage de contrôles bloc-notes à onglets dans les boîtes de dialogue.</para>
+    </sect2>
+
+    <sect2 id="common-dialogs">
+      <title>Boîtes de dialogue courantes</title>
+
+      <para>La bibliothèque gtk et GNOME fournissent des boîtes de dialogue standard pour beaucoup de tâches usuelles comme l'ouverture et l'enregistrement de fichiers, la sélection de polices et de couleurs et l'impression. Utilisez-les toujours lorsque l'utilisateur doit opérer l'une de ces tâches. Vous pouvez modifier les boîtes de dialogue pour refléter les besoins particuliers de votre application (par exemple, ajout de boutons de pré-écoute <guibutton>Lire</guibutton> et <guibutton>Arrêter</guibutton> dans la boîte de dialogue « Ouvrir un fichier » dans une application audio) mais ne modifiez pas ou ne supprimez pas des caractéristiques au point de les rendre méconnaissables.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="windows-assistant">
+    <title>Assistants</title>
+
+    <!--<remark>FIXME: need to finish this section</remark>-->
+
+    <para>Un assistant est une fenêtre auxiliaire qui guide l'utilisateur au cours d'une opération en la divisant en étapes séquentielles. Les assistants sont utiles pour rendre les opérations complexes moins intimidantes car ils restreignent l'information visible par l'utilisateur à un instant donné.</para>
+
+    <para>Étant donné que les assistants ne comportent qu'un nombre relativement restreint de contrôles à l'écran à un moment donné, ils disposent de suffisamment d'espace pour de la documentation en ligne. Par conséquent, n'incorporez pas de bouton <guibutton>Aide</guibutton> dans une fenêtre d'assistant. Si vous ne pouvez pas rendre une opération suffisamment claire dans un assistant sans recourir à un bouton <guibutton>Aide</guibutton>, vous devez la simplifier encore plus.</para>
+
+    <para>Assistants do have major downsides. After using an assistant
+    it is often hard to figure out where the individual settings aggregated
+    into the assistant are stored. Often people will resort to re-running
+    the assistant, re-entering many settings that they don't want to change.
+    <remark>Why do they need to re-enter anything? The assistant should
+	be populated with the exisiting settings whenever it is run.</remark>
+    </para>
+
+    <warning><para>Les assistants sont souvent utilisés dans des situations où une meilleure solution consisterait à simplifier ou même à automatiser le processus. Avant d'utiliser un assistant pour guider l'utilisateur pas à pas au cours d'une opération complexe, examinez s'il ne serait pas possible de simplifier l'opération foncièrement afin qu'un assistant ne soit pas nécessaire.</para></warning>
+    
+
+    <formalpara>
+      <title>Commandes de la fenêtre :</title>
+
+      <para>Fermer, minimiser/ré-afficher, enrouler/dérouler</para>
+    </formalpara>
+
+    <sect2 id="assistant-first-page">
+      <title>Page d'introduction</title>
+
+      <para>La première page donne à l'utilisateur un « aperçu grossier ». Placez le titre de l'assistant dans la barre de titre de la fenêtre et dans la zone de titre de l'assistant accompagné d'un dessin optionnel. Exposez en dessous le but de l'assistant et, si ce n'est pas évident, l'emplacement où l'utilisateur peut trouver les informations demandées par l'assistant.</para>
+
+      <formalpara>
+        <title>Format du titre :</title>
+
+        <para><replaceable>Assistant Title</replaceable></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Boutons :</title>
+
+        <para><guibutton>Annuler</guibutton>, <guibutton>Suivant</guibutton></para>
+      </formalpara>
+
+      <figure>
+        <title>Exemple de première page d'un assistant</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/windows-assistant-first-page.png" format="PNG" width="502" depth="318"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-assistant-first-page.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot showing the first page of an assistant for
+            creating a new email account</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+    </sect2>
+
+    <sect2 id="assistant-middle-page">
+      <title>Pages de contenu</title>
+
+      <para>Les pages de contenu comportent les réglages effectifs de l'assistant. Résumez le type de paramètres présents dans le contenu de la page dans sa zone de titre, par exemple <guilabel>Serveur de courriel</guilabel>.</para>
+
+      <formalpara>
+        <title>Format du titre :</title>
+
+        <para><replaceable>Titre de l'assistant</replaceable> - (<replaceable>page actuelle </replaceable> sur <replaceable>nombre de pages totales</replaceable>)</para>
+      </formalpara>
+
+      <formalpara>
+        <title>Boutons :</title>
+
+        <para><guibutton>Annuler</guibutton>, <guibutton>Précédent</guibutton>, <guibutton>Suivant</guibutton></para>
+      </formalpara>
+
+<!--
+      <figure>
+        <title>Example of a middle page of an assistant</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="341" fileref="images/windows-assistant-middle-page.png"
+            format="PNG" width="452" />
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/windows-assistant-middle-page.eps" format="EPS" />
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot showing the third page of an email account
+            assistant, asking for mail server information</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+-->
+    </sect2>
+
+    <sect2 id="assistant-last-page">
+      <title>Dernière page</title>
+
+      <para>La dernière page doit résumer les paramètres qui seront modifiés par l'assistant et comment l'utilisateur pourra les modifier par la suite.</para>
+
+      <formalpara>
+        <title>Format du titre :</title>
+
+        <para>Fin <replaceable>Titre de l'assistant</replaceable></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Boutons :</title>
+
+        <para><guibutton>Annuler</guibutton>, <guibutton>Précédent</guibutton>, <guibutton>Terminer</guibutton></para>
+      </formalpara>
+    </sect2>
+  </sect1>
+</chapter>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="comboboxtext.js" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="comboboxtext.js" xml:lang="fr">
   <info>
   <title type="text">ComboBoxText (JavaScript)</title>
     <link type="guide" xref="beginner.js#menu-combo-toolbar"/>
@@ -9,62 +9,32 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
-    <desc>Un menu déroulant pour texte uniquement</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>A text-only drop-down menu</desc>
   </info>
 
   <title>ComboBoxText</title>
   <media type="image" mime="image/png" src="media/combobox.png"/>
-  <p>Une ComboBox est un menu déroulant. La différence entre une <link xref="combobox.js">ComboBox</link> et une ComboBoxText est que cette dernière ne possède que des options texte de base, alors que la ComboBox utilise un ListStore ou un TreeStore (qui sont en gros des feuilles de calcul) pour afficher des éléments arborescents ou des images à côté de chaque choix.</p>
-  <note><p>À moins que vous n'ayez besoin des fonctions supplémentaires d'une ComboBox, ou si vous vous sentez à l'aise dans la manipulation des ListStore et TreeStore, il est préférable d'utiliser la simplicité d'une ComboBoxText chaque fois que possible.</p></note>
+  <p>A ComboBox is a drop-down menu. The difference between a <link xref="combobox.js">ComboBox</link> and a ComboBoxText is that a ComboBoxText just has basic text options, while a full ComboBox uses a ListStore or TreeStore (which are basically spreadsheets) to show things like branching options, or pictures to go alongside each choice.</p>
+  <note><p>Unless you need the added features of a full ComboBox, or are comfortable working with ListStores and TreeStores, you may find it a lot simpler to use a ComboBoxText whenever possible.</p></note>
     <links type="section"/>
 
   <section id="imports">
     <title>Bibliothèques à importer</title>
-    <code mime="application/javascript">
+    <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
-</code>
-    <p>Ce sont les bibliothèques que nous devons importer pour faire fonctionner cette application. N'oubliez pas que la ligne qui informe GNOME que nous allons utiliser Gjs doit toujours se trouver au début.</p>
+]]></code>
+    <p>These are the libraries we need to import for this application to run. Remember that the line which tells GNOME that we're using Gjs always needs to go at the start.</p>
   </section>
 
   <section id="applicationwindow">
-    <title>Création de la fenêtre de l'application</title>
+    <title>Creating the application window</title>
     <code mime="application/javascript"><![CDATA[
 const ComboBoxTextExample = new Lang.Class ({
     Name: 'ComboBoxText Example',
@@ -89,7 +59,7 @@ const ComboBoxTextExample = new Lang.Class ({
         this._buildUI ();
     },
 ]]></code>
-    <p>Tout le code de cet exemple va dans la classe MessageDialogExample. Le code ci-dessus crée une <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pour nos composants graphiques et la fenêtre qui les contient.</p>
+    <p>All the code for this sample goes in the MessageDialogExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
     <code mime="application/javascript"><![CDATA[
     // Build the application's UI
     _buildUI: function () {
@@ -102,11 +72,11 @@ const ComboBoxTextExample = new Lang.Class ({
             default_width: 200,
             border_width: 10 });
 ]]></code>
-    <p>La fonction _buildUI est l'endroit où nous mettons tout le code nécessaire à la création de l'interface utilisateur de l'application. La première étape consiste à créer une <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> pour y mettre tous nos éléments graphiques.</p>
+    <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
   </section>
 
   <section id="comboboxtext">
-    <title>Création de la ComboBoxText</title>
+    <title>Creating the ComboBoxText</title>
     <code mime="application/javascript"><![CDATA[
         // Create the combobox
         this._comboBoxText = new Gtk.ComboBoxText();
@@ -120,9 +90,9 @@ const ComboBoxTextExample = new Lang.Class ({
         // Connect the combobox's 'changed' signal to our callback function
         this._comboBoxText.connect ('changed', Lang.bind (this, this._onComboChanged));
 ]]></code>
-    <p>Après avoir créé la ComboBoxText, utilisons la méthode <file>append_text</file> pour lui ajouter des chaînes de texte. Comme les entrées d'un tableau, les chaînes ont chacune un nombre comme identifiant, en commençant par 0. Pour simplifier les choses, créons un tableau pour les entrées de la ComboBoxText et utilisons une boucle pour les ajouter dans l'ordre, comme ici.</p>
-    <p>Après avoir garni la ComboBoxText, définissons sa première entrée pour qu'elle devienne active, nous pouvons ainsi voir la ligne « Select distribution » avant de cliquer dessus. Connectons ensuite son signal <file>changed</file> à la fonction _onComboChanged, pour qu'elle soit appelée à chaque fois que vous faites une nouvelle sélection dans le menu déroulant.</p>
-    <note><p>Pour ajouter une entrée dans une ComboBoxText, utilisez la méthode <file>insert_text</file>. Pour utiliser une chaîne texte plutôt qu'un identifiant pour chaque entrée se référant à un nombre seul, utilisez les méthodes <file>append</file> et <file>insert</file>. Reportez-vous aux liens au bas de ce tutoriel pour de plus amples informations sur leur utilisation.</p></note>
+    <p>After we create the ComboBoxText, we use its <file>append_text</file> method to add text strings to it. Like the entries in an array, they each have a number for an ID, starting with 0. To make things simpler, you can actually create an array for your ComboBoxText entries, then use a for loop to append them in order, like we did here.</p>
+    <p>After we populate the ComboBoxText, we set its first entry to be active, so that we'll see the "Select distribution" line before we click on it. Then we connect its <file>changed</file> signal to the _onComboChanged function, so that it's called whenever you make a new selection from the drop-down menu.</p>
+    <note><p>If you'd like to add an entry to a ComboBoxText, you can use the <file>insert_text</file> method. And if you'd rather use a text string as an ID for each entry than rely on numbers alone, you can use the <file>append</file> and <file>insert</file> methods. See the links at the bottom of this tutorial for the details of how to use them.</p></note>
 
     <code mime="application/javascript"><![CDATA[
         // Add the combobox to the window
@@ -132,11 +102,11 @@ const ComboBoxTextExample = new Lang.Class ({
         this._window.show_all();
     },
 ]]></code>
-    <p>Enfin, ajoutons la ComboBoxText à la fenêtre et indiquons à la fenêtre de s'afficher avec ses éléments graphiques à l'intérieur.</p>
+    <p>Finally, we add the ComboBoxText to the window, and tell the window to show itself and the widget inside it.</p>
   </section>
 
   <section id="function">
-    <title>Fonction prenant en charge votre sélection</title>
+    <title>Function which handles your selection</title>
     <code mime="application/javascript"><![CDATA[
     _onComboChanged: function () {
 
@@ -146,7 +116,7 @@ const ComboBoxTextExample = new Lang.Class ({
             "Mint is a popular distro based on Ubuntu.",
             "SUSE is a name shared by two separate distros."];
 ]]></code>
-    <p>Nous allons créer une <link xref="messagedialog.js">MessageDialog</link> qui affiche un message en fonction de la distribution sélectionnée. Créons d'abord le tableau des réponses à utiliser. Comme la première chaîne de notre ComboBoxText est justement le message « Select distribution », laissons celle-ci vide.</p>
+    <p>We're going to create a pop-up <link xref="messagedialog.js">MessageDialog</link>, which shows you a message based on which distro you select. First, we create the array of responses to use. Since the first string in our ComboBoxText is just the "Select distribution" message, we make the first string in our array blank.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Which combobox item is active?
@@ -170,9 +140,9 @@ const ComboBoxTextExample = new Lang.Class ({
 
     },
 ]]></code>
-    <p>Avant d'afficher une MessageDialog, vérifions d'abord que vous n'avez pas choisi le message « Select distribution ». Ensuite, définissons son texte comme étant l'entrée dans le tableau qui correspond à l'entrée active de notre ComboBoxText. Cela se fait avec la méthode <file>get_active</file>, qui renvoie l'identifiant numérique de votre sélection.</p>
-    <note><p>Il existe d'autres méthodes alternatives : <file>get_active_id</file>, qui renvoie l'identifiant texte assigné par <file>append</file>, et <file>get_active_text</file>, qui renvoie le texte complet de la chaîne sélectionnée.</p></note>
-    <p>Une fois la MessageDialog terminée, connectons son signal de retour à la fonction _onDialogResponse et indiquons lui de s'afficher toute seule.</p>
+    <p>Before showing a MessageDialog, we first test to make sure you didn't choose the "Select distribution" message. After that, we set its text to be the entry in the array that corresponds to the active entry in our ComboBoxText. We do that using the <file>get_active</file> method, which returns the number ID of your selection.</p>
+    <note><p>Other methods you can use include <file>get_active_id,</file> which returns the text ID assigned by <file>append,</file> and <file>get_active_text,</file> which returns the full text of the string you selected.</p></note>
+    <p>After we create the MessageDialog, we connect its response signal to the _onDialogResponse function, then tell it to show itself.</p>
 
     <code mime="application/javascript"><![CDATA[
     _onDialogResponse: function () {
@@ -183,47 +153,50 @@ const ComboBoxTextExample = new Lang.Class ({
 
 });
 ]]></code>
-    <p>Comme le seul bouton de la MessageDialog est le bouton OK, il n'est pas nécessaire de vérifier son response_id pour savoir quel bouton a été cliqué. Tout ce que nous faisons ici est détruire le message surgissant.</p>
+    <p>Since the only button the MessageDialog has is an OK button, we don't need to test its response_id to see which button was clicked. All we do here is destroy the popup.</p>
 
     <code mime="application/javascript"><![CDATA[
 // Run the application
 let app = new ComboBoxTextExample ();
 app.application.run (ARGV);
 ]]></code>
-    <p>Enfin, nous créons un nouvel exemple de la classe ComboBoxTextExample terminée et démarrons l'application.</p>
+    <p>Finally, we create a new instance of the finished ComboBoxTextExample class, and set the application running.</p>
   </section>
 
   <section id="complete">
-    <title>Exemple complet de code</title>
+    <title>Complete code sample</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class ComboBoxTextExample {
+const ComboBoxTextExample = new Lang.Class ({
+    Name: 'ComboBoxText Example',
 
     // Create the application itself
-    constructor() {
+    _init: function () {
         this.application = new Gtk.Application ({
             application_id: 'org.example.jscomboboxtext'});
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate() {
+    _onActivate: function () {
         this._window.present ();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function () {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow  ({
@@ -243,16 +216,18 @@ class ComboBoxTextExample {
         this._comboBoxText.set_active (0);
 
         // Connect the combobox's 'changed' signal to our callback function
-        this._comboBoxText.connect ('changed', this._onComboChanged.bind(this));
+        this._comboBoxText.connect ('changed', Lang.bind (this, this._onComboChanged));
 
         // Add the combobox to the window
         this._window.add (this._comboBoxText);
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _onComboChanged() {
+
+
+    _onComboChanged: function () {
 
         // The responses we'll use for our messagedialog
         let responses = ["",
@@ -273,21 +248,23 @@ class ComboBoxTextExample {
                 text: responses[activeItem]});
 
             // Connect the OK button to a handler function
-            this._popUp.connect ('response', this._onDialogResponse.bind(this));
+            this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
 
             // Show the messagedialog
             this._popUp.show();
         }
 
-    }
+    },
 
-    _onDialogResponse() {
+
+
+    _onDialogResponse: function () {
 
         this._popUp.destroy ();
 
     }
 
-};
+});
 
 // Run the application
 let app = new ComboBoxTextExample ();
@@ -296,7 +273,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>Documentation approfondie</title>
+    <title>In-depth documentation</title>
 <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
 <list>
   <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>

@@ -1,152 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:ui="http://projectmallard.org/experimental/ui/" type="guide" id="c" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:ui="http://projectmallard.org/experimental/ui/" type="guide" id="c" xml:lang="el">
+<info>
+  <title type="link">C</title>
+  <link type="guide" xref="index#tutorials"/>
+  <revision version="3.4" date="2012-04-28" status="stub"/>
+  <credit type="editor">
+    <name>Tiffany Antopolski</name>
+    <email>tiffany.antopolski@gmail.com</email>
+  </credit>
 
-  <info>
-    <!-- The text title is used on the help.gnome.org -->
-    <title type="link">C</title>
-    <link type="guide" xref="index#tutorials"/>
-    <revision version="3.4" date="2012-04-28" status="stub"/>
-
-    <credit type="editor">
-      <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
-    </credit>
-    <credit type="editor">
-      <name>Bastian Ilso</name>
-      <email its:translate="no">bastianilso@gnome.org</email>
-    </credit>
-
-    <include xmlns="http://www.w3.org/2001/XInclude" href="legal.xml"/>
-
-    <desc>Μάθημα και δείγματα κώδικα σε C.</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Παραδείγματα πλατφόρμας σε C</title>
+<title>Μαθήματα, δείγματα κώδικα και παραδείγματα πλατφόρμας σε C</title>
 
-  <section id="prerequisites">
+<links type="section"/>
 
-    <title>Προαπαιτούμενα</title>
+<section id="code-samples">
+<title>Δείγματα κώδικα και μάθημα</title>
 
-    <p>Για να μεταγλωττιστούν τα παραδείγματα αυτά θα χρειαστείτε έναν μεταγλωττιστή της C, για παράδειγμα το <link href="https://gcc.gnu.org/">gcc</link>. Θα χρειαστείτε επίσης τις κεφαλίδες και τα αρχεία pkg-config του GTK+ 3. Συνήθως οι διανομές Linux χωρίζουν αυτά τα αρχεία σε διαφορετικά πακέτα με ονόματα <em>gtk3-devel</em>, <em>gtk3-dev</em> ή κάτι παρόμοιο.</p>
-
-  </section>
-
-  <section id="for-beginners" ui:expanded="false">
-
-    <title>Οδηγοί για νέους προγραμματιστές</title>
-
-    <p>Εκτός από τα προαπαιτούμενα που αναφέρθηκαν, αρκετά εργαλεία έχουν αναπτυχθεί για να σας βοηθήσουν στην ανάπτυξη μιας εφαρμογής για το GNOME. Το GNOME συνιστά επίσης ένα συγκεκριμένο πρότυπο και στυλ για την εγγραφή κώδικα το οποίο θα αναλυθεί και παρακάτω.</p>
-
-    <section id="recommended-tools">
-      <title>Προτεινόμενα εργαλεία</title>
-
-      <list>
-        <item>
-          <p><link href="https://wiki.gnome.org/Apps/Devhelp">DevHelp</link>: Ένας περιηγητής τεκμηρίωσης API για το GNOME.</p>
-        </item>
-        <item>
-          <p>GNOME IDE (Ολοκληρωμένο περιβάλλον ανάπτυξης). Ένα IDE σας βοηθάει στην εγγραφή και αποσφαλμάτωση κώδικα C, όπως για παράδειγμα το <link href="https://wiki.gnome.org/Apps/Builder">Builder</link> ή το <link href="https://wiki.gnome.org/Apps/Anjuta">Anjuta</link>.</p>
-        </item>
-        <item>
-          <p><link href="http://glade.gnome.org/">Glade</link>:  Ένας σχεδιαστής γραφικών διεπαφών για εφαρμογές GTK+.</p>
-        </item>
-        <item>
-          <p>Ένας πελάτης IRC, για παράδειγμα το <link href="https://wiki.gnome.org/Apps/Polari">Polari</link> ή το <link href="https://wiki.gnome.org/Apps/Empathy">Empathy</link>. Αν αντιμετωπίσετε προβλήματα με την ανάγνωση των οδηγών, συνδεθείτε στο κανάλι #gnome στο <em>irc.gnome.org</em>.</p>
-        </item>
-      </list>
-    </section>
-
-    <section id="coding-style">
-      <title>Στυλ κώδικα</title>
-
-      <p>Οι περισσότερες εφαρμογές του έργου GNOME έχουν γραφεί σύμφωνα με τα <link href="http://en.wikipedia.org/wiki/Indent_style#GNU_style">πρότυπα του GNU</link>. Τα μαθήματα και τα παραδείγματα κώδικα αυτού του οδηγού, ακολουθούν τα πρότυτα αυτά και καλό είναι να το κάνετε και εσείς.</p>
-    </section>
-
-    <section id="executing-code">
-      <title>Εκτέλεση κώδικα</title>
-
-      <p>Για να εκτελέσετε τα δείγματα κώδικα:</p>
-
-      <steps>
-        <item>
-          <p>Αντιγράψτε και επικολλήστε τον κώδικα στο <var>filename</var>.c</p>
-        </item>
-        <item>
-          <p>Πληκτρολογήστε στο τερματικό:</p>
-          <screen>gcc <var>filename</var>.c `pkg-config --cflags --libs gtk+-3.0` -o <var>filename</var></screen>
-          <screen>./<var>filename</var></screen>
-        </item>
-      </steps>
-
-      <note>
-        <p>Για περισσότερες πληροφορίες σχετικά με τη μεταγλώττιση των προγραμμάτων GTK+ δείτε <link href="http://developer.gnome.org/gtk3/3.4/gtk-compiling.html">Μεταγλωττίζοντας εφαρμογές GTK+ στο UNIX</link>.</p>
-      </note>
-    </section>
-
-  </section>
-
-  <section id="examples">
-    <title>Μαθήματα</title>
-  </section>
-
-<section id="samples">
-<title>Δείγματα κώδικα γραφικών στοιχείων</title>
- <section id="windows" style="2column"><title>Παράθυρα</title>
-    <p/>
-  </section>
-  <section id="display-widgets" style="2column"><title>Εμφάνιση γραφικών στοιχείων</title>
-  </section>
-  <section id="buttons" style="2column"><title>Κουμπιά και εναλλαγές</title>
-  </section>
-  <section id="entry" style="2column"><title>Καταχώριση δεδομένων αριθμητικών και κειμένου</title>
-  </section>
-  <section id="multiline" style="2column"><title>Επεξεργαστής κειμένου πολλαπλών γραμμών</title>
-  </section>
-  <section id="menu-combo-toolbar" style="2column"><title>Μενού, σύνθετο πλαίσιο και γραφικά στοιχεία εργαλειοθήκης</title>
-  </section>
-  <section id="treeview" style="2column"><title>Γραφικό στοιχείο TreeView</title>
-  </section>
-  <section id="selectors"><title>Επιλογείς</title>
-    <section id="file-selectors" style="2column"><title>Επιλογείς αρχείων</title>
-    </section>
-    <section id="font-selectors" style="2column"><title>Επιλογείς γραμματοσειρών</title>
-    </section>
-    <section id="color-selectors" style="2column"><title>Επιλογείς χρώματος</title>
-    </section>
-  </section>
-  <section id="layout" style="2column"><title>Περιέκτες διάταξης</title>
-  </section>
-  <section id="ornaments" style="2column"><title>Διακοσμητικά</title>
-  </section>
-  <section id="scrolling" style="2column"><title>Κύλιση</title>
-  </section>
-  <section id="misc" style="2column"><title>Διάφορα</title>
-  </section>
 
 </section>
+
+
+<section id="examples">
+<title>Παραδείγματα εφαρμογών</title>
+
+
+</section>
+
 
 </page>

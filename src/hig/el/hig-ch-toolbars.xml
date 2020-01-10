@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="toolbars" lang="el">
+  <title>Εργαλειοθήκες</title>
+  <para>Μια εργαλειοθήκη είναι μια λουρίδα ελέγχων που επιτρέπει άνετη πρόσβαση στις κοινές λειτουργίες. Οι περισσότερες εργαλειοθήκες περιέχουν μόνο γραφικά κουμπιά, αλλά σε πιο σύνθετες εφαρμογές, άλλοι τύποι ελέγχων όπως πτυσσόμενες λίστες, μπορούν επίσης να είναι χρήσιμες.</para>
+
+  <!-- This bit more relevant to the utility windows section
+  <note><para>Although the latter is just a side-effect of the fact that palettes can't be created with the standard toolbar widgets— it would be rather nice if they could, especially as they would then automatically feature in the toolbar keyboard navigation order.</para></note>
+  -->
+    
+  <figure id="mail-toolbar-example">
+    <title>Παράδειγμα εργαλειοθήκης από μια απλή εφαρμογή αλληλογραφίας</title>
+    <mediaobject><imageobject><imagedata fileref="images/toolbars-mail.png" format="PNG" width="428" depth="48"/></imageobject> <imageobject><imagedata fileref="images/toolbars-mail.eps" format="EPS"/></imageobject> <textobject><phrase>Παράδειγμα εργαλειοθήκης εφαρμογής αλληλογραφίας</phrase></textobject></mediaobject>
+  </figure>
+
+  <!-- Notes from GJM:
+  Text-on-the-side toolbars are now part of Gtk+.
+  Stock items have mnemonics/access keys. I don't think they should.
+  -->
+ 
+  <!-- CFB: Assuming for now therefore that we ought to be recommending Gtk toolbars, but trying to keep the text as widget-neutral as possible
+  <note>
+  <title>For discussion</title>
+  <para>A few people only want to recommend one type of toolbar.  Which should it be?  We can't really recommend the GAL one because it's not part of core GNOME.  On the other hand, the Gtk one is somewhat clunky, and projects like Evo, AbiWord etc. are unlikely to switch to it anyime soon.</para>
+  </note>
+  -->
+    
+  <para>Η προσεκτική και συνεπής σχεδίαση εργαλειοθήκης επιταχύνει την εργασία του χρήστη δίνοντας άμεση πρόσβαση σε λειτουργίες που αλλιώς θα κρυβόντουσαν σε ένα μενού. Χρησιμοποιήστε τες μόνο για τις πιο σημαντικές λειτουργίες. Έχοντας υπερβολικούς ελέγχους στην εργαλειοθήκη μειώνει την αποτελεσματικότητα τους κάνοντας τους πιο δύσκολους στην εύρεση και υπερβολικές γραμμές εργαλειοθηκών μειώνουν τον διαθέσιμο χώρο της οθόνης στην υπόλοιπη εφαρμογή.</para>
+    
+  <sect1 id="toolbars-appearance">
+    <title>Εμφάνιση και περιεχόμενο</title>
+      
+    <para>Η αποτελεσματικότητα των εργαλειοθηκών αυξάνεται διατηρώντας ένα επίπεδο σταθερότητας μεταξύ διαφορετικών εφαρμογών. Η εργαλειοθήκη είναι ένα από τα πρώτα μέρη της εφαρμογής σας που θα δει ένας χρήστης την πρώτη φορά που την τρέχει, έτσι δίνοντας μια εργαλειοθήκη που τους φαίνεται οικεία, μπορείτε να τους κάνετε αμέσως να αισθανθούν άνετα χρησιμοποιώντας την εφαρμογή σας.</para>
+      
+    <para>Επίσης ακολουθώντας τις συστάσεις και τα παραδείγματα που δίνονται σε αυτήν την ενότητα, κοιτάξτε τις εργαλειοθήκες άλλων καλοσχεδιασμένων εφαρμογών του GNOME 2.0 ως οδηγία όταν αποφασίζετε τι να βάλετε και τι όχι στην εργαλειοθήκη της εφαρμογή σας.</para>
+      
+    <para>Όμως πολλές εργαλειοθήκες ή <link linkend="toolbox-windows">παράθυρα εργαλειοθήκης</link> της εφαρμογής σας προσφέρουν μία κύρια εργαλειοθήκη από προεπιλογή που περιέχει ένα αντιπροσωπευτικό υποσύνολο της γενικής λειτουργικότητας της εφαρμογής. Πολλά κουμπιά σε αυτήν την εργαλειοθήκη θα είναι τα ίδια ανεξάρτητα από τον τύπο της εφαρμογής.</para>
+      
+    <para>Για παράδειγμα, η κύρια εργαλειοθήκη σε μια εφαρμογή γραφείου θα έχει σχεδόν πάντα <guilabel>νέο</guilabel>, <guilabel>άνοιγμα</guilabel> και <guilabel>αποθήκευση</guilabel> ως τα τρία πρώτα κουμπιά εργαλειοθήκης. Παρόμοια, τα πρώτα λίγα κουμπιά σε μια εφαρμογή περιηγητή πρέπει να συμπεριλαμβάνουν πάντα <guilabel>πίσω</guilabel>, <guilabel>μπροστά</guilabel>, <guilabel>παύση</guilabel> και <guilabel>επαναφόρτωση</guilabel>, με αυτή τη σειρά.</para>
+      
+    <!-- CB-Fig: A composite figure for all the listitems might be useful. --> 
+    <itemizedlist><title>Κατευθυντήριες γραμμές</title>
+	
+      <listitem><para>Τοποθετήστε μόνο τις πιο κοινές λειτουργίες της εφαρμογής για τον χρήστη στις εργαλειοθήκες. Μην προσθέτετε απλά κουμπιά για κάθε στοιχείο μενού.</para></listitem>
+		
+      <listitem><para>Από προεπιλογή, να εμφανίζονται οι εργαλειοθήκες αμέσως κάτω από τη γραμμή του κύριου μενού.</para></listitem>
+	
+      <listitem><para>Επιτρέψτε στις εργαλειοθήκες να ανοίγουν και να κλείνουν στον διάλογο <guilabel>προτιμήσεις</guilabel> της εφαρμογής σας χρησιμοποιώντας το στοιχείο μενού <menuchoice><guimenu>προβολή</guimenu><guimenuitem>εργαλειοθήκη</guimenuitem></menuchoice>. Εάν υπάρχουν περισσότερες από μία εργαλειοθήκες, να ενεργοποιούνται και να απενεργοποιούνται από ξεχωριστές καταχωρίσεις στο υπομενού <menuchoice><guimenu>προβολή</guimenu><guimenuitem>εργαλειοθήκη</guimenuitem></menuchoice>.</para></listitem>
+	
+      <listitem><para>Όλες οι λειτουργίες που εμφανίζονται στις εργαλειοθήκες σας πρέπει επίσης να προσπελάζονται μέσα από τη γραμμή του κύριου μενού, είτε άμεσα (δηλαδή ένα ισοδύναμο στοιχείο μενού) ή έμμεσα (π.χ. στον διάλογο <menuchoice><guimenu>επιλογές</guimenu><guimenuitem>ρυθμίσεις</guimenuitem></menuchoice>).</para></listitem>
+	
+      <listitem><para>Ταξινομήστε τα κουμπιά εργαλειοθήκης με την ίδια σειρά και ομαδοποιήσεις όπως τα ισοδύναμα τους στην γραμμή του κύριου μενού. Ειδικά,να ομαδοποιείτε πάντα σύνολα αμοιβαία αποκλειόμενων κουμπιών εργαλειοθήκης.</para></listitem>
+	
+      <listitem><para>Μην προσθέστε κουμπιά για <guilabel>βοήθεια</guilabel>, <guilabel>κλείσιμο</guilabel> ή <guilabel>έξοδο</guilabel> στην εργαλειοθήκη σας από προεπιλογή, καθώς αυτά χρησιμοποιούνται σπάνια και ο χώρος χρησιμοποιείται καλύτερα για περισσότερο χρήσιμους ελέγχους. Παρόμοια, δώστε μόνο κουμπιά για <guilabel>αναίρεση</guilabel>, <guilabel>ακύρωση αναίρεσης</guilabel> και τις τυπικές λειτουργίες προχείρου εάν υπάρχει χώρος στην εργαλειοθήκη για να γίνει αυτό χωρίς να θυσιάζεται πιο χρήσιμους ειδικούς ελέγχους της εφαρμογής.</para></listitem>
+	
+      <listitem><para>Δώστε επιλογές για εμφάνιση κουμπιών εργαλειοθήκης ως κειμένου, γραφικών ή και τα δυο - δείτε <xref linkend="view-toolbar"/> για τα μενού χρήσης ελέγχου εμφάνισης εργαλειοθήκης. Επίσης δώστε μια επιλογή για επιστροφή όλων των εργαλειοθηκών της εφαρμογής σας στο προεπιλεγμένο κέντρο ελέγχου για αυτήν τη ρύθμιση.</para></listitem>
+	
+      <listitem><para>Επιτρέψτε στους χρήστες να ρυθμίσουν τις εργαλειοθήκες ώστε να περιέχουν τις δικές τους επιλογές εντολών, σε οποιαδήποτε σειρά επιλέξουν. Δώστε μια επιλογή στον διάλογο διευθέτησης για επιστροφή των εργαλειοθηκών στις προεπιλεγμένες τους ρυθμίσεις.</para></listitem>
+	
+      <listitem><para>Αποθηκεύστε τη θέση της εργαλειοθήκης της εφαρμογή σας και των περιεχομένων ως μέρους της διευθέτησης της εφαρμογής και επαναφέρτε τα όταν η εφαρμογή ξεκινά.</para></listitem>
+	
+    </itemizedlist>
+      
+    <sect2 id="vertical-toolbars">
+      <title>Κάθετες εργαλειοθήκες</title>
+
+      <para>Γενικά, μην χρησιμοποιείτε κάθετες εργαλειοθήκες. Το μάτι δεν σαρώνει τόσο κάθετα όσο το κάνει οριζόντια, ομάδες αμοιβαία αποκλειόμενων κουμπιών είναι λιγότερο φανερές όταν τακτοποιούνται κάθετα και η προβολή ετικετών κουμπιού είναι πιο περίεργη και λιγότερο αποτελεσματική στο χώρο. Επίσης, μερικοί έλεγχοι εργαλειοθηκών απλά δεν μπορούν να χρησιμοποιηθούν κάθετα, όπως πτυσσόμενες λίστες.</para>
+  	
+      <para>Σκεφτείτε τη χρήση κάθετης εργαλειοθήκης μόνο εάν:</para> 
+	
+      <itemizedlist>
+
+	<listitem><para>η διαμόρφωση του παραθύρου εφαρμογής σημαίνει ότι θα υπήρχε πολύς περιττός χώρος εάν χρησιμοποιόταν μια οριζόντια εργαλειοθήκη, ή</para></listitem>
+	<listitem><para>η εφαρμογή σας θα απαιτούσε αλλιώς τρεις ή περισσότερες γραμμές εργαλειοθηκών για να εμφανιστεί κάτω από την κύρια γραμμή μενού από προεπιλογή. Σημειώστε όμως ότι σε αυτήν την κατάσταση, η καλύτερη λύση είναι συνήθως η εμφάνιση λιγότερων εργαλειοθηκών από προεπιλογή.</para></listitem>
+
+      </itemizedlist>
+
+      <para>Εάν πρέπει να χρησιμοποιήσετε μια κάθετη εργαλειοθήκη, βεβαιωθείτε ότι ο χρήστης μπορεί να την διαμορφώσει ώστε να εμφανιστεί οριζόντια εάν το προτιμά.</para>
+      
+    </sect2>
+
+	<sect2 id="toolbars-media">
+		<title>Εργαλειοθήκες αναπαραγωγής μέσων</title>
+		<para>Πολλές εφαρμογές μπορούν να παίξουν ήχο ή κομμάτια βίντεο. Για συνέπεια, να εμφανίζετε πάντα τα κουμπιά που ελέγχουν την αναπαραγωγή στην ίδια σειρά και με τα ίδια εικονίδια παρακαταθήκης.</para>
+		<itemizedlist><title>Κατευθυντήριες γραμμές</title>
+			<listitem><para>Εμφανίστε ξεχωριστά κουμπιά στάσης και παύσης. Μην αλλάζετε αναπαραγωγή σε παύση κατά την εκτέλεση του κομματιού.</para></listitem>
+		</itemizedlist>
+		<para><remark>Suggested order: prev,rew,rec,play,stop,pause,fwd,next,eject.</remark></para>
+		<para><remark>gtk still doesn't have stock media icons, but CD player, sound recorder etc. all register icons with media-* IDs, should mention that here.</remark></para>
+		<para><remark>Should maybe also suggest here how to show volume and timeline controls.</remark></para>
+	</sect2>
+
+  </sect1>
+    
+  <sect1 id="toolbars-controlling-display">
+    <title>Έλεγχος προβολής και εμφάνισης</title>
+      
+    <para>Για κάθε εργαλειοθήκη της εφαρμογής σας, ο χρήστης πρέπει να μπορεί να διαλέξει εάν θα εμφανίσει ή όχι αυτήν την εργαλειοθήκη και εάν θα εμφανίσει τα περιεχόμενά του ως μόνο εικονίδια, μόνο κείμενο ή αμφότερα.</para>
+                  
+    <itemizedlist><title>Κατευθυντήριες γραμμές</title>
+	
+      <listitem><para>Επιτρέψτε στον χρήστη να αντικαταστήσει τις προεπιλογές εργαλειοθήκης του κέντρου ελέγχου για την συγκεκριμένη εφαρμογή σας στον διάλογο <guilabel>προτιμήσεις</guilabel> της εφαρμογής. Ειδικά, βεβαιωθείτε ότι ο χρήστης μπορεί:</para>
+	  
+	<itemizedlist>
+	    
+	  <listitem><para>να επιλέξει ξεχωριστά την εμφάνιση κάθε εργαλειοθήκης στην εφαρμογή σας ως μόνο εικονίδια, μόνο κείμενο, ή αμφότερα</para></listitem>
+	    
+	  <listitem><para>να επιστρέψει την κατάσταση εικονίδιο/κείμενο/αμφότερα για όλες τις εργαλειοθήκες στην εφαρμογή σας στην προεπιλογή του συστήματος</para></listitem>
+
+	  <listitem><para>να επιλέξει την εμφάνιση ετικετών κειμένου είτε πλευρικά είτε κάτω από όλα τα εικονίδια εργαλειοθήκης και να επιστρέψει αυτήν την ρύθμιση στην προεπιλογή του συστήματος</para></listitem>
+	    
+	  <listitem><para>να επιστρέψει τη διάταξη και σειρά όλων των εργαλειοθηκών στην εφαρμογή σας στην προεπιλογή της εφαρμογής</para></listitem>
+	    
+	</itemizedlist>
+	  
+      </listitem>
+	
+      <listitem><para>Εάν η εφαρμογή σας έχει μια μόνο εργαλειοθήκη, επιτρέψτε στον χρήστη να την κάνει ενεργή/ανενεργή με το στοιχείο μενού πλαισίου ελέγχου <menuchoice><guimenu>προβολή</guimenu><guimenuitem>εργαλειοθήκη</guimenuitem></menuchoice>.</para></listitem>
+	
+      <listitem><para>Εάν η εφαρμογή σας έχει δύο ή τρεις εργαλειοθήκες, επιτρέψτε στον χρήστη να τις ενεργοποιεί/απενεργοποιεί ξεχωριστά τοποθετώντας ένα στοιχείο μενού για κάθε μία στο μενού <guimenu>προβολή</guimenu> της εφαρμογής. Για παράδειγμα, <guimenuitem>κύρια εργαλειοθήκη</guimenuitem><guimenuitem>εργαλειοθήκη σχεδίαση</guimenuitem><guimenuitem>εργαλειοθήκη μορφοποίησης</guimenuitem>. Τοποθετήστε τα στοιχεία μαζί σε μια μοναδική ομάδα στο μενού, με πρώτη την <guimenuitem>κύρια εργαλειοθήκη</guimenuitem> (εάν η εφαρμογή σας την έχει), ακολουθούμενη από τις άλλες με αλφαβητική σειρά.</para></listitem>
+	
+      <listitem><para>Εάν η εφαρμογή σας έχει περισσότερες από τρεις εργαλειοθήκες, επιτρέψτε στον χρήστη να τις ενεργοποιεί/απενεργοποιεί ξεχωριστά τοποθετώντας ένα στοιχείο μενού για κάθε μια σε ένα υπομενού <guisubmenu>εργαλειοθηκών</guisubmenu> στο μενού <guimenu>προβολή</guimenu> της εφαρμογής. Τοποθετήστε το στοιχείο <guimenuitem>κύρια εργαλειοθήκη</guimenuitem> πρώτο (εάν η εφαρμογή σας έχει ένα), ακολουθούμενο από τα άλλα με αλφαβητική σειρά.</para>
+	  
+	<figure id="view-toolbar">
+	  <title>Παράδειγμα κομματιών μενού προβολής για εφαρμογές με μια εργαλειοθήκη (αριστερά), δύο ή τριών εργαλειοθηκών (μέση), ή τεσσάρων ή περισσότερων εργαλειοθηκών (δεξιά)</title>
+	  <mediaobject><imageobject><imagedata fileref="images/toolbars-configure-menu.png" format="PNG" width="488" depth="135"/></imageobject> <imageobject><imagedata fileref="images/toolbars-congfigure-menu.eps" format="EPS"/></imageobject> <textobject><phrase>Παράδειγμα μενού προβολής για εφαρμογή με μία εργαλειοθήκη</phrase></textobject></mediaobject>
+	</figure>
+	  
+      </listitem>
+	
+    </itemizedlist>
+
+  </sect1>
+  <sect1 id="toolbars-labels-tooltips">
+    <title>Ετικέτες και συμβουλές οθόνης</title>
+      
+    <para>Οι περισσότεροι έλεγχοι που εμφανίζονται στην εργαλειοθήκη σας απαιτούν μια ετικέτα κειμένου που εμφανίζεται από κάτω ή δίπλα της. Κρατήστε αυτήν την περιγραφή όσο το δυνατό πιο σύντομη, κατά προτίμηση ένα μοναδικό ρήμα. Για παράδειγμα, <guibutton>άνοιγμα</guibutton> ή <guibutton>αναίρεση</guibutton>.</para>
+      
+    <para>Κάθε έλεγχος που εμφανίζεται στην εργαλειοθήκη σας πρέπει να έχει μια συμβουλή οθόνης, εάν αυτός ο έλεγχος έχει ή όχι μια συσχετισμένη ετικέτα κειμένου. Η συμβουλή οθόνης πρέπει να είναι μια περιεκτική περιγραφή του ελέγχου, αλλά πρέπει να δίνει περισσότερες πληροφορίες από την ετικέτα κειμένου όπου γίνεται. Για παράδειγμα, <guilabel>άνοιγμα ενός υπάρχοντος εγγράφου</guilabel>, ή <guilabel>αναίρεση της τελευταίας λειτουργίας</guilabel>.</para>
+            
+    <itemizedlist><title>Κατευθυντήριες γραμμές</title>
+
+      <listitem><para>Για κουμπιά που αποκρίνονται αμέσως στα στοιχεία μενού, κάντε την ετικέτα κειμένου την ίδια όπως το στοιχείο μενού, αλλά χωρίς οποιαδήποτε τελική έλλειψη. Για παράδειγμα, <guibutton>άνοιγμα</guibutton>, <guibutton>αποθήκευση</guibutton>.</para></listitem>
+
+      <listitem><para>Μην δίνετε πλήκτρα πρόσβασης για κουμπιά εργαλειοθήκης. Αφού οι εργαλειοθήκες έχουν το ίδιο περιεχόμενο εστίασης πληκτρολογίου όπως η γραμμή μενού, θα ήταν υπερβολικά δύσκολο να δώσετε μοναδικά πλήκτρα πρόσβασης για κάθε τίτλο μενού και ελέγχου εργαλειοθήκης. Οι εργαλειοθήκες σκοπεύουν κυρίως ως συντομεύσεις για χρήστες ποντικιού, αν και περιηγούνται στο πληκτρολόγιο για λόγους πρόσβασης.</para></listitem>
+	
+      <listitem><para>Εάν η εργαλειοθήκη σας ρυθμίστηκε να δείχνει ετικέτες κάτω από τα εικονίδια κουμπιού, δείξτε μια ετικέτα για κάθε έλεγχο στην εργαλειοθήκη. Για παράδειγμα:</para>
+	  
+	<figure>
+	  <title>Εργαλειοθήκη με ετικέτες κάτω από όλα τα κουμπιά</title>
+	  <mediaobject><imageobject><imagedata fileref="images/toolbars-labels-below.png" format="PNG" width="381" depth="56"/></imageobject> <imageobject><imagedata fileref="images/toolbars-labels-below.eps" format="EPS"/></imageobject> <textobject><phrase>Εργαλειοθήκη που εμφανίζει ετικέτες κάτω από όλους τους ελέγχους</phrase></textobject></mediaobject>
+	</figure>
+
+      </listitem>
+	
+      <listitem><para>Εάν η εργαλειοθήκη σας ρυθμίστηκε να δείχνει ετικέτες δίπλα στα εικονίδια κουμπιών αντί για από κάτω τους (χρησιμοποιώντας την ρύθμιση "κείμενο προτεραιότητας"), μην εμφανίσετε ετικέτες για κάθε κουμπί. Εμφανίστε ετικέτες μόνο για τα κουμπιά που χρησιμοποιούνται πιο συχνά. Επιλέξτε όχι περισσότερα από τέσσερα τέτοια εικονίδια σε οποιαδήποτε εργαλειοθήκη, αλλιώς το αποτέλεσμα θα μικρύνει και η εργαλειοθήκη θα γίνει πολύ πλατιά. Για παράδειγμα:</para>
+	  
+	<figure>
+	  <title>Εργαλειοθήκη με ετικέτες "κειμένου προτεραιότητας" δίπλα στα πρώτα λίγα κουμπιά μόνο</title>
+	  <mediaobject><imageobject><imagedata fileref="images/toolbars-labels-beside.png" format="PNG" width="459" depth="35"/></imageobject> <imageobject><imagedata fileref="images/toolbars-labels-beside.eps" format="EPS"/></imageobject> <textobject><phrase>Εργαλειοθήκη με ετικέτες "κειμένου προτεραιότητας" δίπλα στα πρώτα λίγα στοιχεία μόνο</phrase></textobject></mediaobject>
+	</figure>
+
+	<para>Εάν είστε αβέβαιος ποια κουμπιά θα χρησιμοποιηθούν πιο συχνά, επιλέξτε τα πρώτα λίγα κουμπιά της εργαλειοθήκης σας και δώστε ετικέτες μόνο για αυτά.</para>
+      </listitem>
+	
+      <listitem><para>Βεβαιωθείτε ότι όλοι οι έλεγχοι εργαλειοθήκης έχουν συμβουλές οθόνης. Η συμβουλή οθόνης πρέπει να είναι πιο περιγραφική από το αντίστοιχο στοιχείο μενού, εάν έχει ένα τέτοιο, αλλά σύντομη. Για παράδειγμα, η <guilabel>δημιουργία νέου εγγράφου</guilabel> για το κουμπί εργαλειοθήκης <guibutton>άνοιγμα</guibutton>. Χρησιμοποιήστε κεφαλαίο το πρώτο γράμμα για συμβουλές οθόνης - δείτε <xref linkend="layout-capitalization"/> για περισσότερες πληροφορίες.</para></listitem>
+	
+    </itemizedlist>
+      
+  </sect1>
+    
+  <!-- Removed for now until we decide how much/little specific guidance to give for application types
+    
+  <sect2>
+  <title>Default Toolbar Layout— Office Application</title>
+    
+  <para>However many toolbars or palette windows your application provides, by default there should be one main toolbar that provides a subset of the application's overall functionality.  Many of the buttons on this toolbar will be the same regardless of the type of application.</para>
+    
+  <para>The following operations should be included on the main toolbar in the following order, if your application supports them.  Application-specific functions should be slotted onto the toolbar according to the position on which they appear on the main menu bar.  For functions that don't appear on the <guimenu>File</guimenu>, <guimenu>Edit</guimenu> or <guimenu>Help</guimenu> menus, this means they will normally appear between the <guibutton>Replace</guibutton> and <guibutton>Help</guibutton> buttons.</para>
+    
+  <figure>
+  <title>Buttons that should appear on the main toolbar of an office application.</title>
+  <mediaobject>
+  <imageobject><imagedata fileref="images/GtkToolbar_productivitydefault.png" format="PNG" width="720" depth="54"/></imageobject>
+  <imageobject><imagedata fileref="images/GtkToolbar_productivitydefault.eps" format="EPS"/></imageobject>
+  <textobject>
+  <phrase>New-Open-Save|Print|Undo-Redo|Find-Replace|Cut-Copy-Paste-Delete</phrase>
+  </textobject>
+  </mediaobject>
+  </figure>
+    
+  <para>If your application supports all of these functions and you want to simplify your toolbar, consider leaving off the <guibutton>Undo</guibutton> and <guibutton>Redo</guibutton> buttons, or the <guibutton>Cut</guibutton>, <guibutton>Copy</guibutton>, <guibutton>Paste</guibutton> and <guibutton>Delete</guibutton> buttons, as most users prefer to use keyboard or menu for these functions.  However, you should include an option to re-add these buttons in your <menuchoice><guimenu>Toolbars</guimenu><guimenuitem>Customize</guimenuitem></menuchoice>... menu.</para>
+    
+  <para>If you wish to add a <guibutton>Help</guibutton> toolbar button, it should be placed last (rightmost, in western locales) on the main toolbar.  However, adding a <guibutton>Help</guibutton> button to the toolbar is not generally recommended, as usability studies suggest that it will be rarely used.  (N.B. This finding applies only to toolbars, not <guibutton>Help</guibutton> buttons in dialogs).</para>
+    
+    
+    
+  </sect2>
+    
+  <sect2>
+  <title>Default Toolbar Layout— Browser Applications</title>
+    
+  <para>Applications for browsing documents or other objects, such as web, file, help or documentation browsers, should use the following layout for their main toolbar:</para>
+    
+  <para>Back Forward [Other Navigation] Stop Reload | Home | [Other App-Specific]</para>
+    
+  <para>Application-specific buttons (other than navigation buttons) should be placed in the button group following <guibutton>Home</guibutton>, in the order that they appear on the main menu bar.</para>
+    
+  <para>Following this model, some current GNOME browser apps would have their toolbars re-ordered as follows:</para>
+    
+  <figure>
+  <title>Nautilus 1.0 toolbar rearranged to follow recommended standard toolbar layout for browser applications</title>
+  <mediaobject>
+  <imageobject><imagedata fileref="images/GtkToolbar_browserdefault.png" format="PNG" width="486" depth="58"/></imageobject>
+  <imageobject><imagedata fileref="images/GtkToolbar_browserdefault.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <phrase>Back Forward Up Stop Reload | Home | WebSearch Services</phrase>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+	
+	<table>
+	  <title>Proposed toolbar re-ordering for Nautilus</title>
+	  <tgroup cols='2' align='left'>
+	    	    
+	    <tbody>
+	      <row>
+		<entry>Nautilus (1.0.x)</entry>
+		<entry>Back Forward Up Refresh Home WebSearch Services Stop</entry>
+	      </row>
+	      <row>
+		<entry>Nautilus (proposed)</entry>
+		<entry>Back Forward Up Stop Reload | Home | WebSearch Services </entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<table>
+	  <title>Proposed toolbar re-ordering for Galeon</title>
+	  <tgroup cols='2' align='left'>
+
+	    <tbody>
+	      <row>
+		<entry>Galeon (0.12.x)</entry>
+		<entry>Back Forward Reload Home Stop Zoom [URL] Go</entry>
+	      </row>
+	      <row>
+		<entry>Galeon (proposed)</entry>
+		<entry>Back Forward Stop Reload | Home | Zoom [URL] Go </entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+	
+	<table>
+	  <title>Proposed toolbar re-ordering for GNOME Help (deprecated, for illustration purposes only)</title>
+	  <tgroup cols='2' align='left'>
+
+	    <tbody>
+	      <row>
+		<entry>GNOME Help (0.4)</entry>
+		<entry>Back Forward Refresh Index History Bookmarks Help</entry>
+	      </row>
+	      <row>
+		<entry>GNOME Help (proposed)</entry>
+		<entry>Back Forward Stop Reload | Index History Bookmarks</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<para>Note: In browser applications, use <guilabel>Reload</guilabel> rather than <guilabel>Refresh</guilabel> when the data will be actually re-read from its original source, rather than just re-painted on the screen.</para>
+
+
+      </sect2>
+-->
+
+  </chapter>
+<!-- Note from GJM: I think palettes should go with toolboxes/utility windows. -->
+<!--
+<sect1 id="toolbars-palettes">
+<title>TODO : Palettes</title>
+  
+<para>A palette is much like a floating toolbar.  However, its size and shape is usually more customizable, and it typically has a titlebar of its own and appears in the GNOME task list.</para>
+  
+</sect1>
+</chapter>
+  -->

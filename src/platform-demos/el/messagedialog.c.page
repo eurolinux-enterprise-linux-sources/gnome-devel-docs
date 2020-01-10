@@ -1,41 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="messagedialog.c" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="messagedialog.c" xml:lang="el">
   <info>
     <title type="text">MessageDialog (C)</title>
-    <link type="guide" xref="c#windows"/>
+    <link type="guide" xref="beginner.c#windows"/>
     <link type="seealso" xref="dialog.c"/>
     <revision version="0.2" date="2012-08-07" status="draft"/>
 
     <credit type="author copyright">
       <name>Monica Kochofar</name>
-      <email its:translate="no">monicakochofar@gmail.com</email>
+      <email>monicakochofar@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Ένα παράθυρο μηνύματος</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -50,58 +32,58 @@
 
 
 
-/* Η συνάρτηση επανάκλησης στην οποία αντιδρά το σήμα "response" από τον χρήστη
- * στο παράθυρο μηνύματος διαλόγου.
- * Αυτή η συνάρτηση χρησιμοποιείται για αλληλεπίδραση με τον χρήστη στο τερματικό.
+/* Callback function in which reacts to the "response" signal from the user in
+ * the message dialog window.
+ * This function is used to interact with the user in the terminal.
  */
 static void
 on_response (GtkDialog *dialog,
              gint       response_id,
              gpointer   user_data)
 {
-  /* Αν το κουμπί πατηθεί δίνει απάντηση ΕΝΤΑΞΕΙ (response_id being -5) */
+  /* If the button clicked gives response OK (response_id being -5) */
   if (response_id == GTK_RESPONSE_OK) 
      g_print ("*boom*\n");
 
-  /* Αν το κουμπί πατηθεί δίνει απάντηση ΑΚΥΡΩΣΗ (response_id being -6) */
+  /* If the button clicked gives response CANCEL (response_id being -6) */
   else if (response_id == GTK_RESPONSE_CANCEL)
      g_print ("good choice\n");
 
-  /* Αν ο διάλογος μηνύματος καταστραφεί (για παράδειγμα πατώντας διαφυγή) */
+  /* If the message dialog is destroyed (for example by pressing escape) */
   else if (response_id == GTK_RESPONSE_DELETE_EVENT)
      g_print ("dialog closed or cancelled\n");
 
-  /* Καταστροφή του διαλόγου αφού έχει λάβει χώρα μια από τις παραπάνω ενέργειες */
+  /* Destroy the dialog after one of the above actions have taken place */
   gtk_widget_destroy (GTK_WIDGET (dialog));
 
 }
 
 
 
-/* Η συνάρτηση επανάκλησης για το σήμα απάντησης "activate" που σχετίζεται με την απλή ενέργεια
+/* Callback function for the response signal "activate" related to the SimpleAction
  * message_action.
- * Αυτή η συνάρτηση χρησιμοποιείται για την πρόκληση ανάδυσης του παραθύρου του διαλόγου μηνύματος.
+ * This function is used to cause the message dialog window to popup.
  */
 static void
 message_cb (GSimpleAction *simple,
             GVariant      *parameter,
             gpointer       user_data)
 {
-   /* Η γονική μεταβλητή σε αυτήν την περίπτωση αναπαριστά το παράθυρο */
+   /* the parent variable in this case represents the window */
    GtkWidget *message_dialog;
    GtkWindow *parent = user_data;
    
-   /* Δημιουργία ενός νέου διαλόγου μηνύματος και ορισμός των παραμέτρων ως εξής:
-    * Σημαίες διαλόγων - ο κατσκευασμένος διάλογος γίνεται αναγκαστικός 
-    * (οι αναγκαστικοί διάλογοι αποτρέπουν την αλληλεπίδραση με άλλα παράθυρα στην εφαρμογή)
-    * Τύπος μηνύματος - όχι μοιραίο μήνυμα προειδοποίησης
-    * Τύπος κουμπιών - χρήση των κουμπιών εντάξει και ακύρωση
-    * message_format - κείμενο που θέλετε να δει ο χρήστης στο παράθυρο 
+   /* Create a new message dialog, and set the parameters as follows:
+    * Dialog Flags - make the constructed dialog modal 
+    * (modal windows prevent interaction with other windows in the application)
+    * Message Type - nonfatal warning message
+    * Buttons Type - use the ok and cancel buttons
+    * message_format - text that you want the user to see in the window 
     */
    message_dialog = gtk_message_dialog_new (parent, GTK_DIALOG_MODAL, 
                                             GTK_MESSAGE_WARNING, 
                                             GTK_BUTTONS_OK_CANCEL, 
-                                            "Αυτή η ενέργεια θα προκαλέσει το καθολικό να πάψει να υπάρχει.");
+                                            "This action will cause the universe to stop existing.");
 
    gtk_widget_show_all (message_dialog);
 
@@ -121,28 +103,28 @@ activate (GtkApplication *app,
 
   GSimpleAction *message_action;
 
-  /* Δημιουργία παραθύρου με τίτλο και προεπιλεγμένο μέγεθος  */
+  /* Create a window with a title and a default size */
   window = gtk_application_window_new (app);
   gtk_window_set_title (GTK_WINDOW (window), "GMenu Example");
   gtk_window_set_default_size (GTK_WINDOW (window), 400, 200);
 
-  /* Δημιουργία ετικέτας και προσθήκη της στο παράθυρο */
+  /* Create a label and add it to the window */
   label = gtk_label_new ("This application goes boom!");
   gtk_container_add (GTK_CONTAINER (window), label);
 
-  /* Δημιουργία μιας νέας απλής ενέργειας, δίνοντας της έναν τύπο παραμέτρου NULL . Θα 
-   * είναι πάντα NULL για πράξεις που κλήθηκαν από ένα μενού. (π.χ. πατώντας ένα κουμπί "ok" 
-   * ή "cancel")
+  /* Create a new simple action, giving it a NULL parameter type. It will 
+   * always be NULL for actions invoked from a menu. (e.g clicking on an "ok" 
+   * or "cancel" button)
    */
   message_action = g_simple_action_new ("message", NULL); 
 
-  /*Σύνδεση του σήματος "activate" στην κατάλληλη συνάρτηση επανάκλησης */
+  /* Connect the "activate" signal to the appropriate callback function */
   g_signal_connect (message_action, "activate", G_CALLBACK (message_cb), 
                     GTK_WINDOW (window));
 
-  /* Προσθέτει την message_action στην συνολική απεικόνιση της ενέργειας. Μια απεικόνιση ενέργειας  είναι μια 
-   * διεπαφή που περιέχει έναν αριθμό από επώνυμα στιγμιότυπα GAction 
-   * (όπως message_action) 
+  /* Adds the message_action to the overall action map. An Action map is an 
+   * interface that contains a number of named GAction instances 
+   * (such as message_action) 
    */
   g_action_map_add_action (G_ACTION_MAP (window), G_ACTION (message_action));
 
@@ -151,8 +133,8 @@ activate (GtkApplication *app,
 
 
 
-/* Η συνάρτηση επανάκλησης για το σήμα απάντησης "activate" από την ενέργεια "quit" 
- * στην ακριβώς παρακάτω συνάρτηση.
+/* Callback function for the response signal "activate" from the "quit" action 
+ * in the function directly below.
  */ 
 static void
 quit_cb (GSimpleAction *simple,
@@ -166,7 +148,7 @@ quit_cb (GSimpleAction *simple,
 
 
 
-/* Η συνάρτηση έναρξης για το μενού που δημιουργήσαμε σε αυτό το παράδειγμα */
+/* Startup function for the menu we are creating in this sample */
 static void
 startup (GApplication *app,
          gpointer      user_data)
@@ -174,20 +156,20 @@ startup (GApplication *app,
   GMenu *menu;
   GSimpleAction *quit_action;
 
-  /* Αρχικοποίηση του GMenu και προσθήκη ενός στοιχείου μενού με ετικέτα "Message" και ενέργεια 
-   * "win.message". Επίσης προσθήκη ενός άλλου στοιχείου μενού με ετικέτα "Quit" και ενέργεια 
+  /* Initialize the GMenu, and add a menu item with label "Message" and action 
+   * "win.message". Also add another menu item with label "Quit" and action 
    * "app.quit" 
    */
   menu = g_menu_new ();
   g_menu_append (menu, "Message", "win.message");
   g_menu_append (menu, "Quit", "app.quit");
 
-  /* Δημιουργία μιας απλής ενέργειας για την εφαρμογή. (Σε αυτήν την περίπτωση 
-   * είναι η ενέργεια "quit" .
+  /* Create a new simple action for the application. (In this case it is the 
+   * "quit" action.
    */
   quit_action = g_simple_action_new ("quit", NULL);
 
-  /* Επιβεβαίωση ότι το μενού που μόλις δημιουργήσαμε ορίστηκε για τη συνολική εφαρμογή */
+  /* Ensure that the menu we have just created is set for the overall application */
   gtk_application_set_app_menu (GTK_APPLICATION (app), G_MENU_MODEL (menu));
 
   g_signal_connect (quit_action, 
@@ -201,7 +183,7 @@ startup (GApplication *app,
 
 
 
-/* Η συνάρτηση έναρξης για την εφαρμογή */
+/* Startup function for the application */
 int
 main (int argc, char **argv)
 {

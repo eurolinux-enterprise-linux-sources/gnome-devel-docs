@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.vala" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.vala" xml:lang="el">
   <info>
   <title type="text">MenuBar (Vala)</title>
   <link type="guide" xref="beginner.vala#menu-combo-toolbar"/>
@@ -9,34 +9,16 @@
 
     <credit type="author copyright">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Ένα γραφικό στοιχείο που κρατά γραφικά στοιχεία GtkMenuItem</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Ένα γραφικό συστατικό που κρατά γραφικά συστατικά GtkMenuItem</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -171,14 +153,14 @@ const ActionEntry[] actions = {
   </item>
   <item><p>Δεύτερο, δημιουργούμε στις συναρτήσεις επανάκλησης τις ενέργειες που σχετίζονται.</p>
   <code mime="text/x-csharp">
-void new_cb (SimpleAction action, Variant? parameter) {
-    print ("You clicked \"New\"\n");
-    //new MyWindow (this).show ();
+void new_cb (SimpleAction action, Variant; parameter) {
+    print ("You clicked \"New\"\n")·
+    //new MyWindow (this).show ()·
 }
 
-void quit_cb (SimpleAction action, Variant? parameter) {
-    print ("You clicked \"Quit\"\n");
-    this.quit ();
+void quit_cb (SimpleAction action, Variant; parameter) {
+    print ("You clicked \"Quit\"\n")·
+    //this.quit ()·  **Bug #674090**
 }</code>
  </item>
   <item><p>Και τελευταία, συνδέουμε τα στοιχεία μενού στις ενέργειες στο αρχείο XML προσθέτοντας το γνώρισμα "action":</p>
@@ -206,7 +188,7 @@ void quit_cb (SimpleAction action, Variant? parameter) {
 
   <p>Μερικές ενέργειες, όπως "copy" και "paste" αντιμετωπίζουν το παράθυρο, όχι την εφαρμογή. Οι ενέργειες παραθύρου πρέπει να δημιουργηθούν ως μέρος της κλάσης παραθύρου.</p>
 
-  <p>Τα πλήρη αρχεία παραδείγματος περιέχουν αμφότερες τις ενέργειες εφαρμογής και παραθύρου. Οι ενέργειες παραθύρου είναι αυτές που συνήθως συμπεριλαμβάνονται στο <link xref="gmenu.vala">μενού εφαρμογής</link>. Δεν είναι καλή πρακτική να συμπεριλαμβάνετε ενέργειες παραθύρου στο μενού της εφαρμογής. Για σκοπούς επίδειξης, τα πλήρη αρχεία του παραδείγματος που ακολουθεί περιέχουν XML στο αρχείο UI που δημιουργεί το μενού εφαρμογής που περιλαμβάνει τα στοιχεία "New" και "Open" και αυτά συνδέονται με τις ίδιες ενέργειες όπως τα στοιχεία της γραμμής μενού του ίδιου ονόματος.</p>
+  <p>Τα πλήρη αρχεία παραδείγματος περιέχουν αμφότερες τις ενέργειες εφαρμογής και εφαρμογές παραθύρου. Οι ενέργειες παραθύρου είναι αυτές που συνήθως συμπεριλαμβάνονται στο <link xref="gmenu.vala">μενού εφαρμογής</link> επίσης. Δεν είναι καλή πρακτική να συμπεριλαμβάνετε ενέργειες παραθύρου στο μενού της εφαρμογής. Για σκοπούς επίδειξης, τα πλήρη αρχεία του παραδείγματος που ακολουθεί περιέχουν XML στο αρχείο UI που δημιουργεί το μενού εφαρμογής που περιλαμβάνει τα στοιχεία "New" και "Open" και αυτά συνδέονται με τις ίδιες ενέργειες όπως τα στοιχεία της γραμμής μενού του ίδιου ονόματος.</p>
 
 
 </section>
@@ -365,7 +347,7 @@ class MyApplication: Gtk.Application {
 
 	void quit_cb (SimpleAction action, Variant? parameter) {
 		print ("You clicked \"Quit\"\n");
-		this.quit ();
+		//this.quit ();  **Bug #674090**
 	}
 
 	void awesome_cb (SimpleAction action, Variant? parameter) {

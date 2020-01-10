@@ -2,15 +2,11 @@ from gi.repository import Gtk
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="GMenu Example", application=app)
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -18,7 +14,7 @@ class MyApplication(Gtk.Application):
         win = MyWindow(self)
         win.show_all()
 
-    def do_startup(self):
+    def do_startup (self):
         # start the application
         Gtk.Application.do_startup(self)
 
@@ -50,15 +46,15 @@ class MyApplication(Gtk.Application):
 
     # callback function for "new"
     def new_cb(self, action, parameter):
-        print("This does nothing. It is only a demonstration.")
+        print "This does nothing. It is only a demonstration."
 
     # callback function for "about"
     def about_cb(self, action, parameter):
-        print("No AboutDialog for you. This is only a demonstration.")
+        print "No AboutDialog for you. This is only a demonstration."
 
     # callback function for "quit"
     def quit_cb(self, action, parameter):
-        print("You have quit.")
+        print "You have quit."
         self.quit()
 
 app = MyApplication()

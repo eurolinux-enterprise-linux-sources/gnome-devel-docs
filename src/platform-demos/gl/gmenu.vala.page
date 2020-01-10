@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.vala" xml:lang="gl">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.vala" xml:lang="gl">
   <info>
   <title type="text">GMenu (Vala)</title>
 	  <link type="guide" xref="beginner.vala#menu-combo-toolbar"/>
@@ -8,13 +8,13 @@
 
     <credit type="author copyright">
       <name>Ryan Lortie</name>
-      <email its:translate="no">desrt@desrt.ca</email>
+      <email>desrt@desrt.ca</email>
       <years>2012</years>
    </credit>
 
     <credit type="author">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
     </credit>
 
     <desc>A simple implementation of GMenuModel</desc>
@@ -30,6 +30,9 @@
     <media type="image" mime="image/png" height="200" src="media/gmenu.vala.png"/>
     <note style="important">
        <p><em style="strong">You need to be running GTK+-3.4 or later for this to work</em></p>
+    </note>
+    <note style="bug">
+      <p>This program will not compile with the quit action connected until <link href="https://bugzilla.gnome.org/show_bug.cgi?id=674090">Bug #674090</link> is fixed. Therefore, the problematic line has been commented out.</p>
     </note>
     <p>A GtkApplication with a simple GMenu and SimpleActions</p>
 
@@ -84,7 +87,7 @@ public class Application : Gtk.Application {
 		this.app_menu = menu;
 
 		var quit_action = new SimpleAction ("quit", null);
-		quit_action.activate.connect (this.quit);
+		//quit_action.activate.connect (this.quit);
 		this.add_action (quit_action);
 	}
 }

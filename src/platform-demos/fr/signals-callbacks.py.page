@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="signals-callbacks.py" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="signals-callbacks.py" xml:lang="fr">
 
 <info>
   <title type="text">Signals and callbacks (Python)</title>
@@ -7,70 +7,40 @@
   <link type="next" xref="button.py"/>
   <revision version="0.1" date="2012-06-16" status="draft"/>
 
-  <desc>Une explication des signaux et rappels dans GTK+.</desc>
+  <desc>An explanation of signals and callbacks in GTK+.</desc>
   <credit type="author copyright">
     <name>Sebastian Pölsterl</name>
-    <email its:translate="no">sebp@k-d-w.org</email>
+    <email>sebp@k-d-w.org</email>
     <years>2011</years>
   </credit>
   <credit type="editor">
     <name>Marta Maria Casetti</name>
-    <email its:translate="no">mmcasetti@gmail.com</email>
+    <email>mmcasetti@gmail.com</email>
     <years>2012</years>
   </credit>
+</info>
 
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  </info>
-
-<title>Signaux et rappels</title>
+<title>Signals and callbacks</title>
 
 <links type="section"/>
 
 <section id="overview">
-<title>Présentation</title>
+<title>Overview</title>
 
-<p>Comme la plupart des boîtes à outils d'interfaces utilisateurs, GTK+ utilise un modèle de programmation événementiel. Lorsque l'utilisateur ne fait rien, GTK+ attend qu'une entrée se fasse dans la boucle principale. Dès que l'utilisateur fait quelque chose (disons un clic de souris), alors la boucle principale « se réveille » et fournit un événement à GTK+.</p>
+<p>Like most GUI toolkits, GTK+ uses an event-driven programming model. When the user is doing nothing, GTK+ sits in the main loop and waits for input. If the user performs some action - say, a mouse click - then the main loop "wakes up" and delivers an event to GTK+.</p>
 
-<p>Lorsque les éléments graphiques reçoivent un événement, il émettent la plupart du temps un ou plusieurs signaux. Ces signaux indiquent à votre programme que « quelque chose d'intéressant vient de se passer » en exécutant les fonctions que vous leur avez connecté. Lorsque vos rappels sont exécutés, vous agissez normalement en conséquence. Après la fin d'un rappel, GTK+ retourne dans la boucle principale et attend d'autres événements.</p>
+<p>When widgets receive an event, they frequently emit one or more signals. Signals notify your program that "something interesting happened" by invoking functions you have connected to the signal. Such functions are commonly known as callbacks. When your callbacks are invoked, you would typically take some action. After a callback finishes, GTK+ will return to the main loop and await more user input.</p>
 
-<p>Voici un exemple générique : <code>handler_id = widget.connect(evenement, rappel, donnees)</code>. <code>widget</code> est un exemple d'élément graphique que nous avons créé un peu plus tôt. Puis vient l'<code>evenement</code> qui nous intéresse. Chaque élément graphique possède ses propres événements pouvant arriver. Par exemple, si vous connectez un Gtk.Button à l'événement « cliqué » : chaque fois que ce bouton est cliqué, le signal est émis. Un autre exemple avec le signal <code>notify::property</code> : chaque fois qu'une <link xref="properties.py">propriété</link> d'un GObject est modifiée, GObject associe comme détail à l'émission de ce signal, le nom de la propriété modifiée au lieu de seulement émettre le signal <code>notify</code>. Cela permet aux clients qui ne veulent être informés des modifications que d'une seule propriété de filtrer la plupart des événements avant de les recevoir. Troisièmement, l'argument de rappel est le nom de la fonction de rappel, qui contient le code en cours d'exécution quand les signaux de ce type spécifique sont émis. Enfin, l'argument optionnel de données inclut toute donnée devant être passée quand le signal est émis.</p>
+<p>A generic example is: <code>handler_id = widget.connect("event", callback, data)</code>. <code>widget</code> is an instance of a widget we created earlier. Next, the <code>event</code> we are interested in. Each widget has its own particular events which can occur. For instance, if you have a Gtk.Button you usually want to connect to the "clicked" event: this means that when the button is clicked, the signal is issued. Another example is the <code>notify::property</code> signal: whenever a <link xref="properties.py">property</link> is modified on a GObject, instead of just emitting the <code>notify</code> signal, GObject associates as a detail to this signal emission the name of the property modified. This allows clients who wish to be notified of changes to only one property to filter most events before receiving them. Thirdly, the callback argument is the name of the callback function, which contains the code which runs when signals of the specified type are issued. Finally, the optional data argument includes any data which should be passed when the signal is issued.</p>
 
-<p>La fonction renvoie un nombre (le <code>handler_id</code>) qui identifie cette paire particulière de signal-rappel. Ce nombre est nécessaire pour se déconnecter d'un signal de façon à ce que la fonction de rappel ne soit plus appelée, ni par la suite, ni pendant les émissions du signal à laquelle elle est actuellement connectée, comme dans <code>widget.disconnect(handler_id)</code>.</p>
+<p>The function returns a number (the <code>handler_id</code>) that identifies this particular signal-callback pair. This number is required to disconnect from a signal such that the callback function will not be called during any future or currently ongoing emissions of the signal it has been connected to, as in <code>widget.disconnect(handler_id)</code>.</p>
 
 </section>
 
 <section id="references">
 
-<title>Références</title>
-<p><link href="http://developer.gnome.org/gobject/stable/signal.html">Les signaux</link> dans la documentation GObject</p>
+<title>References</title>
+<p><link href="http://developer.gnome.org/gobject/stable/signal.html">Signals</link> in GObject documentation</p>
 <p><link href="http://python-gtk-3-tutorial.readthedocs.org/en/latest/basics.html">Basics - Main loop and Signals</link> in Python GTK+ 3 Tutorial</p>
 </section>
 

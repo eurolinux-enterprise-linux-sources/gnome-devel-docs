@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.js" xml:lang="ca">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.js" xml:lang="ca">
   <info>
   <title type="text">Statusbar (JavaScript)</title>
     <link type="guide" xref="beginner.js#display-widgets"/>
@@ -7,7 +7,7 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
@@ -77,7 +77,7 @@ const StatusbarExample = new Lang.Class({
         this._panes = new Gtk.Paned ({
             orientation: Gtk.Orientation.VERTICAL });
 ]]></code>
-    <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link> to put all our widgets into. The next step is to create a vertically-oriented Gtk.Paned interface, to divide the window up into two sections. This way the statusbar looks like those used in other applications, and it stays at the bottom of the window, even if the user resizes it.</p>
+    <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link> to put all our widgets into. The next step is to create a vertically-oriented <link href="paned.js.page">Gtk.Paned</link> interface, to divide the window up into two sections. This way the statusbar looks like those used in other applications, and it stays at the bottom of the window, even if the user resizes it.</p>
   </section>
 
   <section id="buttons">
@@ -100,7 +100,7 @@ const StatusbarExample = new Lang.Class({
             use_stock: true });
         this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
 ]]></code>
-    <p>This code creates the three <link href="button.js.page">Gtk.Buttons</link> we'll use to push a new message to the statusbar, pop the last one off, and clear all existing messages. The "back" and "clear" buttons are <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">stock buttons</link>, which are automatically translated into any language GNOME supports.</p>
+    <p>This code creates the three <link href="button.js.page">Gtk.Buttons</link> we'll use to push a new message to the statusbar, pop the last one off, and clear all existing messages. The "back" and "clear" buttons are <link href="http://developer.gnome.org/gtk/2.24/gtk-Stock-Items.html">stock buttons</link>, which are automatically translated into any language GNOME supports.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Put the buttons in a grid
@@ -212,37 +212,39 @@ app.application.run (ARGV);
     <title>Complete code sample</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
-
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class StatusbarExample {
+const StatusbarExample = new Lang.Class({
+    Name: 'Statusbar Example',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jsstatusbar',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-        // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -259,19 +261,19 @@ class StatusbarExample {
         // Create the main button
         this._clickMe = new Gtk.Button ({
             label: "Click Me!" });
-        this._clickMe.connect ("clicked", this._clicked.bind(this));
+        this._clickMe.connect ("clicked", Lang.bind (this, this._clicked));
 
         // Create the back button
         this._backButton = new Gtk.Button ({
             label: "gtk-go-back",
             use_stock: true });
-        this._backButton.connect ("clicked", this._back.bind(this));
+        this._backButton.connect ("clicked", Lang.bind (this, this._back));
 
         // Create the clear button
         this._clearButton = new Gtk.Button ({
             label: "gtk-clear",
             use_stock: true });
-        this._clearButton.connect ("clicked", this._clear.bind(this));
+        this._clearButton.connect ("clicked", Lang.bind (this, this._clear));
 
         // Put the buttons in a grid
         this._grid = new Gtk.Grid ({
@@ -312,27 +314,35 @@ class StatusbarExample {
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _clicked() {
+
+
+    _clicked: function() {
 
         // Increment the number of clicks by 1
         this.Clicks++;
 
         // Update the statusbar with the new number of clicks
         this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
-    }
 
-    _back() {
+    },
+
+
+
+    _back: function () {
 
         // If there have been any clicks, decrement by 1 and remove last statusbar update
         if (this.Clicks &gt; 0 ) {
             this.Clicks--;
             this._statusbar.pop (this.ContextID);
         };
-    }
 
-    _clear() {
+    },
+
+
+
+    _clear: function () {
 
         // Reset the number of clicks
         this.Clicks = 0;
@@ -342,8 +352,10 @@ class StatusbarExample {
 
         // Reset the statusbar's message
         this._statusbar.push (this.ContextID, "Number of clicks: " + this.Clicks);
+
     }
-};
+
+});
 
 // Run the application
 let app = new StatusbarExample ();

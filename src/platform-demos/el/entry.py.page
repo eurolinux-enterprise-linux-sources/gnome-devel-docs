@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.py" xml:lang="el">
   <info>
     <title type="text">Καταχώριση (Python)</title>
     <link type="guide" xref="beginner.py#entry"/>
@@ -9,39 +9,21 @@
 
     <credit type="author copyright editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no"/>
+      <email/>
       <years>2012</years>
     </credit>
 
     <credit type="author copyright">
       <name>Sebastian Pölsterl</name>
-      <email its:translate="no">sebp@k-d-w.org</email>
+      <email>sebp@k-d-w.org</email>
       <years>2011</years>
     </credit>
     <desc>Ένα πεδίο καταχώρισης κειμένου μοναδικής γραμμής</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -56,9 +38,7 @@
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="What is your name?", application=app)
         self.set_default_size(300, 100)
@@ -76,13 +56,11 @@ class MyWindow(Gtk.ApplicationWindow):
     # the content of the entry is used to write in the terminal
     def cb_activate(self, entry):
         # retrieve the content of the widget
-        name = entry.get_text()
-        # print it in a nice form in the terminal
-        print("Hello " + name + "!")
-
+		name = entry.get_text()
+		# print it in a nice form in the terminal
+		print "Hello " + name + "!"
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -100,23 +78,23 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-    <title>Χρήσιμες μέθοδοι για γραφικό στοιχείο εισαγωγής</title>
-    <p>Στη γραμμή 14 το σήμα <code>"activate"</code> συνδέεται με τη συνάρτηση επανάκλησης <code>cb_activate()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση. Μερικά από τα σήματα που το γραφικό στοιχείο Gtk.Entry μπορεί να εκπέμψει είναι: <code>"activate"</code> (εκπεμπόμενο όταν ο χρήστης ενεργοποιεί το πλήκτρο εισαγωγής)· <code>"backspace"</code> (εκπεμπόμενο όταν ο χρήστης ενεργοποιεί την οπισθοδιαγραφή ή τα πλήκτρα Shift-οπισθοδιαγραφή)· <code>"copy-clipboard"</code> (Ctrl-c και Ctrl-Insert); <code>"paste-clipboard"</code> (Ctrl-v και Shift-Insert); <code>"delete-from-cursor"</code> (διαγραφή, για να διαγραφτεί ένας χαρακτήρας· Ctrl-διαγραφή, για να διαγραφτεί μια λέξη)· <code>"icon-press"</code> (εκπεμπόμενο όταν ο χρήστης πατά ένα ενεργοποιήσιμο εικονίδιο)· <code>"icon-release"</code> (εκπεμπόμενο με την απελευθέρωση του κουμπιού από ένα πάτημα του ποντικιού πάνω από ένα ενεργοποιήσιμο εικονίδιο)· <code>"insert-at-cursor"</code> (εκπεμπόμενο όταν ο χρήστης αρχικοποιεί την εισαγωγή μιας σταθερής συμβολοσειράς στον δρομέα)· <code>"move-cursor"</code> (εκπεμπόμενο όταν ο χρήστης αρχικοποιεί μια μετακίνηση δρομέα)· <code>"populate-popup"</code> (εκπεμπόμενο πριν την προβολή του μενού περιεχομένου της εισαγωγής· μπορεί να χρησιμοποιηθεί για προσθήκη στοιχείων σε αυτή).</p>
+    <title>Χρήσιμες μέθοδοι για γραφικό συστατικό εισαγωγής</title>
+    <p>Στη γραμμή 14 το σήμα <code>"activate"</code> συνδέεται με τη συνάρτηση επανάκλησης <code>cb_activate()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση. Μερικά από τα σήματα που το γραφικό συστατικό Gtk.Entry μπορεί να εκπέμψει είναι: <code>"activate"</code> (εκπεμπόμενο όταν ο χρήστης ενεργοποιεί το πλήκτρο εισαγωγής)· <code>"backspace"</code> (εκπεμπόμενο όταν ο χρήστης ενεργοποιεί την οπισθοδιαγραφή ή τα πλήκτρα Shift-οπισθοδιαγραφή)· <code>"copy-clipboard"</code> (Ctrl-c και Ctrl-Insert); <code>"paste-clipboard"</code> (Ctrl-v και Shift-Insert); <code>"delete-from-cursor"</code> (διαγραφή, για να διαγραφτεί ένας χαρακτήρας· Ctrl-διαγραφή, για να διαγραφτεί μια λέξη)· <code>"icon-press"</code> (εκπεμπόμενο όταν ο χρήστης πατά ένα ενεργοποιήσιμο εικονίδιο)· <code>"icon-release"</code> (εκπεμπόμενο με την απελευθέρωση του κουμπιού από ένα πάτημα του ποντικιού πάνω από ένα ενεργοποιήσιμο εικονίδιο)· <code>"insert-at-cursor"</code> (εκπεμπόμενο όταν ο χρήστης αρχικοποιεί την εισαγωγή μιας σταθερής συμβολοσειράς στον δρομέα)· <code>"move-cursor"</code> (εκπεμπόμενο όταν ο χρήστης αρχικοποιεί μια μετακίνηση δρομέα)· <code>"populate-popup"</code> (εκπεμπόμενο πριν την προβολή του μενού περιεχομένου της εισαγωγής· μπορεί να χρησιμοποιηθεί για προσθήκη στοιχείων σε αυτή).</p>
     <list>
       <item><p><code>get_buffer()</code> και <code>set_buffer(buffer)</code>, όπου <code>buffer</code> είναι ένα αντικείμενο Gtk.EntryBuffer, μπορούν να χρησιμοποιηθούν για λήψη και ορισμό της ενδιάμεσης μνήμης για την εισαγωγή.</p></item>
       <item><p><code>get_text()</code> και <code>set_text("some text")</code> μπορούν να χρησιμοποιηθούν για λήψη και ορισμό του περιεχομένου για την εισαγωγή.</p></item>
       <item><p><code>get_text_length()</code> είναι αυτονόητο.</p></item>
       <item><p><code>get_text_area()</code> δέχεται την περιοχή όπου το κείμενο εισαγωγής σύρεται.</p></item>
-      <item><p>If we set <code>set_visibility(False)</code> the characters in the entry are displayed as the invisible char. This is the best available in the current font, but it can be changed with <code>set_invisible_char(ch)</code>, where <code>ch</code> is a Unicode character. The latter method is reversed by <code>unset_invisible_char()</code>.</p></item>
+      <item><p>Εάν ορίζουμε <code>set_visibility(False)</code> οι χαρακτήρες στην καταχώριση εμφανίζονται ως ο αόρατος χαρακτήρας. Αυτό είναι καλύτερα διαθέσιμο στην τρέχουσα γραμματοσειρά, αλλά μπορεί να αλλαχθεί με <code>set_invisible_char(ch)</code>, όπου <code>ch</code> είναι ένας χαρακτήρας Unicode. Η τελευταία μέθοδος αντιστρέφεται με τον <code>unset_invisbile_char()</code>.</p></item>
       <item><p><code>set_max_length(int)</code>, όπου <code>int</code> είναι ένας ακέραιος, που περικόπτει κάθε καταχώριση μεγαλύτερη από <code>int</code> για να έχει το επιθυμητό μέγιστο μήκος.</p></item>
-      <item><p>Από προεπιλογή, εάν πατήσετε το πλήκτρο καταχώρισης η Gtk.Entry εκπέμπει το σήμα <code>"activate"</code>. Εάν θα θέλατε να ενεργοποιήσετε το προεπιλεγμένο γραφικό στοιχείο για το παράθυρο (ορίστε χρησιμοποιώντας τον <code>set_default(widget)</code> στο παράθυρο), έπειτα χρησιμοποιήστε <code>set_activates_default(True)</code>.</p></item>
+      <item><p>Από προεπιλογή, εάν πατήσετε το πλήκτρο καταχώρισης η Gtk.Entry εκπέμπει το σήμα <code>"activate"</code>. Εάν θα θέλατε να ενεργοποιήσετε το προεπιλεγμένο γραφικό συστατικό για το παράθυρο (ορίστε χρησιμοποιώντας τον <code>set_default(widget)</code> στο παράθυρο), έπειτα χρησιμοποιήστε <code>set_activates_default(True)</code>.</p></item>
       <item><p>Για τον ορισμό ενός πλαισίου γύρω από την καταχώριση: <code>set_has_frame(True)</code>.</p></item>
       <item><p>Ο <code>set_placeholder_text("some text")</code> ορίζει το εμφανιζόμενο κείμενο στην καταχώριση όταν είναι κενό και χωρίς εστίαση.</p></item>
       <item><p><code>set_overwrite_mode(True)</code> και <code>set_overwrite_mode(False)</code> είναι αυτονόητα.</p></item>
-      <item><p>Εάν έχουμε <code>set_editable(False)</code> ο χρήστης δεν μπορεί να επεξεργαστεί το κείμενο στο γραφικό στοιχείο.</p></item>
+      <item><p>Εάν έχουμε <code>set_editable(False)</code> ο χρήστης δεν μπορεί να επεξεργαστεί το κείμενο στο γραφικό συστατικό.</p></item>
       <item><p><code>set_completion(completion)</code>, όπου <code>completion</code> είναι ένας <link href="http://developer.gnome.org/gtk3/unstable/GtkEntryCompletion.html"><code>Gtk.EntryCompletion</code></link>, ορίζει την ολοκλήρωση - ή το απενεργοποιεί εάν η <code>completion</code> είναι <code>None</code>.</p></item>
-      <item><p>Ένα γραφικό στοιχείο καταχώρισης μπορεί να εμφανίσει πρόοδο ή πληροφορίες δραστηριότητας πίσω από το κείμενο. Χρησιμοποιούμε <code>set_progress_fraction(fraction)</code>, όπου <code>fraction</code> είναι ένας <code>float</code> between <code>0.0</code> και <code>1.0</code> συμπεριλαμβανόμενου, για να συμπληρώσει τη δεδομένο κλάσμα της γραμμής. Χρησιμοποιούμε <code>set_progress_pulse_step()</code> για τον ορισμό του κλάσματος του συνολικού πλάτους καταχώρισης για να μετακινήσουμε την ομάδα αναπήδησης προόδου για κάθε κλήση στον <code>progress_pulse()</code>. Η τελευταία μέθοδος δείχνει ότι κάποια πρόοδος έχει γίνει και προκαλεί τον δείκτη προόδου της καταχώρισης να μπει στην "activity mode", όπου μια ομάδα αναπηδά πίσω και μπρος. Κάθε κλήση στον <code>progress_pulse()</code> προκαλεί την μετακίνηση της ομάδας λιγο (η ποσότητα της μετακίνησης ανά παλμό καθορίζεται, όπως ειπώθηκε πριν, κατά <code>set_progress_pulse_step()</code>).</p></item>
-      <item><p>Ένα γραφικό στοιχείο καταχώρισης μπορεί επίσης να εμφανίσει εικονίδια. Αυτά τα εικονίδια που μπορούν να ενεργοποιηθούν με κλικ, μπορούν να οριστούν ως πηγή μεταφοράς και μπορούν να έχουν συμβουλές οθόνης. Για την προσθήκη ενός εικονιδίου, χρησιμοποιήστε <code>set_icon_from_stock(icon_position, stock_id)</code>, ή ένα από τα <code>set_icon_from_pixbuf(icon_position, pixbuf)</code>, <code>set_icon_from_icon_name(icon_position, icon_name)</code>, όπου <code>icon_position</code> είναι ένα από <code>Gtk.EntryIconPosition.PRIMARY</code> (για τον ορισμό του εικονιδίου στην αρχή της καταχώρισης) <code>Gtk.EntryIconPosition.SECONDARY</code> (για τον ορισμό του εικονιδίου στο τέλος της καταχώρισης). Για τον ορισμό μιας συμβουλής οθόνης σε ένα εικονίδιο, χρησιμοποιήστε <code>set_icon_tooltip_text("tooltip text")</code> ή <code>set_icon_tooltip_markup("tooltip text in Pango markup language")</code>.</p></item>
+      <item><p>Ένα γραφικό συστατικό καταχώρισης μπορεί να εμφανίσει πρόοδο ή πληροφορίες δραστηριότητας πίσω από το κείμενο. Χρησιμοποιούμε <code>set_progress_fraction(fraction)</code>, όπου <code>fraction</code> είναι ένας <code>float</code> between <code>0.0</code> και <code>1.0</code> συμπεριλαμβανόμενου, για να συμπληρώσει τη δεδομένο κλάσμα της γραμμής. Χρησιμοποιούμε <code>set_progress_pulse_step()</code> για τον ορισμό του κλάσματος του συνολικού πλάτους καταχώρισης για να μετακινήσουμε την ομάδα αναπήδησης προόδου για κάθε κλήση στον <code>progress_pulse()</code>. Η τελευταία μέθοδος δείχνει ότι κάποια πρόοδος έχει γίνει και προκαλεί τον δείκτη προόδου της καταχώρισης να μπει στην "activity mode", όπου μια ομάδα αναπηδά πίσω και μπρος. Κάθε κλήση στον <code>progress_pulse()</code> προκαλεί την μετακίνηση της ομάδας λιγο (η ποσότητα της μετακίνησης ανά παλμό καθορίζεται, όπως ειπώθηκε πριν, κατά <code>set_progress_pulse_step()</code>).</p></item>
+      <item><p>Ένα γραφικό συστατικό καταχώρισης μπορεί επίσης να εμφανίσει εικονίδια. Αυτά τα εικονίδια που μπορούν να ενεργοποιηθούν με κλικ, μπορούν να οριστούν ως πηγή μεταφοράς και μπορούν να έχουν συμβουλές οθόνης. Για την προσθήκη ενός εικονιδίου, χρησιμοποιήστε <code>set_icon_from_stock(icon_position, stock_id)</code>, ή ένα από τα <code>set_icon_from_pixbuf(icon_position, pixbuf)</code>, <code>set_icon_from_icon_name(icon_position, icon_name)</code>, όπου <code>icon_position</code> είναι ένα από <code>Gtk.EntryIconPosition.PRIMARY</code> (για τον ορισμό του εικονιδίου στην αρχή της καταχώρισης) <code>Gtk.EntryIconPosition.SECONDARY</code> (για τον ορισμό του εικονιδίου στο τέλος της καταχώρισης). Για τον ορισμό μιας συμβουλής οθόνης σε ένα εικονίδιο, χρησιμοποιήστε <code>set_icon_tooltip_text("tooltip text")</code> ή <code>set_icon_tooltip_markup("tooltip text in Pango markup language")</code>.</p></item>
     </list>
   </section>
 

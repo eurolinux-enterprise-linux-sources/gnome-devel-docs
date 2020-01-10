@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.py" xml:lang="el">
   <info>
     <title type="text">Γραμμή κατάστασης (Python)</title>
     <link type="guide" xref="beginner.py#display-widgets"/>
@@ -9,34 +9,16 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Μηνύματα αναφοράς μικρότερης σημασίας για τον χρήστη</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -53,10 +35,8 @@
 from gi.repository import Gdk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
     # a window
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="StatusBar Example", application=app)
         self.set_default_size(200, 100)
@@ -75,8 +55,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # the source of a message
         self.context_id = self.statusbar.get_context_id("example")
         # we push a message onto the statusbar's stack
-        self.statusbar.push(
-            self.context_id, "Waiting for you to do something...")
+        self.statusbar.push(self.context_id, "Waiting for you to do something...")
 
         # a grid to attach the widgets
         grid = Gtk.Grid()
@@ -102,13 +81,11 @@ class MyWindow(Gtk.ApplicationWindow):
     # onto which we push a new status with the symbolic name
     # of the key pressed
         self.statusbar.push(self.context_id, Gdk.keyval_name(event.keyval) +
-                            " key was pressed.")
+                                            " key was pressed.")
         # stop the signal emission
         return True
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -128,7 +105,7 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-  <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο γραμμής κατάστασης</title>
+  <title>Χρήσιμες μέθοδοι για ένα γραφικό συστατικό γραμμής κατάστασης</title>
     <p>Στη γραμμή 17 το σήμα <code>"clicked"</code> συνδέεται με τη συνάρτηση επανάκλησης <code>button_clicked_cb()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
   <list>
     <item><p>Το <code>pop(context_id)</code> αφαιρεί το πρώτο μήνυμα στη στοίβα της γραμμής κατάστασης με το δοσμένο <code>context_id</code>.</p></item>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.py" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.py" xml:lang="fr">
   <info>
     <title type="text">Statusbar (Python)</title>
     <link type="guide" xref="beginner.py#display-widgets"/>
@@ -9,60 +9,28 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Rapporte les messages d'information d'importance mineure pour l'utilisateur</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Barre de statut</title>
+  <title>Statusbar</title>
   <media type="image" mime="image/png" src="media/statusbar.png"/>
-  <p>Cette barre de statut vous informe si vous cliquez sur le bouton ou si vous appuyez sur n'importe quelle touche (et sur quelle touche).</p>
+  <p>Cette statusbar vous informe si vous cliquez sur le bouton ou si vous appuyez sur n'importe quelle touche (et sur quelle touche).</p>
 
   <links type="section"/>
 
   <section id="code">
-  <title>Code utilisé pour générer cet exemple</title>
+  <title>Code used to generate this example</title>
 
   <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 from gi.repository import Gdk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
     # a window
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="StatusBar Example", application=app)
         self.set_default_size(200, 100)
@@ -81,8 +49,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # the source of a message
         self.context_id = self.statusbar.get_context_id("example")
         # we push a message onto the statusbar's stack
-        self.statusbar.push(
-            self.context_id, "Waiting for you to do something...")
+        self.statusbar.push(self.context_id, "Waiting for you to do something...")
 
         # a grid to attach the widgets
         grid = Gtk.Grid()
@@ -108,13 +75,11 @@ class MyWindow(Gtk.ApplicationWindow):
     # onto which we push a new status with the symbolic name
     # of the key pressed
         self.statusbar.push(self.context_id, Gdk.keyval_name(event.keyval) +
-                            " key was pressed.")
+                                            " key was pressed.")
         # stop the signal emission
         return True
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -130,21 +95,23 @@ exit_status = app.run(sys.argv)
 sys.exit(exit_status)
 </code>
 
-  <note><p>La méthode <code>Gdk.keyval_name(event.keyval)</code> convertit la valeur des touches <code>event.keyval</code> en noms symboliques. Les noms et les valeurs correspondantes des touches se trouvent <link href="http://git.gnome.org/browse/gtk+/tree/gdk/gdkkeysyms.h">ici</link>. À titre d'exemple, <code>GDK_KEY_BackSpace</code> devient la chaîne <code>« Retour arrière »</code>.</p></note>
+  <note><p>
+    <code>Gdk.keyval_name(event.keyval)</code> converts the key value <code>event.keyval</code> into a symbolic name. The names and corresponding key values can be found <link href="http://git.gnome.org/browse/gtk+/tree/gdk/gdkkeysyms.h">here</link>, but for instance <code>GDK_KEY_BackSpace</code> becomes the string <code>"BackSpace"</code>.
+  </p></note>
   </section>
 
   <section id="methods">
-  <title>Méthodes utiles pour un élément graphique BarreDeStatut</title>
+  <title>Useful methods for a Statusbar widget</title>
     <p>In line 17 the signal <code>"clicked"</code> is connected to the callback function <code>button_clicked_cb()</code> using <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. See <link xref="signals-callbacks.py"/> for a more detailed explanation.</p>
   <list>
-    <item><p>La fonction <code>pop(context_id)</code> efface le premier message de la pile de la barre de statut avec le <code>context_id</code> donné.</p></item>
-    <item><p>La méhode <code>remove_all(context_id)</code> efface tous les messages de la pile de la barre de statut ayant l'identifiant <code>context_id</code> donné.</p></item>
-    <item><p>La méthode <code>remove(context_id, message_id)</code> efface le message de la pile de la barre de statut avec le <code>context_id</code> donné. Le <code>message_id</code> est renvoyé par <code>push(context_id, lemessage)</code> quand il pousse le message dans la barre des statut.</p></item>
+    <item><p><code>pop(context_id)</code> removes the first message in the statusbar stack with the given <code>context_id</code>.</p></item>
+    <item><p><code>remove_all(context_id)</code> removes all the messages in the statusbar stack with the given <code>context_id</code>.</p></item>
+    <item><p><code>remove(context_id, message_id)</code> removes the message with the given <code>message_id</code> in the statusbar stack with the given <code>context_id</code>. The <code>message_id</code> is returned by <code>push(context_id, "the message")</code> when pushing the message on the statusbar.</p></item>
   </list>
   </section>
 
   <section id="references">
-  <title>Références API</title>
+  <title>API References</title>
   <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
   <list>
     <item><p><link href="http://developer.gnome.org/gtk3/unstable/GtkStatusbar.html">GtkStatusbar</link></p></item>

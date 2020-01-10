@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="messagedialog.js" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="messagedialog.js" xml:lang="fr">
   <info>
   <title type="text">MessageDialog (JavaScript)</title>
     <link type="guide" xref="beginner.js#windows"/>
@@ -10,47 +10,17 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
-    <desc>Un message surgissant lié à une fenêtre</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>A popup message attached to a window</desc>
   </info>
 
   <title>Boîte de dialogue de message</title>
   <media type="image" mime="image/png" src="media/messagedialog.png"/>
-  <p>Une BoiteDeDialogueDemessage contient un message modale surgissant auquel vous devez d'abord répondre avant de pouvoir retourner travailler dans la fenêtre à laquelle elle est liée. Elle peut faire exploser le monde (ou au moins elle le prétend). Pour faire apparaître le message surgissant quand vous exécutez cet exemple, cliquez sur « Message » dans le menu de son application : c'est le menu qui s'affiche quand vous cliquez sur le nom de l'application dans le coin supérieur gauche de l'écran, à côté de « Activités ».</p>
-  <note><p>La différence entre une BoiteDeDialogueDemessage et une <link xref="dialog.js">Boîte de dialogue</link> est que la boîte de dialogue peut contenir n'importe quel élément graphique ou contenu que vous souhaitez y mettre, alors que la BoiteDeDialogueDemessage est juste un moyen pratique de faire s'afficher un message basique surgissant avec des boutons.</p></note>
+  <p>A MessageDialog is a modal message dialog, which means a popup that you have to respond to before you get back to what you were doing in the window that it's attached to. This one can cause the world to explode (or at least it says that it can). To make the popup appear when you run this sample, click on "Message" inside of its application menu -- that's the menu that appears when you click on an application's name in the upper-left screen corner, next to Activities.</p>
+  <note><p>The difference between a MessageDialog and a <link xref="dialog.js">Dialog</link> is that a Dialog can contain whatever widgets and content you want to put in it, whereas a MessageDialog is just a convenient way to make popups appear with a basic message and buttons.</p></note>
     <links type="section"/>
 
   <section id="imports">
@@ -62,11 +32,11 @@ const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 ]]></code>
-    <p>Ce sont les bibliothèques que nous devons importer pour faire fonctionner cette application. N'oubliez pas que la ligne qui informe GNOME que nous allons utiliser Gjs doit toujours se trouver au début.</p>
+    <p>These are the libraries we need to import for this application to run. Remember that the line which tells GNOME that we're using Gjs always needs to go at the start.</p>
   </section>
 
   <section id="applicationwindow">
-    <title>Création de la fenêtre de l'application</title>
+    <title>Creating the application window</title>
     <code mime="application/javascript"><![CDATA[
 const MessageDialogExample = new Lang.Class ({
     Name: 'MessageDialog Example',
@@ -93,8 +63,8 @@ const MessageDialogExample = new Lang.Class ({
         this._buildUI ();
     },
 ]]></code>
-    <p>Tout le code de cet exemple va dans la classe MessageDialogExample. Le code ci-dessus crée une <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pour nos composants graphiques et la fenêtre qui les contient.</p>
-    <note><p>Avant d'appeler _buildUI pour créer la fenêtre et les éléments graphiques qu'elle contient, il nous faut appeler _initMenus, qui indique à GNOME de générer le menu. Nous pouvons mettre le code actuel pour _initMenus après le code pour _buildUI, car l'ordre n'a pas d'importance du moment que _initMenus est appelé en premier dans _onStartup.</p></note>
+    <p>All the code for this sample goes in the MessageDialogExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
+    <note><p>Before we call _buildUI to create the window and the widgets inside it, we need to call _initMenus, which tells GNOME to create the menu. We can put the actual code for _initMenus after the code for _buildUI, since it doesn't matter what order we put them in so long as _initMenus is called first in _onStartup.</p></note>
     <code mime="application/javascript"><![CDATA[
     // Build the application's UI
     _buildUI: function () {
@@ -107,7 +77,7 @@ const MessageDialogExample = new Lang.Class ({
             default_height: 200,
             default_width: 400 });
 ]]></code>
-    <p>La fonction _buildUI est l'endroit où nous mettons tout le code nécessaire à la création de l'interface utilisateur de l'application. La première étape consiste à créer une <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> pour y mettre tous nos éléments graphiques.</p>
+    <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Create a silly warning message and add it to the window
@@ -119,7 +89,7 @@ const MessageDialogExample = new Lang.Class ({
   </section>
 
   <section id="menu">
-    <title>Création du menu de l'application</title>
+    <title>Creating the application's menu</title>
     <code mime="application/javascript"><![CDATA[
     // Build the application menu, including the button that calls the dialog
     _initMenus: function() {
@@ -145,11 +115,11 @@ const MessageDialogExample = new Lang.Class ({
         this.application.add_action(quitAction);
     },
 ]]></code>
-    <p>Ici, nous construisons le <link xref="gmenu.js">GMenu</link> où nous mettons le bouton « Message » qui active la BoiteDeDialogueDemessage. le GMenu est le menu qui s'affiche quand vous cliquez sur le nom de l'application dans le coin supérieur gauche de l'écran, à côté de « Activités ». Notre menu ne contient que deux options : Message et Quit.</p>
+    <p>Here, we build the <link xref="gmenu.js">GMenu</link> where we'll be putting the "Message" button which triggers the popup MessageDialog. The GMenu is the menu that appears when you click the application's name in the upper-left corner of the screen, next to the Activities menu. Our menu only has two options in it: Message, and Quit.</p>
   </section>
 
   <section id="messagedialog">
-    <title>Création de la BoiteDeDialogueDemessage</title>
+    <title>Creating the MessageDialog</title>
     <code mime="application/javascript"><![CDATA[
     _showMessageDialog: function () {
 
@@ -165,8 +135,8 @@ const MessageDialogExample = new Lang.Class ({
         this._messageDialog.show();
     },
 ]]></code>
-    <p>Pour que notre BoiteDeDialogueDemessage soit liée à la fenêtre principale, nous définissons sa propriété modale à vrai et la configurons comme une "transient_for" _window. Ensuite, nous définissons quel type de bouton et quel genre de message nous voulons y mettre (celui-ci va déterminer le type d'icône qui accompagnera le message). Enfin nous y saisissons le texte du message et connectons son signal « response » à la fonction de rappel qui le prend en charge.</p>
-    <note><p>Voici quelques ressources pour bâtir vos propres BoiteDeDialogueDemessage</p>
+    <p>To make our MessageDialog a popup attached to the main window, we set its modal property to true and set it to be "transient_for" _window. After that, we can set what kind of buttons it has and what kind of message it is (which determines what icon appears next to the message), and write out the text inside it, before connecting its "response" signal to the callback function which handles it.</p>
+    <note><p>Here are some resources for making your own MessageDialogs:</p>
       <list>
         <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkMessageDialog.html#GtkButtonsType">List of button types</link></p></item>
         <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkMessageDialog.html#GtkMessageType">List of message types</link></p></item>
@@ -196,74 +166,75 @@ const MessageDialogExample = new Lang.Class ({
 
 });
 ]]></code>
-    <p>Cette fonction prend deux paramètres : la BoiteDeDialogueDemessage et son identifiant response_id. Les deux sont fournis automatiquement (il n'y a pas besoins d'intervention manuelle pour que cela fonctionne). Ici, nous utilisons un interrupteur simple pour modifier le texte « warning label » en fonction de l'option sélectionnée. Le DELETE_EVENT se produit en appuyant sur la touche Échap pour annuler la BoiteDeDialogueDemessage au lieu de cliquer sur OK ou Cancel. Quel que soit votre choix, le message surgissant est détruit ensuite.</p>
+    <p>This function takes two parameters, the MessageDialog and its response_id, both of which are automatically supplied (you don't have to manually pass them to it for it to work). Here we use a simple switch to change the "warning label"'s text, depending on which option you select. The DELETE_EVENT occurs if you press Escape to cancel the MessageDialog, instead of clicking OK or Cancel. Whatever you select, the popup is destroyed afterwards.</p>
 
     <code mime="application/javascript"><![CDATA[
 // Run the application
 let app = new MessageDialogExample ();
 app.application.run (ARGV);
 ]]></code>
-    <p>Pour finir, nous créons un nouvel exemple de la classe MessageDialogExample terminée et nous démarrons l'application.</p>
+    <p>Finally, we create a new instance of the finished MessageDialogExample class, and set the application running.</p>
   </section>
 
   <section id="complete">
-    <title>Exemple complet de code</title>
+    <title>Complete code sample</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
-
-imports.gi.versions.Gtk = '3.0';
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class MessageDialogExample {
+const MessageDialogExample = new Lang.Class ({
+    Name: 'MessageDialog Example',
 
     // Create the application itself
-    constructor() {
-        this.application = new Gtk.Application({
+    _init: function () {
+        this.application = new Gtk.Application ({
             application_id: 'org.example.jsmessagedialog',
-            flags: Gio.ApplicationFlags.FLAGS_NONE
-        });
+            flags: Gio.ApplicationFlags.FLAGS_NONE });
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate() {
-        this._window.present();
-    }
+    _onActivate: function () {
+        this._window.present ();
+    },
 
     // Callback function for 'startup' signal initializes menus and builds the UI
-    _onStartup() {
+    _onStartup: function () {
         this._initMenus();
         this._buildUI ();
-    }
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function () {
 
         // Create the application window
-        this._window = new Gtk.ApplicationWindow({
+        this._window = new Gtk.ApplicationWindow  ({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             title: "Gtk.MessageDialog Example",
             default_height: 200,
-            default_width: 400
-        });
+            default_width: 400 });
 
         // Create a silly warning message and add it to the window
-        this.warningLabel = new Gtk.Label({
-            label: "This application goes boom! (Not really.)"
-        });
+        this.warningLabel = new Gtk.Label ({
+            label: "This application goes boom! (Not really.)"});
         this._window.add (this.warningLabel);
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
+
+
 
     // Build the application menu, including the button that calls the dialog
-    _initMenus() {
+    _initMenus: function() {
         let menu = new Gio.Menu();
         menu.append("Message",'app.message');
         menu.append("Quit",'app.quit');
@@ -271,16 +242,24 @@ class MessageDialogExample {
 
         // This pops up a MessageDialog when "Message" is clicked in the menu
         let messageAction = new Gio.SimpleAction ({ name: 'message' });
-        messageAction.connect('activate', () =&gt; { this._showMessageDialog(); });
+        messageAction.connect('activate', Lang.bind(this,
+            function() {
+                this._showMessageDialog();
+            }));
         this.application.add_action(messageAction);
 
         // This closes the window when "Quit" is clicked in the menu
         let quitAction = new Gio.SimpleAction ({ name: 'quit' });
-        quitAction.connect('activate', () =&gt; { this._window.destroy(); });
+        quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._window.destroy();
+            }));
         this.application.add_action(quitAction);
-    }
+    },
 
-    _showMessageDialog() {
+
+
+    _showMessageDialog: function () {
 
         // Create a modal MessageDialog whose parent is the window
         this._messageDialog = new Gtk.MessageDialog ({
@@ -290,12 +269,14 @@ class MessageDialogExample {
             message_type: Gtk.MessageType.WARNING,
             text: "This action will cause the universe to stop existing." });
 
-        this._messageDialog.connect ('response', this._response_cb.bind(this));
+        this._messageDialog.connect ('response', Lang.bind(this, this._response_cb));
         this._messageDialog.show();
-    }
+    },
+
+
 
     // Callback function (aka signal handler) for the response signal
-    _response_cb(messagedialog, response_id) {
+    _response_cb: function (messagedialog, response_id) {
 
         // A simple switch that changes the main window's label
         switch (response_id) {
@@ -313,7 +294,8 @@ class MessageDialogExample {
         this._messageDialog.destroy();
 
     }
-};
+
+});
 
 // Run the application
 let app = new MessageDialogExample ();
@@ -322,7 +304,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>Documentation approfondie</title>
+    <title>In-depth documentation</title>
 <p>Dans cet exemple, les éléments suivants sont utilisés :</p>
 <list>
   <item><p><link href="http://developer.gnome.org/gio/unstable/GMenu.html">GMenu</link></p></item>

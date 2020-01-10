@@ -1,28 +1,28 @@
 #!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
-
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class Application {
+const Application = new Lang.Class ({
+    Name: 'Application',
 
     //create the application
-    constructor() {
+    _init: function () {
         this.application = new Gtk.Application ({
             application_id: 'org.example.myapp',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
        //connect to 'activate' and 'startup' signals to the callback functions
-       this.application.connect('activate', this._onActivate.bind(this));
-       this.application.connect('startup', this._onStartup.bind(this));
-    }
+       this.application.connect('activate', Lang.bind(this, this._onActivate));
+       this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     //create the UI (in this case it's just the ApplicationWindow
-    _buildUI() {
-        this._window = new Gtk.ApplicationWindow({ application: this.application,
+    _buildUI: function () {
+        this._window = new Gtk.ApplicationWindow  ({ application: this.application,
                                                    window_position: Gtk.WindowPosition.CENTER,
                                                    title: "Welcome to GNOME" });
 
@@ -31,18 +31,18 @@ class Application {
 
         //show the window and all child widgets (none in this case)
         this._window.show_all();
-    }
+    },
 
     //callback function for 'activate' signal
-    _onActivate() {
-        this._window.present();
-    }
+    _onActivate: function () {
+        this._window.present ();
+    },
 
     //callback function for 'startup' signal
-    _onStartup() {
-        this._buildUI();
+    _onStartup: function () {
+        this._buildUI ();
     }
-};
+});
 
 //run the application
 let app = new Application ();

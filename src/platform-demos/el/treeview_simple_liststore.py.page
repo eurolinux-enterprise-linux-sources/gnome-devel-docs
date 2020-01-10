@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_simple_liststore.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_simple_liststore.py" xml:lang="el">
   <info>
-    <title type="text">Απλή προβολή δένδρου (Treeview) με αποθήκη καταλόγων (ListStore) (Python)</title>
+    <title type="text">Απλή Treeview με ListStore (Python)</title>
     <link type="guide" xref="beginner.py#treeview"/>
     <link type="seealso" xref="model-view-controller.py"/>
     <link type="next" xref="treeview_treestore.py"/>
@@ -9,34 +9,16 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Μια προβολή δένδρου (TreeView) που εμφανίζει μια  αποθήκη δένδρου (TreeStore) (απλό παράδειγμα)</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Μια TreeView που εμφανίζει μια TreeStore (απλό παράδειγμα)</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -64,16 +46,13 @@ phonebook = [["Jurg", "Billeter", "555-0123"],
              ["Jason", "Clinton", "555-4567"],
              ["Random J.", "Hacker", "555-5678"]]
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="My Phone Book", application=app)
         self.set_default_size(250, 100)
         self.set_border_width(10)
 
-        # the data in the model (three strings for each row, one for each
-        # column)
+        # the data in the model (three strings for each row, one for each column)
         listmodel = Gtk.ListStore(str, str, str)
         # append the values in the model
         for i in range(len(phonebook)):
@@ -82,15 +61,15 @@ class MyWindow(Gtk.ApplicationWindow):
         # a treeview to see the data stored in the model
         view = Gtk.TreeView(model=listmodel)
         # for each column
-        for i, column in enumerate(columns):
+        for i in range(len(columns)):
             # cellrenderer to render the text
             cell = Gtk.CellRendererText()
             # the text in the first column should be in boldface
             if i == 0:
-                cell.props.weight_set = True
-                cell.props.weight = Pango.Weight.BOLD
+                cell.props.weight_set=True
+                cell.props.weight=Pango.Weight.BOLD
             # the column is created
-            col = Gtk.TreeViewColumn(column, cell, text=i)
+            col = Gtk.TreeViewColumn(columns[i], cell, text=i)
             # and it is appended to the treeview
             view.append_column(col)
 
@@ -113,13 +92,11 @@ class MyWindow(Gtk.ApplicationWindow):
         # get the model and the iterator that points at the data in the model
         (model, iter) = selection.get_selected()
         # set the label to a new value depending on the selection
-        self.label.set_text("\n %s %s %s" %
-                            (model[iter][0],  model[iter][1], model[iter][2]))
+        self.label.set_text("\n %s %s %s" %(model[iter][0],  model[iter][1], model[iter][2]))
         return True
 
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -137,8 +114,8 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-    <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο TreeView</title>
-    <p>Το γραφικό στοιχείο προβολή δένδρου (TreeView) σχεδιάστηκε γύρω από ένα σχέδιο <em>προτύπου/προβολής/ελεγκτή</em>: το <em>πρότυπο</em> αποθηκεύει τα δεδομένα· η <em>Προβολή</em> παίρνει ειδοποιήσεις αλλαγής και εμφανίζει το περιεχόμενο του προτύπου· ο <em>ελεγκτής</em>, τελικά, αλλάζει την κατάσταση του προτύπου και ειδοποιεί την προβολή για αυτές τις αλλαγές. Για περισσότερες πληροφορίες και για μια λίστα χρήσιμων μεθόδων για λίστα πρότυπο δένδρου (TreeModel), δείτε <link xref="model-view-controller.py"/>.</p>
+    <title>Χρήσιμες μέθοδοι για ένα γραφικό συστατικό TreeView</title>
+    <p>Το γραφικό συστατικό TreeView σχεδιάστηκε γύρω από ένα σχέδιο <em>προτύπου/προβολής/ελεγκτή</em>: το <em>πρότυπο</em> αποθηκεύει τα δεδομένα· η <em>Προβολή</em> παίρνει ειδοποιήσεις αλλαγής και εμφανίζει το περιεχόμενο του προτύπου· ο <em>ελεγκτής</em>, τελικά, αλλάζει την κατάσταση του προτύπου και ειδοποιεί την προβολή για αυτές τις αλλαγές. Για περισσότερες πληροφορίες και για μια λίστα χρήσιμων μεθόδων για λίστα TreeModel, δείτε <link xref="model-view-controller.py"/>.</p>
     <p>Στη γραμμή 44 το σήμα <code>"changed"</code> συνδέεται με τη συνάρτηση επανάκλησης <code>on_changed()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
   </section>
 

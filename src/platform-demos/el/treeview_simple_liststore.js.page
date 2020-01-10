@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_simple_liststore.js" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_simple_liststore.js" xml:lang="el">
   <info>
-  <title type="text">Προβολή δένδρου (Treeview) με αποθήκη καταλόγου (ListStore) (JavaScript)</title>
+  <title type="text">Treeview με ListStore (JavaScript)</title>
     <link type="guide" xref="beginner.js#treeview"/>
     <link type="seealso" xref="GtkApplicationWindow.js"/>
     <link type="seealso" xref="grid.js"/>
@@ -10,47 +10,29 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
-    <desc>Ένα γραφικό στοιχείο που εμφανίζει μια ξεχωριστή λίστα στοιχείων</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Ένα γραφικό συστατικό που εμφανίζει μια ξεχωριστή λίστα στοιχείων</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Προβολή δένδρου (Treeview) με αποθήκη καταλόγου (ListStore)</title>
+  <title>Treeview με ListStore</title>
   <media type="image" mime="image/png" src="media/treeview_simple_liststore_penguins.png"/>
-  <p>Μια προβολή δένδρου (TreeView) μοιάζει με ένα παράθυρο στα περιεχόμενα είτε μιας αποθήκης καταλόγου (ListStore) είτε μιας προβολής δένδρου. Μια αποθήκη καταλόγου μοιάζει με ένα υπολογιστικό φύλλο: μια "επίπεδη", διδιάστατη λίστα πραγμάτων διαιρεμένη σε γραμμές και στήλες. Μια προβολή δένδρου, στο μεταξύ, μπορεί να διακλαδωθεί σε διαφορετικές κατευθύνσεις όπως κάνει ένα δένδρο. Σε αυτό το παράδειγμα, δημιουργήσαμε μια προβολή δένδρου που εμφανίζει τα περιεχόμενα μιας αποθήκης καταλόγου με (εικονικά) ονόματα και αριθμούς τηλεφώνου σε αυτό, και ρυθμίστηκε έτσι ώστε η <link xref="label.js">ετικέτα</link> στο τέλος του παραθύρου να εμφανίζει περισσότερες πληροφορίες σχετικά με οποιοδήποτε όνομα πατάτε.</p>
-  <p>Η προβολή δένδρου (TreeView) δεν είναι απλά ένα μονό γραφικό στοιχείο, αλλά περιέχει έναν αριθμό μικρότερων γραφικών στοιχείων:</p>
+  <p>Μια TreeView μοιάζει με ένα παράθυρο στα περιεχόμενα είτε μιας ListStore είτε μιας TreeStore. Μια ListStore μοιάζει με ένα υπολογιστικό φύλλο: μια "επίπεδη", διδιάστατη λίστα πραγμάτων διαιρεμένη σε γραμμές και στήλες. Μια TreeStore, στο μεταξύ, μπορεί να διακλαδωθεί σε διαφορετικές κατευθύνσεις όπως κάνει ένα δένδρο. Σε αυτό το παράδειγμα, δημιουργήσαμε μια TreeView που εμφανίζει τα περιεχόμενα μιας ListStore με (εικονικά) ονόματα και αριθμούς τηλεφώνου σε αυτό, και ρυθμίστηκε έτσι ώστε η <link xref="label.js">ετικέτα</link> στο τέλος του παραθύρου να εμφανίζει περισσότερες πληροφορίες σχετικά με οποιοδήποτε όνομα πατάτε.</p>
+  <p>Η TreeView δεν είναι απλά ένα μονό γραφικό συστατικό, αλλά περιέχει έναν αριθμό μικρότερων γραφικών συστατικών:</p>
   <list>
-    <item><p>Τα γραφικά στοιχεία στήλης προβολής δένδρου (TreeViewColumn) εμφανίζουν κάθε (κάθετη) στήλη πληροφορίας από τη αποθήκη καταλόγων (ListStore). Καθένα έχει έναν τίτλο που μπορεί να προβληθεί στην κορυφή της στήλης, όπως στο στιγμιότυπο.</p></item>
-    <item><p>Τα γραφικά στοιχεία απεικονιστές κελιού (CellRenderer)  "συσκευάζονται" σε κάθε στήλη προβολής δένδρου (TreeViewColumn) και περιέχουν τις οδηγίες πώς να εμφανίσουν κάθε ξεχωριστό "κελί" ή στοιχείο από τη ListStore. Υπάρχουν πολλοί διαφορετικοί τύποι, συμπεριλαμβανόμενου του κειμένου απεικονιστή κελιών (CellRendererText) που χρησιμοποιείται εδώ και του CellRendererPixbuf, που εμφανίζει μια εικόνα "ενδιάμεση μνήμη εικονοστοιχείου").</p></item>
+    <item><p>Τα γραφικά συστατικά TreeViewColumn εμφανίζουν κάθε (κάθετη) στήλη πληροφορίας από τη ListStore. Καθένα έχει έναν τίτλο που μπορεί να προβληθεί στην κορυφή της στήλης, όπως στο στιγμιότυπο.</p></item>
+    <item><p>Τα γραφικά συστατικά CellRenderer "πακετάρονται" σε κάθε TreeViewColumn και περιέχουν τις οδηγίες πώς να εμφανίσουν κάθε ξεχωριστό "κελί" ή στοιχείο από τη ListStore. Υπάρχουν πολλοί διαφορετικοί τύποι, συμπεριλαμβανόμενου του CellRendererText που χρησιμοποιείται εδώ και του CellRendererPixbuf, που εμφανίζει μια εικόνα "ενδιάμεση μνήμη εικονοστοιχείου").</p></item>
   </list>
-  <p>Τελικά, πρόκειται να χρησιμοποιήσουμε ένα αντικείμενο που λέγεται TreeIter, που δεν είναι γραφικό στοιχείο τόσο πολύ όσο ένας αόρατος δρομέας που δείχνει σε μια (οριζόντια) γραμμή στη ListStore. Οποτεδήποτε πατάτε σε ένα όνομα στον τηλεφωνικό κατάλογο, για παράδειγμα, δημιουργούμε ένα TreeIter που δείχνει τη γραμμή που επιλέχτηκε και έπειτα χρησιμοποιήστε το για να πείτε στη ListStore ποιας εγγραφής θέλουμε η ετικέτα να εμφανίσει περισσότερες πληροφορίες σχετικά.</p>
-  <note><p>Η TreeView είναι προφανώς το πιο περίπλοκο γραφικό στοιχείο Gtk, λόγω των πολλών μερών που έχει και του τρόπου συνεργασίας τους. Δώστε στον εαυτό σας τον χρόνο να μάθετε πώς δουλεύει και πειραματιστείτε μαζί του, ή δοκιμάστε πρώτα κάτι ευκολότερο εάν έχετε πρόβλημα.</p></note>
+  <p>Τελικά, πρόκειται να χρησιμοποιήσουμε ένα αντικείμενο που λέγεται TreeIter, που δεν είναι γραφικό συστατικό τόσο πολύ όσο ένας αόρατος δρομέας που δείχνει σε μια (οριζόντια) γραμμή στη ListStore. Οποτεδήποτε πατάτε σε ένα όνομα στον τηλεφωνικό κατάλογο, για παράδειγμα, δημιουργούμε ένα TreeIter που δείχνει τη γραμμή που επιλέχτηκε και έπειτα χρησιμοποιήστε το για να πείτε στη ListStore ποιας εγγραφής θέλουμε η ετικέτα να εμφανίσει περισσότερες πληροφορίες σχετικά.</p>
+  <note><p>Η TreeView είναι προφανώς το πιο περίπλοκο γραφικό συστατικό Gtk, λόγω των πολλών μερών που έχει και του τρόπου συνεργασίας τους. Δώστε στον εαυτό σας τον χρόνο να μάθετε πώς δουλεύει και πειραματιστείτε μαζί του, ή δοκιμάστε πρώτα κάτι ευκολότερο εάν έχετε πρόβλημα.</p></note>
     <links type="section"/>
 
   <section id="imports">
@@ -72,33 +54,33 @@ const Pango = imports.gi.Pango;
 const TreeViewExample = new Lang.Class({
     Name: 'TreeView Example with Simple ListStore',
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    // Create the application itself
     _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jstreeviewsimpleliststore'
         });
 
-    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    // Connect 'activate' and 'startup' signals to the callback functions
     this.application.connect('activate', Lang.bind(this, this._onActivate));
     this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρο όταν είναι ενεργή
+    // Callback function for 'activate' signal presents window when active
     _onActivate: function() {
         this._window.present();
     },
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    // Callback function for 'startup' signal builds the UI
     _onStartup: function() {
         this._buildUI ();
     },
 </code>
-    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση TreeViewExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση TreeViewExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά συστατικά μας και τα παράθυρα.</p>
     <code mime="application/javascript">
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    // Build the application's UI
     _buildUI: function() {
 
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
@@ -107,13 +89,13 @@ const TreeViewExample = new Lang.Class({
             border_width: 20,
             title: "My Phone Book"});
 </code>
-    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά συστατικά μας.</p>
   </section>
 
   <section id="liststore">
-    <title>Δημιουργία της αποθήκης λιστών (ListStore)</title>
+    <title>Δημιουργία της ListStore</title>
     <code mime="application/javascript">
-        // Δημιουργία της υποκείμενης αποθήκης καταλόγου για τον τηλεφωνικό κατάλογο
+        // Create the underlying liststore for the phonebook
         this._listStore = new Gtk.ListStore ();
         this._listStore.set_column_types ([
             GObject.TYPE_STRING,
@@ -121,7 +103,7 @@ const TreeViewExample = new Lang.Class({
             GObject.TYPE_STRING,
             GObject.TYPE_STRING]);
 </code>
-    <p>Δημιουργούμε πρώτα την αποθήκη καταλόγου (ListStore) όπως θα κάναμε με κάθε γραφικό στοιχείο. Έπειτα καλούμε τη μέθοδο της set_column_types και την περνάμε σε έναν πίνακα τύπου δεδομένων GObject. (Θα μπορούσαμε να βάλουμε όλους τους τύπους σε μια γραμμή, αλλά εδώ τα διαιρούμε για διευκόλυνση της ανάγνωσης.)</p>
+    <p>Δημιουργούμε πρώτα τη ListStore όπως θα κάναμε με κάθε γραφικό συστατικό. Έπειτα καλούμε τη μέθοδο της set_column_types και την περνάμε σε έναν πίνακα τύπου δεδομένων GObject. (Θα μπορούσαμε να βάλουμε όλους τους τύπους σε μια γραμμή, αλλά εδώ τα διαιρούμε για διευκόλυνση της ανάγνωσης.)</p>
     <p>Οι τύποι δεδομένων GObject που μπορείτε να χρησιμοποιήσετε περιλαμβάνουν:</p>
     <list>
       <item><p><file>GObject.TYPE_BOOLEAN</file> -- αληθές ή ψευδές</p></item>
@@ -133,7 +115,7 @@ const TreeViewExample = new Lang.Class({
     <note><p>Χρειάζεται να βάλετε τη γραμμή <file>const GObject = imports.gi.GObject;</file> στην αρχή του κώδικα της εφαρμογή σας, όπως κάναμε σε αυτό το παράδειγμα, εάν θέλετε να μπορείτε να χρησιμοποιήσετε τύπους GObject.</p></note>
 
     <code mime="application/javascript">
-        // Δεδομένα για εισαγωγή στον τηλεφωνικό κατάλογο
+        // Data to go in the phonebook
         this.phonebook =
         let phonebook =
             [{ name: "Jurg", surname: "Billeter", phone: "555-0123",
@@ -149,8 +131,8 @@ const TreeViewExample = new Lang.Class({
              { name: "Random J.", surname: "Hacker", phone: "555-5678",
                 description: "Very random!"}];
 </code>
-    <p>Εδώ έχουμε την πληροφορία μετάβασης στην αποθήκη καταλόγων (ListStore). Είναι ένας πίνακας αντικειμένων, που καθένα αντιστοιχεί σε μια μοναδική εγγραφή στον τηλεφωνικό κατάλογο.</p>
-    <p>Σημειώστε ότι η προβολή δένδρου (TreeView) στο στιγμιότυπο δεν εμφανίζει πράγματι τα δεδομένα από τις ιδιότητες "description". Στη θέση της, αυτή η πληροφορία εμφανίζεται στην ετικέτα από κάτω της, για κάθε γραμμή που πατάτε. Αυτό συμβαίνει επειδή η προβολή δένδρου και η αποθήκη καταλόγου (ListStore) είναι δύο ξεχωριστά πράγματα και μια προβολή δένδρου μπορεί να εμφανίσει όλο ή μέρος της αποθήκης καταλόγου και προβάλλει τι είναι σε αυτή με διαφορετικούς τρόπους. Μπορείτε ακόμα να έχετε πολλαπλά γραφικά στοιχεία που εμφανίζουν πράγματα από την ίδια την αποθήκη καταλόγου, όπως την ετικέτα στο παράδειγμά μας ή ακόμα μια δεύτερη προβολή δένδρου.</p>
+    <p>Εδώ έχουμε την πληροφορία μετάβασης στη ListStore. Είναι ένας πίνακας αντικειμένων, που καθένα αντιστοιχεί σε μια μοναδική εγγραφή στον τηλεφωνικό κατάλογο.</p>
+    <p>Σημειώστε ότι η TreeView στο στιγμιότυπο δεν εμφανίζει πράγματι τα δεδομένα από τις ιδιότητες "description". Στη θέση της, αυτή η πληροφορία εμφανίζεται στην ετικέτα από κάτω της, για κάθε γραμμή που πατάτε. Αυτό συμβαίνει επειδή η TreeView και η ListStore είναι δύο ξεχωριστά πράγματα και μια TreeView μπορεί να εμφανίσει όλο ή μέρος της ListStore και προβάλλει τι είναι σε αυτή με διαφορετικούς τρόπους. Μπορείτε ακόμα να έχετε πολλαπλά γραφικά συστατικά που εμφανίζουν πράγματα από την ίδια ListStore, όπως την ετικέτα στο παράδειγμά μας ή ακόμα μια δεύτερη TreeView.</p>
 
     <code mime="application/javascript">
         for (i = 0; i &lt; phonebook.length; i++ ) {
@@ -165,17 +147,17 @@ const TreeViewExample = new Lang.Class({
   </section>
 
   <section id="treeview">
-    <title>Δημιουργία της προβολής δένδρου (TreeView)</title>
+    <title>Δημιουργία της TreeView</title>
     <code mime="application/javascript">
-        // Δημιουργία της προβολής δένδρου
+        // Create the treeview
         this._treeView = new Gtk.TreeView ({
             expand: true,
             model: this._listStore });
 </code>
-    <p>Εδώ δημιουργούμε ένα βασικό γραφικό στοιχείο TreeView, που επεκτείνεται οριζόντια και κάθετα για να χρησιμοποιήσει όσο χώρο χρειάζεται. Το ορίζουμε να χρησιμοποιήσει τη ListStore που δημιουργήσαμε ως το "model" του, ή το πράγμα που θα μας δείξει το υλικό.</p>
+    <p>Εδώ δημιουργούμε ένα βασικό γραφικό συστατικό TreeView, που επεκτείνεται οριζόντια και κάθετα για να χρησιμοποιήσει όσο χώρο χρειάζεται. Το ορίζουμε να χρησιμοποιήσει τη ListStore που δημιουργήσαμε ως το "model" του, ή το πράγμα που θα μας δείξει το υλικό.</p>
 
     <code mime="application/javascript">
-        // Δημιουργία των στηλών για το βιβλίο διευθύνσεων
+        // Create the columns for the address book
         let firstName = new Gtk.TreeViewColumn ({ title: "First Name" });
         let lastName = new Gtk.TreeViewColumn ({ title: "Last Name" });
         let phone = new Gtk.TreeViewColumn ({ title: "Phone Number" });
@@ -183,19 +165,19 @@ const TreeViewExample = new Lang.Class({
     <p>Τώρα δημιουργούμε καθεμιά από τις κάθετες TreeViewColumns που βλέπουμε στην TreeView. Ο τίτλος για καθεμιά πηγαίνει στην κορυφή, όπως μπορείτε να δείτε στο στιγμιότυπο.</p>
 
     <code mime="application/javascript">
-        // Δημιουργία μιας απεικόνισης κελιού για όταν χρειάζεται έντονο κείμενο
+        // Create a cell renderer for when bold text is needed
         let bold = new Gtk.CellRendererText ({
             weight: Pango.Weight.BOLD });
 
-        // Δημιουργία μιας απεικόνισης κελιού για κανονικό κείμενο
+        // Create a cell renderer for normal text
         let normal = new Gtk.CellRendererText ();
 
-        // Συσκευασία των απεικονίσεων κελιού στις στήλες
+        // Pack the cell renderers into the columns
         firstName.pack_start (bold, true);
         lastName.pack_start (normal, true);
         phone.pack_start (normal, true);
 </code>
-    <p>Εδώ δημιουργούμε τους απεικονιστές κελιών (CellRenderers) που θα χρησιμοποιήσουμε για την εμφάνιση του κειμένου από τη ListStore μας και τους πακετάρουμε στις TreeViewColumns. Κάθε CellRendererText χρησιμοποιείται για όλες τις καταχωρίσεις σε αυτήν τη στήλη. Το κανονικό μας CellRendererText απλά δημιουργεί απλό κείμενο, ενώ το έντονο κείμενο χρησιμοποιεί κείμενο βαρύτερου πάχους. Το βάζουμε στη στήλη πρώτου ονόματος και λέμε στα άλλα δύο να χρησιμοποιήσουμε αντίγραφα του κανονικού. Το "αληθές" χρησιμοποιείται ως η δεύτερη παράμετρος για τη μέθοδο <file>pack_start</file> που του λέει να επεκτείνει τα κελιά όταν είναι δυνατό, αντί να τα κρατήσει συμπαγή.</p>
+    <p>Εδώ δημιουργούμε τους CellRenderers που θα χρησιμοποιήσουμε για την εμφάνιση του κειμένου από τη ListStore μας και τους πακετάρουμε στις TreeViewColumns. Κάθε CellRendererText χρησιμοποιείται για όλες τις καταχωρίσεις σε αυτήν τη στήλη. Το κανονικό μας CellRendererText απλά δημιουργεί απλό κείμενο, ενώ το έντονο κείμενο χρησιμοποιεί κείμενο βαρύτερου πάχους. Το βάζουμε στη στήλη πρώτου ονόματος και λέμε στα άλλα δύο να χρησιμοποιήσουμε αντίγραφα του κανονικού. Το "αληθές" χρησιμοποιείται ως η δεύτερη παράμετρος για τη μέθοδο <file>pack_start</file> που του λέει να επεκτείνει τα κελιά όταν είναι δυνατό, αντί να τα κρατήσει συμπαγή.</p>
     <note><p><link href="http://www.pygtk.org/docs/pygtk/pango-constants.html">Εδώ είναι μια λίστα</link> των άλλων ιδιοτήτων του κειμένου που μπορείτε να δείτε. Για να χρησιμοποιήσετε αυτές τις σταθερές Pango, βεβαιωθείτε ότι βάλατε τη γραμμή <file>const Pango = imports.gi.Pango;</file> στην αρχή του κώδικα σας όπως κάναμε.</p></note>
 
     <code mime="application/javascript">
@@ -203,14 +185,14 @@ const TreeViewExample = new Lang.Class({
         lastName.add_attribute (normal, "text", 1);
         phone.add_attribute (normal, "text", 2);
 
-        // Εισαγωγή των στηλών στην προβολή δένδρου
+        // Insert the columns into the treeview
         this._treeView.insert_column (firstName, 0);
         this._treeView.insert_column (lastName, 1);
         this._treeView.insert_column (phone, 2);
 </code>
-    <p>Τώρα που έχουμε βάλει τους απεικονιστές κελιών (CellRenderers) στις στήλες προβολής δένδρου (TreeViewColumns), χρησιμοποιούμε τη μέθοδο <file>add_attribute</file> για να πει σε κάθε στήλη να σύρει το κείμενο από το πρότυπό μας προβολής δένδρου (TreeView) που ορίστηκε για χρήση· σε αυτήν την περίπτωση, την αποθήκη καταλόγου (ListStore) με τον τηλεφωνικό κατάλογο.</p>
+    <p>Τώρα που έχουμε βάλει τους CellRenderers στις TreeViewColumns, χρησιμοποιούμε τη μέθοδο <file>add_attribute</file> για να πει σε κάθε στήλη να σύρει το κείμενο από το πρότυπό μας TreeView που ορίστηκε για χρήση· σε αυτήν την περίπτωση, τη ListStore με τον τηλεφωνικό κατάλογο.</p>
     <list>
-      <item><p>Η πρώτη παράμετρος είναι όποια απεικόνιση κελιών (CellRenderer) πρόκειται να χρησιμοποιήσουμε για απόδοση του τι σύρουμε.</p></item>
+      <item><p>Η πρώτη παράμετρος είναι όποια CellRenderer πρόκειται να χρησιμοποιήσουμε για απόδοση του τι σύρουμε.</p></item>
       <item><p>Η δεύτερη παράμετρος είναι τι είδος πληροφορίας πρόκειται να σύρουμε. Σε αυτήν την περίπτωση, την αφήνουμε να μάθει ότι αποδίδουμε κείμενο.</p></item>
       <item><p>Η τρίτη παράμετρος είναι σε ποια στήλη της ListStore σύρουμε αυτήν την πληροφορία.</p></item>
     </list>
@@ -221,30 +203,30 @@ const TreeViewExample = new Lang.Class({
   <section id="ui">
     <title>Δημιουργία της υπόλοιπης διεπαφής χρήστη</title>
     <code mime="application/javascript">
-        // Δημιουργία της ετικέτας που εμφανίζει λεπτομέρειες για το όνομα που διαλέξατε
+        // Create the label that shows details for the name you select
         this._label = new Gtk.Label ({ label: "" });
 
-        // Λήψη όποιου στοιχείου επιλέγεται
+        // Get which item is selected
         this.selection = this._treeView.get_selection();
 
-        // Όταν επιλέγεται κάτι νέο, call _on_changed
+        // When something new is selected, call _on_changed
         this.selection.connect ('changed', Lang.bind (this, this._onSelectionChanged));
 </code>
     <p>Η μέθοδος <file>get_selection</file> της TreeView επιστρέφει ένα αντικείμενο που λέγεται TreeSelection. Μια TreeSelection είναι όπως μια TreeIter στο ότι είναι βασικά ένας δρομέας που δείχνει σε μια συγκεκριμένη γραμμή, εκτός από το ότι αυτό που δείχνει είναι αυτό που είναι ορατά επισημασμένο καθώς επιλέχτηκε.</p>
     <p>Αφού πάρουμε την TreeSelection που πηγαίνει με την TreeView μας, της ζητάμε να μας πει όταν αλλάζει σε ποια γραμμή δείχνει. Το κάνουμε συνδέοντας τι σήμα της <file>changed</file> στη συνάρτηση _onSelectionChanged που γράψαμε. Αυτή η συνάρτηση αλλάζει το εμφανιζόμενο κείμενο με την ετικέτα που μόλις κάναμε.</p>
 
     <code mime="application/javascript">
-        // Δημιουργία πλέγματος για οργάνωση όλων μέσα του
+        // Create a grid to organize everything in
         this._grid = new Gtk.Grid;
 
-        // Προσάρτηση της προβολής δένδρου και της ετικέτας στο πλέγμα
+        // Attach the treeview and label to the grid
         this._grid.attach (this._treeView, 0, 0, 1, 1);
         this._grid.attach (this._label, 0, 1, 1, 1);
 
-        // Προσθήκη του πλέγματος στο παράθυρο
+        // Add the grid to the window
         this._window.add (this._grid);
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
     },
 </code>
@@ -257,10 +239,10 @@ const TreeViewExample = new Lang.Class({
     <code mime="application/javascript">
     _onSelectionChanged: function () {
 
-        // Σύλληψη ενός treeiter που δείχνει στην τρέχουσα επιλογή
+        // Grab a treeiter pointing to the current selection
         let [ isSelected, model, iter ] = this.selection.get_selected();
 
-        // Ορισμός της ετικέτας  για ανάγνωση των αποθηκευμένων τιμών στην τρέχουσα επιλογή
+        // Set the label to read off the values stored in the current selection
         this._label.set_label ("\n" +
             this._listStore.get_value (iter, 0) + " " +
             this._listStore.get_value (iter, 1) + " " +
@@ -276,7 +258,7 @@ const TreeViewExample = new Lang.Class({
     <p>Εδώ, θέλουμε να πάρουμε δεδομένα και από τις τέσσερις στήλες, συμπεριλαμβάνοντας την "κρυφή" που δεν είναι μέρος της TreeView. Έτσι, μπορούμε να χρησιμοποιήσουμε την ετικέτα μας για να εμφανίσουμε συμβολοσειρές που είναι υπερβολικά μεγάλες για προσαρμογή στη TreeView και που δεν χρειαζόμαστε να δούμε με μια ματιά.</p>
 
     <code mime="application/javascript">
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new TreeViewExample ();
 app.application.run (ARGV);
 </code>
@@ -287,36 +269,40 @@ app.application.run (ARGV);
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
-
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 const Pango = imports.gi.Pango;
 
-class TreeViewExample {
+const TreeViewExample = new Lang.Class({
+    Name: 'TreeView Example with Simple ListStore',
+
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jstreeviewsimpleliststore'
         });
 
-        // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
+
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
@@ -395,7 +381,7 @@ class TreeViewExample {
         this.selection = this._treeView.get_selection();
 
         // When something new is selected, call _on_changed
-        this.selection.connect ('changed', this._onSelectionChanged.bind(this));
+        this.selection.connect ('changed', Lang.bind (this, this._onSelectionChanged));
 
         // Create a grid to organize everything in
         this._grid = new Gtk.Grid;
@@ -409,9 +395,12 @@ class TreeViewExample {
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _onSelectionChanged() {
+
+
+    _onSelectionChanged: function () {
+
         // Grab a treeiter pointing to the current selection
         let [ isSelected, model, iter ] = this.selection.get_selected();
 
@@ -420,10 +409,11 @@ class TreeViewExample {
             this._listStore.get_value (iter, 0) + " " +
             this._listStore.get_value (iter, 1) + " " +
             this._listStore.get_value (iter, 2) + "\n" +
-            this._listStore.get_value (iter, 3)
-        );
+            this._listStore.get_value (iter, 3));
+
     }
-};
+
+});
 
 // Run the application
 let app = new TreeViewExample ();
@@ -437,7 +427,7 @@ app.application.run (ARGV);
 <list>
   <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
   <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
-  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererText.html">Gtk.CellRendererText</link></p></item>
+  <item><p><link href="www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererText.html">Gtk.CellRendererText</link></p></item>
   <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ListStore.html">Gtk.ListStore</link></p></item>
   <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.TreeIter.html">Gtk.TreeIter</link></p></item>
   <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.TreeSelection.html">Gtk.TreeSelection</link></p></item>

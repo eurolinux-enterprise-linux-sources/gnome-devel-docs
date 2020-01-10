@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="colorbutton.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="colorbutton.py" xml:lang="el">
   <info>
     <title type="text">ColorButton (Python)</title>
     <link type="guide" xref="beginner.py#color-selectors"/>
@@ -8,38 +8,20 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Ένα κουμπί για εκκίνηση του διαλόγου επιλογής χρώματος</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Κουμπί χρώματος (ColorButton)</title>
+  <title>ColorButton</title>
   <media type="image" mime="image/png" src="media/colorbutton.png"/>
   <p>Αυτό το ColorButton ξεκινά τον διάλογο επιλογής χρωμάτων και τυπώνει στον τερματικό τις τιμές RGB του επιλεγμένου χρώματος.</p>
 
@@ -51,9 +33,7 @@
 from gi.repository import Gdk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="ColorButton", application=app)
         self.set_default_size(150, 50)
@@ -85,11 +65,9 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # if a new color is chosen, we print it as rgb(r,g,b) in the terminal
     def on_color_chosen(self, user_data):
-        print("You chose the color: " + self.button.get_rgba().to_string())
-
+        print "You chose the color: " + self.button.get_rgba().to_string()
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -97,8 +75,8 @@ class MyApplication(Gtk.Application):
         win = MyWindow(self)
         win.show_all()
 
-    def do_startup(self):
-        Gtk.Application.do_startup(self)
+    def do_startup (self):
+        Gtk.Application.do_startup (self)
 
 app = MyApplication()
 exit_status = app.run(sys.argv)
@@ -107,7 +85,7 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-  <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο ColorButton</title>
+  <title>Χρήσιμες μέθοδοι για ένα γραφικό συστατικό ColorButton</title>
   <p><code>set_color(color)</code>, όπου το <code>color</code> ορίζεται όπως στο παράδειγμα, ορίζει το χρώμα του ColorButton, που από προεπιλογή είναι μαύρο. <code>get_color()</code> επιστρέφει το χρώμα.</p>
     <p>Στη γραμμή 23 το σήμα <code>"color-set"</code> συνδέεται με τη συνάρτηση επανάκλησης <code>on_color_chosen()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
   </section>

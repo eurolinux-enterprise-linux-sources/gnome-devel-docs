@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="message-board.c" xml:lang="gl">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="message-board.c" xml:lang="gl">
 
   <info>
     <title type="text">Message board (C)</title>
@@ -10,12 +10,12 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-06" status="draft"/>
     <credit type="author copyright">
       <name>Shaun McCance</name>
-      <email its:translate="no">shaunm@gnome.org</email>
+      <email>shaunm@gnome.org</email>
       <years>2010</years>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
   
@@ -240,12 +240,23 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
   element in the document using CSS selectors. This keeps you from having to
   write tedious loops to traverse the document.</p>
 
+  <comment>
+    <cite>shaunm</cite>
+    <p>FIXME: Is this true? Does query_selector take CSS, CSSish, or what?</p>
+  </comment>
+
   <p>Next, you create a new <code>div</code> element to hold the message. Every
   element you create has to be attached to a document, so the function to create
   an element takes the <code>WebKitDOMDocument</code> as its first arguments.
   You then set the text content of the element to the contents of the text entry.
   Because <code>gtk_entry_get_text</code> returns a <code>const gchar*</code>,
   you don't have to free the result.</p>
+
+  <comment>
+    <cite>shaunm</cite>
+    <p>Not passing the GError**, but we should give it a quick mention and
+    link to somewhere that explains how GError-handling works.</p>
+  </comment>
 
   <p>Finally, you append the new <code>div</code> element to the body and
   clear out the text entry so you can type something new. Build and run the
@@ -294,6 +305,8 @@ static const guchar CSS[] =
   <code>create_window</code> function, anywhere after <code>view</code> has
   already been defined.</p>
 
+  <comment><cite>shaunm</cite><p>g_base64_encode has bad args</p></comment>
+
 <code><![CDATA[
 tmp = g_base64_encode (CSS, strlen((gchar *) CSS));
 css = g_strconcat ("data:text/css;charset=utf-8;base64,",
@@ -338,12 +351,17 @@ gchar *tmp, *css;
   <list>
     <item><p>Si se sinte comodo usando CSS, probe a cambiar o estilo da visualización da mensaxe. É moi doado iniciarse en CSS, pero cada vez é máis potente. Hai unha gran cantidade de titoriais de CSS en Internet, e case todo o que se pode facer nunha páxina web, pódese facer neste aplicativo.</p></item>
 
-    <item><p>Agora mesmo, tódalas mesnaxes pérdense ao pechar o cadro de mensaxes. Probe a gardar o contido HTML despois de cada envío, e a cargar o ficheiro cargado (se existe) ao inicio.</p></item>
+    <item><p>Agora mesmo, tódalas mesnaxes pérdense ao pechar o cadro de mensaxes. Probe a gardar o contido HTML despois de cada envío, e a cargar o ficheiro cargado (se existe) ao inicio.</p>
+    <comment>
+      <cite>shaunm</cite><p>Link to method to get HTML from DOM and to
+      GIO APIs.</p>
+    </comment></item>
 
     <item><p>If you keep your messages around for a long time, you'll start
     wondering when you posted them. Add a timestamp to each message when it's
     posted. You'll probably want to create some additional child <code>div</code>
     elements with different classes that you can style in the CSS.</p>
+    <comment><cite>shaunm</cite><p>Link to strftime or something</p></comment>
     </item>
 
     <item><p>Este programa garda as mensaxes para sempre. Pense algunha maneira para que o usuario poida borrar mensaxes. Tal vez queira que as mensaxes desapareza automaticamente cando son moi antigas ou despois de que haxa certo número de mensaxes por diante. Ou podería engadir unha ligazón en cada mensaxe para borrala. Tamén pode omitir o menú contextual cando preme co botón dereito sobe unha mensaxe. Esta características implican explorar máis da API do DOM de WebKit.</p></item>

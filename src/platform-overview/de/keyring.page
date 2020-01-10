@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="keyring" xml:lang="de">
+<info>
+  <link type="guide" xref="index" group="apps"/>
+  <desc>Sicheres Speichern von Passwörtern und anderen Daten</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Mario Blättermann</mal:name>
+      <mal:email>mario.blaettermann@gmail.com</mal:email>
+      <mal:years>2009-2012</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Christian Kirbach</mal:name>
+      <mal:email>christian.kirbach@gmail.com</mal:email>
+      <mal:years>2011, 2012.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Aljosha Papsch</mal:name>
+      <mal:email>al@rpapsch.de</mal:email>
+      <mal:years>2012</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Schlüsselbund</title>
+
+<p>GNOME stellt eine moderne und sichere Schlüsselbundverwaltung zum Speichern von Benutzerpasswörtern und anderen sicherheitsrelevanten Daten bereit. Anwendungen können die Bibliothek der Schlüsselbundverwaltung zum Speichern und Zugreifen auf Passwörter verwenden. Benutzer können ihre Passwörter in der GNOME-Anwendung <app>Schlüsselbundverwaltung</app> verwalten.</p>
+
+<p>Die Schlüsselbundverwaltung kann mit mehreren Schlüsselbünden umgehen, wobei jeder Schlüsselbund wiederum eine beliebige Anzahl von Einträgen enthalten kann. Ein Eintrag im Schlüsselbund enthält Daten, zumeist ein Passwort. Jeder Schlüsselbund ist individuell gesperrt, so dass die Benutzer ein Passwort zur Entsperrung bereitstellen müssen. Sobald ein Schlüsselbund entsperrt ist, hat der Benutzer Zugriff auf alle enthaltenen Einträge.</p>
+
+<p>Die Schlüsselbundverwaltung bietet Zugriffskontrolllisten für jedes Schlüsselbundobjekt, über die Anwendungen Zugriff auf das jeweilige Objekt erhalten können. Falls eine unbekannte Anwendung versucht, Zugriff auf das Schlüsselbundobjekt zu erlangen, fragt die Schlüsselbundverwaltung den Benutzer, ob der Zugriff gewährt oder verweigert werden soll. Das verhindert, dass böswillige oder dürftig programmierte Anwendungen Zugriff auf die sicherheitskritischen Daten des Benutzers erlangen.</p>
+
+<p>Die im Dateisystem gespeicherten Daten des Schlüsselbundes werden mit »AES block cipher« gespeichert, wobei SHA1 zur Ermittlung der Prüfsumme der Attribute des Objektes verwendet wird. Aufgrund der Prüfsummen der Attribute ist die Schlüsselbundverwaltung in der Lage, nach den von Anwendungen angefragten Daten zu suchen, ohne den eigentlichen Schlüsselbund entsperren zu müssen. Der Schlüsselbund muss erst dann entsperrt werden, wenn tatsächlich ein passendes Objekt gefunden wurde und darauf zugegriffen wird.</p>
+
+<p>Die Schlüsselbundverwaltung stellt auch einen sitzungsgebundenen Schlüsselbund zur Verfügung. Die Einträge in diesem Schlüsselbund werden niemals dauerhaft gespeichert und gehen verloren, sobald die Sitzung des Benutzers beendet ist. Der Sitzungs-Schlüsselbund kann zum Speichern von Passwörtern genutzt werden, die nur für die aktuelle Sitzung nötig sind.</p>
+
+<p>Falls sie GIO zum Zugriff auf entfernte Server verwenden, nutzen Sie automatisch den Vorteil der Schlüsselbundverwaltung. Wann immer es für GVFS erforderlich ist, den Benutzer zu legitimieren, wird die Option zur Speicherung des Passworts angeboten, entweder im Standard-Schlüsselbund oder im sitzungsgebundenen Schlüsselbund.</p>
+
+<p>Sie sollten die Schlüsselbundverwaltung immer dann einsetzen, wenn Ihre Anwendung Passwörter oder andere sicherheitsrelevante Daten des Benutzers speichern soll. Die Schlüsselbundverwaltung bietet eine hohe Bedienerfreundlichkeit und hält die Benutzerdaten doch sicher in Verwahrung.</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/gnome-keyring/stable/">Das Referenzhandbuch von gnome-keyring</link></p></item>
+  <item><p><link href="http://developer.gnome.org/libseahorse/stable/">Das Referenzhandbuch von libseahorse</link></p></item>
+</list>
+
+</page>

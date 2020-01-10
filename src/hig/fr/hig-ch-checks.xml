@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- we can change the title as soon as the content is written
+     I want the document to be as usable and correct as possible
+     this week -seth
+
+  <chapter id="checklists">
+    <title>Checklists</title>
+-->
+<chapter id="reality-checks" lang="fr">
+    <title>Points de contrôle</title>
+    <sect1 id="checks-yourself">
+      <title>Choses à faire par vous-même</title>
+      <sect2>
+	<title>Avant de commencer</title>
+
+	<para>Mettez sur papier le public visé par votre application. Puis, écrivez quelques « scénarios » pour chaque type d'utilisateur — une petite histoire qui décrit les tâches typiques pour lesquelles ces personnes utiliseront votre application. Ces tâches devraient être de cet ordre d'idées :</para>
+
+	<blockquote><para>Fred a besoin de rechercher un courriel à propos de widgets qu'il a reçu la semaine dernière</para></blockquote>
+
+<!-- CB: Flow chart diagram.  Boxes with arrows showing flow of user scenario 
+example.  An transitional paragraph probably needs to be added after the "right" vs. "wrong" text examples shown, that basically says: You can use a flow chart, as shown below, to sketch out an expected user scenario. -->
+
+	<para>plutôt que</para>
+
+	<blockquote><para>Fred clique sur le bouton <guibutton>Rechercher</guibutton> et saisit <userinput>widgets</userinput> dans la boîte de dialogue.</para></blockquote>
+
+	<para>De cette manière, vous pouvez utiliser les mêmes scénarios pour tester et comparer différentes conceptions d'interface et mettre le doigt sur une fonctionnalité absente.</para>
+
+	<para>Incorporez ces descriptions et scénarios d'utilisateur avec la documentation dont vous faites le « commit » vers CVS. Avec cette manière de procéder, les autres contributeurs comprendront quel est le public visé, ils pourront aider à développer l'application en connaissance de cause et ils pourront ajouter d'autres scénarios de leur cru.</para>
+      </sect2>
+      
+      <sect2>
+	<title>Focus et accessibilité clavier</title>
+
+	<para>Lorsque vous commencez à implémenter votre interface, cachez la souris et assurez-vous que vous pouvez toujours faire fonctionner l'interface en utilisant uniquement le clavier. Mettez en place les fonctionnalités clavier en même temps que celles de la souris — n'attendez pas le dernier moment.</para>
+
+<!-- CB: This is a non-figure comment, I couldn't help myself.  The first sentence in the paragraph directly above, is badly written.  The word "it" is ambiguous in the sentence because it likely refers to the mouse!  Please correct. -->
+
+	<para>N'utilisez que les commandes clavier, déplacez le focus à travers toutes les barres de menu et barre d'outils de l'application. Vérifiez également que :</para>
+	
+<!-- CB-Ed: OK I'll just make all non-figures comments tagged with CB-Ed.  The above paragraph should be part of the bulleted list below. -->
+
+<!-- CB-Fig: All figures comments will be tagged with CB-Fig.  A single figure showing an example GUI with callouts highlighting bulleted points would be great. Perhaps visually box bulleted elements and then "zoom" them out with callout text.  -->
+	<itemizedlist>
+	  <listitem><para>les menus contextuels s'affichent correctement (<keycombo><keycap>Maj</keycap><keycap>F10</keycap></keycombo>),</para></listitem>
+	  <listitem><para>les infobulles peuvent apparaître et disparaître pour tous les contrôles qui en possèdent (<keycombo><keycap>Ctrl</keycap><keycap>F1</keycap></keycombo>, <keycap>Échap</keycap>),</para></listitem>
+
+	  <listitem><para>toutes les fonctions énumérées dans la barre d'outils peuvent être appelées grâce au clavier,</para></listitem>
+
+	  <listitem><para>vous pouvez actionner complètement chaque contrôle dans la zone client de l'application et dans les boîtes de dialogue,</para></listitem>
+
+	  <listitem><para>le texte et les objets dans la zone client peuvent être sélectionnés,</para></listitem>
+
+	  <listitem><para>tous les raccourcis clavier ou touches de raccourci fonctionnent comme prévu,</para></listitem>
+
+	  <listitem><para>lors des déplacements parmi les objets, l'indicateur de focus visuel est facile à identifier à tout instant.</para></listitem>
+	</itemizedlist>
+	
+      </sect2>
+      
+      <sect2>
+	<title>Thèmes, couleurs et contraste</title>
+
+	<para>Testez les divers thèmes de GNOME pour vous assurez que votre application respecte tous les paramètres disponibles.</para>
+
+	<para>Testez votre application avec des thèmes noir et blanc, fort contraste et vérifiez que toute l'information est toujours bien convoyée. Si aucun thème GNOME convenable à fort contraste n'est disponible pour les tests, faites des copies d'écran en noir et blanc (et non en niveau de gris) et assurez-vous que toute l'information importante est toujours visible — cela sera une approximation de ce qu'une personne utilisant un thème à fort contraste verrait.</para>
+      </sect2>
+
+      <sect2>
+	<title>Animation</title>
+
+	<para>Assurez-vous d'avoir implémenté une option pour éteindre toutes les animations dans votre application (pour des raisons d'accessibilité) et que cela fonctionne comme prévu. Éteignez les animations. Vérifiez que toute l'information est correctement convoyée.</para>
+      </sect2>
+    </sect1>
+    
+    <sect1 id="checks-other-people">
+      <title>Choses à faire avec les autres gens</title>
+      <sect2>
+	<title>Retour rapide d'informations</title>
+	
+	<para>C'est toujours tentant, mais ne commencez pas à coder votre interface tout de suite. Jetez certaines de vos idées sur une feuille d'abord, ou dans Glade, ou en HTML si vous préférez (mais ne cédez pas à la tentation d'ajouter des fonctionnalités en ce moment, si vous procédez de la sorte !).</para>
+
+	<para>Montrez ces prototypes aux autres personnes — la liste de diffusion GNOME et l'IRC sont idéaux pour trouver des candidats probables. Demandez-leur d'utiliser ces interfaces prototypes pour exécuter certains scénarios que vous avez présentés précédemment. Vous obtiendrez certainement des questions comme « comment puis-je faire X ? », « dans quel menu Y se trouve-t'il ? »... ces questions vous aideront à considérer votre interface d'un point de vue utilisateur. Vous obtiendrez également quelques suggestions sur la manière de faire les choses différemment — ces idées pourront être meilleures que les vôtres ou pas, mais toutes idées d'un utilisateur potentiel valent la peine d'être considérées !</para>
+
+	<para>Vous devriez également songer à obtenir des avis de <ulink url="http://developer.gnome.org/projects/gup/">l'équipe ergonomie de GNOME</ulink>. Ils ont déjà conçus beaucoup d'interfaces utilisateur et peuvent être capables de mettre le doigt sur des problèmes potentiels dès le début avant que vous n'ayez trop avancé dans votre conception pour pouvoir effectuer des modifications facilement.</para>
+
+	<para>Une fois que vous avez décidé de la conception de base de l'interface et que vous avez commencé à coder une partie d'entre elle, trouvez quelqu'un pour l'essayer à nouveau — pas nécessairement la même personne. Vous rencontrerez certainement des nouveaux problèmes qui étaient difficiles à voir avec votre prototype papier statique. En les trouvant maintenant, il n'est en général pas trop tard pour les résoudre sans trop de soucis.</para>
+      </sect2>
+      
+      
+      <sect2>
+	<title>Internationalisation et localisation </title>
+
+	<para>Si vous avez l'intention de faire traduire votre application dans différentes langues, montrez les brouillons de conception de l'application à <ulink url="http://developer.gnome.org/projects/gtp/contact.html">l'équipe de traduction GNOME</ulink>. Ils vous aideront à trouver des éventuels problèmes de traduction tels que des manques de place pour les étiquettes traduites, des touches de raccourci posant problème sur divers agencements de clavier ou l'emploi de néologismes difficiles à traduire.</para>
+
+	<para>Si possible essayez votre application avec des utilisateurs dans les langues ciblées. Cela vous aidera à déterminer si les utilisateurs comprennent comment utiliser l'application, s'ils perçoivent les graphiques et les couleurs de la façon dont vous l'attendiez et s'il y a des mots ou images dans l'application qui peuvent offenser les utilisateurs dans cet environnement linguistique.</para>
+      </sect2>
+
+    </sect1>
+  </chapter>

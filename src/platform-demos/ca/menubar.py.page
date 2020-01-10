@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.py" xml:lang="ca">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.py" xml:lang="ca">
   <info>
   <title type="text">MenuBar (Python)</title>
   <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
@@ -9,12 +9,12 @@
 
     <credit type="author copyright">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
       <years>2012</years>
     </credit>
-    <credit type="author copyright">
+    <credit type="author coyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -63,16 +63,12 @@
 <code mime="text/x-python">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="MenuBar Example", application=app)
         self.set_default_size(200, 200)
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -89,7 +85,7 @@ class MyApplication(Gtk.Application):
         try:
             builder.add_from_file("menubar_basis.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
 
         # we use the method Gtk.Application.set_menubar(menubar) to add the menubar
@@ -176,7 +172,7 @@ self.add_action(new_action)</code>
 
     <p>Some actions, such as "copy" and "paste" deal with the window, not the application. Window actions should be created as part of the window class.</p>
 
-    <p>The complete example files contain both application actions and window actions.  The window actions are the ones usually included in the <link xref="gmenu.py">application menu</link> also.  It is not good practice to include window actions in the application menu. For demonstration purposes, the complete example files which follow include XML in the UI file which creates the application menu which includes a "New" and "Open" item, and these are hooked up to the same actions as the menubar items of the same name.</p>
+    <p>The complete example files contain both application actions and window actions.  The window actions are the ones usually included in the <link xref="gmenu.py">application menu</link> also.  It is not good practice to include window actions in the applcation menu. For demonstration purposes, the complete example files which follow include XML in the UI file which creates the application menu which includes a "New" and "Open" item, and these are hooked up to the same actions as the menubar items of the same name.</p>
   </section>
 
   <section id="choices">
@@ -313,9 +309,7 @@ from gi.repository import GLib
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="MenuBar Example", application=app)
         self.set_default_size(200, 200)
@@ -335,8 +329,7 @@ class MyWindow(Gtk.ApplicationWindow):
         self.add_action(paste_action)
 
         # action with a state created (name, parameter type, initial state)
-        shape_action = Gio.SimpleAction.new_stateful(
-            "shape", GLib.VariantType.new('s'), GLib.Variant.new_string('line'))
+        shape_action = Gio.SimpleAction.new_stateful("shape", GLib.VariantType.new('s'), GLib.Variant.new_string('line'))
         # connected to the callback function
         shape_action.connect("activate", self.shape_callback)
         # added to the window
@@ -351,17 +344,17 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback function for copy_action
     def copy_callback(self, action, parameter):
-        print("\"Copy\" activated")
+        print "\"Copy\" activated"
 
     # callback function for paste_action
     def paste_callback(self, action, parameter):
-        print("\"Paste\" activated")
+        print "\"Paste\" activated"
 
     # callback function for shape_action
     def shape_callback(self, action, parameter):
-        print("Shape is set to", parameter.get_string())
-        # Note that we set the state of the action!
-        action.set_state(parameter)
+		print "Shape is set to", parameter.get_string()
+		# Note that we set the state of the action!
+		action.set_state(parameter)
 
     # callback function for about (see the AboutDialog example)
     def about_callback(self, action, parameter):
@@ -374,8 +367,7 @@ class MyWindow(Gtk.ApplicationWindow):
 
         # we fill in the aboutdialog
         aboutdialog.set_program_name("MenuBar Example")
-        aboutdialog.set_copyright(
-            "Copyright \xc2\xa9 2012 GNOME Documentation Team")
+        aboutdialog.set_copyright("Copyright \xc2\xa9 2012 GNOME Documentation Team")
         aboutdialog.set_authors(authors)
         aboutdialog.set_documenters(documenters)
         aboutdialog.set_website("http://developer.gnome.org")
@@ -391,9 +383,7 @@ class MyWindow(Gtk.ApplicationWindow):
     def on_close(self, action, parameter):
         action.destroy()
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -420,16 +410,14 @@ class MyApplication(Gtk.Application):
         self.add_action(quit_action)
 
         # action with a state created
-        state_action = Gio.SimpleAction.new_stateful(
-            "state",  GLib.VariantType.new('s'), GLib.Variant.new_string('off'))
+        state_action = Gio.SimpleAction.new_stateful("state",  GLib.VariantType.new('s'), GLib.Variant.new_string('off'))
         # action connected to the callback function
         state_action.connect("activate", self.state_callback)
         # action added to the application
         self.add_action(state_action)
 
         # action with a state created
-        awesome_action = Gio.SimpleAction.new_stateful(
-            "awesome", None, GLib.Variant.new_boolean(False))
+        awesome_action = Gio.SimpleAction.new_stateful("awesome", None, GLib.Variant.new_boolean(False))
         # action connected to the callback function
         awesome_action.connect("activate", self.awesome_callback)
         # action added to the application
@@ -441,7 +429,7 @@ class MyApplication(Gtk.Application):
         try:
             builder.add_from_file("menubar.ui")
         except:
-            print("file not found")
+            print "file not found"
             sys.exit()
 
         # we use the method Gtk.Application.set_menubar(menubar) to add the menubar
@@ -451,25 +439,25 @@ class MyApplication(Gtk.Application):
 
     # callback function for new
     def new_callback(self, action, parameter):
-        print("You clicked \"New\"")
+        print "You clicked \"New\""
 
     # callback function for quit
     def quit_callback(self, action, parameter):
-        print("You clicked \"Quit\"")
+        print "You clicked \"Quit\""
         sys.exit()
 
     # callback function for state
     def state_callback(self, action, parameter):
-        print("State is set to", parameter.get_string())
+        print "State is set to", parameter.get_string()
         action.set_state(parameter)
 
     # callback function for awesome
     def awesome_callback(self, action, parameter):
         action.set_state(GLib.Variant.new_boolean(not action.get_state()))
         if action.get_state().get_boolean() is True:
-            print("You checked \"Awesome\"")
+            print "You checked \"Awesome\""
         else:
-            print("You unchecked \"Awesome\"")
+            print "You unchecked \"Awesome\""
 
 
 app = MyApplication()
@@ -495,7 +483,7 @@ sys.exit(exit_status)
 
   <section id="translatable"><title>Translatable strings</title>
    <p>
-   Since GNOME applications are being translated into <link href="http://l10n.gnome.org/languages/">many languages</link>, it is important that the strings in your application are translatable.  To make a label translatable, simple set <code>translatable="yes"</code>:
+   Since GNOME applications are being translated into <link href="http://l10n.gnome.org/languages/">many languages</link>, it is important that the strings in your application are translable.  To make a label translatable, simple set <code>translatable="yes"</code>:
    </p>
 
      <code mime="application/xml"><![CDATA[<attribute name="label" translatable="yes">Quit</attribute>]]></code>

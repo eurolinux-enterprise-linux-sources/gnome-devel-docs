@@ -1,55 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.c" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="menubar.c" xml:lang="fr">
   <info>
     <title type="text">MenuBar (C)</title>
-    <link type="guide" xref="c#menu-combo-toolbar"/>
+    <link type="guide" xref="beginner.c#menu-combo-toolbar"/>
     <link type="seealso" xref="aboutdialog.c"/>
     <link type="seealso" xref="gmenu.c"/>
     <revision version="0.2" date="2012-08-19" status="draft"/>
 
     <credit type="author copyright">
       <name>Monica Kochofar</name>
-      <email its:translate="no">monicakochofar@gmail.com</email>
+      <email>monicakochofar@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Un composant graphique qui contient des éléments graphiques GtkMenuItem</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>A widget which holds GtkMenuItem widgets</desc>
   </info>
 
-  <title>BarreDeMenu</title>
+  <title>MenuBar</title>
 
   <media type="image" mime="image/png" src="media/menubar.png"/>
-  <p>Une BarreDeMenu créée avec XML et GtkBuilder.</p>
+  <p>A MenuBar created using XML and GtkBuilder.</p>
 <note><p>
     For a more in-depth look at this sample, please do not hesitate to check out the <link xref="menubar.vala">Vala MenuBar</link> and/or
 <link xref="menubar.py">Python MenuBar</link> tutorials.
@@ -245,7 +215,7 @@ state_callback (GSimpleAction *simple,
          GVariant      *parameter,
          gpointer       user_data)
 {
-   /* The two possibilities in this case for the "answer" variable are either
+   /* The two possibilies in this case for the "answer" variable are either
     * "on" or "off".
     */
    const gchar *answer = g_variant_get_string (parameter, NULL);
@@ -292,7 +262,7 @@ startup (GApplication *app,
 
   GtkBuilder *builder;
 
-  GError *error = NULL;
+  GError **error;
 
   /* Begin creating the "new" action.
    * Note that it is an action without a state.
@@ -333,13 +303,12 @@ startup (GApplication *app,
   builder = gtk_builder_new ();
   /* Get the file (if it is there):
    * Note: you must make sure that the file is in the current directory for
-   * this to work. The function used here returns a non-null value within
-   * our variable "error" if an error is indeed found.
+   * this to work. The function used here returns a value within our variable
+   * "error", and it is equal to zero if an error is indeed found.
    */
-  gtk_builder_add_from_file (builder, "menubar.ui", &amp;error);
-  if (error != NULL) {
-     g_print ("%s\n", error-&gt;message);
-     g_error_free (error);
+  gtk_builder_add_from_file (builder, "menubar.ui", error);
+  if (error == 0) {
+     g_print ("File not found.\n");
   }
 
   /* Extract the menubar */

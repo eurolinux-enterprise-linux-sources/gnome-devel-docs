@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="progressbar.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="progressbar.py" xml:lang="el">
   <info>
     <title type="text">ProgressBar (Python)</title>
     <link type="guide" xref="beginner.py#display-widgets"/>
@@ -8,38 +8,20 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Ένα γραφικό στοιχείο που δείχνει την πρόοδο οπτικά.</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Ένα γραφικό συστατικό που δείχνει την πρόοδο οπτικά.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Γραμμή προόδου (ProgressBar)</title>
+  <title>ProgressBar</title>
   <media type="video" mime="application/ogv" src="media/progressbar.ogv">
     <tt:tt xmlns:tt="http://www.w3.org/ns/ttml">
       <tt:body>
@@ -60,10 +42,8 @@
 from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
     # a window
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="ProgressBar Example", application=app)
         self.set_default_size(220, 20)
@@ -100,9 +80,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # call the function again
         return True
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -121,7 +99,7 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-  <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο ProgressBar</title>
+  <title>Χρήσιμες μέθοδοι για ένα γραφικό συστατικό ProgressBar</title>
   <list>
     <item><p>Αντί για <code>pulse()</code>, που κάνει τη γραμμή να πηγαίνει μπροστά πίσω, εάν θέλουμε η ProgressBar να "γεμίζει" ένα κλάσμα (ένα <code>float</code> μεταξύ <code>0.0</code> και <code>1.0</code> συμπεριλαμβανόμενου) της γραμμής που έχει ολοκληρωθεί, χρησιμοποιήστε <code>set_fraction(fraction)</code>.</p></item>
     <item><p>Για ρύθμιση κειμένου και εμφάνισή του (υπερτιθέμενου της γραμμής) χρησιμοποιήστε <code>set_text(<var>"text"</var>)</code> και <code>set_show_text(True)</code>. Εάν ένα κείμενο δεν ορίζεται και το <code>set_show_text(True)</code>, τότε το κείμενο θα είναι το ποσοστό της εργασίας που έχει ολοκληρωθεί.</p></item>

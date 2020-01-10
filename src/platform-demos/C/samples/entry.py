@@ -1,9 +1,7 @@
 from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="What is your name?", application=app)
         self.set_default_size(300, 100)
@@ -21,13 +19,11 @@ class MyWindow(Gtk.ApplicationWindow):
     # the content of the entry is used to write in the terminal
     def cb_activate(self, entry):
         # retrieve the content of the widget
-        name = entry.get_text()
-        # print it in a nice form in the terminal
-        print("Hello " + name + "!")
-
+		name = entry.get_text()
+		# print it in a nice form in the terminal
+		print "Hello " + name + "!"
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 

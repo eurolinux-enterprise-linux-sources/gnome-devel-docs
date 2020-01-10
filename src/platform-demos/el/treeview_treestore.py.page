@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_treestore.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="treeview_treestore.py" xml:lang="el">
   <info>
-    <title type="text">Προβολή δένδρου (TreeView) με αποθήκη δένδρου (TreeStore) (Python)</title>
+    <title type="text">TreeView με TreeStore (Python)</title>
     <link type="guide" xref="beginner.py#treeview"/>
     <link type="seealso" xref="model-view-controller.py"/>
     <link type="next" xref="model-view-controller.py"/>
@@ -9,40 +9,22 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Μια προβολή δένδρου (TreeView) που εμφανίζει μια αποθήκη δένδρου (TreeStore) (απλό παράδειγμα)</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Μια TreeView που εμφανίζει μια TreeStore (απλό παράδειγμα)</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Πιο απλή προβολή δένδρου με αποθήκη καταλόγων</title>
+  <title>Πιο απλή Treeview με ListStore</title>
   <media type="image" mime="image/png" src="media/treeview_treestore.png"/>
-  <p>Αυτή η προβολή δένδρου (TreeView) εμφανίζει μια αποθήκη δένδρου (TreeStore).</p>
+  <p>Αυτό το TreeView εμφανίζει μια TreeStore.</p>
 
   <links type="section"/>
 
@@ -57,9 +39,7 @@ books = [["Tolstoy, Leo", "War and Peace", "Anna Karenina"],
          ["Shakespeare, William", "Hamlet", "Macbeth", "Othello"],
          ["Tolkien, J.R.R.", "The Lord of the Rings"]]
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Library", application=app)
         self.set_default_size(250, 100)
@@ -85,8 +65,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # the cellrenderer for the column - text
         renderer_books = Gtk.CellRendererText()
         # the column is created
-        column_books = Gtk.TreeViewColumn(
-            "Books by Author", renderer_books, text=0)
+        column_books = Gtk.TreeViewColumn("Books by Author", renderer_books, text=0)
         # and it is appended to the treeview
         view.append_column(column_books)
 
@@ -98,7 +77,6 @@ class MyWindow(Gtk.ApplicationWindow):
 
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -116,8 +94,8 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-    <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο TreeView</title>
-    <p>Το γραφικό στοιχείο TreeView σχεδιάστηκε γύρω από ένα σχέδιο <em>προτύπου/προβολής/ελεγκτή</em>: το <em>πρότυπο</em> αποθηκεύει τα δεδομένα· η <em>Προβολή</em> παίρνει ειδοποιήσεις αλλαγής και εμφανίζει το περιεχόμενο του προτύπου· ο <em>ελεγκτής</em>, τελικά, αλλάζει την κατάσταση του προτύπου και ειδοποιεί την προβολή για αυτές τις αλλαγές. Για περισσότερες πληροφορίες και για μια λίστα χρήσιμων μεθόδων για λίστα TreeModel, δείτε <link xref="model-view-controller.py"/>.</p>
+    <title>Χρήσιμες μέθοδοι για ένα γραφικό συστατικό TreeView</title>
+    <p>Το γραφικό συστατικό TreeView σχεδιάστηκε γύρω από ένα σχέδιο <em>προτύπου/προβολής/ελεγκτή</em>: το <em>πρότυπο</em> αποθηκεύει τα δεδομένα· η <em>Προβολή</em> παίρνει ειδοποιήσεις αλλαγής και εμφανίζει το περιεχόμενο του προτύπου· ο <em>ελεγκτής</em>, τελικά, αλλάζει την κατάσταση του προτύπου και ειδοποιεί την προβολή για αυτές τις αλλαγές. Για περισσότερες πληροφορίες και για μια λίστα χρήσιμων μεθόδων για λίστα TreeModel, δείτε <link xref="model-view-controller.py"/>.</p>
   </section>
 
   <section id="references">

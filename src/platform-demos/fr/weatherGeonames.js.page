@@ -1,51 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherGeonames.js" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="weatherGeonames.js" xml:lang="fr">
   <info>
     <link type="guide" xref="weatherApp.js#main"/>
     <revision version="0.1" date="2012-03-09" status="stub"/>
 
     <credit type="author copyright">
       <name>Susanna Huhtanen</name>
-      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <email>ihmis.suski@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc/>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
   <title>Bibliothèque locale geoNames</title>
   <synopsis>
-    <p>Dans cette partie du guide nous allons construire la bibliothèque locale geoNames en utilisant des appels asynchrones. Dans cet exemple, les informations météorologiques sont récupérés sur geonames.org et l'application utilise les <link href="http://fr.wikipedia.org/wiki/Liste_des_codes_OACI_des_a%C3%A9roports">codes OACI</link> pour localiser les requêtes météo. Pour écrire et lancer tous les exemples de code vous avez besoin d'un éditeur pour saisir le code, de l'application Terminal et d'un ordinateur sur lequel GNOME 3 ou supérieur est installé. Dans ce guide, nous illustrerons les éléments suivants :</p>
+    <p>In this part of the guide we'll construct the local library geoNames using asynchronous calls. Weather information in this example is fetched from geonames.org and the application is using the <link href="http://en.wikipedia.org/wiki/List_of_airports_by_ICAO_code:_E">ICAO codes </link> to place your weather request. To write and run all the code examples yourself, you need an editor to write code in, Terminal and GNOME 3 or higher installed into your computer. In this guide we'll go through the following parts:</p>
 
     <list>
       <item><p> <link xref="#geonamesimports">Local library for getting the weather</link></p></item>
@@ -63,7 +33,7 @@ const Soup = imports.gi.Soup;
 const _httpSession = new Soup.SessionAsync();
 Soup.Session.prototype.add_feature.call(_httpSession, new Soup.ProxyResolverDefault());
 ]]></code>
-  <p>Dès les premières lignes, nous importons et initialisons les bibliothèques dont nous avons besoin dans cette bibliothèque locale. « Soup » prend en charge toutes les requêtes que nous devons faire via http.</p>
+  <p>Dès les premières lignes, nous importons et initialisons les bibliothèques dont nous avons besoin dans cette bibliothèque locale. « Soup » prend en charge toutes les requêtes que nous devons faire avec http.</p>
   </section>
 
   <section id="geonamesfunction">
@@ -77,7 +47,7 @@ GeoNames.prototype = {
 
 }
 ]]></code>
-  <p>Ici, nous créons la fonction GeoNames qui prend en charge l'obtention de la météo pour nous. Le JavaScript nous permet de créer des fonctions qui, au départ contiennent peu de code et de les étendre ensuite. Cela se fait à l'intérieur des accolades {} de GeoNames.prototype.</p>
+  <p>Ici, nous créons la fonction GeoNames qui prendra en charge l'obtention de la météo pour nous. Le JavaScript nous permet de créer des fonctions qui, au départ contiennent peu de code et de les étendre ensuite. Cela se fait à l'intérieur des accolades {} de GeoNames.prototype.</p>
   </section>
 
   <section id="geonamesmethods">
@@ -121,7 +91,7 @@ getIcon: function(weather){
     return "weather-fog.svg";
 }
 ]]></code>
-  <p>La première méthode de GeoNames est getWeather et la seconde getIcon. Dans getWeather, une requête http est effectuée avec « soup », nous prenons en charge les erreurs puis analysons (parse) les informations à partir de la requête vers une forme utilisable. Dans getIcon, nous comparons tout simplement les résultats obtenus avec getWeather à l'aide de l'instruction switch afin d'obtenir l'icône correspondant à la météo actuelle. Notre bibliothèque locale est prête et nous pouvons maintenant l'utiliser.</p>
+  <p>La première méthode de GeoNames est getWeather et la seconde getIcon. Dans getWeather, une requête http est effectuée avec « soup », nous prenons en charge les erreurs puis analysons les informations à partir de la requête vers une forme que nous pouvons utiliser. Dans getIcon, vous comparons tout simplement les résultats obtenus avec getWeather à l'aide de l'instruction switch afin d'obtenir l'icône correspondant au temps actuel. Notre bibliothèque locale est prête et nous pouvons maintenant l'utiliser.</p>
   </section>
 
 

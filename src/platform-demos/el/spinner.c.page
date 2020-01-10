@@ -1,41 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinner.c" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="spinner.c" xml:lang="el">
   <info>
-    <title type="text">Μετρητής (Spinner)(C)</title>
-    <link type="guide" xref="c#display-widgets"/>
+    <title type="text">Μετρητής (C)</title>
+    <link type="guide" xref="beginner.c#display-widgets"/>
     <link type="seealso" xref="togglebutton.c"/>
     <revision version="0.1" date="2012-06-14" status="draft"/>
 
     <credit type="author copyright">
       <name>Monica Kochofar</name>
-      <email its:translate="no">monicakochofar@gmail.com</email>
+      <email>monicakochofar@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Κίνηση μετρητή</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -49,17 +31,17 @@
  
 
 
- /*Καθολική μεταβλητή που χρησιμοποιείται για να δείξει την ενεργή κατάσταση του 
-μετρητή. TRUE = active, FALSE = not-active. Αυτό συμβαίνει επειδή 
-δεν υπάρχει μια τρέχουσα συνάρτηση για την C που το κάνει για μας */
+ /*Global variable used to indicate active state of the
+spinner. TRUE = active, FALSE = not-active. This is because 
+there isn't a current function for C that does this for us*/
 gboolean active;  
  
 
 
-/*Αυτή είναι η συνάρτηση επανάκλησης . Είναι μια συνάρτηση χειρισμού 
-που αντιδρά στο σήμα. Σε αυτήν την περίπτωση, θα προκαλέσει 
-την εκκίνηση και παύση του μετρητή ανάλογα με το πόσες φορές ο χρήστης 
-πατά το πλήκτρο διαστήματος.*/ 
+/*This is the callback function. It is a handler function 
+which reacts to the signal. In this case, it will cause the 
+spinner to start and stop according to how many times the user 
+presses the spacebar.*/ 
 static gboolean
 key_pressed_event (GtkWidget *widget,
                    GdkEvent  *event,
@@ -68,12 +50,12 @@ key_pressed_event (GtkWidget *widget,
   GtkWidget *spinner = user_data;
   guint keyval;
   
-  /*Εξάγει την keyval από ένα συμβάν και την αποθηκεύει στη μεταβλητή 
-  "keyval" (δίνουμε στη συνάρτηση τη διεύθυνση). Σε αυτήν την περίπτωση, το 
-  συμβά είναι GdkEventKey, ένα συμβάν πατήματος πλήκτρου*/
+  /*Extracts the keyval from an event. And stores it in the  variable 
+  "keyval" (we give the function the address). In this case, the 
+  event is GdkEventKey, a key press event*/
   gdk_event_get_keyval (event, &amp;keyval);  
 
-  /*Λήψη της τιμής Μπουλ από τονμετρητή*/
+  /*Grabbing the boolean value from the spinner*/
   g_object_get (GTK_SPINNER (spinner), "active", &amp;active, NULL);
   
   if (keyval == GDK_KEY_space) {
@@ -97,20 +79,20 @@ activate (GtkApplication *app,
   GtkWidget *window;
   GtkWidget *spinner;
  
-  /*Δημιουργία παραθύρου με τίτλο, πλάτος περιγράμματος και προεπιλεγμένο μέγεθος*/
+  /*Create a window with a title, border width and a default size*/
   window = gtk_application_window_new (app);
  
   gtk_window_set_title (GTK_WINDOW (window), "Spinner Example");
   gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
   gtk_container_set_border_width (GTK_CONTAINER(window), 30);
  
-  /*Δημιουργία ενός μετρητή, με πρόσθετο οριζόντιο και κάθετο χώρο*/
+  /*Create a spinner, with extra horizontal and vertical space*/
   spinner = gtk_spinner_new ();
   gtk_spinner_start (GTK_SPINNER (spinner));
   
   gtk_container_add (GTK_CONTAINER (window), spinner);
  
-  /*Σύνδεση του σήματος key-press-event με τη συνάρτηση επανάκλησης*/
+  /*Connecting the key-press-event signal to the callback*/
   g_signal_connect (GTK_WINDOW (window), "key-press-event", 
                     G_CALLBACK (key_pressed_event), spinner);
  

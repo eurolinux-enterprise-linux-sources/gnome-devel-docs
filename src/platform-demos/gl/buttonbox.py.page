@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="buttonbox.py" xml:lang="gl">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="buttonbox.py" xml:lang="gl">
   <info>
     <title type="text">ButtonBox (Python)</title>
     <link type="guide" xref="beginner.py#layout"/>
@@ -9,7 +9,7 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -34,9 +34,7 @@
     <code mime="text/python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Calculator", application=app)
         self.set_default_size(350, 200)
@@ -54,17 +52,17 @@ class MyWindow(Gtk.ApplicationWindow):
         # a grid
         grid = Gtk.Grid()
         grid.set_row_spacing(5)
-
+        
         # to attach the entry
         grid.attach(self.entry, 0, 0, 1, 1)
-
+        
         # the labels for the buttons
-        buttons = [7, 8, 9, '/',
-                   4, 5, 6, '*',
-                   1, 2, 3, '-',
-                   'C', 0, '=', '+']
-
-        # each row is a ButtonBox, attached to the grid
+        buttons = [ 7, 8, 9, '/',
+                    4, 5, 6, '*',
+                    1, 2, 3, '-',
+                    'C', 0, '=', '+' ]
+        
+        # each row is a ButtonBox, attached to the grid            
         for i in range(4):
             hbox = Gtk.ButtonBox.new(Gtk.Orientation.HORIZONTAL)
             hbox.set_spacing(5)
@@ -75,7 +73,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 button.set_can_focus(False)
                 button.connect("clicked", self.button_clicked)
                 hbox.add(button)
-
+            
         # some variables for the calculations
         self.first_number = 0
         self.second_number = 0
@@ -89,25 +87,25 @@ class MyWindow(Gtk.ApplicationWindow):
     def button_clicked(self, button):
         # for the operations
         if button.get_label() == '+':
-            self.counter += 1
+            self.counter += 1 
             if self.counter &gt; 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "plus"
         elif button.get_label() == '-':
-            self.counter += 1
+            self.counter += 1 
             if self.counter &gt; 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "minus"
         elif button.get_label() == '*':
-            self.counter += 1
+            self.counter += 1 
             if self.counter &gt; 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "multiplication"
         elif button.get_label() == '/':
-            self.counter += 1
+            self.counter += 1 
             if self.counter &gt; 1:
                 self.do_operation()
             self.entry.set_text('0')
@@ -131,7 +129,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 number = 0
             else:
                 number = int(self.entry.get_text())
-            number = number * 10 + new_digit
+            number = number * 10 + new_digit            
             if self.counter == 0:
                 self.first_number = number
             else:
@@ -160,10 +158,8 @@ class MyWindow(Gtk.ApplicationWindow):
             self.second_number = 0
             self.counter = 0
             self.entry.set_text('error')
-
-
+            
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -181,11 +177,11 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-    <title>Useful methods for a ButtonBox widget</title>
+    <title>Métodos útiles para o widget ButtonBox</title>
     <list>
       <item><p>The layout of the ButtonBox are set with <code>set_layout(layout)</code>, where <code>layout</code> can be <code>Gtk.ButtonBoxStyle.SPREAD</code> (buttons are evenly spread across the box), <code>Gtk.ButtonBoxStyle.EDGE</code> (buttons are placed at the edges of the box), <code>Gtk.ButtonBoxStyle.START</code> (buttons are grouped towards the start of the box), <code>Gtk.ButtonBoxStyle.END</code> (buttons are grouped towards the end of the box), <code>Gtk.ButtonBoxStyle.CENTER</code> (buttons are centered in the box).</p></item>
       <item><p><code>set_child_secondary(button, is_secondary)</code> sets whether <code>button</code> should appear in a secondary group of children. A typical use of a secondary child is the help button in a dialog. This group appears after the other children if the style is <code>START</code>, <code>SPREAD</code> or <code>EDGE</code>, and before the other children if the style is <code>END</code>. If the style is <code>START</code> or <code>END</code>, then the secondary children are aligned at the other end of the button box from the main children. For the other styles, they appear immediately next to the main children.</p></item>
-      <item><p><code>set_child_non_homogeneous(button, is_non_homogeneous)</code> sets whether the child is exempted from homogeneous sizing. Default value is <code>False</code>.</p></item>
+      <item><p><code>set_child_non_homogeneous(button, is_non_homogeneous)</code> sets whether the child is exempted from homogeous sizing. Default value is <code>False</code>.</p></item>
       <item><p><code>set_spacing(spacing)</code> sets the spacing, in pixels, between the buttons of the box.</p></item>
     </list>
   </section>

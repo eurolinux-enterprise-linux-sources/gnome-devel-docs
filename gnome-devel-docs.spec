@@ -1,18 +1,21 @@
-Name: gnome-devel-docs
-Version: 3.28.0
-Release: 1%{?dist}
 Summary: GNOME developer documentation
-
-# accessibility-devel-guide and optimization-guide are under the GFDL, other
-# documents are under CC-BY-SA.
-License: GFDL and CC-BY-SA
-URL: https://developer.gnome.org
-Source0: https://download.gnome.org/sources/%{name}/3.28/%{name}-%{version}.tar.xz
-
+Name: gnome-devel-docs
+Version: 3.8.1
+Release: 1%{?dist}
+License: GFDL
+Group: System Environment/Libraries
+URL: http://library.gnome.org
+#VCS: git:git://git.gnome.org/gnome-devel-docs
+Source: http://download.gnome.org/sources/gnome-devel-docs/3.8/%{name}-%{version}.tar.xz
 BuildArch: noarch
 BuildRequires: docbook-utils
 BuildRequires: gettext
 BuildRequires: itstool
+
+# Logomarks should be removed and replaced with text
+# https://bugzilla.redhat.com/show_bug.cgi?id=814220
+Patch0: gnome-devel-docs-3.7.90-logos-removal.patch
+BuildRequires: automake autoconf
 BuildRequires: yelp-tools
 
 %description
@@ -22,37 +25,30 @@ and the Platform Overview.
 
 %prep
 %setup -q
+%patch0 -p1 -b .logos-removal
+rm -f platform-demos/media/fedora.png
+rm -f platform-demos/media/opensuse.png
+rm -f platform-demos/media/ubuntu.png
 
 %build
+aclocal  || :
+autoheader  || :
+automake  || :
+autoconf  || :
+
 %configure
 make %{?_smp_mflags}
 
 %install
-%make_install
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %find_lang %{name} --all-name --with-gnome
 
 
 %files -f %{name}.lang
-%doc README AUTHORS NEWS
-%license COPYING COPYING.GFDL
+%doc README AUTHORS NEWS COPYING
 
 %changelog
-* Mon Mar 12 2018 Kalev Lember <klember@redhat.com> - 3.28.0-1
-- Update to 3.28.0
-- Resolves: #1569728
-
-* Wed Mar 15 2017 Kalev Lember <klember@redhat.com> - 3.22.1-1
-- Update to 3.22.1
-- Resolves: #1386888
-
-* Sun Jan 25 2015 David King <amigadave@amigadave.com> - 3.14.4-1
-- Update to 3.14.4
-- Resolves: #1174427
-
-* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 3.8.1-2
-- Mass rebuild 2013-12-27
-
 * Tue May 14 2013 Matthias Clasen <mclasen@redhat.com> - 3.8.1-1
 - Update to 3.8.1
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.c" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="statusbar.c" xml:lang="fr">
   <info>
     <title type="text">Statusbar (C)</title>
-    <link type="guide" xref="c#buttons"/>
+    <link type="guide" xref="beginner.c#buttons"/>
     <link type="seealso" xref="grid.c"/>
     <link type="seealso" xref="button.c"/>
 
@@ -11,47 +11,17 @@
 
     <credit type="author copyright">
       <name>Monica Kochofar</name>
-      <email its:translate="no">monicakochofar@gmail.com</email>
+      <email>monicakochofar@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Rapporte les messages d'information d'importance mineure pour l'utilisateur</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Barre de statut</title>
+  <title>Statusbar</title>
 
   <media type="image" mime="image/png" src="media/statusbar3.png"/>
-  <p>Cette barre de statut sert à démontrer comment les messages sont empilés dans l'ordre « le dernier au-dessus ». Le message au sommet de la pile est toujours celui qui est affiché.</p>
+  <p>This statusbar is used to demonstrate how messages are stacked in a last-in-first-out order. The message at the top of the stack is always the one displayed.</p>
 
       <code mime="text/x-csrc" style="numbered">
 #include &lt;gtk/gtk.h&gt;
@@ -76,7 +46,7 @@ push_item (GtkWidget *widget,
   char hold_output[20];
   
   /*This is a safer form of the standard sprintf () function. The output is 
-  guaranteed in this case to not exceed 20 characters, and the result is stored
+  gauranteed in this case to not exceed 20 characters, and the result is stored 
   into the 'hold_output' variable*/
   g_snprintf (hold_output, 20, "Item %d", count++);
   gtk_statusbar_push (GTK_STATUSBAR (status_bar), 
@@ -160,7 +130,7 @@ main (int argc, char **argv)
 <list>
   <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkApplication.html">GtkApplication</link></p></item>
   <item><p><link href="http://developer.gnome.org/gtk3/3.4/GtkWindow.html">GtkWindow</link></p></item>
-  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkStatusbar.html">GtkStatusBar</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkStatusbar.htmll">GtkStatusBar</link></p></item>
   <item><p><link href="http://developer.gnome.org/glib/stable/glib-String-Utility-Functions.html#g-snprintf">String Utility Functions</link></p></item>
   <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkGrid.html">GtkGrid</link></p></item>
 </list>

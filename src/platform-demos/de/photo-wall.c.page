@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="photo-wall.c" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="photo-wall.c" xml:lang="de">
   <info>
-    <title type="text">Fotowand (C)</title>
+    <title type="text">Photo wall (C)</title>
     <link type="guide" xref="c#examples"/>
 
     <desc>Ein Clutter-Bildbetrachter</desc>
@@ -9,15 +9,15 @@
     <revision pkgversion="0.1" version="0.1" date="2011-03-22" status="review"/>
     <credit type="author">
       <name>Chris Kühl</name>
-      <email its:translate="no">chrisk@openismus.com</email>
+      <email>chrisk@openismus.com</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
   
@@ -28,7 +28,7 @@
     </mal:credit>
   </info>
 
-<title>Fotowand</title>
+<title>Photo wall</title>
 
 <synopsis>
   <p>For this example we will build a simple image viewer using Clutter. You will learn:</p>
@@ -44,7 +44,7 @@
 <section id="intro">
   <title>Einführung</title>
   <p>
-    Clutter is a library for creating dynamic user interfaces using OpenGL for hardware acceleration. This example demonstrates a small, but central, part of the Clutter library to create a simple but attractive image viewing program.
+    Clutter is a library for creating dynamic user interfaces using OpenGL for hardware acceleration. This example demonstates a small, but central, part of the Clutter library to create a simple but attractive image viewing program.
   </p>
   <p>
     To help us reach our goal we will be utilising a few other common pieces of GLib as well. Most importantly, we'll use one <code>GPtrArray</code>, a dynamic array of pointers, to hold the file path names. We will also use <code>GDir</code>, a utility for working with directories, to access our image directory and gather file paths.
@@ -52,7 +52,7 @@
 </section>
 
 <section id="anjuta">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
   <p>Before you start coding, you'll need to set up a new project in Anjuta. This will create all of the files you need to build and run the code later on. It's also useful for keeping everything together.</p>
   <steps>
     <item>
@@ -72,9 +72,9 @@
     </item>
     <item>
     <p>Click <gui>Apply</gui> and the project will be created for you. Open <file>src/main.c</file> from the <gui>Project</gui> or <gui>File</gui> tabs. You should see some code which starts with the lines:</p>
-    <code mime="text/x-csrc">
-#include &lt;config.h&gt;
-#include &lt;gtk/gtk.h&gt;</code>
+    <code mime="text/x-csrc"><![CDATA[
+#include <config.h>
+#include <gtk/gtk.h>]]></code>
     </item>
   </steps>
 </section>
@@ -91,13 +91,13 @@
 </section>
 
 <section id="setup">
-  <title>Ersteinrichtung</title>
+  <title>Initial setup</title>
   <p>
     The following code segment contains many of the defines and variables we will be using in the following sections. Use this as a reference for later sections. Copy this code to the beginning of <file>src/main.c</file>:
   </p>
-<code mime="text/x-csrc" style="numbered">
-#include &lt;gdk-pixbuf/gdk-pixbuf.h&gt;
-#include &lt;clutter/clutter.h&gt;
+<code mime="text/x-csrc" style="numbered"><![CDATA[
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <clutter/clutter.h>
 
 #define STAGE_WIDTH  800
 #define STAGE_HEIGHT 600
@@ -114,7 +114,7 @@
 static GPtrArray *img_paths;
 
 static ClutterPoint unfocused_pos;
-
+]]>
 </code>
 </section>
 
@@ -123,19 +123,19 @@ static ClutterPoint unfocused_pos;
   <p>We will start by taking a look at the <code>main()</code> function as a whole. Then we'll discuss the other code sections in detail.
   Change the <file>src/main.c</file> to contain this <code>main()</code> function. You can delete the
   <code>create_window()</code> function as we don't need it in this example.</p>
-  <code mime="text/x-csrc" style="numbered">
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
 int
 main(int argc, char *argv[])
 {
     ClutterColor stage_color = { 16, 16, 16, 255 };
     ClutterActor *stage = NULL;
 
-    if (clutter_init (&amp;argc, &amp;argv) != CLUTTER_INIT_SUCCESS)
+    if (clutter_init (&argc, &argv) != CLUTTER_INIT_SUCCESS)
         return 1;
 
     stage = clutter_stage_new();
     clutter_actor_set_size(stage, STAGE_WIDTH, STAGE_HEIGHT);
-    clutter_actor_set_background_color(stage, &amp;stage_color);
+    clutter_actor_set_background_color(stage, &stage_color);
     clutter_stage_set_title(CLUTTER_STAGE (stage), "Photo Wall");
     g_signal_connect(stage, "destroy", G_CALLBACK(clutter_main_quit), NULL);
 
@@ -143,9 +143,9 @@ main(int argc, char *argv[])
 
     guint row = 0;
     guint col = 0;
-    for(row=0; row &lt; ROW_COUNT; ++row)
+    for(row=0; row < ROW_COUNT; ++row)
     {
-        for(col=0; col &lt; COL_COUNT; ++col)
+        for(col=0; col < COL_COUNT; ++col)
         {
             const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col);
             GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL);
@@ -183,7 +183,7 @@ main(int argc, char *argv[])
     g_ptr_array_unref(img_paths);
 
     return 0;
-}</code>
+}]]></code>
   <list>
     <item><p>Line 4: <code>ClutterColor</code> is defined by setting the red, green, blue and transparency (alpha) values. The values range from 0-255. For transparency a value of 255 is opaque.</p></item>
     <item><p>Line 7: You must initialize Clutter. If you forget to do this, you will get very strange errors. Be warned.</p></item>
@@ -203,12 +203,12 @@ main(int argc, char *argv[])
 <p>
 In this section, we are going to take a closer look at the loop used for setting up the <code>ClutterActor</code>s that will display our images.
 </p>
-  <code mime="text/x-csrc" style="numbered">
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
 guint row = 0;
 guint col = 0;
-for(row=0; row &lt; ROW_COUNT; ++row)
+for(row=0; row < ROW_COUNT; ++row)
 {
-    for(col=0; col &lt; COL_COUNT; ++col)
+    for(col=0; col < COL_COUNT; ++col)
     {
         const char *img_path = g_ptr_array_index(img_paths, (row * COL_COUNT) + col);
         GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(img_path, STAGE_HEIGHT, STAGE_HEIGHT, NULL);
@@ -236,7 +236,7 @@ for(row=0; row &lt; ROW_COUNT; ++row)
         clutter_actor_add_child(stage, actor);
     }
 }
-
+]]>
 </code>
 <list>
   <item><p>Line 7: Here we want to get the path at the <var>n</var>th location in the <code>GPtrArray</code> that is holding our image path names. The <var>n</var>th position is calculated based on <code>row</code> and <code>col</code>.</p>
@@ -251,17 +251,17 @@ for(row=0; row &lt; ROW_COUNT; ++row)
 <section id="load">
   <title>Laden der Bilder</title>
   <p>Let's take a short break from Clutter to see how we can get the file names from our image directory.</p>
-  <code mime="text/x-csrc" style="numbered">
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
 static void
 load_image_path_names()
 {
     /* Ensure we can access the directory. */
     GError *error = NULL;
-    GDir *dir = g_dir_open(IMAGE_DIR_PATH, 0, &amp;error);
+    GDir *dir = g_dir_open(IMAGE_DIR_PATH, 0, &error);
     if(error)
     {
-        g_warning("g_dir_open() failed with error: %s\n", error-&gt;message);
-        g_clear_error(&amp;error);
+        g_warning("g_dir_open() failed with error: %s\n", error->message);
+        g_clear_error(&error);
         return;
     }
 
@@ -277,9 +277,9 @@ load_image_path_names()
         }
         filename = g_dir_read_name(dir);
     }
-}</code>
+}]]></code>
   <list>
-    <item><p>Lines 5 and 12: This opens our directory or, if an error occurred, returns after printing an error message.</p></item>
+    <item><p>Lines 5 and 12: This opens our directory or, if an error occured, returns after printing an error message.</p></item>
     <item><p>Lines 16‒25: The first line gets another file name from the <code>GDir</code> we opened earlier. If there was an image file (which we check by looking at its extension, ".png" or ".jpg") in the directory we proceed to prepend the image directory path to the filename and prepend that to the list we set up earlier. Lastly we attempt to get the next path name and reenter the loop if another file was found.</p></item>
   </list>
 </section>
@@ -289,7 +289,7 @@ load_image_path_names()
   <p>
      We now take a look at the sizing and  positioning of <code>ClutterActor</code>s and also readying the <code>ClutterActor</code> for user interaction.
   </p>
-  <code mime="text/x-csrc" style="numbered">
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
 /* This function handles setting up and placing the rectangles. */
 static void
 initialize_actor(ClutterActor *actor, guint row, guint col)
@@ -302,7 +302,7 @@ initialize_actor(ClutterActor *actor, guint row, guint col)
                      "button-press-event",
                      G_CALLBACK(actor_clicked_cb),
                      NULL);
-}</code>
+}]]></code>
   <list>
     <item>
       <p>Line 7: Setting an actor reactive means that it reacts to events, such as <code>button-press-event</code> in our case. For Photo Wall, all <code>ClutterActor</code>s in the wall should initially be reactive.</p>
@@ -319,7 +319,7 @@ initialize_actor(ClutterActor *actor, guint row, guint col)
   <p>
 
   </p>
-  <code mime="text/x-csrc" style="numbered">
+  <code mime="text/x-csrc" style="numbered"><![CDATA[
 static gboolean
 actor_clicked_cb(ClutterActor *actor,
                  ClutterEvent *event,
@@ -331,8 +331,8 @@ actor_clicked_cb(ClutterActor *actor,
     ClutterActor *child;
 
     /* Reset the focus state on all the images */
-    clutter_actor_iter_init (&amp;iter, clutter_actor_get_parent(actor));
-    while (clutter_actor_iter_next(&amp;iter, &amp;child))
+    clutter_actor_iter_init (&iter, clutter_actor_get_parent(actor));
+    while (clutter_actor_iter_next(&iter, &child))
       clutter_actor_set_reactive(child, is_focused);
 
     clutter_actor_save_easing_state(actor);
@@ -347,7 +347,7 @@ actor_clicked_cb(ClutterActor *actor,
     else
     {
         /* Save the current location before animating. */
-        clutter_actor_get_position(actor, &amp;unfocused_pos.x, &amp;unfocused_pos.y);
+        clutter_actor_get_position(actor, &unfocused_pos.x, &unfocused_pos.y);
         /* Only the currently focused image should receive events. */
         clutter_actor_set_reactive(actor, TRUE);
 
@@ -364,7 +364,7 @@ actor_clicked_cb(ClutterActor *actor,
     is_focused = !is_focused;
 
     return TRUE;
-}</code>
+}]]></code>
   <list>
     <item><p>Lines 1‒4: We have to make sure our callback function matches the signature required for the <code>button_clicked_event</code> signal. For our example, we will only use the first argument, the <code>ClutterActor</code> that is actually clicked.</p>
 <note>

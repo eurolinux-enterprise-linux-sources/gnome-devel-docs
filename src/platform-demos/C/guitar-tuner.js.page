@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <page xmlns="http://projectmallard.org/1.0/"
-      xmlns:its="http://www.w3.org/2005/11/its"
       type="guide" style="task"
       id="guitar-tuner.js">
   <info>
@@ -10,7 +9,7 @@
 
     <credit type="author copyright">
       <name>Susanna Huhtanen</name>
-      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <email>ihmis.suski@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -106,8 +105,8 @@ var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5
 
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
 
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -116,12 +115,12 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () {
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
   });
 }]]></code>
-   <p>The first thing we need to do is decide what tunes we want to make when we push a button. The frequencies list takes care of that. After that we get to actually making the sounds with the function playSound. For function playSound we give as an input a frequency (that we just defined in the frequencies variable). First thing we need to construct is a pipeline, a source and a sink. For the source we set the frequency. To the pipeline we add both the source and the sink and then we tell it to keep playing. As a last thing we use the const Mainloop to get the pipeline to stop after a 500ms.</p>
-   <p>Now we have the method of playing a tune when clicking a button. Next well make the connections between pushing a button and playing the correct sound from that button.</p>
+   <p>The first thing we need to do is decide what tunes we want to make when we push a button. The frequencies list takes care of that. After that we get to actually making the sounds with the function playSound. For function playSound we give as an input a frequency (that we just defined in the frequencies variable). First thing we need to construct is a pipeline, a source and a sink. For the source we set the frequency. To the pipeline we add both the source and the sink and then we tell it to keep playing. As a last thing we use the const Mainloop to get the pipeline to pause after a 500ms.  </p>
+   <p>Now we have the method of playing a tune when clicking a button. Next well make the conncetions between pushing a button and playing the correct sound from that button.</p>
   </section>
   <section id="connecting">
    <title>Connecting buttons to playSound</title>
@@ -155,7 +154,7 @@ e.connect("clicked", function(){
   </section>
   <section id="guitarjs">
     <title>The whole program</title>
-    <p>So this is what all the parts combined looks like. When running this code, you should be able to tune your guitar (if you have correctly calibrated speakers).</p>
+    <p>So this is what all the parts combined looks like. When running this code, you should be able to tune your guitar(if you have correctly calibrated speakers).</p>
       <code mime="application/javascript" style="numbered"><![CDATA[
 #!/usr/bin/gjs
 var Gtk = imports.gi.Gtk;
@@ -185,8 +184,8 @@ var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
 
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
 
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -195,7 +194,7 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () {
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
 });
 }

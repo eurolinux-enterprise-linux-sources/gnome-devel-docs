@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox.js" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox.js" xml:lang="el">
   <info>
   <title type="text">ComboBox (JavaScript)</title>
     <link type="guide" xref="beginner.js#menu-combo-toolbar"/>
@@ -11,86 +11,68 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
     <desc>Ένα προσαρμόσιμο πτυσσόμενο μενού</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
   <title>ComboBox</title>
   <media type="image" mime="image/png" src="media/combobox_multicolumn.png"/>
-  <p>Ένα ComboBox είναι ένα άκρως προσαρμόσιμο πτυσσόμενο μενού. Κρατά το ισοδύναμο ενός γραφικού στοιχείου <link xref="treeview_simple_liststore.js">TreeView</link> που εμφανίζεται όταν το πατάτε πάνω του, πλήρες με μια αποθήκη λιστών (ListStore) (βασικά ένα υπολογιστικό φύλλο) που λέει τι είναι στις γραμμές και στις στήλες. Σε αυτό το παράδειγμα, η αποθήκη λιστών μας έχει το όνομα κάθε επιλογής σε μια στήλη και το όνομα ενός εικονιδίου παρακαταθήκης στην άλλη, που το σύνθετο πλαίσιο έπειτα μετατρέπει σε ένα εικονίδιο για κάθε επιλογή.</p>
+  <p>Ένα ComboBox είναι ένα άκρως προσαρμόσιμο πτυσσόμενο μενού. Κρατά το ισοδύναμο ενός γραφικού συστατικού <link xref="treeview_simple_liststore.js">TreeView</link> που εμφανίζεται όταν το πατάτε πάνω του, πλήρες με μια ListStore (βασικά ένα υπολογιστικό φύλλο) που λέει τι είναι στις γραμμές και στις στήλες. Σε αυτό το παράδειγμα, η ListStore μας έχει το όνομα κάθε επιλογής σε μια στήλη και το όνομα ενός εικονιδίου παρακαταθήκης στην άλλη, που το ComboBox έπειτα μετατρέπει σε ένα εικονίδιο για κάθε επιλογή.</p>
   <p>Επιλέγετε μια πλήρως οριζόντια γραμμή τη φορά, έτσι τα εικονίδια δεν συμπεριφέρονται ως ξεχωριστές επιλογές. Αυτές και το κείμενο δίπλα τους κατασκευάζουν κάθε επιλογή που μπορείτε να πατήσετε.</p>
-  <note style="tip"><p>Η εργασία με μια αποθήκη λιστών μπορεί να είναι χρονοβόρα. Εάν θέλετε μόνο ένα απλό πτυσσόμενο μενού μόνο για κείμενο, ρίξτε μια ματιά στο <link xref="comboboxtext.js">ComboBoxText</link>. Δεν παίρνει πολύ χρόνο για εγκατάσταση και δουλεύετε πιο εύκολα.</p></note>
+  <note style="tip"><p>Η εργασία με μια ListStore μπορεί να είναι χρονοβόρα. Εάν θέλετε μόνο ένα απλό πτυσσόμενο μενού μόνο για κείμενο, ρίξτε μια ματιά στο <link xref="comboboxtext.js">ComboBoxText</link>. Δεν παίρνει πολύ χρόνο για εγκατάσταση και δουλεύετε πιο εύκολα.</p></note>
     <links type="section"/>
 
   <section id="imports">
     <title>Βιβλιοθήκες για εισαγωγή</title>
-    <code mime="application/javascript"><![CDATA[
+    <code mime="application/javascript">
 #!/usr/bin/gjs
-
-imports.gi.versions.Gtk = '3.0';
 
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-]]></code>
+const Lang = imports.lang;
+</code>
     <p>Αυτές είναι οι βιβλιοθήκες που χρειαζόμαστε να εισάγουμε αυτήν την εφαρμογή για να εκτελεστεί. Να θυμόσαστε ότι η γραμμή που λέει στο GNOME ότι χρησιμοποιούμε Gjs χρειάζεται πάντοτε να πάει στην αρχή.</p>
   </section>
 
   <section id="applicationwindow">
     <title>Δημιουργία του παραθύρου εφαρμογής</title>
-    <code mime="application/javascript"><![CDATA[
-class ComboBoxExample {
+    <code mime="application/javascript">
+const ComboBoxExample = new Lang.Class ({
+    Name: 'ComboBox Example',
 
     // Create the application itself
-    constructor() {
+    _init: function () {
         this.application = new Gtk.Application ({
             application_id: 'org.example.jscombobox'});
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate() {
+    _onActivate: function () {
         this._window.present ();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
+    _onStartup: function () {
         this._buildUI ();
-    }
-]]></code>
-    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση ComboBoxExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
-    <code mime="application/javascript"><![CDATA[
+    },
+</code>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση ComboBoxExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά συστατικά μας και τα παράθυρα.</p>
+    <code mime="application/javascript">
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function () {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow  ({
@@ -99,12 +81,12 @@ class ComboBoxExample {
             title: "Welcome to GNOME",
             default_width: 200,
             border_width: 10 });
-]]></code>
-    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+</code>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά συστατικά μας.</p>
   </section>
 
   <section id="liststore">
-    <title>Δημιουργία της αποθήκης λιστών (ListStore)</title>
+    <title>Δημιουργία της ListStore</title>
     <code mime="application/javascript">
         // Create the liststore to put our options in
         this._listStore = new Gtk.ListStore();
@@ -112,7 +94,7 @@ class ComboBoxExample {
             GObject.TYPE_STRING,
             GObject.TYPE_STRING]);
 </code>
-    <p>Αυτή η αποθήκη λιστών (ListStore) δουλεύει όπως αυτή που χρησιμοποιήθηκε στο παράδειγμα <link xref="treeview_simple_liststore.js">TreeView</link>. Του δίνουμε δύο στήλες, αμφότερες συμβολοσειρές, επειδή η μια τους θα περιέχει τα ονόματα των <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html">εικονιδίων παρακαταθήκης Gtk</link>.</p>
+    <p>Αυτή η ListStore δουλεύει όπως αυτή που χρησιμοποιήθηκε στο παράδειγμα <link xref="treeview_simple_liststore.js">TreeView</link>. Του δίνουμε δύο στήλες, αμφότερες συμβολοσειρές, επειδή η μια τους θα περιέχει τα ονόματα των <link href="http://developer.gnome.org/gtk/2.24/gtk-Stock-Items.html#GTK-STOCK-ABOUT:CAPS">εικονιδίων παρακαταθήκης Gtk</link>.</p>
     <p>Εάν θα θέλαμε να χρησιμοποιήσουμε τα δικά μας εικονίδια που δεν ήταν ήδη ενσωματωμένα στο GNOME, θα χρειαζόμασταν να χρησιμοποιήσουμε τον τύπο <file>gtk.gdk.Pixbuf</file>. Να μερικοί άλλοι τύποι που μπορείτε να χρησιμοποιήσετε:</p>
     <list>
       <item><p><file>GObject.TYPE_BOOLEAN</file> -- αληθές ή ψευδές</p></item>
@@ -137,7 +119,7 @@ class ComboBoxExample {
                 this._listStore.set (iter, [1], [option.icon]);
         }
 </code>
-    <p>Εδώ δημιουργούμε έναν πίνακα των επιλογών κειμένου και τα αντίστοιχα τους εικονίδια, έπειτα τα βάζουμε στην αποθήκη λιστών (ListStore) με τον ίδιο χοντρικά τρόπο που θα κάναμε για μία αποθήκη λιστών <link xref="treeview_simple_liststore.js">της προβολής δένδρου</link>. Θέλουμε μόνο να βάλουμε ένα εικονίδιο εάν υπάρχει πράγματι ένα εικονίδιο στον πίνακα επιλογών, έτσι βεβαιωνόμαστε για να ελεγχθεί αυτό πρώτο.</p>
+    <p>Εδώ δημιουργούμε έναν πίνακα των επιλογών κειμένου και τα αντίστοιχα τους εικονίδια, έπειτα τα βάζουμε στη ListStore με τον ίδιο χοντρικά τρόπο που θα κάναμε για μία ListStore <link xref="treeview_simple_liststore.js">της TreeView</link>. Θέλουμε μόνο να βάλουμε ένα εικονίδιο εάν υπάρχει πράγματι ένα εικονίδιο στον πίνακα επιλογών, έτσι βεβαιωνόμαστε για να ελεγχθεί αυτό πρώτο.</p>
     <note style="tip"><p>Η "Select" δεν είναι πραγματικά μια επιλογή όσο μια πρόσκληση να πατήσουμε στο ComboBox μας, έτσι δεν χρειάζεται ένα εικονίδιο.</p></note>
   </section>
 
@@ -148,7 +130,7 @@ class ComboBoxExample {
         this._comboBox = new Gtk.ComboBox({
             model: this._listStore});
 </code>
-    <p>Κάθε σύνθετο πλαίσιο έχει ένα υποκείμενο "model" από όπου παίρνει όλες τις επιλογές του. Μπορείτε να χρησιμοποιήσετε μια αποθήκη δένδρου εάν θέλετε να έχετε ένα σύνθετο πλαίσιο με επιλογές διακλάδωσης. Σε αυτήν την περίπτωση, χρησιμοποιούμε απλά τη αποθήκη λιστών που ήδη δημιουργήσαμε.</p>
+    <p>Κάθε ComboBox έχει ένα υποκείμενο "model" από όπου παίρνει όλες τις επιλογές του. Μπορείτε να χρησιμοποιήσετε μια TreeStore εάν θέλετε να έχετε ένα ComboBox με επιλογές διακλάδωσης. Σε αυτήν την περίπτωση, χρησιμοποιούμε απλά τη ListStore που ήδη δημιουργήσαμε.</p>
     <code mime="application/javascript">
         // Create some cellrenderers for the items in each column
         let rendererPixbuf = new Gtk.CellRendererPixbuf();
@@ -162,44 +144,44 @@ class ComboBoxExample {
         this._comboBox.add_attribute (rendererText, "text", 0);
         this._comboBox.add_attribute (rendererPixbuf, "stock_id", 1);
 </code>
-    <p>Αυτό το μέρος, πάλι, δουλεύει παρόμοια με τη δημιουργία απεικονιστών κελιών (CellRenderers) και πακετάρισμα τους στις στήλες μιας <link xref="treeview_simple_liststore.js">TreeView</link>. Η μεγαλύτερη διαφορά είναι ότι δεν χρειαζόμαστε να δημιουργήσουμε τις στήλες του σύνθετου πλαισίου (ComboBox) ως ξεχωριστά αντικείμενα. Απλά πακετάρουμε τους απεικονιστές κελιών σε αυτό με τη σειρά που τα θέλουμε να εμφανιστούν, έπειτα τους λέμε να πάρουν πληροφορίες από τη αποθήκη λιστών (ListStore) (και τι τύπο πληροφορίας θέλουμε να τους περιμένει).</p>
-    <p>Χρησιμοποιούμε ένα κείμενο απεικονιστή κελιού (CellRendererText) για να εμφανίσουμε το κείμενο και έναν απεικονιστή κελιού Pixbuf (CellRendererPixbuf) για να προβάλουμε τα εικονίδια. Μπορούμε να αποθηκεύσουμε τα ονόματα τύπων παρακαταθήκης των εικονιδίων ως συμβολοσειρές, αλλά όταν τα εμφανίζουμε χρειαζόμαστε έναν απεικονιστή κελιού (CellRenderer) που σχεδιάστηκε για εικόνες.</p>
-    <note style="tip"><p>Ακριβώς όπως με μια προβολή δένδρου (TreeView), το "model" (σε αυτήν την περίπτωση μια αποθήκη λιστών (ListStore)) και η "view" (σε αυτήν την περίπτωση το σύνθετο πλαίσιο (ComboBox) μας) είναι ξεχωριστά. Λόγω αυτού, μπορούμε να κάνουμε πράγματα όπως να έχουμε τις στήλες σε μια σειρά στην αποθήκη λιστών και έπειτα πακετάρουμε τους απεικονιστές κελιών (CellRenderers) που αντιστοιχούν σε αυτές τις στήλες στο σύνθετο πλαίσιο με διαφορετική σειρά. Μπορούμε ακόμα να δημιουργήσουμε μια προβολή δένδρου ή άλλο γραφικό στοιχείο που εμφανίζει την πληροφορία στην αποθήκη λίστας με διαφορετικό τρόπο, χωρίς αυτό να επηρεάζει το σύνθετο πλαίσιο.</p></note>
+    <p>Αυτό το μέρος, πάλι, δουλεύει παρόμοια με τη δημιουργία CellRenderers και πακετάρισμα τους στις στήλες μιας <link xref="treeview_simple_liststore.js">TreeView</link>. Η μεγαλύτερη διαφορά είναι ότι δεν χρειαζόμαστε να δημιουργήσουμε τις στήλες του ComboBox ως ξεχωριστά αντικείμενα. Απλά πακετάρουμε τους CellRenderers σε αυτό με τη σειρά που τα θέλουμε να εμφανιστούν, έπειτα τους λέμε να πάρουν πληροφορίες από τη ListStore (και τι τύπο πληροφορίας θέλουμε να τους περιμένει).</p>
+    <p>Χρησιμοποιούμε ένα CellRendererText για να εμφανίσουμε το κείμενο και ένα CellRendererPixbuf για να προβάλουμε τα εικονίδια. Μπορούμε να αποθηκεύσουμε τα ονόματα τύπων παρακαταθήκης των εικονιδίων ως συμβολοσειρές, αλλά όταν τα εμφανίζουμε χρειαζόμαστε έναν CellRenderer που σχεδιάστηκε για εικόνες.</p>
+    <note style="tip"><p>Ακριβώς όπως με μια TreeView, το "model" (σε αυτήν την περίπτωση μια ListStore) και η "view" (σε αυτήν την περίπτωση το ComboBox μας) είναι ξεχωριστά. Λόγω αυτού, μπορούμε να κάνουμε πράγματα όπως να έχουμε τις στήλες σε μια σειρά στη ListStore και έπειτα πακετάρουμε τους CellRenderers που αντιστοιχούν σε αυτές τις στήλες στο ComboBox με διαφορετική σειρά. Μπορούμε ακόμα να δημιουργήσουμε μια TreeView ή άλλο γραφικό συστατικό που εμφανίζει την πληροφορία στη ListStore με διαφορετικό τρόπο, χωρίς αυτό να επηρεάζει το ComboBox.</p></note>
 
-    <code mime="application/javascript"><![CDATA[
+    <code mime="application/javascript">
         // Set the first row in the combobox to be active on startup
         this._comboBox.set_active (0);
 
         // Connect the combobox's 'changed' signal to our callback function
-        this._comboBox.connect ('changed', this._onComboChanged.bind(this));
-]]></code>
+        this._comboBox.connect ('changed', Lang.bind (this, this._onComboChanged));
+</code>
     <p>Θέλουμε το κείμενο "Select" να είναι το τμήμα που βλέπεται πρώτα, αυτό που τα δέχεται στο πάτημα του ComboBox. Έτσι το ορίζουμε να είναι η ενεργή καταχώριση. Επίσης συνδέουμε το σήμα <file>changed</file> του ComboBox σε μια συνάρτηση επανάκλησης, έτσι ώστε οποτεδήποτε κάποιος πατά σε μια νέα επιλογή κάτι να συμβαίνει. Σε αυτήν την περίπτωση, πρόκειται απλά να εμφανίσουμε ένα αναδυόμενο με ένα μικρό ποίημα.</p>
 
-    <code mime="application/javascript"><![CDATA[
+    <code mime="application/javascript">
         // Add the combobox to the window
         this._window.add (this._comboBox);
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
-]]></code>
+    },
+</code>
     <p>Τελικά, προσθέτουμε το ComboBox στο παράθυρο, έπειτα λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και όλα μέσα του.</p>
   </section>
 
   <section id="function">
     <title>Η συνάρτηση που χειρίζεται την επιλογή σας</title>
-    <code mime="application/javascript"><![CDATA[
-    _selected() {
+    <code mime="application/javascript">
+    _selected: function () {
 
         // The silly pseudohaiku that we'll use for our messagedialog
         let haiku = ["",
             "You ask for the new\nwith no thought for the aged\nlike fallen leaves trod.",
             "Like a simple clam\nrevealing a lustrous pearl\nit opens for you.",
             "A moment in time\na memory on the breeze\nthese things can't be saved."];
-]]></code>
-    <p>Πρόκειται να δημιουργήσουμε ένα αναδυόμενο <link xref="messagedialog.js">MessageDialog</link>, που σας εμφανίζει ένα χαζό ποίημα με βάση ποια διανομή επιλέγετε. Πρώτα, δημιουργούμε τον πίνακα του ποιήματος για χρήση. Αφού η πρώτη συμβολοσειρά στο ComboBox μας είναι μόνο το μήνυμα "Select", κάνουμε την πρώτη συμβολοσειρά στον πίνακά μας κενή.</p>
+</code>
+    <p>Πρόκειται να δημιουργήσουμε ένα αναδυόμενο <link xref="messagedialog.js">MessageDialog</link>, που σας εμφανίζει ένα ανόητο ποίημα με βάση ποια διανομή επιλέγετε. Πρώτα, δημιουργούμε τον πίνακα του ποιήματος για χρήση. Αφού η πρώτη συμβολοσειρά στο ComboBox μας είναι μόνο το μήνυμα "Select", κάνουμε την πρώτη συμβολοσειρά στον πίνακά μας κενή.</p>
 
-    <code mime="application/javascript"><![CDATA[
+    <code mime="application/javascript">
         // Which combobox item is active?
         let activeItem = this._comboBox.get_active();
 
@@ -213,27 +195,27 @@ class ComboBoxExample {
                 text: haiku[activeItem]});
 
             // Connect the OK button to a handler function
-            this._popUp.connect ('response', this._onDialogResponse.bind(this));
+            this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
 
             // Show the messagedialog
             this._popUp.show();
         }
 
-    }
-]]></code>
+    },
+</code>
     <p>Πριν την προβολή ενός MessageDialog, δοκιμάζουμε πρώτα για να βεβαιωθούμε ότι δεν επιλέξατε το μήνυμα "Select". Μετά από αυτό, ορίζουμε το κείμενο του να είναι στο ποίημα στον πίνακα που αντιστοιχεί στην ενεργή καταχώριση στο ComboBoxText μας. Το κάνουμε χρησιμοποιώντας τη μέθοδο <file>get_active</file>, που επιστρέφει τον αριθμό ταυτότητας της επιλογής σας.</p>
     <note style="tip"><p>Άλλες μέθοδοι που μπορείτε να χρησιμοποιήσετε περιλαμβάνουν <file>get_active_id,</file> που επιστρέφει το αναγνωριστικό κειμένου που αποδόθηκε από <file>append</file> και <file>get_active_text,</file> που επιστρέφει το πλήρες κείμενο της επιλεγμένης συμβολοσειράς.</p></note>
     <p>Μετά τη δημιουργία του MessageDialog, συνδέουμε το σήμα της απάντησής του στη συνάρτηση _onDialogResponse, έπειτα του λέμε να εμφανίσει τον εαυτόν του.</p>
 
-    <code mime="application/javascript"><![CDATA[
-    _onDialogResponse() {
+    <code mime="application/javascript">
+    _onDialogResponse: function () {
 
         this._popUp.destroy ();
 
     }
 
-};
-]]></code>
+});
+</code>
     <p>Αφού το μόνο κουμπί που ο MessageDialog έχει είναι ένα κουμπί εντάξει, δεν χρειαζόμαστε να ελέγξουμε το response_id του για να δούμε ποιο κουμπί πατήθηκε. Αυτό που κάνουμε εδώ είναι η καταστροφή του αναδυόμενου.</p>
 
     <code mime="application/javascript">
@@ -248,35 +230,37 @@ app.application.run (ARGV);
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
-
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class ComboBoxExample {
+const ComboBoxExample = new Lang.Class ({
+    Name: 'ComboBox Example',
 
     // Create the application itself
-    constructor() {
+    _init: function () {
         this.application = new Gtk.Application ({
             application_id: 'org.example.jscombobox'});
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate() {
+    _onActivate: function () {
         this._window.present ();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function () {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow  ({
@@ -327,16 +311,18 @@ class ComboBoxExample {
         this._comboBox.set_active (0);
 
         // Connect the combobox's 'changed' signal to our callback function
-        this._comboBox.connect ('changed', this._onComboChanged.bind(this));
+        this._comboBox.connect ('changed', Lang.bind (this, this._onComboChanged));
 
         // Add the combobox to the window
         this._window.add (this._comboBox);
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _onComboChanged() {
+
+
+    _onComboChanged: function () {
 
         // The silly pseudohaiku that we'll use for our messagedialog
         let haiku = ["",
@@ -357,21 +343,23 @@ class ComboBoxExample {
                 text: haiku[activeItem]});
 
             // Connect the OK button to a handler function
-            this._popUp.connect ('response', this._onDialogResponse.bind(this));
+            this._popUp.connect ('response', Lang.bind (this, this._onDialogResponse));
 
             // Show the messagedialog
             this._popUp.show();
         }
 
-    }
+    },
 
-    _onDialogResponse() {
+
+
+    _onDialogResponse: function () {
 
         this._popUp.destroy ();
 
     }
 
-};
+});
 
 // Run the application
 let app = new ComboBoxExample ();
@@ -386,7 +374,7 @@ app.application.run (ARGV);
   <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
   <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>
   <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererPixbuf.html">Gtk.CellRendererPixbuf</link></p></item>
-  <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererText.html">Gtk.CellRendererText</link></p></item>
+  <item><p><link href="www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.CellRendererText.html">Gtk.CellRendererText</link></p></item>
   <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ComboBox.html">Gtk.ComboBox</link></p></item>
   <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.ListStore.html">Gtk.ListStore</link></p></item>
   <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.MessageDialog.html">Gtk.MessageDialog</link></p></item>

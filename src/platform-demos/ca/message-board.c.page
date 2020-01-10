@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="message-board.c" xml:lang="ca">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="message-board.c" xml:lang="ca">
 
   <info>
     <title type="text">Message board (C)</title>
@@ -10,12 +10,12 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-06" status="draft"/>
     <credit type="author copyright">
       <name>Shaun McCance</name>
-      <email its:translate="no">shaunm@gnome.org</email>
+      <email>shaunm@gnome.org</email>
       <years>2010</years>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
   </info>
@@ -258,12 +258,23 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
   element in the document using CSS selectors. This keeps you from having to
   write tedious loops to traverse the document.</p>
 
+  <comment>
+    <cite>shaunm</cite>
+    <p>FIXME: Is this true? Does query_selector take CSS, CSSish, or what?</p>
+  </comment>
+
   <p>Next, you create a new <code>div</code> element to hold the message. Every
   element you create has to be attached to a document, so the function to create
   an element takes the <code>WebKitDOMDocument</code> as its first arguments.
   You then set the text content of the element to the contents of the text entry.
   Because <code>gtk_entry_get_text</code> returns a <code>const gchar*</code>,
   you don't have to free the result.</p>
+
+  <comment>
+    <cite>shaunm</cite>
+    <p>Not passing the GError**, but we should give it a quick mention and
+    link to somewhere that explains how GError-handling works.</p>
+  </comment>
 
   <p>Finally, you append the new <code>div</code> element to the body and
   clear out the text entry so you can type something new. Build and run the
@@ -311,6 +322,8 @@ static const guchar CSS[] =
   <p>To apply the CSS, you set the <code>user-stylesheet-uri</code> in the
   <code>create_window</code> function, anywhere after <code>view</code> has
   already been defined.</p>
+
+  <comment><cite>shaunm</cite><p>g_base64_encode has bad args</p></comment>
 
 <code><![CDATA[
 tmp = g_base64_encode (CSS, strlen((gchar *) CSS));
@@ -365,12 +378,17 @@ gchar *tmp, *css;
 
     <item><p>Right now, you lose all your messages whenever you close the
     message board. Try saving the HTML contents after each post, and loading
-    the saved file (if it exists) on startup.</p></item>
+    the saved file (if it exists) on startup.</p>
+    <comment>
+      <cite>shaunm</cite><p>Link to method to get HTML from DOM and to
+      GIO APIs.</p>
+    </comment></item>
 
     <item><p>If you keep your messages around for a long time, you'll start
     wondering when you posted them. Add a timestamp to each message when it's
     posted. You'll probably want to create some additional child <code>div</code>
     elements with different classes that you can style in the CSS.</p>
+    <comment><cite>shaunm</cite><p>Link to strftime or something</p></comment>
     </item>
 
     <item><p>This program keeps messages around forever. Think about ways

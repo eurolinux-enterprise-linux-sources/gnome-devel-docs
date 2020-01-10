@@ -203,7 +203,7 @@ hand-eye coordination (such as moving the mouse) can cause problems for these us
 The Accessibility Toolkit (ATK) describes a set of interfaces that need to be implemented by GUI components to make them accessible. The interfaces are toolkit-independent - implementations could be written for any widget set, such as GTK, Motif or Qt.
 </para>
 <para>
-The implementation for the GTK widgets is in a module called GAIL (GNOME Accessibility Implementation Library), which is dynamically loadable at runtime by a GTK application. Once
+The implementation for the GTK widgets is in a module called	GAIL (GNOME Accessbility Implementation Library), which is dynamically loadable at runtime by a GTK application. Once
 loaded, those parts of your application that use standard GTK widgets will have a basic level of accessibility, without you having to modify your application at all. If GAIL is not
 loaded, GTK widgets will have a default accessibility implementation that essentially returns no information, though it nominally conforms to the ATK API. Applications which use
 Bonobo controls, particularly out-of-process ones, also load accessibility support code from module libgail-gnome. Whether or not applications on the GNOME desktop automatically load these accessibility support libraries depends on the value of a <application>gconf</application> key, "/desktop/gnome/interface/accessibility"; a boolean value of "true" enables support for assistive technologies and applications which call gnome_program_init will automatically load the appropriate accessibility libraries at runtime. "Pure GTK+ applications", e.g. those that use gtk+ but do not link to libgnome, rely on the value of the GTK_MODULES environment variable, which must be set to "gail:atk-bridge" in order to enable assistive technology support.
@@ -232,7 +232,7 @@ A gtk+/GNOME widget is accessible if its use follows the general accessibility g
 trivially from existing GTK+ or GNOME widgets will also inherit suitable accessibility support.
 </para>
 <para>
-Though GNOME's built-in accessibility support provides significant functionality without any accessibility-specific code changes on the part of the application, applications can often improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application, via straightforward calls to ATK methods in the application. For instance, in most cases applications should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assistive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
+Though GNOME's built-in accessibility support provides significant functionality without any accessibility-specific code changes on the part of the application, applications can often improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application, via straightforward calls to ATK methods in the application. For instance, in most cases applications should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assisitive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
 </para>
 <para>
 If your application uses custom widgets, you may have to do some work to expose those widgets' properties to assistive technologies. See <link linkend="gad-custom">Making Custom Components Accessible</link> and <link linkend="gad-api-examples">Examples that Use the Accessibility API</link> for more information.
@@ -251,7 +251,7 @@ Here are some common starting points:
 <section id="dev-start-1">
 <title>How do I check to see if my application is accessible or not?</title>
 <para>
-To start right in, see <link linkend="gad-overview">Making a GNOME Application Accessible - Overview</link>. For a pre-coding perspective, see <link linkend="gad-ui-guidelines">User Interface Guidelines for Supporting Accessibility</link> or <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link>. For a checklist of post-design test items, see <link linkend="gad-checklist">User Interface Checklist</link>.
+To start right in, see <link linkend="gad-overview">Making a GNOME Application Accessible - Overview</link>. For a pre-codng perspective, see <link linkend="gad-ui-guidelines">User Interface Guidelines for Supporting Accessibility</link> or <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link>. For a checklist of post-design test items, see <link linkend="gad-checklist">User Interface Checklist</link>.
 </para>
 </section>
 
@@ -291,7 +291,7 @@ GNOME Accessibility Architecture
 </mediaobject>
 </screenshot>
 <para>
-ATK is the toolkit that GNOME uses to enable accessibility for users needing extra support to make the most of their computers. ATK is used by tools such as screen readers, magnifiers, and input devices to permit a rich interaction with the desktop through alternative means. See <ulink url="http://java-gnome.sourceforge.net/4.0/doc/api/org/gnome/atk/package-summary.html">the ATK SourceForge Project</ulink> and <ulink url="http://library.gnome.org/devel/atk/stable/">the ATK Library</ulink> for more information.
+ATK is the toolkit that GNOME uses to enable accessibility for users needing extra support to make the most of their computers. ATK is used by tools such as screen readers, magnifiers, and input devices to permit a rich interaction with the desktop through alternative means. See <ulink url="http://java-gnome.sourceforge.net/4.0/doc/api/org/gnome/atk/package-summary.html">the ATK SourceForge Project</ulink> and <ulink url="http://library.gnome.org/devel/atk/stable/atk.html">the ATK Library</ulink> for more information.
 </para>
 <para>
 AT-SPI is the primary service interface by which assistive technologies query and receive notifications from running applications. The full API can be explored <ulink url="http://library.gnome.org/devel/at-spi-cspi/stable/">here</ulink>. Additional material is available from <ulink url="http://accessibility.kde.org/developer/atk.php#coreclasses">the KDE Accessibility Development Community</ulink>.
@@ -303,7 +303,7 @@ GAIL (GNOME Accessibility Implementation Library) is an implementation of the ac
 GTK+ is a library for creating graphical user interfaces. It works on many UNIX-like platforms, Windows, and on framebuffer devices. GTK+ is released under the GNU Library General Public License (GNU LGPL), which allows for flexible licensing of client applications. GTK+ has a C-based object-oriented architecture that allows for maximum flexibility. Bindings for other languages have been written, including C++, Objective-C, Guile/Scheme, Perl, Python, TOM, Ada95, Free Pascal, and Eiffel.
 </para>
 <para>
-For additional, in-depth information regarding GTK/GTK+, see the <ulink url="http://library.gnome.org/devel/gtk">GTK+ Reference Manual</ulink>, <ulink url="http://wiki.gnome.org/Accessibility/Documentation/GNOME2/AtkGuide/Gtk">the GTK section of the ATK Guide</ulink>, the GNOME-hosted <ulink url="http://library.gnome.org/devel/gtk-tutorial/stable/">GTK+ 2.0 Tutorial</ulink> and the official <ulink url="http://library.gnome.org/devel/gtk-faq/stable/">GTK+ FAQ</ulink>.
+For additional, in-depth information regarding GTK/GTK+, see the <ulink url="http://library.gnome.org/devel/gtk">GTK+ Reference Manual</ulink>, <ulink url="http://live.gnome.org/GAP/AtkGuide/Gtk">the GTK section of the ATK Guide</ulink>, the GNOME-hosted <ulink url="http://library.gnome.org/devel/gtk-tutorial/stable/">GTK+ 2.0 Tutorial</ulink> and the official <ulink url="http://library.gnome.org/devel/gtk-faq/stable/">GTK+ FAQ</ulink>.
 </para>
 </section>
 </section>
@@ -314,10 +314,10 @@ For additional, in-depth information regarding GTK/GTK+, see the <ulink url="htt
 If your application only uses standard GTK widgets, you will probably have to do little or nothing to make your application (reasonably) accessible. But do watch out for objects in your GUI that don't have a textual description associated with them, such as graphical buttons or status indicators that don't have labels or tooltips.
 </para>
 <para>
-You can probably also improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application. You should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assistive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
+You can probably also improve on the default descriptions provided for some of the widgets, and tailor them to that widget's specific purpose in your application. You should add or change the textual descriptions for these widgets with the appropriate ATK function call, so that an assisitive technology can describe their purpose or state to the user. See <link linkend="gad-coding-guidelines">Coding Guidelines for Supporting Accessibility</link> for more information.
 </para>
 <para>
-If your application uses custom widgets, you may have to do some work to expose those widgets' properties to assistive technologies.  See <link linkend="gad-custom">Making Custom Components Accessible</link> and <link linkend="gad-api-examples">Examples that Use the Accessibility API</link> for more information. Additional detailed information can be found in Marc Mulcahy's 2002 GUADEC presentation, <ulink url="https://projects.gnome.org/accessibility/talks/GUAD3C/making-apps-accessible/start.html">"Making GNOME Applications Accessible".</ulink>
+If your application uses custom widgets, you may have to do some work to expose those widgets' properties to assistive technologies.  See <link linkend="gad-custom">Making Custom Components Accessible</link> and <link linkend="gad-api-examples">Examples that Use the Accessibility API</link> for more information. Additional detailed information can be found in Marc Mulcahy's 2002 GUADEC presentation, <ulink url="http://developer.gnome.org/projects/gap/presentations/GUAD3C/making-apps-accessible/start.html">"Making GNOME Applications Accessible".</ulink>
 </para>
 </section>
 
@@ -533,7 +533,7 @@ Specify relationships between any unusual groupings of widgets using <function>a
 </listitem>
 </itemizedlist>
 <para>
-The examples in the rest of this section are mostly to give you a flavor of the scope of the ATK. They cover techniques that you may never need to use as an application developer, although they may be of interest if you are writing your own custom widgets (see <link linkend="gad-custom">Making Custom Components Accessible</link>) or if you want to write an assistive technology application. Whatever the purpose, the <ulink url="ftp://ftp.gnome.org/pub/GNOME/sources/gail/">GAIL source code</ulink> serves as an excellent tutorial for advanced ATK usage. Please note that since GTK+ 3.1.10, Gail has been merged into GTK+ and is no longer a module on its own.
+The examples in the rest of this section are mostly to give you a flavor of the scope of the ATK. They cover techniques that you may never need to use as an application developer, although they may be of interest if you are writing your own custom widgets (see <link linkend="gad-custom">Making Custom Components Accessible</link>) or if you want to write an assistive technology application. Whatever the purpose, the <ulink url="ftp://ftp.gnome.org/pub/GNOME/sources/gail/">GAIL source code</ulink> serves as an excellent tutorial for advanced ATK usage. 
 </para>
 
 <section>
@@ -582,7 +582,7 @@ Access the ATK top-level object with the following function call.
 </para>
 <programlisting>AtkObject *root_obj = atk_get_root();</programlisting>
 <para>
-This returns an <type>AtkObject</type> which contains all toplevel windows in the currently running program. The user could then navigate through the object hierarchy by accessing the root object's children, which corresponds to the toplevel windows.
+This returns an <type>AtkObject</type> which contains all toplevel windows in the currently running program. The user could then navigate through the object heirarchy by accessing the root object's children, which corresponds to the toplevel windows.
 </para>
 </listitem>
 </orderedlist>
@@ -633,9 +633,8 @@ Test the role of the <type>AtkObject</type> by calling <function>atk_object_get_
 Using the <constant>column_inserted</constant> signal as an example:
 </para>
 <programlisting>
-table_column_inserted_id = g_signal_connect_closure_by_id (my_atk_obj, 
-g_signal_lookup("column_inserted", G_OBJECT_TYPE(my_atk_obj)), 0, 
-g_cclosure_new(G_CALLBACK (_my_table_column_inserted_func), NULL, NULL), FALSE);
+table_column_inserted_id = g_signal_connect_closure_by_id(my_atk_obj, 
+g_signal_lookup("column_inserted", G_OBJECT_TYPE(my_atk_obj)),0,g_cclosure_new(G_CALLBACK (_my_table_column_inserted_func),NULL,NULL), FALSE);
 </programlisting>
 <para>This will cause <function>_my_table_column_inserted_func()</function> to be called whenever a column_inserted signal is emitted on the <type>AtkObject</type> <varname>my_atk_object</varname>.
 </para>
@@ -643,8 +642,7 @@ g_cclosure_new(G_CALLBACK (_my_table_column_inserted_func), NULL, NULL), FALSE);
 Connecting to a signal is slightly different if the signal supports detail. The <constant>children_changed</constant> signal supports the <parameter>add</parameter> detail. To connect to a signal when the <parameter>add</parameter> detail is also specified, this technique is used:
 </para>
 <programlisting>
-child_added_id = g_signal_connect_closure (my_atk_obj,"children_changed::add",
-g_cclosure_new (G_CALLBACK(_my_children_changed_func), NULL, NULL), FALSE);
+child_added_id = g_signal_connect_closure (my_atk_obj,"children_changed::add",   g_cclosure_new (G_CALLBACK(_my_children_changed_func),NULL,NULL),FALSE); 
 </programlisting>
 <para>
 This will cause <function>_my_children_changed_func()</function> to be called whenever a <constant>children_changed</constant> signal with the <parameter>add</parameter> detail is emitted on the <type>AtkObject</type> <varname>my_atk_obj</varname>.
@@ -677,8 +675,7 @@ default_registry = atk_get_default_registry();
 <listitem><para>Register the ATK object in the <function>gtk_module_init()</function> function of this module by making this function call:
 </para>
 <programlisting>
-atk_registry_set_factory_type (default_registry, GTK_TYPE_MYTYPE, 
-MYATKIMP_TYPE_MYTYPE_FACTORY); 
+atk_registry_set_factory_type (default_registry, GTK_TYPE_MYTYPE, MYATKIMP_TYPE_MYTYPE_FACTORY); 
 </programlisting>
 </listitem>
 </orderedlist>
@@ -695,7 +692,7 @@ The factory must be implemented as a child of class type <type>ATK_TYPE_OBJECT_F
 </section>
 
 <section>
-<title>ATK Implementation for a Specific Object</title>
+<title>ATK Implemetation for a Specific Object</title>
 <para>
 All <type>GObject</type>s implement a <function>get_type()</function> function.  Using the above example the naming convention for this function name would be <function>myatkimp_mytype_get_type()</function>.
 </para>
@@ -959,12 +956,12 @@ assess a custom widget according to the applicable <link linkend="gad-ui-guideli
 </listitem>
 <listitem>
 <para>
-determine which <ulink url="https://developer.gnome.org/atk/stable/interfaces.html">ATK interfaces</ulink> a custom widget should implement, according to the widget's feature set and function;
+determine which <ulink url="http://library.gnome.org/devel/atk/stable/atk.html">ATK interfaces</ulink> a custom widget should implement, according to the widget's feature set and function;
 </para>
 </listitem>
 <listitem>
 <para>
-assess which <ulink url="https://developer.gnome.org/atk/stable/interfaces.html">ATK interfaces</ulink> can be inherited from the parent widget class;
+assess which <ulink url="http://library.gnome.org/devel/atk/stable/atk.html">ATK interfaces</ulink> can be inherited from the parent widget class;
 </para>
 </listitem>
 <listitem>
@@ -1204,7 +1201,7 @@ Provide an option to hide graphics that don't convey essential information. Grap
 <section>
 <title>Fonts and Text</title>
 <para>
-Even to a user with normal vision, textual output provides the majority of the information and feedback in most applications. It is therefore critical to choose and position text carefully on the screen, and leave the choice of font and size to the user, to ensure that people with vision impairments can also use your application effectively.
+Even to a user with normal vision, textual output provides the majority of the information and feedback in most applications. It is therefore critical to choose and position text carefully on the screen, and leave the choice of font and size to the user, to ensure that people with vision impaiments can also use your application effectively.
 </para>
 <itemizedlist>
 <listitem>
@@ -1457,7 +1454,7 @@ Make all animations optional. The animated information should be available in at
 Showing the keyboard focus position clearly at all times is important, both for users with vision impairments as well as "power-users" who prefer to use the keyboard rather than the mouse. There should never be any confusion as to which control on the desktop has focus at any given time. You ought to be able to leave your computer with the focus on any widget in your application, then go off and phone your girlfriend or walk the dog until you've forgotten which widget you left it on. When you return, you should be able to tell straight away exactly which widget it was.
 </para>
 <para>
-A visual focus indicator is an audio representation of the cursor position relative to the other objects on the desktop. This allows the user to move among objects interactively as the focus changes. The visual focus must be programmatically exposed to assistive technologies. Note that in most cases, this is handled automatically by the ATK, without requiring you to do any additional work. However, you will need to be aware of this requirement when writing your own custom widgets, for example.
+A visual focus indicator is an audio representation of the cursor position relative to the other objects on the desktop. This allows the user to move among objects interactively as the focus changes. The visual focus must be programatically exposed to assistive technologies. Note that in most cases, this is handled automatically by the ATK, without requiring you to do any additional work. However, you will need to be aware of this requirement when writing your own custom widgets, for example.
 </para>
 <itemizedlist>
 <listitem>
@@ -1647,7 +1644,7 @@ Document all your application's accessibility features. Keyboard navigation and 
 <chapter id="gtest" status="draft">
 <title>Testing</title>
 <para>
-There are several points of review to conduct before declaring an application accessible. Over the course of development you may want to consider automated testing techniques. <ulink url="http://ldtp.freedesktop.org/">LDTP</ulink>, for example, may complement your automated testing plan.
+There are several points of review to conduct before declaring an application accessible. Over the course of development you may want to consider automated testing techniques. <ulink url="http://people.redhat.com/zcerza/dogtail">Dogtail</ulink>, for example, may complement your automated testing plan.
 </para>
 <para>
 This section describes a number of tests you can perform manually on an application to test its accessibility. Passing all the tests does not necessarily imply that the application is fully accessible, but if the application fails any of these tests, then further work may need to be done to improve that aspect of its accessibility.
@@ -2345,12 +2342,6 @@ The documentation includes a section that covers all the application's accessibi
 
 <section>
 <title>GOK (GNOME Onscreen Keyboard)</title>
-<note>
-<para>
-The information on this page is partially outdated: GNOME 3's <application><ulink url="http://wiki.gnome.org/Caribou">Caribou</ulink></application> has effectively replaced GNOME 2's <application>gok</application>.
-</para>
-</note>
-
 <para>
 Your application should be usable via <application>gok</application>; key input should be generated entirely by <application>gok</application>, not the keyboard. The aim here would be to work with your application and the desktop in general, ensuring any type of character input can be performed with the on-screen keyboard.
 </para>

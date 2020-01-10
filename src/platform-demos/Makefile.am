@@ -2,6 +2,8 @@
 
 HELP_ID = gnome-devel-demos
 
+HELP_LINGUAS = ca de el es fr gl
+
 demo_sources =	\
 	audio-player/audio-player.vala		\
 	exercises/menubar.vala.exercises	\
@@ -33,22 +35,18 @@ demo_sources =	\
 	samples/button.js			\
 	samples/button.py			\
 	samples/button.vala			\
-	samples/buttonbox.js			\
 	samples/buttonbox.py			\
 	samples/checkbutton.c			\
 	samples/checkbutton.js			\
 	samples/checkbutton.py			\
 	samples/checkbutton.vala		\
-	samples/colorbutton.js			\
 	samples/colorbutton.py			\
 	samples/colorbutton.vala		\
 	samples/comboboxtext.js			\
-	samples/combobox.c                      \
 	samples/combobox.js			\
 	samples/combobox.py			\
 	samples/combobox.vala			\
 	samples/combobox_multicolumn.py		\
-	samples/combobox_multicolumn.vala	\
 	samples/dialog.c			\
 	samples/dialog.js			\
 	samples/dialog.py			\
@@ -60,9 +58,7 @@ demo_sources =	\
 	samples/filechooserdialog.py		\
 	samples/filechooserdialog.ui		\
 	samples/filechooserdialog.vala		\
-	samples/fontchooserwidget.js		\
 	samples/fontchooserwidget.py		\
-	samples/fontchooserwidget.vala		\
 	samples/fruitbat.png			\
 	samples/gentoopenguin.png		\
 	samples/gmenu.c				\
@@ -80,30 +76,13 @@ demo_sources =	\
 	samples/GtkApplicationWindow.vala	\
 	samples/hellognome.html			\
 	samples/hellognome.js			\
-	samples/hello-in-C/autogen.sh		\
-	samples/hello-in-C/configure.ac		\
-	samples/hello-in-C/hello-world.c	\
-	samples/hello-in-C/hello-world.desktop.in\
-	samples/hello-in-C/Makefile.am		\
-	samples/hello-in-C/README		\
-	samples/hello-in-js/autogen.sh		\
-	samples/hello-in-js/configure.ac	\
-	samples/hello-in-js/hello-world		\
-	samples/hello-in-js/hello-world.desktop.in\
-	samples/hello-in-js/Makefile.am		\
-	samples/hello-in-js/README		\
-	samples/hello-in-python/autogen.sh	\
-	samples/hello-in-python/configure.ac	\
-	samples/hello-in-python/hello-world.py	\
-	samples/hello-in-python/hello-world.desktop.in\
-	samples/hello-in-python/Makefile.am	\
-	samples/hello-in-python/README		\
-        samples/hello-in-vala/autogen.sh        \
-        samples/hello-in-vala/configure.ac      \
-        samples/hello-in-vala/hello-world.vala  \
-        samples/hello-in-vala/hello-world.desktop.in\
-        samples/hello-in-vala/Makefile.am       \
-        samples/hello-in-vala/README            \
+	samples/helloWorld.js			\
+	samples/helloWorld/autogen.sh		\
+	samples/helloWorld/configure.ac		\
+	samples/helloWorld/helloWorld		\
+	samples/helloWorld/helloWorld.desktop.in\
+	samples/helloWorld/Makefile.am		\
+	samples/helloWorld/README		\
 	samples/image.c				\
 	samples/image.js			\
 	samples/image.py			\
@@ -116,7 +95,6 @@ demo_sources =	\
 	samples/linkbutton.js			\
 	samples/linkbutton.py			\
 	samples/linkbutton.vala			\
-	samples/menubutton.c			\
 	samples/menubutton.js			\
 	samples/menubutton.py			\
 	samples/menubutton.vala			\
@@ -132,10 +110,7 @@ demo_sources =	\
 	samples/messagedialog.py		\
 	samples/messagedialog.vala		\
 	samples/muteswan.png			\
-	samples/paned.c				\
-	samples/paned.js			\
 	samples/paned.py			\
-	samples/paned.vala			\
 	samples/progressbar.c			\
 	samples/progressbar.js			\
 	samples/progressbar.py			\
@@ -150,12 +125,9 @@ demo_sources =	\
 	samples/scale.py			\
 	samples/scale.vala			\
 	samples/scrolledwindow.c		\
-	samples/scrolledwindow.js		\
 	samples/scrolledwindow.py		\
 	samples/scrolledwindow.vala		\
-	samples/separator.c			\
 	samples/separator.py			\
-	samples/separator.vala			\
 	samples/spinbutton.c			\
 	samples/spinbutton.js			\
 	samples/spinbutton.py			\
@@ -187,10 +159,7 @@ demo_sources =	\
 	samples/toolbar_builder.py		\
 	samples/toolbar_builder.ui		\
 	samples/toolbar_builder.vala		\
-	samples/tooltip.c			\
-	samples/tooltip.js			\
 	samples/tooltip.py			\
-	samples/tooltip.vala			\
 	samples/treeview_advanced_liststore.py	\
 	samples/treeview_cellrenderertoggle.py	\
 	samples/treeview_simple_liststore.js	\
@@ -198,11 +167,11 @@ demo_sources =	\
 	samples/treeview_simple_liststore.vala	\
 	samples/treeview_treestore.py		\
 	samples/tux.png				\
-	samples/widget_drawing.py		\
 	samples/window.c			\
 	samples/window.js			\
 	samples/window.py			\
-	samples/window.vala
+	samples/window.vala			\
+	media/gnome-devtools.catalog
 
 HELP_MEDIA =	\
 	media/02_jsgrid_01.png		\
@@ -226,6 +195,7 @@ HELP_MEDIA =	\
 	media/combobox_multicolumn.png		\
 	media/dialog.png			\
 	media/entry.png				\
+	media/fedora.png			\
 	media/filechooserdialog_menu.png	\
 	media/filechooserdialog_save.png	\
 	media/fontchooserwidget.png		\
@@ -247,7 +217,7 @@ HELP_MEDIA =	\
 	media/guitar-tuner.png			\
 	media/guitar-tuner-glade.png		\
 	media/guitar-tuner-pipeline.png		\
-	media/hello-world.png			\
+	media/helloWorld.png			\
 	media/image.png				\
 	media/image-viewer.png			\
 	media/label.png				\
@@ -258,6 +228,7 @@ HELP_MEDIA =	\
 	media/menubar_choices.png		\
 	media/message-board.ogv			\
 	media/messagedialog.png			\
+	media/opensuse.png			\
 	media/paned.png				\
 	media/photo-wall.png			\
 	media/photo-wall-focused.png		\
@@ -290,6 +261,7 @@ HELP_MEDIA =	\
 	media/treeview_simple_liststore.png	\
 	media/treeview_simple_liststore_penguins.png	\
 	media/treeview_treestore.png		\
+	media/ubuntu.png			\
 	media/weatherAppJs.png			\
 	media/window.png			\
 	$(demo_sources)
@@ -302,44 +274,42 @@ HELP_FILES =				\
 	aboutdialog.py.page		\
 	aboutdialog.vala.page		\
 	audio-player.vala.page		\
+	beginner.c.page			\
 	beginner.js.page		\
 	beginner.py.page		\
 	beginner.vala.page		\
+	bug-filing.page			\
 	button.c.page			\
 	button.js.page			\
 	button.py.page			\
 	button.vala.page		\
-	buttonbox.js.page		\
 	buttonbox.py.page		\
 	c.page				\
 	checkbutton.c.page		\
 	checkbutton.js.page		\
 	checkbutton.py.page		\
 	checkbutton.vala.page		\
-	colorbutton.js.page		\
 	colorbutton.py.page		\
 	colorbutton.vala.page		\
 	comboboxtext.js.page		\
-	combobox.c.page			\
 	combobox.js.page		\
 	combobox.py.page		\
 	combobox.vala.page		\
 	combobox_multicolumn.py.page	\
-	combobox_multicolumn.vala.page	\
 	cpp.page			\
 	dialog.c.page			\
 	dialog.js.page			\
 	dialog.py.page			\
 	dialog.vala.page		\
+	documentation.page		\
 	entry.c.page			\
 	entry.js.page			\
 	entry.py.page			\
 	entry.vala.page			\
 	filechooserdialog.py.page	\
 	filechooserdialog.vala.page	\
-	fontchooserwidget.js.page	\
 	fontchooserwidget.py.page	\
-	fontchooserwidget.vala.page	\
+	getting-ready.page		\
 	gmenu.c.page			\
 	gmenu.js.page			\
 	gmenu.py.page			\
@@ -358,10 +328,7 @@ HELP_FILES =				\
 	guitar-tuner.py.page		\
 	guitar-tuner.vala.page		\
 	hellognome.js.page		\
-	hello-world.c.page		\
-	hello-world.js.page		\
-	hello-world.py.page		\
-	hello-world.vala.page		\
+	helloWorld.js.page		\
 	image.c.page			\
 	image.js.page			\
 	image.py.page			\
@@ -377,7 +344,6 @@ HELP_FILES =				\
 	label.js.page			\
 	label.py.page			\
 	label.vala.page			\
-	legal.xml			\
 	license.page			\
 	linkbutton.c.page		\
 	linkbutton.js.page		\
@@ -387,7 +353,6 @@ HELP_FILES =				\
 	menubar.c.page			\
 	menubar.py.page			\
 	menubar.vala.page		\
-	menubutton.c.page		\
 	menubutton.js.page		\
 	menubutton.py.page		\
 	menubutton.vala.page		\
@@ -397,10 +362,7 @@ HELP_FILES =				\
 	messagedialog.py.page		\
 	messagedialog.vala.page		\
 	model-view-controller.py.page	\
-	paned.c.page			\
-	paned.js.page			\
 	paned.py.page			\
-	paned.vala.page			\
 	photo-wall.c.page		\
 	progressbar.c.page		\
 	progressbar.js.page		\
@@ -413,18 +375,14 @@ HELP_FILES =				\
 	radiobutton.py.page		\
 	radiobutton.vala.page		\
 	record-collection.js.page	\
-	response-type.page		\
 	scale.c.page			\
 	scale.js.page			\
 	scale.py.page			\
 	scale.vala.page			\
 	scrolledwindow.c.page		\
-	scrolledwindow.js.page		\
 	scrolledwindow.py.page		\
 	scrolledwindow.vala.page	\
-	separator.c.page		\
 	separator.py.page		\
-	separator.vala.page		\
 	set-up-gedit.js.page		\
 	signals-callbacks.py.page	\
 	spinbutton.c.page		\
@@ -458,44 +416,21 @@ HELP_FILES =				\
 	toolbar.vala.page		\
 	toolbar_builder.py.page		\
 	toolbar_builder.vala.page	\
-	tooltip.c.page			\
-	tooltip.js.page			\
 	tooltip.py.page			\
-	tooltip.vala.page		\
 	treeview_advanced_liststore.py.page	\
 	treeview_cellrenderertoggle.py.page	\
 	treeview_simple_liststore.js.page	\
 	treeview_simple_liststore.py.page	\
 	treeview_simple_liststore.vala.page	\
 	treeview_treestore.py.page	\
+	translate.page			\
 	tutorial.py.page		\
 	vala.page			\
 	weatherApp.js.page		\
 	weatherAppMain.js.page		\
 	weatherAutotools.js.page	\
 	weatherGeonames.js.page		\
-	widget_drawing.py.page		\
 	window.c.page			\
 	window.js.page			\
 	window.py.page			\
-	window.vala.page		\
-	custom-gsource.c.page
-
-HELP_LINGUAS = ca cs de el es fr gl ko pt_BR
-
-# Tooling to compile and run unit tests for example code.
-demo_sources += samples/example-custom-gsource.c
-EXTRA_DIST = C/samples/test-custom-gsource.c
-WARN_CFLAGS = -Wall -Wextra -Wno-unused-parameter
-
-if BUILD_TESTS
-C/samples/test-custom-gsource: C/samples/test-custom-gsource.c C/samples/example-custom-gsource.c
-	$(MKDIR_P) "$(dir $@)"
-	$(CC) -o $@ $(WARN_CFLAGS) $(GLIB_CFLAGS) $(GLIB_LIBS) $<
-
-check: C/samples/test-custom-gsource
-	C/samples/test-custom-gsource
-.PHONY: check
-
-CLEANFILES = C/samples/test-custom-gsource
-endif BUILD_TESTS
+	window.vala.page

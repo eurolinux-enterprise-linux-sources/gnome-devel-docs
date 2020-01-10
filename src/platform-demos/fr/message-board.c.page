@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="message-board.c" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="message-board.c" xml:lang="fr">
 
   <info>
     <title type="text">Message board (C)</title>
@@ -10,44 +10,14 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-06" status="draft"/>
     <credit type="author copyright">
       <name>Shaun McCance</name>
-      <email its:translate="no">shaunm@gnome.org</email>
+      <email>shaunm@gnome.org</email>
       <years>2010</years>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
 <title>Message board</title>
@@ -210,7 +180,18 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
 
   <p>Une fois que vous avez le document, il vous faut obtenir l'élément <code>body</code> pour pouvoir y ajouter des éléments <code>div</code>. La fonction <code>webkit_dom_document_query_selector</code> vous permet de trouver un élément dans le document en utilisant des sélecteurs CSS. Ceci vous évite de fastidieux aller-retour à travers le document.</p>
 
+  <comment>
+    <cite>shaunm</cite>
+    <p>FIXME: Is this true? Does query_selector take CSS, CSSish, or what?</p>
+  </comment>
+
   <p>Puis, vous créez un nouveau bloc <code>div</code> pour contenir le message. Chaque élément que vous créez doit être attaché à un document ; ainsi la fonction pour créer un élément prend le <code>WebKitDOMDocument</code> comme premier argument. Vous définissez ensuite le contenu texte de l'élément au contenu du champ texte. Étant donné que <code>gtk_entry_get_text</code> retourne un <code>const gchar*</code>, vous n'êtes pas obligé de libérer le résultat.</p>
+
+  <comment>
+    <cite>shaunm</cite>
+    <p>Not passing the GError**, but we should give it a quick mention and
+    link to somewhere that explains how GError-handling works.</p>
+  </comment>
 
   <p>Enfin, vous devez ajouter le nouveau bloc <code>div</code> après le bloc <code>body</code> et effacer le champ texte pour pouvoir y saisir quelque chose d'autre. Construisez et exécutez le programme à nouveau et testez-le.</p>
 </section>
@@ -239,6 +220,8 @@ static const guchar CSS[] =
   <p>Dans cet exemple, vous n'avez que des blocs <code>div</code> dans un élément <code>body</code>. Si vous créez un document HTML plus complexe, vous pouvez utiliser le code CSS dont vous avez besoin. En fait, si vous vous sentez à l'aise avec le CSS, vous pouvez essayer de modifier cette partie pour en faire ce qu'il vous plaît.</p>
 
   <p>Pour appliquer le CSS, placez <code>user-stylesheet-uri</code> n'importe où dans la fonction <code>create_window</code> après la définition de <code>view</code>.</p>
+
+  <comment><cite>shaunm</cite><p>g_base64_encode has bad args</p></comment>
 
 <code><![CDATA[
 tmp = g_base64_encode (CSS, strlen((gchar *) CSS));
@@ -271,9 +254,14 @@ gchar *tmp, *css;
   <list>
     <item><p>Si vous êtes à l'aise avec CSS, essayez de modifier le style d'affichage du message. Débuter avec le CSS est facile, mais en allant plus loin ça devient un objet plus puissant. Vous allez trouver plein de tutoriels CSS sur internet, et tous sont adaptables à cette application.</p></item>
 
-    <item><p>Pour l'instant, vous perdez tous vos messages chaque fois que vous fermez le visionneur de messages. Essayez d'enregistrer le contenu HTML après chaque message et d'ouvrir le fichier enregistré (s'il existe) au démarrage.</p></item>
+    <item><p>Pour l'instant, vous perdez tous vos messages chaque fois que vous fermez le visionneur de messages. Essayez d'enregistrer le contenu HTML après chaque message et d'ouvrir le fichier enregistré (s'il existe) au démarrage.</p>
+    <comment>
+      <cite>shaunm</cite><p>Link to method to get HTML from DOM and to
+      GIO APIs.</p>
+    </comment></item>
 
     <item><p>Si vous conservez vos messages pendant longtemps, un jour vous allez vous demander quand ils ont été postés. Ajoutez un horodatage à chaque message posté. Créez quelques blocs <code>div</code> enfants supplémentaires avec des classes différentes que vous pouvez styliser dans la feuille CSS.</p>
+    <comment><cite>shaunm</cite><p>Link to strftime or something</p></comment>
     </item>
 
     <item><p>Ce programme conserve les messages pour toujours. Réfléchissez à une façon pour autoriser l'utilisateur à supprimer des messages. Peut-être en les faisant disparaître automatiquement lorsqu'ils sont trop vieux ou quand il y a un nombre défini de messages devant eux. Ou alors en ajoutant un lien à chaque message pour pouvoir le supprimer. Ou encore en redéfinissant le menu contextuel quand vous faites un clic-droit sur un message. Ces fonctions impliquent que vous exploriez davantage encore les API DOM de WebKit.</p></item>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="principles" lang="zh-TW">
+    
+    <title>易用性原則</title>
+
+    <para>本段闡述一些本文件所建議的特定技術指引中，背後蘊含的基本原則。我們認為對所有應用軟體的開發而言，這些原則相當重要。</para>
+
+    <sect1 id="principles-people">
+      <title>為人而設計</title>
+
+      <para>請記得，任何應用軟體的目的，是要讓某些群體來完成一些特定的工作。故您在設計軟體時，應先確立下列要項：</para>
+
+	<orderedlist>
+		<listitem><para>使用者是誰（屬性）</para></listitem>
+		<listitem><para>您想要讓使用者能作什麼（工作）</para></listitem>
+	</orderedlist>
+
+      <para>比如說，您可能要設計一套軟體，讓軟體（或電子、機械）工程師能夠繪製圖表；亦可能想設計一套軟體，讓系統管理員能用它設定、和監控網路伺服器；又可能想設計出一套幫助小學生學數學的軟體。</para>
+
+      <para>重要的是，您應了解軟體使用者，知曉他們要完成的目標，以及為達目標所需著手的工作。有許多專業的人機互動設計師著作和設計方法有關的書籍，開授相關的課程，其中有許多甚為受用。您可參考 <xref linkend="bibliography"/> 中所列的書冊，以為選擇。而大部分的方法，會將了解使用者、他們要完成的工作，尋出助其用軟體完成工作的方法，濃縮成特定的方式。</para>
+
+    </sect1>
+    <sect1 id="principles-broad-userbase">
+      <title>不要限縮您使用者的基本族群</title>
+
+      <para>如果您正設計一套給工程師（或兒童、系統管理員）用的軟體，必要讓其能為 <emphasis>所有的</emphasis> 工程師（兒童、系統管理員）使用無礙，包含殘障人士或母語和您不同的人。請留心相關的無障礙、國際化和在地化的議題，其中大部分將為本文件所提及。</para>
+
+      <sect2 id="accessibility">
+	<title>無障礙</title>
+
+	<para>無障礙（有時稱作 <emphasis>a11y</emphasis>），意指使某些種類的殘障人士能參與生活中的活動，在此特別指使用您的軟體。例如：</para>
+
+	<itemizedlist>
+		<listitem><para>若您僅倚賴顏色編碼來區別不同種類的資訊，色盲者可能無法用您的軟體。</para></listitem>
+		<listitem><para>若您倚賴聲音來告知使用者關鍵資訊，聽覺受損者可能無法用您的軟體。</para></listitem>
+		<listitem><para>若您沒有提供指令的快速鍵，移動障礙者可能無法用您的軟體。</para></listitem>
+	</itemizedlist>
+
+	<para>Your software should also be usable with voice interfaces, screen readers such as <ulink url="http://projects.gnome.org/orca/">Orca</ulink>, alternate input devices, and other assistive technologies.  The standard GNOME libraries do most of this work for you, but with a little extra effort you can make your application every bit as useful to users who rely on those technologies as to those who don't.</para>
+
+	<para>GNOME has excellent inbuilt support for accessibility by means of the ATK and GAIL libraries, which in many cases can do most of the work for you. More information on accessibility in GNOME can be found at the <ulink url="http://projects.gnome.org/accessibility">GNOME Accessibility Project</ulink>.</para>
+
+      </sect2>
+      <sect2 id="internationalization">
+	<title>國際化與在地化</title>
+
+	<para>國際化指使軟體能在不同語言環境下運作的設計程序；在地化即實地將應用軟體內的訊息、標籤、及其他介面元件，翻譯成另一語言的過程。</para>
+
+	<para>GNOME 對國際化（又稱 i18n）和在地化（又稱 l10n）均支援甚佳。許多情況下，只需用標準的 GNOME 應用程式介面 (API) 來顯示文字和訊息，就能讓您或他人將您的軟體在地化到不同的環境(locale)。更多關於讓軟體能被在地化的資訊，請參 <ulink url="http://www.pango.org">Pango 專案的首頁</ulink>（Pango 是讓文字能被國際化的 GNOME 函式庫）、<ulink url="http://www.gnome.org/i18n/">GNOME 的翻譯網站</ulink>、和<ulink url="http://developer.gnome.org/projects/gtp/">GNOME 翻譯計畫的網頁</ulink>。</para>
+	
+	<para>文化同政治的議題的敏感性，亦需要慎重顧及。設計圖示、聲音，甚至挑選配色時，需若干了解其對世界上不同地區的使用者具有怎樣的意涵。</para>
+	<para>因這些原因，最好避免使用一些元件，如：</para>
+	<itemizedlist>
+		<listitem><para>國旗或貨幣的圖片</para></listitem>
+		<listitem><para>標示國界或爭議地名的地圖</para></listitem>
+		<listitem><para>不依字母順序排的國家或城市列表（除非特定要求，或內容之前後關聯所需）</para></listitem> 
+		<listitem><para>描繪動物的圖示</para></listitem>
+		<listitem><para>只描繪手或腳的圖示</para></listitem>
+	</itemizedlist>
+
+      </sect2>
+    
+    </sect1>
+
+    <sect1 id="principles-match">
+      <title>在您的軟體和現實世界間建立關連</title>
+
+      <para id="use-users-language">總是使用使用者熟悉的字彙、片語與觀念，而非底層系統的術語。使用的術語，應和他們對您軟體支援之工作的知識相關。例如在醫學上，裝一特定病人所有資訊的文件夾稱作「病歷夾」。因此，醫療軟體可能會將包含的東西和病歷夾相同的病人紀錄稱為「病歷夾」，而非「病人資料庫紀錄」。</para>
+
+      <para>You can often take advantage of your users' knowledge of the real world by using metaphor— that is, a familiar concept from the outside world— to represent elements within your application.  For example:</para>
+
+	<itemizedlist>
+		<listitem><para>an image of a file folder suggests a container into which documents can be placed</para></listitem>
+		<listitem><para>a waste basket suggests a container into which items can be placed when they are no longer needed</para></listitem>
+	</itemizedlist>
+
+      <para>When using metaphors, however, it is important to neither take the metaphor too literally, nor to extend the metaphor beyond its reasonable use.  For example, the capacity of a file folder should not be limited to the capacity of a physical file folder, which presumably could contain only a few documents before becoming unwieldy.  On the other hand, a waste basket should not be used for anything other than holding discarded files.  It should not be used, for example, to eject a removable disk such as a floppy or CD.</para>
+    </sect1>
+
+    <sect1 id="principles-consistency">
+      <title>Make Your Application Consistent</title>
+
+      <para>Make your application consistent with itself and with other applications, in both its appearance and its behavior. This is one of the most important design principles, and probably the most famous, but it is also frequently ignored. While this document serves as the basis for consistency between GNOME applications, you are encouraged to look at and follow other application's conventions where this document provides no guidelines.</para>
+
+      <para>Consistency enables users to apply their existing knowledge of their computing environment and other applications to understanding a new application.  This not only allows users to become familiar with new applications more quickly, but also helps create a sense of comfort and trust in the overall environment.  Most of the recommendations in the GNOME HI Guidelines are designed to help you create applications that are consistent with the GNOME environment and other GNOME applications.</para>
+
+      <para>A word of caution: a mis-applied or incomplete consistency is often worse than inconsistency.  If your application includes an <guimenuitem>Undo</guimenuitem> menu item for consistency, but it is always disabled because your application does not actually support Undo, this will reduce the user's trust in the availability of Undo in other applications on their desktop.  Either make your application support Undo, or eliminate the <guimenuitem>Undo</guimenuitem> menu item.</para>
+
+    </sect1>
+
+    <sect1 id="principles-feedback">
+      <title>Keep the User Informed</title>
+
+      <para>Always let the user know what is happening in your application by using appropriate feedback at an appropriate time.  The user should never have to guess about the status of the system or of your application.  When the user performs an action, provide feedback to indicate that the system has received the input and is operating on it. Feedback can be visual, audio, or both. If the system will take a long time to process the request, provide as much feedback as possible about how lengthy the operation will be. Types of helpful feedback include but are not limited to: cursor changes, animated "throbbers", progress indicators, audio feedback such as a beep, and error messages. Error messages should use simple language, clearly state the problem, and provide solutions or tell the user how to get out of the current situation if possible.</para>
+
+      <para>It is critical that feedback be <emphasis>accurate</emphasis> and <emphasis>precise</emphasis>.  If you display a determinate progress indicator to display the state of completion of a task and it is inaccurate, the user will lose faith in progress indicators, and they will find the environment less usable.  If you display a generic error message that indicates that there is a problem but fails to provide enough information to diagnose or solve the problem, your users will be unable to continue with their task.</para>
+      <para>See <xref linkend="feedback"/>  and <xref linkend="windows-alert"/> for more information on feedback.</para>
+    </sect1>
+
+    <sect1 id="principles-simplicity">
+      <title>Keep It Simple and Pretty</title>
+
+      <para>Your application should enable the user to concentrate on the task at hand.  So, design your application to show only useful and relevant information and interface elements.  Every extra piece of information or interface control competes with the truly relevant bits of information and distracts the user from important information.  Hence, don't clutter your interface, and don't overload the user with buttons, menu options, icons, or irrelevant information.  Instead, use progressive disclosure and other techniques to limit what the user sees at any given moment.</para>
+
+      <para>Finally, present your information and interface elements in an aesthetically pleasing manner.  A disorganized, cluttered-looking interface with a few elements can be just as distracting as an organized interface with too much information.  Make sure that dialog elements are cleanly-aligned, and do not overuse or misuse color or graphics.  If you know a graphic designer, seek their advice if possible— the guidelines in this document will help you with the basics, but there is no substitute for a trained eye.</para>
+
+	<para>See <xref linkend="design"/> and <xref linkend="icons"/> for more information on designing the visual appearance of your application.</para>
+
+    </sect1>
+
+    <sect1 id="principles-user-control">
+      <title>Put the User in Control</title>
+
+      <para>Remember that computers exist to serve humans.  A user should always feel in control, able to do what they want when they want.  This means you should generally avoid modes; users should be able to switch between different tasks (and specifically, different windows) at any time. See <xref linkend="window-props-modality"/> for more information on modes.</para>
+
+      <para>The user should also be able to tailor aspects of their environment to fit personal preferences.  It is very important, however, to avoid the trap of allowing too much configuration, or allowing the configuration of parameters that most users will not understand or find useful to modify.  Wherever possible, inherit visual and behavioral parameters from global preferences and settings such as the current GTK+ theme.</para>
+    </sect1>
+
+    <sect1 id="principles-forgiveness">
+      <title>Forgive the User</title>
+
+      <para>We all make mistakes.  Whether we're exploring and learning how to use the system, or we're experts who just hit the wrong key, we are only human.  Your application should therefore allow users to quickly undo the results of their actions.</para>
+
+      <para>If an action is very dangerous, and there is no way to undo the result, warn the user and ask for confirmation.  Only do this in extreme cases, though; if frequently faced with such confirmation messages, users begin to ignore them, making them worse than useless.</para>
+
+      <para>In all cases, the user's work is sacrosanct.  Nothing your application does should lose or destroy user's work without explicit user action.  Among other techniques, this can be achieved by auto-saving backups of documents, and allowing multiple levels of undo.</para>
+
+    </sect1>
+
+    <sect1 id="principles-direct-manipulation">
+      <title>Provide Direct Manipulation</title>
+
+      <para>Wherever possible, allow users to act on objects and data directly, rather than through dialogs or explicit commands.  For example, it is more intuitive to drag a circle object around in a diagram rather than selecting a "Move" command from a menu while the circle is selected.  Simlarly, in an email application, allow the user to attach files by dragging them from the file manager and dropping them onto the message composition window if they wish.</para>
+
+	<para>See <xref linkend="input"/> for more information on direct manipulation.</para>
+
+    </sect1>
+
+  </chapter>

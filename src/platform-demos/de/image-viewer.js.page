@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="image-viewer.js" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="image-viewer.js" xml:lang="de">
 
   <info>
   <title type="text">Bildbetrachter (JavaScript)</title>
@@ -10,15 +10,15 @@
     <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
     <credit type="author">
       <name>Jonh Wendell</name>
-      <email its:translate="no">jwendell@gnome.org</email>
+      <email>jwendell@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasettii@gmail.com</email>
+      <email>mmcasettii@gmail.com</email>
       <years>2013</years>
     </credit>
   
@@ -50,7 +50,7 @@
 <media type="image" mime="image/png" src="media/image-viewer.png"/>
 
 <section id="anjuta">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
   <p>Before you start coding, you'll need to set up a new project in Anjuta. This will create all of the files you need to build and run the code later on. It's also useful for keeping everything together.</p>
   <steps>
     <item>
@@ -76,7 +76,7 @@
 <section id="classes">
   <title>Klassen in JavaScript</title>
   <p>This is the standard way to define a class in JavaScript:</p>
-  <code mime="application/javascript" style="numbered">
+  <code mime="application/javascript" style="numbered"><![CDATA[
 function MyClass () {
   this._init ();
 }
@@ -97,7 +97,7 @@ MyClass.prototype = {
     print (this.propertyB);
   }
 
-}</code>
+}]]></code>
   <p>This defines a class called <code>MyClass</code>. Let's go through each part of the class definition:</p>
   <steps>
     <item>
@@ -120,11 +120,11 @@ MyClass.prototype = {
   </steps>
 
   <p>Now that MyClass has been defined, we can play with it:</p>
-  <code mime="application/javascript" style="numbered">
+  <code mime="application/javascript" style="numbered"><![CDATA[
 var o = new MyClass ();
 o.aMethod ("Hello", "world");
 o.propertyA = "Just changed its value!";
-o.dumpProperties ();</code>
+o.dumpProperties ();]]></code>
   <p>This code creates a new instance of the class called <code>o</code>, runs <code>aMethod</code>, changes <code>propertyA</code> to a different string, and then calls <code>dumpProperties</code> (which outputs the fields).</p>
   <p>Save the code in the <file>main.js</file> and then run it by using
   <guiseq><gui>Run</gui><gui>Execute</gui></guiseq> from the menu or using the toolbar.</p>
@@ -133,7 +133,7 @@ o.dumpProperties ();</code>
 <section id="gtk">
   <title>Eine erste Gtk-Anwendung</title>
   <p>Let's see what a very basic Gtk application looks like in JavaScript:</p>
-  <code mime="application/javascript" style="numbered">
+  <code mime="application/javascript" style="numbered"><![CDATA[
 const Gtk = imports.gi.Gtk;
 
 Gtk.init (null, null);
@@ -141,7 +141,7 @@ Gtk.init (null, null);
 var w = new Gtk.Window ({title: "Image Viewer Demo"});
 w.show ();
 
-Gtk.main ();</code>
+Gtk.main ();]]></code>
   <p>Let's take a look at what's happening:</p>
   <list>
     <item>
@@ -163,7 +163,7 @@ Gtk.main ();</code>
 <section id="classes2">
   <title>Hinzufügen von Klassen</title>
   <p>The proper way of doing Gtk programming is by using classes. Let's rewrite the simple code you just wrote using classes:</p>
-  <code mime="application/javascript" style="numbered">
+  <code mime="application/javascript" style="numbered"><![CDATA[
 const Gtk = imports.gi.Gtk;
 
 function ImageViewer () {
@@ -177,9 +177,9 @@ ImageViewer.prototype = {
   }
 }
 
-Gtk.init (null, null);
+Gtk.init (0, null);
 var iv = new ImageViewer ();
-Gtk.main ();</code>
+Gtk.main ();]]></code>
   <!-- FIXME: Throws an error, "JS ERROR: !!!   Unhandled type int32 releasing GArgument" on Ubuntu 10.10 -->
   <p>Notice that the program is the same; we just moved the window creation code to our own <code>ImageViewer</code> class. The class's constructor calls the <code>_init</code> method, which creates and shows the window. We then create an instance of the class before running the main loop (<code>Gtk.main</code>).</p>
   <p>This code is modular and can be split into multiple files easily. This makes it cleaner and easier to read.</p>
@@ -188,22 +188,22 @@ Gtk.main ();</code>
 <section id="signals">
   <title>Signale</title>
   <p>Signals are one of the key concepts in Gtk programming. Whenever something happens to an object, it emits a signal; for example, when a button is clicked it gives off the <code>clicked</code> signal. If you want your program to do something when that event occurs, you must connect a function (a "signal handler") to that signal. Here's an example:</p>
-  <code mime="application/javascript" style="numbered">
+  <code mime="application/javascript" style="numbered"><![CDATA[
 function button_clicked () {
   print ("you clicked me!");
 }
 var b = new Gtk.Button ({label:"Click me"});
-b.connect ("clicked", button_clicked);</code>
+b.connect ("clicked", button_clicked);]]></code>
   <p>The last two lines create a <code>Gtk.Button</code> called <code>b</code> and connect its <code>clicked</code> signal to the <code>button_clicked</code> function, which is defined above. Every time the button is clicked, the code in the <code>button_clicked</code> function will be executed. It just prints a message here.</p>
   <p>The syntax for connecting any signal to a function is:</p>
-  <code mime="application/javascript">
-object.connect (&lt;signal_name&gt;, &lt;function_to_be_called&gt;);</code>
-  <p>You can find signal definitions for any object in the <link href="https://developer.gnome.org/gtk3/stable/gtkobjects.html">GTK class reference</link>.</p>
+  <code mime="application/javascript"><![CDATA[
+object.connect (<signal_name>, <function_to_be_called>);]]></code>
+  <p>You can find signal definitions for any object in the <link href="http://library.gnome.org/devel/gtk/stable/ch01.html">GTK class reference</link>.</p>
 
   <note>
     <p>You can simplify the code by making use of an inline function definition:</p>
-    <code mime="application/javascript">
-b.connect ("clicked", function () { print ("you clicked me!"); });</code>
+    <code mime="application/javascript"><![CDATA[
+b.connect ("clicked", function () { print ("you clicked me!"); });]]></code>
   </note>
 
 </section>
@@ -224,9 +224,9 @@ b.connect ("clicked", function () { print ("you clicked me!"); });</code>
   <p>There is a graphical user interface designer called <app>Glade</app> integrated in <app>Anjuta</app> which makes UI design really easy. For this simple example, however, we will code everything manually.</p>
   </note>
   <p>Let's add the box and widgets to the window. Insert the following code into the <code>_init</code> method, immediately above the <code>this.window.show</code> line:</p>
-  <code mime="application/javascript" style="numbered">
+  <code mime="application/javascript" style="numbered"><![CDATA[
 var main_box = new Gtk.Box ({orientation: Gtk.Orientation.VERTICAL, spacing: 0});
-this.window.add (main_box);</code>
+this.window.add (main_box);]]></code>
   <p>The first line creates a <code>Gtk.Box</code> called <code>main_box</code> and sets two of its properties: the <code>orientation</code> is set to vertical (so widgets are arranged in a column), and the <code>spacing</code> between the widgets is set to 0 pixels. The next line then adds the newly-created <code>Gtk.Box</code> to the window.</p>
   <p>So far the window only contains an empty <code>Gtk.Box</code>, and if you run the program now you will see no changes at all (the <code>Gtk.Box</code> is a transparent container, so you can't see that it's there).</p>
 </section>
@@ -234,17 +234,17 @@ this.window.add (main_box);</code>
 <section id="packing2">
   <title>Packen: Hinzufügen von Widgets zum Container</title>
   <p>To add some widgets to the <code>Gtk.Box</code>, insert the following code directly below the <code>this.window.add (main_box)</code> line:</p>
-  <code mime="application/javascript" style="numbered">
+  <code mime="application/javascript" style="numbered"><![CDATA[
 this.image = new Gtk.Image ();
-main_box.pack_start (this.image, true, true, 0);</code>
+main_box.pack_start (this.image, true, true, 0);]]></code>
   <p>The first line creates a new <code>Gtk.Image</code> called <code>image</code>, which will be used to display an image file. Then, the image widget is added (<em>packed</em>) into the <code>main_box</code> container using <code>Gtk.Box</code>'s <link href="http://library.gnome.org/devel/gtk/stable/GtkBox.html#gtk-box-pack-start"><code>pack_start</code></link> method.</p>
   <p><code>pack_start</code> takes 4 arguments: the widget that is to be added to the <code>Gtk.Box</code> (<code>child</code>); whether the <code>Gtk.Box</code> should grow larger when the new widget is added (<code>expand</code>); whether the new widget should take up all of the extra space created if the <code>Gtk.Box</code> gets bigger (<code>fill</code>); and how much space there should be, in pixels, between the widget and its neighbors inside the <code>Gtk.Box</code> (<code>padding</code>).</p>
   <p>Gtk containers (and widgets) dynamically expand to fill the available space, if you let them. You don't position widgets by giving them a precise x,y-coordinate location in the window; rather, they are positioned relative to one another. This makes handling window resizing much easier, and widgets should automatically take a sensible size in most situations.</p>
   <p>Also note how the widgets are organized in a hierarchy. Once packed in the <code>Gtk.Box</code>, the <code>Gtk.Image</code> is considered a <em>child</em> of the <code>Gtk.Box</code>. This allows you to treat all of the children of a widget as a group; for example, you could hide the <code>Gtk.Box</code>, which would also hide all of its children at the same time.</p>
   <p>Now insert these two lines, below the two you just added:</p>
-  <code mime="application/javascript" style="numbered">
+  <code mime="application/javascript" style="numbered"><![CDATA[
 var open_button = new Gtk.Button ({label: "Open a picture..."});
-main_box.pack_start (open_button, false, false, 0);</code>
+main_box.pack_start (open_button, false, false, 0);]]></code>
   <p>These lines are similar to the first two, but this time they create a <code>Gtk.Button</code> and add it to <code>main_box</code>. Notice that we are setting the <code>expand</code> argument (the second one) to <code>false</code> here, whereas it was set to <code>true</code> for the <code>Gtk.Image</code>. This will cause the image to take up all available space and the button to take only the space it needs. When you maximize the window, the button size will remain the same, but the image size will increase, taking up all of the rest of the window.</p>
   <p>Finally, we must change the <code>this.window.show ();</code> line to read:</p>
   <code>this.window.show_all ();</code>
@@ -255,8 +255,8 @@ main_box.pack_start (open_button, false, false, 0);</code>
   <title>Loading the image: Connecting to the button's <code>clicked</code> signal</title>
   <p>When the user clicks on the <gui>Open</gui> button, a dialog should appear so that the user can choose a picture. Once chosen, the picture should be loaded and shown in the image widget.</p>
   <p>The first step is to connect the <code>clicked</code> signal of the button to a signal handler function, which we call <code>_openClicked</code>. Put this code immediately after the <code>var open_button = new Gtk.Button</code> line where the button was created:</p>
-  <code mime="application/javascript">
-open_button.connect ("clicked", Lang.bind (this, this._openClicked));</code>
+  <code mime="application/javascript"><![CDATA[
+open_button.connect ("clicked", Lang.bind (this, this._openClicked));]]></code>
   <p>We are using the <em>Lang</em> JavaScript helper here. It allows us to connect a <em>class method</em> to the signal, rather than a plain function (without a class) which we had used before for the window's <code>hide</code> signal. Don't worry about this for now, it's just a technical detail. For it to work, you also need to put the following line at the top of the file:</p>
   <code mime="application/javascript">const Lang = imports.lang;</code>
 </section>
@@ -264,7 +264,7 @@ open_button.connect ("clicked", Lang.bind (this, this._openClicked));</code>
 <section id="loading3">
   <title>Loading the image: Writing the signal's callback</title>
   <p>Now we can create the <code>_openClicked()</code> method. Insert the following into the <code>ImageViewer.prototype</code> code block, after the <code>_init</code> method (and not forgetting the comma):</p>
-    <code mime="application/javascript" style="numbered">
+    <code mime="application/javascript" style="numbered"><![CDATA[
   _openClicked: function () {
     var chooser = new Gtk.FileChooserDialog ({title: "Select an image",
                                               action: Gtk.FileChooserAction.OPEN,
@@ -282,7 +282,7 @@ open_button.connect ("clicked", Lang.bind (this, this._openClicked));</code>
       this.image.file = chooser.get_filename ();
 
     chooser.destroy ();
-  }</code>
+  }]]></code>
   <p>This is a bit more complicated than anything we've attempted so far, so let's break it down:</p>
   <list>
     <item>
@@ -333,7 +333,7 @@ open_button.connect ("clicked", Lang.bind (this, this._openClicked));</code>
    </item>
    <item>
    <p>Allow the user to load images from network shares, scanners, and other more complicated sources.</p>
-   <p>You can use <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> to handle network file transfers and the like, and <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> to handle scanning.</p>
+   <p>You can use <link href="http://library.gnome.org/devel/gio/unstable/">GIO</link> to handle network file tranfers and the like, and <link href="http://library.gnome.org/devel/gnome-scan/unstable/">GNOME Scan</link> to handle scanning.</p>
    </item>
   </list>
 </section>

@@ -1,9 +1,7 @@
 from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Calculator", application=app)
         self.set_default_size(350, 200)
@@ -21,17 +19,17 @@ class MyWindow(Gtk.ApplicationWindow):
         # a grid
         grid = Gtk.Grid()
         grid.set_row_spacing(5)
-
+        
         # to attach the entry
         grid.attach(self.entry, 0, 0, 1, 1)
-
+        
         # the labels for the buttons
-        buttons = [7, 8, 9, '/',
-                   4, 5, 6, '*',
-                   1, 2, 3, '-',
-                   'C', 0, '=', '+']
-
-        # each row is a ButtonBox, attached to the grid
+        buttons = [ 7, 8, 9, '/',
+                    4, 5, 6, '*',
+                    1, 2, 3, '-',
+                    'C', 0, '=', '+' ]
+        
+        # each row is a ButtonBox, attached to the grid            
         for i in range(4):
             hbox = Gtk.ButtonBox.new(Gtk.Orientation.HORIZONTAL)
             hbox.set_spacing(5)
@@ -42,7 +40,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 button.set_can_focus(False)
                 button.connect("clicked", self.button_clicked)
                 hbox.add(button)
-
+            
         # some variables for the calculations
         self.first_number = 0
         self.second_number = 0
@@ -56,25 +54,25 @@ class MyWindow(Gtk.ApplicationWindow):
     def button_clicked(self, button):
         # for the operations
         if button.get_label() == '+':
-            self.counter += 1
+            self.counter += 1 
             if self.counter > 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "plus"
         elif button.get_label() == '-':
-            self.counter += 1
+            self.counter += 1 
             if self.counter > 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "minus"
         elif button.get_label() == '*':
-            self.counter += 1
+            self.counter += 1 
             if self.counter > 1:
                 self.do_operation()
             self.entry.set_text('0')
             self.operation = "multiplication"
         elif button.get_label() == '/':
-            self.counter += 1
+            self.counter += 1 
             if self.counter > 1:
                 self.do_operation()
             self.entry.set_text('0')
@@ -98,7 +96,7 @@ class MyWindow(Gtk.ApplicationWindow):
                 number = 0
             else:
                 number = int(self.entry.get_text())
-            number = number * 10 + new_digit
+            number = number * 10 + new_digit            
             if self.counter == 0:
                 self.first_number = number
             else:
@@ -127,10 +125,8 @@ class MyWindow(Gtk.ApplicationWindow):
             self.second_number = 0
             self.counter = 0
             self.entry.set_text('error')
-
-
+            
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 

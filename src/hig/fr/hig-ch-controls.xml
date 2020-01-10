@@ -1,0 +1,1658 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="controls" lang="fr">
+  <title>Contrôles</title>
+
+  <sect1 id="controls-usage">
+    <title>Utilisation efficace des contrôles</title>
+
+    <para>GNOME fournit un ensemble de contrôles, également connus sous le nom de « widgets », qui permet aux utilisateurs d'interagir avec vos applications. Utiliser ces contrôles de manière appropriée et ne pas modifier leur comportement standard est important. Cela permet aux utilisateurs de prévoir les effets de leurs actions et par conséquent d'apprendre à utiliser votre application plus rapidement et efficacement. Les contrôles ne se comportant pas de manière standard, en questionnant l'utilisateur sur la façon dont fonctionne votre application, cassent ses automatismes mentaux et diluent la signification du langage visuel de l'interface.</para>
+  </sect1>
+
+  <sect1 id="controls-terminology">
+    <title>Terminologie</title>
+
+    <para>Bien qu'ils soient connus sous le nom de « widgets » dans les API GNOME et la documentation des développeurs, n'utilisez pas ce terme dans l'interface ou la documentation utilisateur. Appelez-les par leur nom spécifique (par exemple, « boutons » ou « menus ») ou par le nom générique « contrôles ».</para>
+  </sect1>
+
+  <sect1 id="controls-sensitivity">
+    <title>Sensibilité</title>
+
+    <!--      <remark>Do we really want to include GTK calls here? -Seth</remark> -->
+
+    <!--	 CFB have removed the GTK calls for the basic stuff, although left it in for the 
+		 more obscure things that hackers currently aren't doing -->
+
+    <para>Parfois il n'y a pas de raison de permettre à l'utilisateur d'interagir avec un contrôle dans un contexte donné, par exemple appuyer sur le bouton <guilabel>Coller</guilabel> lorsque le presse-papier est vide. Dans ces cas-là, rendez le contrôle insensible pour minimiser le risque d'une erreur utilisateur. Lorsque le contrôle est insensible, il apparaît estompé et ne peut pas recevoir le focus, même si certaines technologies d'assistance comme les lecteurs d'écran sont quand même capables de les détecter et de les signaler.</para>
+
+    <para>Il est souvent préférable de rendre un contrôle insensible plutôt que de le masquer complètement. De cette façon l'utilisateur peut prendre connaissance de fonctionnalités qu'il utilisera peut-être plus tard même si elle n'est pas encore disponible.</para>
+
+    <figure>
+      <title>Deux cases à cocher : sensible (en haut) et insensible (en bas)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="76" fileref="images/controls-sensitivity.png" format="PNG" width="258"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-sensitivity.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Screenshot showing the visual appearance of sensitive and
+          insensitive check box controls</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!--
+      <para>Sometimes, however, a large group of controls always become insensitive or sensitive simultaneously as the direct result of user action, such as checking a box or pressing a button.  In this case it is sometimes better to hide or show the controls (for example, using the <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkwidget.html#GTK-WIDGET-SHOW"><function>gtk_widget_show()</function></ulink> and <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkwidget.html#GTK-WIDGET-HIDE"><function> gtk_widget_hide()</function></ulink> functions, for GTK controls) rather than making them sensitive or insensitive.  For example, if all the controls on a <link linkend="controls-notebooks">notebook tab</link> are insensitive, it is usually better to hide the tab altogether.</para>
+-->
+
+    <!-- CB-Ed: Hmm. Not sure about the preceding paragraph and the suggestion it makes.  Usually you don't want to change an interface as drastically as removing an entire tab when a user clicks a button - it's jarring, first of all, and secondly, you want to keep the UI as consistent as possible: one of the reasons for disabling, say, a menu item, and not just making it disappear when it is unavailable, is to train the user's eye and behavior to know where certain things are located. You may want to back this up or verify the suggestion's strength before finalizing the HIG. -->
+
+    <sect2 id="controls-locked">
+      <title>Contrôles verrouillés</title>
+
+      <para>Dans un environnement où le réseau est administré, comme dans un laboratoire d'informatique, les administrateurs système souhaitent habituellement « verrouiller » les valeurs de certains paramètres, voire les supprimer complètement de l'interface utilisateur. Il leur est ainsi plus facile de résoudre tout problème que les utilisateurs pourraient rencontrer. Dans GNOME, la manière correcte de faire cela pour l'administrateur système est de restreindre l'accès en écriture aux clés GConf correspondant à ces réglages.</para>
+
+      <para>Lorsque vous concevez une application, prenez en considération les paramètres qu'un administrateur système pourrait vouloir rendre indisponibles aux utilisateurs. Cela comprend habituellement :</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>les paramètres qui, mal configurés, empêcheraient l'application de fonctionner complètement. Par exemple, les paramètres du serveur mandataire pour une application réseau.</para>
+        </listitem>
+
+        <listitem>
+          <para>les paramètres qui pourraient être référencés dans des ressources en réseau. Par exemple, le répertoire des modèles dans une application de bureautique dans lequel les fournitures de bureau partagées, telles que les feuilles d'en-tête de fax, peuvent être enregistrées.</para>
+        </listitem>
+
+        <listitem>
+          <para>les paramètres qui personnalisent l'interface utilisateur, autres que ceux nécessaires pour l'accessibilité. Par exemple, certaines options de personnalisation de menu, clavier ou barre d'outils.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Votre application doit décider, chaque fois que ces contrôles sont affichés, s'ils sont ou ne sont pas disponibles pour modification selon l'état en écriture de la clé GConf qui contient leur valeur. Dans les cas les plus simples, votre code pour chaque contrôle pourrait ressembler à l'exemple ci-dessous.</para>
+
+      <!-- CB-Ed: Again, reconsider who your readers are.  Some may not be comfortable with terms such as "runtime."  Use language that is more inclusive; you may reword the first sentence to say "...decide when you start up your machine whether..." or something along those lines. -->
+
+      <example>
+        <title>Exemple de fragment de code montrant comment rendre insensible un contrôle GConf verrouillé</title>
+
+        <programlisting>if (!gconf_key_is_writable (http_proxy))
+        gtk_widget_set_sensitive (http_proxy_field, FALSE);</programlisting>
+      </example>
+
+      <para>Incorporez dans votre guide d'utilisateur, à l'adresse des administrateurs système, un chapitre expliquant quels paramètres peuvent être verrouillés et leurs clés GConf correspondantes.</para>
+
+      <para>Expliquez à l'utilisateur pourquoi ces contrôles ne peuvent pas être modifiés en ce moment. Vous pouvez le faire avec du texte statique, des infobulles ou de l'aide en ligne selon les cas. Par exemple :</para>
+
+      <figure>
+        <title>Exemple de boîte de dialogue contenant des contrôles verrouillés</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="216" fileref="images/controls-locked.png" format="PNG" width="475"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/controls-locked.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>Screenshot showing disabled proxy controls in a web
+            browser's property dialog, under the caption "Only the
+            system administrator can change these settings"</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <!-- CB-Fig: Figure is good, add callouts, taking some text from the caption, and make caption more succinct: "Dialog with locked settings/controls."  When referring to figures, use the figure number, preferably with the following format: chapter_no - figure_no so that figures can be referred to from outside its housing chapter. -->
+
+      <para>Notez que, bien qu'ils ne puissent pas être modifiés, ces paramètres restent visibles et sélectionnables ; ils peuvent être copiés dans le presse-papier.</para>
+
+      <!-- CB-Ed: Second sentence in above paragraph: "In some cases?"  Please provide solid examples and reasons for why you suggest such a thing as hiding "affected controls."  -->
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-entry">
+    <title>Champs de saisie de texte</title>
+
+    <para>Les champs de saisie de texte sont utilisés pour saisir une ou plusieurs lignes de texte. Dans GTK 2, le contrôle <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkentry.html">GtkEntry</ulink> est utilisé pour les entrées texte sur une seule ligne et <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtktextview.html">GtkTextView</ulink> pour les entrées texte sur plusieurs lignes.</para>
+
+    <!-- CB-Ed: The second and third sentences are baffling.  It seems to be just directed at the developer; it is not inclusive to readers who are not coders.  This probably isn't what you want to get people like visual/UI designers to read and use this guide. -->
+
+    <figure>
+      <title>Champs de saisie mono ou multi-lignes</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="153" fileref="images/controls-text.png" format="PNG" width="545"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-text.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Screenshot of part of a dialog, containing both single and
+          multi-line entry fields</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Dialog "fragment?"  Use callouts.  Succinct caption: "Text fields." or "Single and Multi-line Entry Fields"-->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Étiquetez le champ de saisie avec un intitulé textuel placé au dessus ou à sa gauche en respectant les règles de <link linkend="layout-capitalization">mise en majuscule des phrases</link>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur de donner le focus directement au champ de saisie.</para>
+      </listitem>
+
+      <listitem>
+        <para>Justifiez à droite le contenu des champs de saisie qui ne sont utilisés que pour des entrées numériques, à moins que la convention de la langue locale ne requière autrement. Ceci est utile dans les fenêtres dans lesquelles l'utilisateur peut vouloir comparer deux valeurs numériques dans la même colonne de contrôles. Dans ce cas, assurez-vous que les bords de droite des contrôles concernés sont également alignés.</para>
+      </listitem>
+
+      <listitem>
+        <para>Lorsque l'utilisateur donne le focus à un champ de saisie en utilisant le clavier, placez le curseur de texte à la fin du texte existant et mettez en surbrillance son contenu (mais n'écrasez pas la sélection existante du presse-papier PRINCIPAL). Cela facilite l'effacement de ce texte ou l'ajout d'un nouveau texte à la suite, qui sont les deux opérations les plus courantes effectuées sur les champs de saisie.</para>
+      </listitem>
+
+      <listitem>
+        <para>Dimensionnez les champs de saisie texte d'après la longueur prévisible de l'entrée. Cela donne une information visuelle utile sur la quantité de données attendue et structure la boîte de dialogue en la rendant plus facile à parcourir. Ne donnez pas la même longueur à tous les champs juste pour faire que tout soit gentiment aligné.</para>
+      </listitem>
+
+      <!-- CB-Ed: Try to cluster input text fields so that fields of similar "types" end up together, and end up having uniform sizes.  Usually you want to size text entry fields to the width of the largest input expected in each clustering.  A clean and orderly visual flow is indeed important for the user; that is, line things up so that "everything line[s] up nicely" where possible.  The figure (3) actually shows this well. -->
+
+      <listitem>
+        <para>Dans une <link linkend="windows-utility">fenêtre Propriétés ou Préférences</link> à application instantanée, validez le contenu d'un champ de saisie lorsqu'il perd le focus ou lorsque la fenêtre est fermée et non pas à chaque pression de touche. Exception : si le champ accepte seulement un nombre fixe de caractères, tel qu'un code de couleur hexadécimal, validez et appliquez le changement dès que le nombre de caractères a été saisi.</para>
+      </listitem>
+
+      <listitem>
+        <para>Fournissez un texte statique comme exemple pour les boîtes de texte qui ont besoin d'une entrée dans un format particulier ou avec une unité de mesure particulière. Par exemple :</para>
+
+        <figure>
+          <title>Champ de saisie texte avec un texte statique comme exemple</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="31" fileref="images/controls-text-prompt.png" format="PNG" width="130"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-text-prompt.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>A text entry field in which the user must input a time,
+              with the label "hh:mm" beside it to indicate the
+              required format</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <!-- CB-Fig: Good fig, provide callouts to "static text prompt," shorten caption and fix fig no. -->
+      </listitem>
+
+      <listitem>
+        <para>Lorsque c'est possible, mettez un contrôle supplémentaire ou alternatif qui restreint les valeurs d'entrée à la plage de validité. Par exemple, placez une <link linkend="controls-spin-boxes">zone de sélection numérique</link> ou un <link linkend="controls-sliders">un curseur dans une glissière</link> si l'entrée requise se situe dans une plage fixe d'entiers ou donnez accès à un contrôle <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/gtkcalendar.html">GtkCalendar</ulink> si l'utilisateur doit saisir une date valide :</para>
+
+        <figure>
+          <title>Un champ de saisie texte dans lequel l'utilisateur doit saisir une date avec un bouton à son côté qui fait apparaître un contrôle GtkCalendar pour simplifier la tâche</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="41" fileref="images/controls-text-choose.png" format="PNG" width="298"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-text-choose.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>A text entry field in which the user must input a date,
+              with a button labelled "Choose" beside it that opens a
+              GtkCalendar control to simplify the task</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <!-- CB-Fig: Provide a larger image including examples of "spinbox" or "slider." Same comments apply here as to all figuers in the HIG: callouts, shorter caption, figure number. -->
+
+        <para>C'est moins sujet à erreur que de présupposer que l'utilisateur saisira son entrée texte dans un quelconque format donné. Vous pouvez néanmoins toujours fournir un contrôle champ de saisie pour les utilisateurs experts familiers du format exigé.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si vous mettez en place un champ de saisie qui n'accepte que certaines frappes de touche dans le contexte de la tâche, comme des nombres, émettez le signal d'avertissement du système lorsque l'utilisateur essaye de saisir un caractère non valide. Si l'utilisateur saisit trois caractères non valides consécutifs, affichez une <link linkend="windows-alert">alerte</link> qui explique quelles sont les entrées valides pour ce champ de texte.</para>
+      </listitem>
+
+      <listitem>
+        <para>Le clignotement du curseur et la durée de son cycle sont globalement définis par les paramètres X « gtk-cursor-blink » et « gtk-cursor-blink-time ». Les contrôles de boîte à outils standard utilisent ces paramètres qui ne doivent être modifié à aucun prix dans les applications. Tout nouveau contrôle avec des curseurs de texte se doit de respecter ces valeurs globales.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="controls-text-return">
+      <title>Comportement de la touche Entrée</title>
+
+      <para>Normalement, l'appui sur la touche <keycap>Entrée</keycap> dans une boîte de dialogue doit activer le bouton par défaut de la boîte de dialogue, à moins que le contrôle qui possède le focus ne l'utilise pour son propre usage. Pour activer cette dernière propriété, vous devez paramétrer la propriété <ulink url="http://developer.gnome.org/doc/API/2.0/gtk/GtkEntry.html#GtkEntry--activates-default"><function>activates-default</function></ulink> de la plupart des champs de saisie à VRAI (TRUE) (notez que GtkTextView ne possède pas un tel réglage — un appui sur <keycap>Entrée</keycap> insère toujours une nouvelle ligne).</para>
+
+      <para>Cependant si votre boîte de dialogue contient plusieurs champs de saisie habituellement remplis dans l'ordre, par exemple <guilabel>Nom</guilabel>, <guilabel>Adresse</guilabel> et <guilabel>Numéro de téléphone</guilabel>, songez à paramétrer la propriété <function>activates-default</function> de ces champs de saisie à FAUX (FALSE). Un appui sur <keycap>Entrée</keycap> déplacera alors le focus vers le contrôle suivant et empêchera l'utilisateur de fermer accidentellement la fenêtre avant d'avoir saisi toutes les informations voulues.</para>
+
+      <para>Comme sécurité supplémentaire, pensez à de ne pas définir de bouton par défaut dans une boîte de dialogue tant que le minimum requis d'informations n'a pas été saisi, par exemple, à la fois un nom d'utilisateur et un mot de passe dans une boîte de dialogue de connexion. Encore une fois, dans ce cas vous devez déplacer le focus vers le contrôle suivant lorsque l'utilisateur appuie sur <keycap>Entrée</keycap> plutôt que de l'ignorer.</para>
+
+      <para>Utilisez <keycombo><keycap>Ctrl</keycap><keycap>Entrée</keycap></keycombo> en tant que raccourci clavier si vous voulez activer le bouton par défaut lorsqu'un contrôle GtkTextView possède le focus.</para>
+
+      <note>
+        <title>Note</title>
+
+        <para>Actuellement, Gtk ne déplace pas le focus vers le contrôle suivant quand la touche <keycap>Entrée</keycap> est pressée et que <function>activates-default</function> soit défini égal à FALSE (FAUX) ou qu'il n'y ait pas de bouton par défaut dans la fenêtre. Comme, pour l'instant, <keycap>Entrée</keycap> ne fait rien dans ces situations, souvenez-vous donc qu'il vous appartient de gérer le déplacement du focus par vous-même.</para>
+      </note>
+    </sect2>
+
+    <sect2 id="controls-text-tab">
+      <title>Comportement de la touche Tab</title>
+
+      <para>Habituellement, l'appui sur la touche <keycap>Tab</keycap> dans un champ de saisie mono-ligne déplace le focus vers le contrôle suivant et, dans un champ de saisie multi-lignes, insére un caractère de tabulation. L'appui sur <keycombo><keycap>Ctrl</keycap><keycap>Tab</keycap></keycombo> dans un champ de saisie multi-lignes déplace le focus vers le contrôle suivant.</para>
+
+      <para>Si vous avez besoin d'un raccourci clavier qui insère un caractère tabulation dans un champ de saisie mono-ligne, utilisez <keycombo><keycap>Ctrl</keycap><keycap>Tab</keycap></keycombo>. Cependant, vous ne trouverez probablement pas beaucoup de situations où cela est utile.</para>
+
+      <remark>There is a patch in bugzilla (bugid=<ulink url="http://bugzilla.gnome.org/show_bug.cgi?id=53763">53763</ulink>)
+      that adds an <function>allow_tab_characters</function> function to
+      GtkEntry controls. This allows you to specify on a per-control basis
+      whether <keycap>Tab</keycap> should insert a tab character or not. It is
+      currently not known whether this patch is likely to make it into a
+      future version of gtk.</remark>
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-spin-boxes">
+    <title>Zone de sélection numérique</title>
+
+    <para>Une zone de sélection numérique est une boîte texte acceptant une plage de valeurs. Elle contient deux boutons fléchés qui permettent d'augmenter ou de diminuer la valeur actuelle d'une quantité fixée.</para>
+
+    <figure>
+      <title>Exemple de zone de sélection numérique</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="32" fileref="images/controls-spin-box.png" format="PNG" width="204"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-spin-box.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>A simple spin box used to specify the spacing between
+          applets on a panel</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Callout, shorten caption, fig no -->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Utilisez les zones de sélection numérique uniquement pour des entrées numériques. Utilisez une liste ou un menu d'options lorsque vous avez besoin que l'utilisateur choisisse parmi un ensemble fixé de données d'un autre type.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez une zone de sélection numérique si la connaissance de la valeur numérique est significative ou utile pour l'utilisateur et que la plage des entrées valides est illimitée ou fixée à une extrémité seulement. Par exemple, un contrôle pour définir le nombre d'itérations de certaines actions ou une valeur de délai. Si la plage est bornée aux deux extrémités ou que les valeurs numériques sont arbitraires (par exemple, un contrôle de volume), utilisez un contrôle avec un curseur dans une glissière à la place.</para>
+      </listitem>
+
+      <listitem>
+        <para>Donnez un nom à la zone de sélection numérique à l'aide d'un texte au dessus ou à sa gauche en utilisant la règle de <link linkend="layout-capitalization">mise en majuscule des phrases</link>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur de donner le focus directement à la zone de sélection numérique.</para>
+      </listitem>
+
+      <listitem>
+        <para>Justifiez à droite le contenu des zones de sélection numérique à moins que la convention de la langue locale ne requière autrement. Ceci est utile dans les fenêtres dans lesquelles l'utilisateur peut vouloir comparer deux valeurs numériques dans la même colonne de contrôles. Dans ce cas, assurez-vous que les bords de droite des contrôles concernés sont également alignés. </para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-sliders">
+    <title>Glissières</title>
+
+    <para>Un curseur dans une glissière permet à l'utilisateur de choisir rapidement une valeur dans une plage fixée et ordonnée ou d'augmenter ou diminuer la valeur actuelle. Le contrôle ressemble au type de curseur que vous pouvez trouver sur une table de mixage audio ou un égaliseur graphique Hi-Fi. Avec gtk, vous implémentez un curseur dans une glissière en utilisant les contrôles GtkHScale ou GtkVScale pour les glissières horizontales ou verticales respectivement.</para>
+
+    <figure id="controls-slider-figure">
+      <title>Un simple contrôle à glissière</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="27" fileref="images/controls-slider.png" format="PNG" width="208"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-slider.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>A slider control used to change the stereo audio balance
+          between left and right speakers</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Utilisez un curseur dans une glissière lorsque :</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>l'ajustement de la valeur par rapport à sa valeur actuelle est plus important que de choisir une valeur précise. Par exemple, un contrôle de volume : l'utilisateur moyen pense habituellement à monter ou descendre le volume pour rendre le son plus fort ou plus faible plutôt que de régler le pic du niveau de sortie à une valeur donnée en décibels,</para>
+          </listitem>
+
+          <listitem>
+            <para>il est utile à l'utilisateur de contrôler le taux de variation de la valeur en temps réel. Par exemple, pour contrôler les effets d'un changement de couleur dans une fenêtre d'aperçu en temps réel lorsqu'il déplace les curseurs dans les glissières RVB.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Donnez un nom à la glissière à l'aide d'un texte au dessus ou à sa gauche en respectant les règles de <link linkend="layout-capitalization">mise en majuscule des phrases</link>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur de donner directement le focus à la glissière.</para>
+      </listitem>
+
+      <listitem>
+        <para>Indiquez les valeurs significatives le long de la glissière avec du texte ou des marques de graduation. Par exemple, les points gauche, droite et central pour un contrôle de balance audio sur la <xref linkend="controls-slider-figure"/>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Pour de grandes plages d'entiers (plus de 20 environ) et pour des plages de nombres en virgule flottante, pensez à disposer une boîte de texte ou une zone de sélection numérique liée à la position du curseur dans la glissière. Ainsi, l'utilisateur pourra choisir rapidement ou ajuster finement le réglage plus facilement qu'il ne le ferait avec le curseur du contrôle glissière seul.</para>
+
+        <figure>
+          <title>Contrôles glissière avec des zones de sélection numérique associées</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="85" fileref="images/controls-slider-spinbox.png" format="PNG" width="356"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-slider-spinbox.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Three slider controls used to change RGB values, each
+              with a spinbox beside them to facilitate direct numeric entry</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-buttons">
+    <title>Boutons</title>
+
+    <para>Un bouton lance une action lorsque l'utilisateur clique dessus.</para>
+
+    <figure>
+      <title>Boutons classiques dans une boîte de dialogue modale</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="47" fileref="images/controls-buttons.png" format="PNG" width="190"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-buttons.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>OK and Cancel buttons as found in a modal dialog</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>En anglais, nommez tous les boutons avec un verbe à l'impératif en utilisant les règles d'emploi <link linkend="layout-capitalization">des majuscules dans les titres</link> (en français, utilisez l'infinitif et ne mettez pas de majuscules sauf en début de phrase ou pour les noms propres). Par exemple <guilabel>Save (Enregistrer)</guilabel>, <guilabel>Sort (Trier)</guilabel> ou <guilabel>Update Now (Mettre à jour)</guilabel>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur de donner le focus directement au bouton à partir du clavier.</para>
+      </listitem>
+
+      <listitem>
+        <para>Après avoir appuyé sur un bouton, l'utilisateur s'attend à voir le résultat de son action dans la seconde, par exemple la fermeture de la fenêtre ou l'ouverture d'une autre. Consultez le <xref linkend="feedback"/> pour des indications sur ce qu'il faut faire lorsque l'application ne peut pas répondre rapidement.</para>
+      </listitem>
+
+      <!-- CB-Ed: Do you use ms in other parts of the HIG?  Might want to just use ms and not s as a measure, to keep things consistent and in case you need to finer granualarity than this later -->
+
+      <listitem>
+        <para>Mettez des points de suspension (...) à la fin de l'étiquette si l'action nécessite des entrées supplémentaires de l'utilisateur avant d'être prise en compte. Par exemple, <guilabel>Enregistrer sous...</guilabel> ou <guilabel>Rechercher...</guilabel>. N'ajoutez pas de points de suspension aux commandes comme <guilabel>Propriétés</guilabel>, <guilabel>Préférences</guilabel> ou <guilabel>Paramètres</guilabel> car elles ouvrent des fenêtres qui ne <emphasis>nécessitent</emphasis> pas d'entrées supplémentaires pour être prises en compte.</para>
+      </listitem>
+
+      <listitem>
+        <para>Une fois qu'une boîte de dialogue est affichée, ne déplacez pas le bouton par défaut d'un bouton vers un autre. Vous pouvez cependant ajouter ou supprimer la propriété par défaut à un même bouton, si cela aide à éviter une erreur de l'utilisateur. Changer de bouton par défaut peut rendre confus et inefficace l'interface, plus particulièrement pour les utilisateurs qui utilisent des technologies d'assistance.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si votre bouton peut afficher du texte, une icône ou les deux, choisissez l'étiquette à afficher au moment de l'exécution selon les préférences utilisateur dans les menus GNOME et la boîte de dialogue Préférences de la barre d'outils. Cependant vous pouvez ignorer cette préférence s'il n'y a pas d'icône adaptée pour décrire graphiquement l'action du bouton, par exemple.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'utilisez pas plus d'une ou deux largeurs différentes de boutons dans la même fenêtre et donnez la même hauteur à tous. Vous donnerez ainsi une apparence visuelle uniforme agréable à votre fenêtre, ce qui la rendra plus facile à utiliser.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'associez pas d'action à un double-clic ou à un clic-droit sur un bouton. Il est peu probable que les utilisateurs découvrent ces actions, et s'ils le faisaient, leurs attentes des autres boutons du bureau en serait perturbée.</para>
+      </listitem>
+
+      <listitem>
+        <para>Rendez insensibles les boutons non valides plutôt que d'afficher un message d'erreur lorsque l'utilisateur clique dessus.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Dans une boîte de dialogue, un seul bouton peut être le bouton par défaut ; il est affiché avec une bordure différente et est activé par un appui sur la touche <keycap>Entrée</keycap>. C'est très souvent le bouton <guibutton>Valider</guibutton> ou équivalent. Cependant si l'appui sur ce bouton peut par erreur faire perdre des données, ne paramétrez pas de bouton par défaut pour la fenêtre. Ne configurez pas le bouton <guibutton>Annuler</guibutton> comme bouton par défaut à la place. Consultez la <xref linkend="default-buttons"/> pour plus d'informations.</para>
+
+    <!-- CB-Fig: Add a figure here to illustrate a default button. -->
+
+    <para>S'il n'y a pas de raison d'avoir un bouton par défaut tant que plusieurs champs n'ont pas été correctement remplis dans la boîte de dialogue — par exemple les champs <guilabel>Nom d'utilisateur</guilabel> et <guilabel>Mot de passe</guilabel> dans une boîte de dialogue de connexion — ne paramétrez le bouton par défaut que lorsqu'ils sont tous deux complétés.</para>
+  </sect1>
+
+  <sect1 id="controls-check-boxes">
+    <title>Cases à cocher</title>
+
+    <para>Les cases à cocher sont utilisées pour afficher ou modifier un paramètre. Leurs deux états, coché ou non coché, sont marqués par la présence ou l'absence d'une coche dans la boîte de l'étiquette.</para>
+
+    <figure>
+      <title>Un groupement typique de cases à cocher</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="140" fileref="images/controls-check-boxes.png" format="PNG" width="143"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-check-boxes.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>A typical group of five check boxes in a dialog</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: callouts. -->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Ne lancez pas d'action lorsqu'un utilisateur clique sur une case à cocher. Toutefois, si elle est utilisée dans une <link linkend="windows-utility">fenêtre Propriétés ou Préférences</link> à application instantanée, mettez immédiatement à jour le réglage représenté par la case à cocher.</para>
+      </listitem>
+
+      <listitem>
+        <para>Un clic dans une case à cocher ne doit pas affecter les valeurs d'un autre contrôle. Cela peut néanmoins rendre sensible ou insensible, masquer ou afficher d'autres contrôles.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si un clic dans une case à cocher affecte la sensibilité d'autres contrôles, placez la case à cocher immédiatement au dessus ou à gauche des contrôles qu'elle affecte. Vous indiquez ainsi que les contrôles dépendent de l'état de la case à cocher.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez les règles de <link linkend="layout-capitalization">mise en majuscule des phrases</link> pour les étiquettes de case à cocher, par exemple <guilabel>Utiliser une police personnalisée</guilabel>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Nommez les cases à cocher de manière à indiquer clairement les effets des deux états coché et non coché, par exemple <guilabel>Afficher les icônes dans les menus</guilabel>. Si cela pose problème, pensez à utiliser deux boutons radio à la place afin que les deux états possèdent leur propre étiquette. Par exemple :</para>
+
+        <figure>
+          <title>La case à cocher est ambiguë (en haut), les boutons radio sont explicites (en bas)</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="70" fileref="images/controls-check-box-ambiguous.png" format="PNG" width="279"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-check-box-ambiguous.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Two images: one showing a single check box ambiguously
+              labelled "Progress bar in left of statusbar", the other
+              making the choice explicit with radio buttons labelled
+              "Left" and "Right" under the heading "Status
+              bar progress indicator position:"</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <para>Dans cet exemple, la case à cocher seule est ambiguë car la position de « l'indicateur de progression » n'est pas clair si la case n'est pas cochée. Deux boutons radio sont préférables dans ce cas : ils clarifient les options.</para>
+      </listitem>
+
+      <!-- CB-Fig: Again, callouts, shorten caption.  The callouts should include other bullet points as well (e.g., access keys).  The referring bullet item is badly phrased.  Perhaps make this the one check box images for the bullets, with different callouts for different bullet points.  -->
+
+      <listitem>
+        <para>Indiquez dans toutes les étiquettes la touche d'accès permettant à l'utilisateur de cocher ou décocher une case directement à partir du clavier.</para>
+      </listitem>
+
+      <listitem>
+        <para>Dans le cas d'une sélection multiple, si la case à cocher représente une propriété définie pour certains objets de la sélection et non définie pour d'autres, affichez la case à cocher dans son état mixte. Par exemple :</para>
+
+        <figure>
+          <title>Cases à cocher (à droite) affichant les propriétés d'une sélection multiple de fichiers dans Nautilus (à gauche)</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="170" fileref="images/controls-check-boxes-mixed.png" format="PNG" width="223"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-check-boxes-mixed.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Check boxes showing the Hidden, Readable and Writeable
+              states of two selected files in Nautilus. Both files are hidden,
+              neither are writeable, but one is readable. The Readable check
+              box is therefore shown in its mixed state.</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <para>In this example, both selected files are hidden (since their
+        filenames start with "."), and the emblems on their icons show
+        that neither file is writeable, but one is readable. The
+        <guilabel>Readable</guilabel> check box is therefore shown in its
+        mixed state. <remark>At time of writing, the exact visual appearance
+        of a mixed state check box in gtk was undecided</remark>.</para>
+
+        <para>Lorsqu'une case à cocher est dans l'état mixte :</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>cliquer une fois sur la boîte cochera la case et appliquera le réglage (si autorisé) à tous les objets de la sélection multiple,</para>
+          </listitem>
+
+          <listitem>
+            <para>cliquer une deuxième fois sur la boîte décochera la case et supprimera ce réglage (si autorisé) pour tous les objets de la sélection multiple,</para>
+          </listitem>
+
+          <listitem>
+            <para>cliquer une troisième fois sur la case remettra la case dans son état mixte et restaurera la valeur originale du réglage pour chaque objet sélectionné.</para>
+          </listitem>
+        </itemizedlist>
+
+        <!-- CB-Ed: Mixed state check boxes are a polemic-ridden issue.  Data to back this up? -->
+      </listitem>
+
+      <listitem>
+        <para>Dénommez un groupement de cases à cocher à l'aide d'un en-tête descriptif au dessus ou à gauche du groupement.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez un cadre autour du groupe si nécessaire, mais souvenez-vous que de l'espace vide fonctionne aussi bien et conduit à une boîte de dialogue à l'aspect moins cloisonné.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne mettez pas plus d'environ huit cases à cocher dans un même groupe. Si vous avez besoin de plus de huit, essayez d'utiliser de l'espacement, des étiquettes d'en-tête ou des cadres pour les diviser en groupes plus petits. Sinon, envisagez l'utilisation d'une liste de cases à cocher à la place — mais, probablement, vous devriez également réfléchir à la manière de simplifier votre interface utilisateur.</para>
+      </listitem>
+
+      <listitem>
+        <para>Essayez d'aligner les groupes de cases à cocher verticalement plutôt qu'horizontalement car cela les rend plus facile à parcourir. N'utilisez des alignements horizontaux ou en tableau que si l'apparence de la fenêtre en est notablement améliorée.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-radio-buttons">
+    <title>Boutons radio</title>
+
+    <para>Les boutons radio sont utilisés en groupe pour faire un choix parmi un ensemble d'options mutuellement exclusives. Un seul bouton radio dans un groupe peut être sélectionné à la fois. Comme pour les cases à cocher, n'utilisez pas les boutons radio pour lancer des actions.</para>
+
+    <figure>
+      <title>Un groupement typique de boutons radio</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="105" fileref="images/controls-radio-buttons.png" format="PNG" width="352"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-radio-buttons.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>A typical group of three radio buttons in a dialog</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>N'utilisez les boutons radio qu'en groupe de deux au minimum ; n'utilisez jamais un bouton radio tout seul. Pour représenter un réglage unique, utilisez une case à cocher ou deux boutons radio, un pour chaque état.</para>
+      </listitem>
+
+      <listitem>
+        <para>Dans un groupe, seul un bouton radio peut être sélectionné à la fois. La seule exception est lorsque le groupe affiche les propriétés d'une sélection multiple lorsqu'un ou plusieurs boutons peuvent être dans leur état mixte.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne lancez pas une action lorsque l'utilisateur clique sur un bouton radio. Mais s'il sont utilisés dans une <link linkend="windows-utility">fenêtre Propriétés ou Préférences</link> à application instantanée, mettez à jour immédiatement le réglage représenté par le bouton radio.</para>
+      </listitem>
+
+      <listitem>
+        <para>Un clic sur un bouton radio ne doit pas affecter les valeurs de tout autre contrôle. Cela peut néanmoins rendre sensible ou insensible, masquer ou afficher d'autres contrôles.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si un clic sur un bouton radio affecte la sensibilité d'autres contrôles, placez le bouton radio immédiatement au dessus ou à gauche des contrôles qu'il affecte. Vous indiquerez ainsi les contrôles qui dépendent de l'état du bouton radio.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez la règle de <link linkend="layout-capitalization">mise en majuscule des phrases</link> pour les étiquettes des boutons radio, par exemple <guilabel>Mouvement alterné</guilabel>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur d'activer le bouton radio directement à partir du clavier.</para>
+      </listitem>
+
+      <!-- CB-Fig: "guilabel" may need to be more generic, like: Button Label, so that people don't get confused when scanning text about literals, particularly because you guys are using a lot of code references and lingo. -->
+
+      <listitem>
+        <para>Dans une sélection multiple, si le bouton radio représente un réglage défini pour certains objets de la sélection et non défini pour d'autres, affichez le bouton radio dans son état mixte. Par exemple :</para>
+
+        <figure>
+          <title>Boutons radio (à droite) affichant les propriétés d'une sélection multiple de formes dans une application de dessin (à gauche)</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="105" fileref="images/controls-radio-button-mixed.png" format="PNG" width="314"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-radio-button-mixed.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Radio buttons showing the Thick, Thin and Dashed drawing
+              styles of two selected shapes in a drawing application. One
+              shape is drawn in the thick style, the other in the dashed
+              style. The Thick and Dashed radio buttons are therefore shown in
+              their mixed state, and the Thin radio button is unset.</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <!-- CB-Fig: Show context for drawing application.  -->
+
+        <para><remark>At time of writing, the exact visual appearance of a
+        mixed state radio button in gtk was undecided</remark>. In this
+        situation, clicking any radio button in the group should set the
+        clicked button, and unset all the others. Thereafter, the group should
+        behave like a normal radio button group— there is no way to reset a
+        radio button to its mixed state by clicking on it. Provide a
+        <guibutton>Reset</guibutton> button or equivalent in the window that
+        allows the previous mixed settings to be restored without closing the
+        window or cancelling the dialog.</para>
+      </listitem>
+
+      <listitem>
+        <para>Dénommez un groupement de boutons radio à l'aide d'un en-tête descriptif au dessus ou à gauche du groupement.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez un cadre autour du groupe si nécessaire, mais souvenez-vous que de l'espace vide fonctionne aussi bien et conduit à une boîte de dialogue à l'aspect moins cloisonné.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne mettez pas plus d'environ huit boutons radio dans un même groupe. Si vous avez besoin de plus de huit, essayez d'utiliser à la place une <link linkend="controls-lists">liste</link> à sélection unique — mais vous devriez également réfléchir à une manière de simplifier votre interface utilisateur.</para>
+      </listitem>
+
+      <listitem>
+        <para>Essayez d'aligner les groupes de boutons radio verticalement plutôt qu'horizontalement car cela les rend plus facile à parcourir.  N'utilisez des alignements horizontaux ou en tableau que si l'apparence de la fenêtre en est notablement améliorée.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-toggle-buttons">
+    <title>Boutons bascules</title>
+
+    <para>Les boutons bascules ressemblent aux <link linkend="controls-buttons">boutons</link> normaux mais ils sont utilisés pour afficher ou modifier un état plutôt que pour initier une action. Les deux états d'un bouton bascule, activé et désactivé, sont respectivement montrés par son apparence « enfoncé » ou « non enfoncé ».</para>
+
+    <figure>
+      <title>Un groupement typique de boutons bascules</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="46" fileref="images/controls-toggle-buttons.png" format="PNG" width="137"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-toggle-buttons.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>A group of four toggle buttons representing a choice of
+          measurement units: inches, centimeters, feet and meters</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: callouts -->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>N'utilisez pas de groupes de boutons bascules dans les boîtes de dialogue à moins que des contraintes d'espace ne vous y obligent ou que vous deviez montrer une certaine cohérence avec une barre d'outils dans votre application. Les <link linkend="controls-check-boxes">cases à cocher</link> ou les <link linkend="controls-radio-buttons">boutons radio</link> sont généralement préférables car ils permettent l'usage d'étiquettes plus descriptives et sont moins facilement confondus avec d'autres types de contrôle.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'utilisez les boutons bascules qu'en groupe afin qu'ils ne soient pas confondus avec des boutons classiques. Le groupe doit se comporter soit comme un groupe de cases à cocher ou comme un groupe de boutons radio selon vos besoins.</para>
+      </listitem>
+
+      <listitem>
+        <para>Indiquez dans toutes les étiquettes de boutons bascules la touche d'accès permettant d'activer ou désactiver le bouton directement à partir du clavier.</para>
+      </listitem>
+
+      <listitem>
+        <para>Dénommez un groupement de boutons bascules à l'aide d'un en-tête descriptif au dessus ou à gauche du groupement comme vous le feriez pour un groupe de cases à cocher ou de boutons radio.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez un cadre autour du groupe de boutons si nécessaire mais souvenez-vous que de l'espace vide fonctionne aussi bien et conduit à une boîte de dialogue à l'aspect moins cloisonné.</para>
+      </listitem>
+
+      <listitem>
+        <para>Essayez d'aligner les groupes de boutons bascules horizontalement plutôt que verticalement. C'est l'apparence normale des boutons bascules dans une barre d'outils ; l'utilisateur est plus habitué à cette disposition.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne laissez pas d'espace entre les boutons bascules d'un groupement, sinon ils risquent de sembler être sans relation ou d'être confondus avec des boutons classiques.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez (en anglais) les règles <link linkend="layout-capitalization">des majuscules dans les titres</link> pour les étiquettes de bouton bascule, par exemple <guibutton>No Wallpaper</guibutton>, <guibutton>Embossed Logo</guibutton>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si votre bouton bascule peut afficher du texte, une icône ou les deux, choisissez l'étiquette à afficher en moment de l'exécution en fonction des préférences utilisateur dans les menus GNOME et la boîte de dialogue Préférences des barres d'outils.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez la même étiquette de texte ou le même graphique pour un bouton bascule, qu'il soit activé ou pas.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si le bouton bascule représente un réglage pour une sélection multiple qui est activé pour certains objets de la sélection et non activé pour les autres, affichez le bouton bascule dans son état mixte. Par exemple :</para>
+
+        <figure>
+          <title>Boutons bascules (à droite) affichant les propriétés d'une sélection multiple de formes dans une application de dessin (à gauche)</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="108" fileref="images/controls-toggle-button-mixed.png" format="PNG" width="467"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-toggle-button-mixed.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Toggle buttons showing the Thick, Thin and Dashed
+              drawing styles of two selected shapes in a drawing application.
+              One shape is drawn in the thick style, the other in the dashed
+              style. The Thick and Dashed toggle buttons are therefore shown
+              in their mixed state, and the Thin toggle button is unset.</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <!-- CB-Fig: There's probably a better figure for fig 16 than this one. Also, my 2 cents on the mixed state visual issue: mixed state MUST be visually DISTINCT from "set." What I see here isn't enough (I know this isn't set yet.) -->
+
+        <remark>At time of writing, the exact visual appearance of mixed state
+        toggle buttons was undecided. A mixed state toggle button should
+        behave exactly as a mixed state check box or radio button, depending
+        on whether the toggle button choices are independent or mutually
+        exclusive, respectively.</remark>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-option-menus">
+    <title>Listes déroulantes</title>
+
+    <para>Les listes déroulantes sont utilisées pour faire un choix parmi un ensemble mutuellement exclusif d'options. Elles peuvent être utiles lorsqu'il n'y a pas assez de place dans une fenêtre pour pouvoir utiliser un groupe de boutons radio ou une liste à choix unique qui possède la même fonctionnalité.</para>
+
+    <figure>
+      <title>Une liste déroulante affichant la sélection actuelle (à gauche) et la liste de choix disponibles lors d'un clic (à droite)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="178" fileref="images/controls-option-menu.png" format="PNG" width="377"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-option-menu.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Two images, one of a drop-down list displaying its current
+          setting, and the other showing its popup menu of available choices
+          when clicked on</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Callouts, shortened caption.  This can probably be collapsed into one snapshot. -->
+
+    <para>Conseils :</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>N'utilisez pas de listes déroulantes avec moins de trois éléments ou plus d'une dizaine. Pour proposer le choix entre deux options, utilisez des <link linkend="controls-radio-buttons">boutons radio</link> ou des <link linkend="controls-toggle-buttons">boutons bascules</link>. Pour proposer un choix parmi plus de dix options, utilisez une <link linkend="controls-lists">liste</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne lancez pas d'action lorsque l'utilisateur sélectionne un élément dans une liste déroulante. Mais si elle est utilisée dans une <link linkend="windows-utility">fenêtre Propriétés ou Préférences</link> à application instantanée, mettez à jour le réglage représenté par le menu immédiatement.</para>
+      </listitem>
+
+      <listitem>
+        <para>La sélection d'un élément dans une liste déroulante ne doit pas affecter les valeurs d'un autre contrôle. Cela peut néanmoins rendre sensible ou insensible, masquer ou afficher d'autres contrôles.</para>
+      </listitem>
+
+      <listitem>
+        <para> Donnez un nom à la liste déroulante à l'aide d'une étiquette de texte placée au dessus ou à sa gauche en utilisant les règles de <link linkend="layout-capitalization">mise en majuscule des phrases</link>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur de donner le focus directement à la liste déroulante.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez les règles de <link linkend="layout-capitalization">mise en majuscule des phrases</link> pour les éléments de la liste déroulante, par exemple <guilabel>Switched movement</guilabel>.</para>
+      </listitem>
+
+      <!-- CB-Ed: Change guilabel to something less literal-seeming: Menu item. -->
+
+      <listitem>
+        <para>Assignez une touche d'accès à chaque élément de la liste déroulante. Assurez-vous que la touche d'accès est unique dans la fenêtre ou boîte de dialogue la contenant et non pas seulement dans le menu.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'attribuez pas par défaut de raccourcis clavier aux éléments de la liste déroulante. L'utilisateur peut cependant attribuer ses propres raccourcis de la manière classique s'il le souhaite.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'utilisez pas de liste déroulante dans une situation où vous pourriez avoir à afficher une propriété d'une sélection multiple : les listes déroulantes ne possèdent pas le concept d'état mixte. Utilisez un groupe de boutons radio ou bascules à la place car ils peuvent afficher des états activé, désactivé ou mixte.</para>
+      </listitem>
+
+      <!-- CB-Fig: The bullet points probably could be illustrated in a main drop-down lists figure (17 would work) -->
+
+      <listitem>
+        <para>N'utilisez pas de sous-menu dans une liste déroulante.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Vous devriez normalement utiliser des <link linkend="controls-radio-buttons">boutons radio</link> ou une <link linkend="controls-lists">liste</link> à la place de listes déroulantes car ces contrôles présentent toutes les options disponibles à la fois sans aucune interaction supplémentaire. Cependant, les listes déroulantes peuvent être préférables dans une fenêtre où :</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>il y a peu d'espace disponible,</para>
+      </listitem>
+
+      <listitem>
+        <para>la liste des options peut évoluer dans le temps,</para>
+      </listitem>
+
+      <listitem>
+        <para>le contenu de la partie cachée du menu est évident d'après son étiquette ou l'élément sélectionné. Par exemple si vous avez une liste déroulante nommée « Mois : » avec l'élément « Janvier » sélectionné, l'utilisateur peut raisonnablement postuler que la liste contient les 12 mois de l'année sans avoir à regarder dedans.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Les listes déroulantes peuvent également être utiles dans les barres d'outils pour remplacer un groupe de plusieurs boutons bascules mutuellement exclusifs.</para>
+  </sect1>
+
+  <sect1 id="controls-combo-boxes">
+    <title>Zones de liste déroulante modifiable</title>
+
+    <!-- CB-Fig: Be aware that some people may not distinguish between drop-down lists and combo boxes; that is, they are taken as two types of combo boxes, editable and uneditable (see JLF DG). -->
+
+    <!-- How odd, the whole point of a combo box is that it's a combination of a text field and a list... as such, therefore there is no such thing as an 'uneditable combo box' :o)  -->
+
+    <para>Les zones de liste déroulante modifiables combinent un champ de saisie de texte et une liste déroulante contenant des valeurs prédéfinies. La sélection d'une des valeurs prédéfinies configure le champ de saisie à cette valeur.</para>
+
+    <figure>
+      <title>Une zone de liste déroulante modifiable avant et après que sa liste déroulante est affichée</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="200" fileref="images/controls-combo.png" format="PNG" width="304"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-combo.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Two images, one of a drop-down combination box entry field displaying its
+          current selection, and the other showing its drop-down list of
+          available choices when clicked on</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: callouts, shorten caption. -->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>N'utilisez une zone de liste déroulante modifiable à la place d'une liste, une liste déroulante ou un groupe de boutons radio que lorsqu'il est important que l'utilisateur puisse saisir une nouvelle valeur qui n'est pas déjà dans la liste des choix prédéfinis.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne lancez pas d'action lorsque l'utilisateur sélectionne un élément dans la liste d'une zone de liste déroulante modifiable. Mais si elle est utilisée dans une <link linkend="windows-utility">fenêtre Propriétés ou Préférences</link> à application instantanée, mettez à jour le réglage représenté par la zone de liste déroulante modifiable immédiatement si possible. Si ce n'est pas possible car le contenu du champ de saisie est non valide pendant que l'utilisateur est toujours en train de saisir, mettez plutôt à jour le réglage associé lorsque la zone de liste déroulante modifiable perd le focus.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si l'utilisateur saisit une valeur dans la zone de liste déroulante modifiable qui n'est pas déjà dans la liste déroulante, ajoutez-la à la liste lorsque la zone de liste déroulante modifiable perd le focus afin qu'elle puisse être sélectionnée la prochaine fois.</para>
+      </listitem>
+
+      <listitem>
+        <para>Interprétez l'entrée utilisateur dans une zone de liste déroulante modifiable sans tenir compte de la casse. Par exemple, si l'utilisateur saisit <userinput>bleu</userinput>, <userinput>Bleu</userinput> et <userinput>BLEU</userinput> dans la même zone de liste déroulante modifiable à différentes occasions, n'enregistrez qu'une seule valeur dans la liste déroulante à moins que votre application ne fasse une distinction entre les différentes formes (ce qui est normalement une mauvaise idée).</para>
+      </listitem>
+
+      <listitem>
+        <para>Nommez une zone de liste déroulante modifiable à l'aide d'une étiquette de texte placée au dessus ou à sa gauche en utilisant les règles de <link linkend="layout-capitalization">mise en majuscule des phrases</link>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur de donner le focus directement à la zone de liste déroulante modifiable.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez les règles de <link linkend="layout-capitalization">mise en majuscule des phrases</link> pour les éléments de la liste déroulante, par exemple <guilabel>Switched movement</guilabel>.</para>
+      </listitem>
+
+      <!-- CB-Ed: Make guilabel less literal: "List item." -->
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-scrollbars">
+    <title>Barres de défilement</title>
+
+    <para>Souvent un objet (tel qu'un document ou une liste) ne peut pas être contenu en entier dans le contrôle qui l'affiche. Dans ces cas, une barre de défilement peut être apposée à ce contrôle. La barre de défilement modifie la partie présentement visible de l'objet dans le contrôle d'affichage : il fait glisser la vue derrière sa fenêtre selon un axe (horizontal ou vertical).</para>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>N'affichez des barres de défilement que lorsqu'elles sont nécessaires pour faire glisser la vue. Si un objet entre en totalité dans son afficheur, ne mettez pas de barres de défilement. Si vous utilisez un objet GtkScrolledWindow, appelez la fonction <function>gtk_scrolled_window_set_policy</function> avec le paramètre GTK_POLICY_AUTOMATIC pour placer automatiquement une barre de défilement selon l'axe (ou les axes) appropriés.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'utilisez <emphasis>pas</emphasis> des barres de défilement pour remplacer un curseur dans sa <link linkend="controls-sliders">glissière</link>. Les barres de défilement ne doivent être utilisées qu'apposées à une vue qu'elles modifient directement et non pas utilisées comme un contrôle commun d'entrées continues.</para>
+      </listitem>
+
+      <listitem>
+        <para>Placez les barres de défilement du côté droit du contrôle d'affichage (pour déplacer verticalement la vue) ou en bas (pour la faire glisser horizontalement). N'apposez <emphasis>pas</emphasis> les barres de défilement en haut ou du côté gauche du contrôle d'affichage.</para>
+      </listitem>
+
+      <listitem>
+        <para>Dans l'une ou l'autre direction, les barres de défilement doivent avoir la même dimension que la vue à laquelle elles sont apposées dans le sens qu'elles contrôlent. Autrement dit, les barres de défilement horizontales doivent être disposées sur toute la largeur du contrôle afficheur et les barres de défilement verticales sur toute sa hauteur.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si des barres de défilement horizontales et verticales sont simultanément actives sur une vue, l'alignement imposera qu'un petit rectangle dans le coin inférieur droit, là où les ascenseurs horizontaux et verticaux se rencontrent, soit vide. Cela ne pose pas de problème.</para>
+      </listitem>
+       
+      <listitem>
+        <para>Les barres de défilement doivent modifier en temps réel la vue à laquelle ils sont apposés : lorsque l'utilisateur la fait glisser ou clique dessus, la vue doit changer. Un délai serait déconcertant et aurait un impact négatif sur les possibilités de navigation des utilisateurs dans le contenu de la vue.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+
+
+  <sect1 id="controls-lists">
+    <title>Listes</title>
+
+    <para>Un contrôle liste permet à l'utilisateur d'examiner, manipuler ou sélectionner des éléments d'une liste. Les listes peuvent avoir une colonne ou plus et contenir du texte, des graphiques, des contrôles simples ou une combinaison des trois.</para>
+
+    <!-- CB-Fig: Looks like a table, to me, complete with table row striping and column headers.  Lists are usually one column, scrollable... lists! Of text or, rarely, graphics which can be selected in order to be manipulated. Sorting also happens in tables, not lists, from my experience. -->
+
+    <!-- CFB: It's not a table because there is no way to select or manipulate individual cells, only complete rows. -->
+
+    <figure>
+      <title>Une simple liste à deux colonnes</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="149" fileref="images/controls-list.png" format="PNG" width="179"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-list.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Picture of list control containing two unsorted columns of
+          text</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Nommez les contrôles de liste avec une étiquette texte placée au dessus ou à gauche en utilisant les règles de <link linkend="layout-capitalization">mise en majuscule des phrases</link>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur de donner le focus directement à la liste.</para>
+      </listitem>
+
+      <listitem>
+        <para>Faites un contrôle de liste suffisamment grand pour qu'il puisse afficher au moins quatre éléments à la fois sans défilement. Pour les listes de dix éléments ou plus, augmentez cette taille minimale de manière appropriée.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si la liste apparaît dans une boîte de dialogue ou dans une fenêtre utilitaire, pensez à rendre la fenêtre et la liste qu'elle contient redimensionnables afin que l'utilisateur puisse choisir le nombre d'éléments de la liste visibles à la fois sans défilement. Chaque fois que l'utilisateur ouvre cette boîte de dialogue, paramétrez ses dimensions à celles choisies par l'utilisateur la fois précédente.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'utilisez pas de listes avec moins d'environ cinq éléments, à moins que le nombre d'éléments puisse augmenter dans le temps. Utilisez des <link linkend="controls-check-boxes">cases à cocher</link>, des <link linkend="controls-radio-buttons">boutons radio</link> ou une <link linkend="controls-option-menus">liste déroulante</link> s'il y a moins d'éléments.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'utilisez d'en-têtes de colonnes que si :</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>la liste a plus d'une colonne ou</para>
+          </listitem>
+
+          <listitem>
+            <para>la liste n'a qu'une colonne, mais l'utilisateur souhaite modifier l'ordre dans la liste (c'est rarement utile avec des listes à une seule colonne).</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Dans la plupart des autres situations, les en-têtes de colonne prennent inutilement de la place et les étiquettes en trop ajoutent au cloisonnement visuel.</para>
+      </listitem>
+
+      <listitem>
+        <para>Quand vous utilisez les en-têtes de colonne, étiquetez-les dans tous les cas. Si la colonne est trop étroite pour une étiquette explicite, dotez la colonne d'une infobulle à la place. Hormis son utilisation triviale, les technologies d'assistance pourront ainsi décrire l'usage de la colonne aux utilisateurs ayant des problèmes visuels.</para>
+      </listitem>
+
+      <listitem>
+        <para>Pensez à utiliser une liste de cases à cocher pour les listes à sélections multiples, car le fait que des sélections multiples sont possibles est ainsi mis en évidence :</para>
+
+        <figure>
+          <title>Une simple liste avec cases à cocher</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="133" fileref="images/controls-list-checkbox.png" format="PNG" width="160"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-list-checkbox.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Picture of list control with two columns. The first
+              column consists of check boxes showing whether or not the
+              corresponding item in the second column is selected for further
+              action.</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <para>Si vous faites ce choix, vous devrez normalement paramétrer le contrôle liste lui-même comme étant à sélection unique, mais ce paramétrage dépend de la tâche particulière à laquelle il est associé.</para>
+      </listitem>
+
+      <listitem>
+        <para>Dans une liste à sélection multiple, affichez le nombre d'éléments présentement sélectionnés dans une étiquette textuelle statique au dessous de la liste, par exemple <guilabel>Noms sélectionnés : 3</guilabel>. Cette mention met également en évidence le fait qu'une sélection multiple est possible.</para>
+      </listitem>
+
+      <listitem>
+        <para>Pensez à placer des boutons <guibutton>Sélectionner tout</guibutton> et <guibutton>Désélectionner tout</guibutton> à côté des listes à sélection multiple si c'est approprié.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="controls-lists-sortable">
+      <title>Listes triables</title>
+      <para>Les utilisateurs préfèrent souvent trier les longues listes, soit alphabétiquement, soit numériquement, pour faciliter la recherche d'éléments. Donnez la possibilité aux utilisateurs de trier les listes longues ou multi-colonnes en cliquant sur l'en-tête de la colonne qu'ils veulent trier.</para>
+      <itemizedlist><title>Conseils</title>
+	      <listitem><para>Indiquez la colonne actuellement triée en affichant une flèche vers le haut ou vers le bas dans son en-tête :</para>
+	  <informaltable frame="all">
+            <tgroup align="left" cols="2">
+                <thead>
+	              <row>
+		      <entry>Ordre de tri</entry>
+                      <entry>Sens de la flèche</entry>
+		      <entry>Exemple</entry>
+                    </row>
+                </thead>
+            <tbody>
+                  <row>
+		  <entry>Naturel</entry>
+		  <entry>Bas</entry>
+		 <entry>Alphabétique, plus petit nombre en premier, date la plus ancienne en premier, éléments cochés en premier</entry>
+                </row>
+                  <row>
+		  <entry>Inverse</entry>
+		  <entry>Haut</entry>
+		  <entry>Alphabétique inverse, plus grand nombre en premier, date la plus récente en premier, éléments décochés en premier</entry>
+                </row>
+            </tbody>
+             </tgroup>
+              </informaltable>
+      </listitem>
+      <listitem><para>Un clic sur une colonne non triée trie la colonne dans l'ordre naturel, indiqué par l'affichage d'une flèche vers le bas dans l'en-tête.</para></listitem>
+
+      <listitem><para>Un clic sur une colonne triée dans l'ordre naturel trie à nouveau la colonne dans l'ordre inverse, indiqué par l'affichage d'une flèche vers le haut dans l'en-tête.</para>
+	      
+		      <note><title>Listes non triées</title>
+	    		<para>Parfois, un état non-trié peut se révéler utile, par exemple pour montrer les éléments dans l'ordre où l'utilisateur les a ajoutés à la liste. Dans de tels cas, un clic sur une colonne trié en ordre inverse annule son tri, ce qui est indiqué par la suppression de la flèche dans l'en-tête de colonne.</para>
+	    	      <para>Habituellement, il est toutefois plus facile d'ajouter une colonne supplémentaire que l'utilisateur peut trier de la manière habituelle, comme une colonne de nombres séquentiels par exemple.</para></note>
+	</listitem>
+
+	</itemizedlist>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-trees">
+    <title>Arborescences</title>
+
+    <para>Un contrôle arborescence permet à l'utilisateur d'examiner, de manipuler ou de sélectionner des éléments d'une liste hiérarchique. Les arborescences peuvent avoir une colonne ou plus et contenir du texte, des graphiques, des contrôles simples ou une combinaison des trois. </para>
+
+    <tip>
+      <title>Utilisez les arborescences avec parcimonie !</title>
+
+      <para>À cause de leur complexité par rapport aux autres contrôles, les utilisateurs novices ou de niveau intermédiaire ont souvent des problèmes à utiliser et comprendre les arborescences. Si votre application est conçue pour ce type d'utilisateurs, vous devriez réfléchir à des alternatives de présentation de l'information, telles que la vue liste ou icône de Nautilus ou les listes de navigation hiérarchiques dans l'<ulink url="http://www.gnustep.it/enrico/gworkspace/">explorateur de fichiers de GNUstep</ulink>.</para>
+    </tip>
+
+    <figure>
+      <title>Un simple contrôle arborescence avec un niveau de hiérarchie</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="277" fileref="images/controls-tree.png" format="PNG" width="343"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-tree.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Picture of tree control showing months of the year as top
+          level nodes, and public holidays in those months as their children</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Trees are usually used for navigation, so it's probably best to illustrate a tree in that context (GnomeCC, for example). -->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Nommez toujours les arborescences avec une étiquette texte placée au dessus ou à gauche respectant les règles de la <link linkend="layout-capitalization">mise en majuscule des phrases</link>. Indiquez dans l'étiquette la touche d'accès permettant à l'utilisateur de donner le focus directement à l'arborescence.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez des en-têtes de colonnes si :</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>l'arborescence a plus d'une colonne ou</para>
+          </listitem>
+
+          <listitem>
+            <para>l'arborescence n'a qu'une colonne mais l'utilisateur peut vouloir réordonner l'arborescence (c'est très rarement utile avec des arborescences à une seule colonne).</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Dans la plupart des autres situations, les en-têtes de colonne prennent inutilement de la place et les étiquettes en trop ajoutent au cloisonnement visuel.</para>
+      </listitem>
+
+      <listitem>
+        <para>Quand vous utilisez les en-têtes de colonne, étiquetez-les dans tous les cas. Si la colonne est trop étroite pour une étiquette explicite, dotez la colonne d'une infobulle à la place. Hormis son utilisation triviale, les technologies d'assistance pourront ainsi décrire l'usage de la colonne aux utilisateurs ayant des problèmes visuels.</para>
+      </listitem>
+
+      <listitem>
+        <para>Pensez à utiliser une liste de cases à cocher pour les arborescences à sélections multiples, car le fait que des sélections multiples sont possibles est ainsi mis en évidence :</para>
+
+        <figure>
+          <title>Une simple arborescence avec case à cocher</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="297" fileref="images/controls-tree-checkbox.png" format="PNG" width="349"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-tree-checkbox.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Picture of tree control with two columns. The first
+              column consists of check boxes showing whether or not the
+              corresponding item in the second column is selected for further
+              action.</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <para>Si vous faites ce choix, vous devez normalement paramétrer le contrôle arborescence lui-même comme étant à sélection unique, mais ce paramétrage dépend de la tâche particulière auquel il est associé.</para>
+      </listitem>
+
+      <listitem>
+        <para>Pour les arborescences à sélection multiple, affichez le nombre d'éléments présentement sélectionnés dans une étiquette textuelle statique en dessous de l'arborescence, par exemple <guilabel>Noms sélectionnés : 3</guilabel>. Cette mention met également en évidence le fait qu'une sélection multiple est possible.</para>
+      </listitem>
+
+      <listitem>
+        <para>Pensez à disposer des boutons <guibutton>Sélectionner tout</guibutton> et <guibutton>Désélectionner tout</guibutton> à côté des arborescences à sélection multiple si c'est approprié.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="controls-trees-sortable">
+	    <title>Arborescence triables</title>
+	    <para>Tout comme pour les listes, l'utilisateur peut trouver utile de trier les arborescences longues ou multi-colonnes. Consultez les conseils de la <xref linkend="controls-lists-sortable"/> pour plus d'informations.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-notebooks">
+    <title>Bloc-notes à onglets</title>
+
+    <para>Un contrôle bloc-notes à onglets est une manière pratique d'afficher des informations apparentées dans une même fenêtre sans avoir à les afficher toutes en même temps. C'est analogue aux onglets diviseurs dans un classeur à anneaux ou à chemises.</para>
+
+    <figure>
+      <title>Un contrôle bloc-notes classique avec trois onglets</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="270" fileref="images/controls-notebook.png" format="PNG" width="341"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-notebook.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Picture of notebook control with three tabs</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: Maybe I'm off, so if I am, then just ignore, but I'm concerned with terminology in the HIG at this point; maybe it's just one of those wizard/druid issues that are just here to stay because GNOME is GNOME, but I think people are more familiar with the term "Tabs" instead of the term "Pages," and "Tabbed pane" instead of "notebooks."  That's what they are called in JLF, anyway.   Callouts would also be nice here. -->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Ne mettez pas trop de pages dans le même bloc-notes. Si vous ne pouvez pas voir tous les onglets sans les faire défiler ou sans les diviser sur plusieurs lignes, c'est probablement que vous en utilisez trop et que vous devriez utiliser un contrôle liste à la place. Voyez <link linkend="controls-too-many-tabs">l'exemple ci-dessous</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Nommez les onglets (en anglais) en respectant les règles d'emploi <link linkend="layout-capitalization">des majuscules dans les titres</link> et utilisez des noms plutôt que des verbes, par exemple <guilabel>Font</guilabel> ou <guilabel>Alignment</guilabel>. Essayez de conserver grosso modo la même longueur pour toutes les étiquettes d'un bloc-notes.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'attribuez pas de touches d'accès aux étiquettes d'onglet : vous ne pourriez plus utiliser ces raccourcis pour n'importe quel autre contrôle de <emphasis>chacune</emphasis> des pages du bloc-notes sans conflit. Même si vous arriviez à attribuer ces touches d'accès sans conflit, il reste préférable de ne pas le faire : il se pourrait qu'il ne soit pas possible d'éviter les conflits si l'application est traduite dans d'autres langues. Attribuez néanmoins une touche d'accès à tous les contrôles de chaque page.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne concevez pas un bloc-notes de façon à ce qu'une modification d'un contrôle sur une page modifie les contrôles sur d'autres pages. Il est peu probable que les utilisateurs découvrent de telles dépendances.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si un contrôle ne modifie qu'une page de bloc-notes, placez-le sur cette page de bloc-notes. S'il modifie toutes les pages du bloc-notes, placez-le à l'extérieur du contrôle bloc-notes, par exemple à côté des boutons <guibutton>Valider</guibutton> et <guibutton>Annuler</guibutton> de la fenêtre.</para>
+      </listitem>
+
+      <listitem>
+        <para>Utilisez des onglets de taille proportionnée à la longueur de leurs étiquettes. Ne paramétrez pas tous les onglets à la même longueur car cela les rend plus difficiles à parcourir visuellement et limite le nombre d'onglets que peut contenir le bloc-notes sans défilement. Par exemple :</para>
+
+        <figure>
+          <title>Onglets de longueur fixe et proportionnelle (préférable)</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="92" fileref="images/controls-notebook-tabs.png" format="PNG" width="475"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-notebook-tabs.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>Side-by-side comparison of one notebook whose tabs are
+              all the same width, and one whose tabs are only wide enough to
+              accommodate the tab labels. The latter takes up around 33% less
+              screen space.</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+      </listitem>
+
+      <!-- CB-Fig: callouts, shorter caption -->
+
+      <listitem>
+        <para>Même si le contenu de chaque page d'un bloc-notes prend une quantité de place différente, n'utilisez pas d'espacements plus grands que la normale autour des contrôles dans les pages « les plus vides » et ne centrez pas les contrôles sur la page.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si vos étiquettes d'onglet incluent des icônes, choisissez d'afficher ou pas les icônes au moment de l'exécution selon les préférences exprimées par l'utilisateur dans les menus GNOME et la boîte de dialogue Préférences de la barre d'outils. Cependant affichez toujours la partie texte de l'étiquette.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Si vous avez environ plus de six onglets dans un bloc-notes, utilisez un contrôle liste au lieu d'onglets pour naviguer parmi les pages de contrôles. Par exemple :</para>
+
+    <figure id="controls-too-many-tabs">
+      <title>Utilisation de contrôles liste quand les onglets sont trop nombreux pour entrer facilement dans le bloc-notes</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="200" fileref="images/controls-notebook-list.png" format="PNG" width="370"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-notebook-list.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Part of a window including a list control with 7 items, each
+          item representing a category of settings such as
+          "Appearance" and "Navigation". The controls in the
+          rest of the window change depending on which item is selected in the
+          list.</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <para>As in this example, place the list control on the left-hand side of
+    the window, with the dynamic portion of the window immediately to its
+    right. <remark>Should this be reversed for right-to-left locales?</remark></para>
+
+	<sect2 id="controls-tab-status">
+	  <title>Indicateurs d'état</title>
+	  <remark>This section needs more concrete recommendations, it's currently (almost) taken verbatim from Sebastian's patch in bug #72101.</remark>
+	  <para>Dans certaines fenêtres à onglets telles que les fenêtres de préférences, il peut être souhaitable d'indiquer l'état d'un onglet particulier. Par exemple, pour indiquer à l'utilisateur qu'une page Web est en cours de chargement ou a été chargée, qu'un nouveau message est en attente dans une conversation de messagerie instantanée donnée ou qu'un document n'a pas été enregistré. Un indicateur d'état doit être une icône placée directement à gauche de l'étiquette de l'onglet. En plus, la couleur de l'étiquette de l'onglet peut être modifiée pour indiquer un certain état. Ne vous fondez pas uniquement sur un schéma de couleurs différentes pour une indication d'état.</para>
+	</sect2>
+  </sect1>
+
+  <sect1 id="controls-progress-bars">
+    <title>Barres de progression</title>
+
+    <para>Les barres de progression sont des indicateurs visuels de la progression d'une tâche en cours de traitement par l'application ; elles participent de manière importante aux <link linkend="feedback-types">retours d'information</link>. Pour des indications sur l'usage d'une barre de progression dans une fenêtre de progression, consultez la <xref linkend="windows-progress"/>.</para>
+
+    <para>Dans vos applications, vous avez la possibilité d'utiliser principalement deux types de barre de progression ; les barres de progression à mesures et les barres de progression indéterminée (celles dont le curseur fait des aller-retours dans la coulisse). De plus, on distingue trois types de barres de progression à mesures.</para>
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Utilisez toujours une barre de progression à mesures lorsque la durée de la tâche peut être précisément ou approximativement prévue. Sinon utilisez un <link linkend="indeterminate-progress">indicateur de progression indéterminée</link> ou une <link linkend="progress-checklists">fenêtre à liste de contrôles</link>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Assurez-vous qu'une barre de progression à mesure soit rapportée à la durée totale d'une opération ou d'une quantité totale de travail, pas uniquement à une étape isolée — exception faite de barres de progression mesurant la durée ou le travail total de l'étape en cours dans l'avancement d'une liste de vérifications.</para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="time-remaining">
+      <title>Indicateur de progression du temps restant</title>
+
+      <para>C'est une animation constituée d'une barre dont la longueur varie en indiquant le temps écoulé au cours d'une opération et d'un texte indiquant le temps restant avant l'achèvement de l'opération. Les barres de temps restant sont le type de barre de progression le plus utile.</para>
+
+      <figure>
+        <title>Une simple barre de progression « temps restant »</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata width="386" fileref="images/controls-progress-time.png" format="PNG" depth="38"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/controls-progress-time.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>A simple time-remaining progress dialog</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <para>Utilisez une barre de temps restant si l'application affiche une première estimation de la durée d'une opération, puis affiche périodiquement une mise à jour de l'estimation. Chaque nouvelle estimation doit se fonder sur les changements apportés au déroulement, changements qui font que l'opération se terminera plus ou moins vite. Si l'opération doit se terminer moins rapidement qu'initialement prévu, l'application peut afficher une nouvelle estimation supérieure à la précédente.</para>
+    </sect2>
+
+    <sect2 id="typical-time">
+      <title>Indicateur de progression de durée-type</title>
+
+      <para>C'est une barre dont le changement de longueur indique le temps restant rapporté à la durée habituelle de l'opération. La barre de durée-type est le type le moins précis de barre de progression à mesure, mais elle reste plus utile qu'une barre de progression indéterminée.</para>
+
+      <figure>
+        <title>Une simple barre de progression du « temps-type restant »</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="32" fileref="images/controls-progress-typical.png" format="PNG" width="385"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/controls-progress-typical.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>A simple 'typical time remaining' progress dialog</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <para>Pour certaines opérations, vous ne pouvez pas estimer le temps restant ou la proportion de travail effectuée. Cependant, si vous savez estimer la durée typique d'une telle opération, vous pourrez informer l'utilisateur avec une barre de durée-type.</para>
+
+      <para>Si l'application sur-estime la quantité de travail effectuée, la longueur de la barre peut indiquer « pratiquement terminé » jusqu'à ce que l'opération soit effectivement terminée. Si votre application sous-estime la quantité de travail effectuée, l'application peut remplir d'un coup la partie restante de la barre lorsque l'opération est terminée.</para>
+    </sect2>
+
+    <sect2 id="indeterminate-progress">
+      <title>Indicateur de progression indéterminée</title>
+
+      <para>C'est une barre animée indiquant seulement qu'une opération est en cours et non le temps que cela va prendre. Le « pulsateur » d'un navigateur Web en est un exemple. Les barres de progression indéterminée sont le type de barre de progression le moins précis.</para>
+
+      <figure>
+        <title>Une simple barre de progression « durée indéterminée » ; le curseur se déplace alternativement d'une extrémité de la barre à l'autre jusqu'à la fin de l'opération</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata depth="210" fileref="images/controls-progress-indeterminate.png" format="PNG" width="409"/>
+          </imageobject>
+
+          <imageobject>
+            <imagedata fileref="images/controls-progress-indeterminate.eps" format="EPS"/>
+          </imageobject>
+
+          <textobject>
+            <phrase>A simple 'indeterminate time' progress dialog,
+            showing a slider moving back and forth until the operation is
+            complete</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+      <!-- CB-Fig: Above figure may benefit from showing the slider away from the right or left edge; otherwise it looks like the other progress bars, slightly modified. -->
+
+      <para>Utilisez une barre de progression indéterminée pour donner un retour d'information uniquement pour les opérations dont la durée ne peut pas être estimée du tout.</para>
+    </sect2>
+  </sect1>
+
+  <sect1 id="controls-status-bars">
+    <title>Barres d'état</title>
+
+    <para>Une barre d'état est une zone en bas d'une fenêtre qui peut être utilisée pour afficher une information brève sur l'état de l'application.</para>
+
+    <figure>
+      <title>Une simple barre d'état</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="53" fileref="images/controls-status-bar.png" format="PNG" width="244"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-status-bar.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>A statusbar at the bottom of a document window, showing
+          current zoom level and a status message indicating that the document
+          has been modified since it was last saved</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!-- CB-Fig: callouts -->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Utilisez les barres d'état seulement dans les fenêtres d'applications ou de documents. Ne les utilisez pas dans les boîtes de dialogue, les alertes ou d'autres fenêtres secondaires.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne placez une barre d'état qu'au bas de la fenêtre.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'utilisez les barres d'état que pour afficher des informations non-critiques. Cela comprend :</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>des informations générales à propos du document ou de l'application. Par exemple, l'état de la connexion actuelle dans une application réseau ou la taille du document actuel dans un éditeur de texte.</para>
+          </listitem>
+
+          <listitem>
+            <para>des informations sur la tâche que l'utilisateur est en train d'accomplir. Par exemple, lorsque l'outil de sélection est utilisé dans une application de dessin « Appuyez sur la touche Maj. pour étendre la sélection ».</para>
+          </listitem>
+
+          <listitem>
+            <para>la progression d'une opération en arrière-plan. Par exemple, « Envoi vers l'imprimante », « Impression de la page 10 sur 20 », « Impression terminée ».</para>
+          </listitem>
+
+          <listitem>
+            <para>une description du contrôle ou de la zone de la fenêtre sous le pointeur de la souris. Par exemple, « Déposez les fichiers ici pour les téléverser ».</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Souvenez-vous que les barres d'état sont normalement dans le champ de vision périphérique de l'utilisateur et peuvent être masquées complètement en utilisant l'élément de menu <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Barre d'état</guimenuitem></menuchoice> de l'application. L'utilisateur peut par conséquent ne jamais voir ce que vous y affichez, à moins qu'il ne sache quand et où le chercher.</para>
+      </listitem>
+
+      <listitem>
+        <para>Lorsqu'il n'y a aucun état digne d'intérêt à rapporter, laissez le panneau de la barre d'état vide plutôt que d'afficher quelque chose de ne donne aucune information comme « Prêt ». Ainsi, lorsque quelque chose intéressant apparaît dans la barre d'état, l'utilisateur est plus apte à s'en rendre compte.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si vous voulez rendre tout ou partie de votre barre d'état interactive, utilisez les conventions suivantes :</para>
+
+        <itemizedlist>
+          <!--<listitem><para>Raised or button-like appearance for areas that respond to a single click</para></listitem>-->
+
+          <listitem>
+            <para>apparence incrustée pour les zones qui répondent au double-clic,</para>
+          </listitem>
+
+          <listitem>
+            <para>apparence plate pour les zones qui ne sont pas interactives.</para>
+          </listitem>
+        </itemizedlist>
+
+        <!-- CB-Ed: I have never seen a button in a statusbar area before.  I'll bet this is deprecated, or should be.  Do you have data to back this up?  And doesn't this conflict with one of the previous bullet points: Only use statusbars to display non-critical information?  A cancel button is certainly not trivial. -->
+
+        <!-- CFB: removed this recommendation for now -->
+
+        <para>Dans la <xref linkend="status-bar-figure"/>, l'apparence indique que la zone de gauche répond au double-clic (peut-être en enregistrant le document) et que l'indicateur de progression sur la droite n'est pas interactif.</para>
+
+        <figure id="status-bar-figure">
+          <title>Une barre d'état interactive</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata depth="58" fileref="images/controls-status-bar-interactive.png" format="PNG" width="461"/>
+            </imageobject>
+
+            <imageobject>
+              <imagedata fileref="images/controls-status-bar-interactive.eps" format="EPS"/>
+            </imageobject>
+
+            <textobject>
+              <phrase>A statusbar with a text panel that responds to a double
+              click, a button that responds to a single click, and a
+              non-interactive progress area</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+
+        <para>Assurez-vous qu'un double-clic dans la zone d'état n'offre pas une fonctionnalité qui ne serait pas disponible dans la barre de menu principale de l'application ou accessible par un autre moyen.</para>
+      </listitem>
+
+      <listitem>
+        <para>Prévoyez une poignée de redimensionnement dans le coin inférieur droit de la barre d'état des fenêtres redimensionnables. Les classes dérivées de GtkStatusbar doivent utiliser la poignée de redimensionnement fournie par cette classe. Une ré-implémentation d'une barre d'état, ce qui est déconseillé, doit également ré-implémenter la poignée de redimensionnement de GtkStatusbar à la fois dans sa fonction et son apparence.</para>
+      </listitem>
+    </itemizedlist>
+  </sect1>
+
+  <sect1 id="controls-frames">
+    <title>Cadres et séparateurs</title>
+
+    <para>Un cadre est une boîte avec un titre que vous pouvez dessiner autour des contrôles pour les organiser en groupes fonctionnels. Un séparateur est une simple ligne horizontale ou verticale qui peut être utilisée pour diviser les fenêtres en groupes fonctionnels.</para>
+
+    <para>Les cadres avec bordure autour de leur périmètre ont traditionnellement été utilisés pour marquer des groupes de contrôles en relation. C'est avantageux car cela isole physiquement des contrôles non similaires et évite également la répétition de l'étiquette du cadre dans les étiquettes des contrôles membres individuels. Malheureusement, ils ajoutent du bruit visuel qui peut, à la fois, rendre une fenêtre plus complexe qu'elle n'est et diminuer la possibilité de parcourir rapidement les éléments de la fenêtre.</para>
+
+    <para>Plutôt que d'utiliser des cadres avec bordure, utilisez des cadres sans bordure, avec les étiquettes en gras pour que la catégorie ressorte et avec un contenu indenté. Cette disposition, combinée à un agencement et un espacement adéquats, est habituellement une meilleure alternative aux cadres avec bordure.</para>
+
+    <figure>
+      <title>Style de cadre préféré, utilisant des étiquettes en gras, des espacements et de l'indentation</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="256" fileref="images/controls-frames.png" format="PNG" width="288"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-frames.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Frame showing the preferred style described above</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Style de cadre traditionnel utilisant des bordures (déconseillé)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata depth="275" fileref="images/controls-old-frames.png" format="PNG" width="296"/>
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="images/controls-old-frames.eps" format="EPS"/>
+        </imageobject>
+
+        <textobject>
+          <phrase>Frame showing the traditional style described above</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <!--    <para>See <xref linkend="window-layout-spacing"/> for technical details on implementing the preferred frame style in gtk.</para> -->
+
+    <itemizedlist>
+      <title>Conseils</title>
+
+      <listitem>
+        <para>Avant d'ajouter un cadre avec un bord visible ou un séparateur dans une fenêtre, demandez-vous soigneusement si vous en avez vraiment besoin. Il est généralement mieux de faire sans, si les groupes peuvent être séparés par des espaces seulement. N'utilisez pas des cadres et des séparateurs pour compenser un mauvais agencement ou alignement de contrôles.</para>
+      </listitem>
+
+      <listitem>
+        <para>Ne mélangez pas des groupes avec et sans cadre dans la même fenêtre.</para>
+      </listitem>
+
+      <listitem>
+        <para>N'insérez pas un cadre dans un autre. Cette disposition donne un résultat cloisonné.</para>
+      </listitem>
+
+      <listitem>
+        <para>Si tous les éléments d'un groupe sont désactivés, désactivez le titre du groupe aussi.</para>
+      </listitem>
+
+    </itemizedlist>
+  </sect1>
+</chapter>

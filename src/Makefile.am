@@ -2,9 +2,6 @@ SUBDIRS =				\
 	accessibility-devel-guide	\
 	platform-demos			\
 	hig				\
+	integration-guide		\
 	optimization-guide		\
-	platform-overview		\
-	programming-guidelines
-
-dist_noinst_DATA = \
-	COPYING.GFDL
+	platform-overview

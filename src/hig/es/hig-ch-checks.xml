@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- we can change the title as soon as the content is written
+     I want the document to be as usable and correct as possible
+     this week -seth
+
+  <chapter id="checklists">
+    <title>Checklists</title>
+-->
+<chapter id="reality-checks" lang="es">
+    <title>Listas de comprobación</title>
+    <sect1 id="checks-yourself">
+      <title>Cosas que puede hacer por si mismo</title>
+      <sect2>
+	<title>Antes de comenzar</title>
+
+	<para>Escriba el tipo de personas que espera que usen su aplicación. Luego escriba algunos «escenarios» para cada tipo de usuario; una pequeña historia que describa las tareas habituales para las que esos usuarios usarán su aplicación. Estas tareas deben seguir estas líneas:</para>
+
+	<blockquote><para>Alfredo necesita encontrar un correo electrónico, que recibió la semana pasada, acerca de widgets</para></blockquote>
+
+<!-- CB: Flow chart diagram.  Boxes with arrows showing flow of user scenario 
+example.  An transitional paragraph probably needs to be added after the "right" vs. "wrong" text examples shown, that basically says: You can use a flow chart, as shown below, to sketch out an expected user scenario. -->
+
+	<para>rather than </para>
+
+	<blockquote><para>Alfredo pulsa en el botón <guibutton>Buscar</guibutton> y escribe <userinput>widgets</userinput> en el diálogo.</para></blockquote>
+
+	<para>De esta forma, puede usar los mismos escenarios para comprobar y comprar diferentes diseños de interfaces y describir cualquier funcionalidad que falte.</para>
+
+	<para>Include these user descriptions and scenarios with the documentation you commit to CVS.  This way, other contributors will get to understand your users too, can help to develop the application with that knowledge, and can provide more scenarios of their own.</para>
+      </sect2>
+      
+      <sect2>
+	<title>Acceso y foco del teclado</title>
+
+	<para>Cuando empiece a implementar la interfaz, esconda su ratón y asegúrese de que sigue pudiendo hacer todo usando solamente el teclado. Implemente la funcionalidad del teclado al mismo tiempo que implementa la del ratón: no lo deje para el final.</para>
+
+<!-- CB: This is a non-figure comment, I couldn't help myself.  The first sentence in the paragraph directly above, is badly written.  The word "it" is ambiguous in the sentence because it likely refers to the mouse!  Please correct. -->
+
+	<para>Usando solo comandos de teclado, mueva el foco por todas las barras de menú y de herramientas en la aplicación. Confirme también que:</para>
+	
+<!-- CB-Ed: OK I'll just make all non-figures comments tagged with CB-Ed.  The above paragraph should be part of the bulleted list below. -->
+
+<!-- CB-Fig: All figures comments will be tagged with CB-Fig.  A single figure showing an example GUI with callouts highlighting bulleted points would be great. Perhaps visually box bulleted elements and then "zoom" them out with callout text.  -->
+	<itemizedlist>
+	  <listitem><para>Los menús de contexto sensitivo muestran correctamente (<keycombo><keycap>Mayús</keycap><keycap>F10</keycap></keycombo>).</para></listitem>
+	  <listitem><para>Los consejos o sugerencias se pueden mostrar arriba y abajo para todos los controles que los tienen (<keycombo><keycap>Ctrl</keycap><keycap>F1</keycap></keycombo>, <keycap>Esc</keycap>).</para></listitem>
+
+	  <listitem><para>Todas las funciones listadas en la barra de herramientas se pueden realizar usando el teclado.</para></listitem>
+
+	  <listitem><para>Puede operar completamente todo control en el área del cliente de la aplicación y diálogos.</para></listitem>
+
+	  <listitem><para>El texto y los objetos en el área del cliente se pueden seleccionar.</para></listitem>
+
+	  <listitem><para>Cualquier mejora de teclado o combinación de tecla funciona como se ha diseñado.</para></listitem>
+
+	  <listitem><para>Compruebe que al moverse entre objetivos el indicador del foco visual es fácil de identificar en todo momento.</para></listitem>
+	</itemizedlist>
+	
+      </sect2>
+      
+      <sect2>
+	<title>Temas, colores y contraste</title>
+
+	<para>Pruebe varios temas de GNOME para asegurarse de que su aplicación respeta todos los ajustes disponibles.</para>
+
+	<para>Test your application with black and white, high contrast themes and confirm that all information is still conveyed correctly.  If you don't have a suitable high contrast GNOME theme available to test, print off some screenshots in black and white (not grayscale) and make sure all the important information is still visible— this will approximate what a high contrast theme user will see.</para>
+      </sect2>
+
+      <sect2>
+	<title>Animación</title>
+
+	<para>Asegúrese de que ha implementado una opción para apagar cualquier animación en su aplicación (por razones de accesibilidad), y de que funciona tal y como está diseñada. Apague la animación. Confirme que toda la información se muestra correctamente.</para>
+      </sect2>
+    </sect1>
+    
+    <sect1 id="checks-other-people">
+      <title>Lo que puede hacer con otras personas</title>
+      <sect2>
+	<title>Obtener comentarios rápidamente</title>
+	
+	<para>It's always tempting, but don't start coding your interface straight away.  Sketch out some ideas on paper first, or in Glade or HTML if you prefer.  (But don't be tempted add any functionality at this point if you do it this way!)</para>
+
+	<para>Show these prototypes to other people— the GNOME mailing lists and IRC are ideal for finding likely candidates.  Ask them to use these prototype interfaces to run through some of the scenarios you came up with earlier.  You'll probably get questions like "how would I do X", "which menu is Y on"... these questions will help you think about the interface from the user's viewpoint.  You'll probably also get a few suggestions about how to do things differently— these ideas may or may not turn out to better than yours, but any idea from a potential user is worth considering!</para>
+
+	<para>You should also consider seeking opinions from the <ulink url="http://developer.gnome.org/projects/gup/">GNOME Usability team</ulink>.  They have designed many user interfaces before and may be able to spot potential problems at this early stage, before you take your design too far to change easily.</para>
+
+	<para>Once you've decided on the basic interface design and have started coding parts of it, find somebody to try it out again— it doesn't have to be the same person.  You'll probably find some more problems that were hard to see on your static paper prototype.  By finding these now, it's usually not too late to fix them without too much trouble.</para>
+      </sect2>
+      
+      
+      <sect2>
+	<title>Internacionalización y localización</title>
+
+	<para>If you intend your application to be translated into different languages, show draft designs of your application to the <ulink url="http://developer.gnome.org/projects/gtp/contact.html">GNOME Translation Team</ulink>.  They'll help you find potential translation problems, such as not leaving enough space for translated labels, shortcut keys that cause problems on a different keyboard layout, or using new terms in your app that are hard to translate.</para>
+
+	<para>If possible, try out your application with users from the locales you are targeting.  This will help you determine whether users understand how to use the application, if they perceive the graphics and colors the way you intended, and if there are words or images in the application that may cause offence to users of that locale. </para>
+      </sect2>
+
+    </sect1>
+  </chapter>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="keyring" xml:lang="ca">
+<info>
+  <link type="guide" xref="index" group="apps"/>
+  <desc>Emmagatzematge segur per a les contrasenyes i altres dades</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+</info>
+
+<title>Anell de claus</title>
+
+<p>El GNOME proporciona un gestor d'anells de claus modern i segur per emmagatzemar les contrasenyes de l'usuari i altres dades privades. Les aplicacions poden utilitzar la biblioteca del gestor d'anells de clau per emmagatzemar i accedir a contrasenyes. Els usuaris poden gestionar les seves contrasenyes amb l'aplicació <app>Seahorse</app> del GNOME.</p>
+
+<p>El gestor d'anells de claus permet utilitzar tants anells de claus com facin falta, a més a cada anell hi poden haver tants elements com sigui necessari. Els elements d'un anell de claus emmagatzemen una dada, normalment una contrasenya. Cada anell de claus es bloqueja individualment i l'usuari ha de proporcionar una contrasenya per desbloquejar-lo. Un cop l'usuari l'hagi desbloquejat podrà accedir als elements que contingui l'anell de claus.</p>
+
+<p>El gestor d'anells de claus proporciona llistes de control d'accés per a cada element de l'anell de claus, controlant quines aplicacions estan autoritzades a accedir a cada element. Si una aplicació desconeguda intenta accedir a l'element de l'anell de claus, el gestor de l'anell de claus demanarà a l'usuari si li vol permetre o denegar l'accés. Aquest mecanisme permet evitar que programes maliciosos o senzillament mal escrits puguin accedir a les dades privades de l'usuari.</p>
+
+<p>Les dades emmagatzemades al sistema de fitxers per l'anell de claus s'encripten amb el criptògraf de bloc AES i s'utilitza el mètode SHA1 per els resums dels atributs dels elements. Gràcies a l'ús dels resums dels atributs, el gestor de l'anell de claus pot consultar els elements que sol·liciten les aplicacions sense ni tan sols haver de desblocar l'anell de claus. S'ha de desblocar l'anell de claus quan es troba un element que coincideix i s'hi vol accedir.</p>
+
+<p>El gestor de l'anell de claus també proporciona un anell de claus de la sessió. Els elements de l'anell de claus de la sessió no es desen mai a disc i es perden de seguida que s'acaba la sessió de l'usuari. L'anell de claus de la sessió es pot utilitzar per emmagatzemar contrasenyes que s'utilitzin durant la sessió actual i prou.</p>
+
+<p>Si utilitzeu la GIO per accedir a servidors remots us podreu beneficiar automàticament del gestor de l'anell de claus. Sempre que la GVFS necessiti autenticar l'usuari us permetrà decidir si voleu desar la contrasenya en l'anell de claus per defecte o en l'anell de claus de la sessió.</p>
+
+<p>Hauríeu d'utilitzar el gestor de l'anell de claus sempre que la vostra aplicació necessiti emmagatzemar contrasenyes o altres dades privades de l'usuari. Gràcies a l'ús del gestor de l'anell de claus proporcionareu una millor experiència d'usuari i mantindreu les dades de l'usuari a bon resguard i segures.</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/gnome-keyring/stable/">gnome-keyring Reference Manual</link></p></item>
+  <item><p><link href="http://developer.gnome.org/libseahorse/stable/">libseahorse Reference Manual</link></p></item>
+</list>
+
+</page>

@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="desktop-integration" lang="es">
+  <title>Integración en el escritorio</title>
+  
+  <para>Hay dos elementos básicos de integración con el entorno de usuario del escritorio GNOME. <orderedlist>
+      <listitem><para>Ponga una entrada para su aplicación en el menú <guimenu>Aplicaciones</guimenu>. Este es el primer mecanismo por el cual los usuarios descubren y ejecutan aplicaciones.</para></listitem>
+      <listitem><para>Si su aplicación puede abrir y guardar archivos, ubique entradas para esos tipos de archivo en la base de datos de la aplicación y en la base de datos de tipo de documento (MIME). Esto permite al administrador de archivos y otras aplicaciones lanzar automáticamente su aplicación cuando encuentren archivos que ésta pueda manipular.</para></listitem>
+    </orderedlist> No agregue lanzadores ni otros iconos al escritorio cuando se instala su aplicación. El escritorio es el espacio del usuario y está reservado para iconos que él mismo agregue o requiera explícitamente.</para>
+  <sect1 id="desktop-application-menu">
+    <title>Poner entradas en el menú de Aplicaciones</title>
+    
+	<figure><title>El menú de Aplicaciones</title>
+	  <mediaobject><imageobject><imagedata fileref="images/desktop-applications-menu.png" format="PNG" width="160" depth="365"/></imageobject> <imageobject><imagedata fileref="images/desktop-applications-menu.eps" format="EPS"/></imageobject> <textobject><phrase>Captura de pantalla del menú de aplicaciones abierto en el panel de menú de GNOME</phrase></textobject></mediaobject>
+	</figure>
+	
+       <para>El menú <guimenu>Aplicaciones</guimenu> que aparece en el panel en la parte superior de la pantalla de manera predeterminada, es el mecanismo principal mediante el el cual los usuarios descubren y ejecutan aplicaciones. Puede agregar entradas a este menú instalando un archivo <filename>.desktop</filename> adecuado.</para>
+
+    <para>El menú se dispone en un conjunto de categorías, tales como Accesorios y Juegos. Las aplicaciones se ubican en categorías particulares por conjuntos de palabras clave que incluyen en su archivo <filename>.desktop</filename>.</para>
+
+	<itemizedlist><title>Guías</title>
+		<listitem><para>Asigne su aplicación a la única categoría en el menú <guimenu>Aplicaciones</guimenu></para></listitem>
+
+		<listitem><para>Para conjuntos de aplicaciones que contienen pequeñas sub-aplicaciones en una sola ventana, como Evolution u OpenOffice.org, agregue una entrada de menú para cada sub-aplicación. Por ejemplo, el correo, calendario y lista de tareas de Evolution deberían tener cada una su entrada individual en el menú.</para></listitem>
+
+	</itemizedlist>
+
+	<para>Se pueden encontrar detalles técnicos en freedesktop.org, las especificaciones de <ulink url="http://freedesktop.org/Standards/menu-spec">menú</ulink> y <ulink url="http://www.freedesktop.org/Standards/desktop-entry-spec">entradas de escritorio</ulink>.</para>
+
+
+    <sect2 id="menu-item-names">
+      <title>Nombres de elementos del menú</title>
+
+
+      <sect3 id="menu-item-functional-description">
+	<title>Incluir una descripción funcional en el nombre del menú</title>
+
+	<para>En la entrada de menú incluya una descripción de funcionalidad, así como el nombre apropiado para la aplicación. Esto es especialmente útil para usuarios novatos y para usuarios de sistemas donde hay instaladas numerosas aplicaciones de manera predeterminada. Los usuarios encontrarán su aplicación más fácil si el nombre que aparece en el menú contiene una descripción de su función.</para>
+
+	<para>Por ejemplo, <ulink url="http://ist.mit.edu/services/consulting/usability">las pruebas de usuario sobre el sistema Athena del MIT</ulink> revelaron que los usuarios tenían dificultades para encontrar el gestor de archivos porque no estaban familiarizados con el nombre «Nautilus». Dado que los usuarios no asocian la palabra «Nautilus» con el concepto «gestor de archivos» el elemento del menú no les ayuda. Este es un ejemplo para no usar el lenguaje de usuario. Consulte la <xref linkend="principles-match"/> para obtener más información sobre este tema.</para>
+
+
+	    <example>
+		<title>Incluir una descripción funcional en el nombre del menú</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Elemento original del menú</entry>
+				      <entry>Elemento revisado del menú</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Epiphany</entry>
+					<entry>Navegador web Epiphany</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+      </sect3>
+
+      <sect3>
+	<title>Ponga exclusivamente información útil en el nombre del menú</title>
+	<para>No incluya palabras como «GNOME», «Sistema de ventanas X», «GTK+» ni cualquier otro detalle de la plataforma en los nombres del menú <guimenu>Aplicaciones</guimenu>. Probablemente, el usuario ya sabe qué plataforma está usando, y si no es así, los nombres de las aplicaciones no son el sitio correcto para indicarlo.</para>
+	<example>
+		<title>Quitar información no esencial de los nombres del menú</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Elemento original del menú</entry>
+				      <entry>Elemento revisado del menú</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Visor de imágenes de GNOME</entry>
+					<entry>Visor de imágenes</entry>
+				</row>
+				<row>
+					<entry>Editor de blog GTK</entry>
+					<entry>Editor de blog</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+	<para>No incluya detalles técnicos cuando el usuario no necesita saberlos o pueden inferirles del contexto. Evite jerga técnica a no ser que la aplicación solo tenga un público objetivo técnico.</para>
+	<para>Por ejemplo, cuando tanto un cliente como un servidor de algún servicio están listados en los menús, quite la plabara «Cliente» del nombre del menú para el cliente.</para>
+	
+	<example>
+		<title>Quitar jerga técnica de los nombres de menú</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Elemento original del menú</entry>
+				      <entry>Elemento revisado del menú</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Cliente de Batalla naval de GNOME</entry>
+					<entry>Batalla Naval</entry>
+				</row>
+				<row>
+					<entry>Servidor de Batalla naval de GNOME</entry>
+					<entry>Servidor multijugador de Batalla naval</entry>
+				</row>
+				<row>
+					<entry>Cliente VideoLAN de GNOME</entry>
+					<entry>Reproductor de vídeo VideoLAN</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+	<tip><title>Proporcionar la información correcta</title>
+        <para>Trate de imaginar qué palabras buscarán los usuarios cuando seleccionen su aplicación en el menú <guimenu>Aplicaciones</guimenu>. Esta es la información que debería aparecer en el nombre del menú. Por ejemplo, un usuario que quiera reproducir una película, probablemente no buscará la palabra «Cliente». Por otro lado, un usuario que quiera enviar películas desde su equipo, sí puede buscar la palabra «Servidor». Evite pensar en el menú de aplicaciones como una ontología.</para></tip>
+      </sect3>
+
+      <sect3>
+	<title>Formatos de nombres de menú</title>
+	<orderedlist>
+	  
+         <listitem>
+	    <para>Si el nombre adecuado de su aplicación ya es descriptivo de su funcionalidad y no solo sugestivo, use el formato: <replaceable>Nombre de la aplicación</replaceable></para>
+	<example>
+		<title>Usar el nombre de la aplicación como nombre en el menú</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Nombre de la aplicación</entry>
+				      <entry>Nombre del menú</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Diccionario</entry>
+					<entry>Diccionario</entry>
+				</row>
+				<row>
+					<entry>Herramienta de búsqueda</entry>
+					<entry>Herramienta de búsqueda</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+        	</example>
+          </listitem>
+
+	  <listitem>
+	    <para>Si existe una descripción funcional sucinta de su aplicación, use el formato: <replaceable>NombreDeLaAplicación DescripciónFuncional</replaceable></para>
+
+	<example>
+		<title>Usar descripciones funcionales en los nombres del menú</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Nombre de la aplicación</entry>
+				      <entry>Nombre del elemento del menú</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>El GIMP</entry>
+					<entry>Editor de imágenes GIMP</entry>
+				</row>
+				<row>
+					<entry>Subaplicación de correo Evolution</entry>
+					<entry>Correo-e (Evolution)</entry>
+				</row>
+				<row>
+					<entry>AbiWord</entry>
+					<entry>Procesador de textos AbiWord</entry>
+				</row>
+				<row>
+					<entry>Galeon</entry>
+					<entry>Navegador web Galeon</entry>
+				</row>
+				<row>
+					<entry>Gramps</entry>
+					<entry>Genealogía Gramps</entry>
+				</row>
+				<row>
+					<entry>AisleRiot</entry>
+					<entry>Solitario AisleRiot</entry>
+				</row>
+
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+
+	  </listitem>
+
+	  <listitem>
+	    <para>Unas pocas aplicaciones, particularmente los juegos, no tienen descripciones funcionales apropiadas (pero tenga en cuenta que muchos juegos sí la tienen). En este caso use el <replaceable>Nombre de la aplicación</replaceable> como el nombre de menú.</para>
+
+	<example>
+		<title>Usar el nombre de la aplicación como el nombre de menú cuando no exista una descripción funcional</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Nombre de la aplicación</entry>
+				      <entry>Nombre del elemento del menú</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Laberinto del bombardero</entry>
+					<entry>Laberinto del bombardero</entry>
+				</row>
+	  		</tbody>
+         	</tgroup>
+		</informaltable>
+	</example>
+
+	  </listitem>
+
+	</orderedlist>
+      </sect3>
+<!--
+	<sect3>
+	<title>Generic Name and Name</title>
+
+        <para>There are two name types required for a menu item, a generic name and a proper name.  The menu item requires these two names to distinguish the applications when there are more than one of the same application type present and to simplify the item name when there is only one present.  If only one application of a generic name exists in the menu the application assumes the generic name, otherwise the proper name is displayed.</para>
+
+	<example>
+		<title>X-Chat .desktop file</title>
+		 <programlisting>
+	Name=X-Chat IRC
+	GenericName=IRC
+		 </programlisting>
+	</example>
+
+	<para>
+	The generic name or GenericName, is a name describing only the applications functionality without the applications proper name.  This is the name to be displayed when there are no other applications of the same generic name present and should simply describe the pure functionality of the application without its actual name.
+	</para>
+
+	<para>
+	A proper name or Name, is the displayed name of the application when there are more than one applications present with the same generic name.  This distinguishes the multiple generic names with the applications proper name.
+	</para>
+
+	<example>
+		<title>GenericName and Name</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>GenericName</entry>
+					<entry>Name</entry>
+	   			</row>
+			  </thead>
+			  <tbody>
+	     			<row>
+					<entry>Web Browser</entry>
+					<entry>Epiphany Web Browser</entry>
+				</row>
+	     			<row>
+					<entry>Web Browser</entry>
+					<entry>Mozilla Web Browser</entry>
+				</row>
+	     			<row>
+					<entry>Word Processor</entry>
+					<entry>AbiWord Word Processor</entry>
+				</row>
+	     			<row>
+					<entry>Word Processor</entry>
+					<entry>OpenOffice.org Word Processor</entry>
+				</row>
+	  		</tbody>
+	         	</tgroup>
+		</informaltable>
+	</example>
+	</sect3>
+-->
+    </sect2>
+    <sect2 id="menu-item-tooltips">
+
+      <title>Consejos de elementos de menú</title>
+
+      <para>Los consejos de ayuda proporcionan a los usuarios suficiente información para ejecutar la aplicación correcta. Muchos usuarios usan los consejos para explorar un entorno nuevo.</para>
+	<para>Proporcione un consejo para cada elemento del menú <guimenu>Aplicación</guimenu> que añada, siguiendo esta guía:</para>
+
+	<itemizedlist><title>Guías</title>
+		<listitem><para>Comience el consejo con un verbo en imperativo, por ejemplo «diseñe», «escriba» o «compruebe».</para></listitem>
+		<listitem><para>Describa las tareas más importantes que los usuarios pueden realizar con su aplicación.</para></listitem>
+		<listitem><para>Aunque los consejos nunca deben ser detallados, deben ser más largos y descriptivos que el nombre del elemento.</para></listitem>
+	</itemizedlist>
+
+	<example>
+		<title>Ejemplos de consejos para aplicaciones GNOME</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="2" align="left">
+			  <thead>
+				<row>
+		      			<entry>Aplicación</entry>
+				      <entry>Consejo de elemento de menú</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>Mapa de caracteres</entry>
+					<entry>Inserte caracteres especiales en los documentos</entry>
+				</row>
+
+				<row>
+					<entry>Memprof</entry>
+					<entry>Compruebe si sus aplicaciones tienen pérdidas de memoria</entry>
+				</row>
+				<row>
+					<entry>Same Gnome</entry>
+					<entry>Coloque cadenas de bolas del mismo color juntas para eliminarlas</entry>
+				</row>
+				<row>
+					<entry>Cliente de Batalla naval de GNOME</entry>
+					<entry>Busque y hunda barcos enemigos en esta versión en red de Hundir la flota</entry>
+				</row>
+	  		</tbody>
+	         	</tgroup>
+		</informaltable>
+	</example>
+
+    </sect2>
+   </sect1>
+    <sect1 id="gconf-keys">
+
+      <title>Claves de GConf</title>
+
+      <para>Las claves de GConf requieren descripciones largas y cortas para cada tecla. Muchas claves no tienen interfaz a través de la aplicación, por lo tanto, para alguien que administre sus valores desde otra aplicación, cada campo de descripción será la única interfaz disponible para ellas.</para>
+
+	<itemizedlist><title>Guías</title>
+		<listitem><para>La «descripción corta» debe ser corta, menos de 8 palabras, y debe describir el propósito de la clave</para></listitem>
+		<listitem><para>La «descripción larga» debe describir de manera completa los valores posibles de la clave y los efectos que estos valores tienen en la aplicación.</para></listitem>
+	</itemizedlist>
+
+	<example>
+		<title>Ejemplos de descripciones para claves de GConf de gnome-terminal</title>
+		<informaltable frame="all">
+			
+			<tgroup cols="3" align="left">
+			  <thead>
+				<row>
+					<entry>Clave</entry>
+		      			<entry>Descripción corta</entry>
+				      <entry>Descripción larga</entry>
+	   			</row>
+			  </thead>
+			<tbody>
+	     			<row>
+					<entry>background_type</entry>
+					<entry>Tipo de fondo</entry>
+					<entry>El tipo de fondo del terminal. Puede ser «solid» para un color sólido, «image» para una imagen o «transparent» para una pseudo-transparencia.</entry>
+				</row>	
+	     			<row>
+					<entry>eliminar_vinculación</entry>
+					<entry>Efecto de la tecla «Suprimir» (Delete)</entry>
+					<entry>Determina qué código genera la tecla Suprimir (Delete). Los valores posibles son «ascii-del» para el carácter ASCII para Supr., «control-h» para Control-H (también conocido como el carácter ASCII BS), «escape-sequence» para la secuencia de escape que típicamente está asociada con retroceso (backspace) o suprimir (delete). «escape-sequence» se considera normalmente como la configuración correcta para la tecla Suprimir (Delete).</entry>
+				</row>	
+			</tbody>
+	         	</tgroup>
+		</informaltable>
+	</example>
+   </sect1>
+  
+  <sect1 id="desktop-mimedatabase">
+    <title>Mapear tipos de documentos a aplicaciones</title>
+    
+    <para>La base de datos de tipos de documentos (MIME) permite a los usuarios especificar sus aplicaciones preferidas para abrir diferentes tipos de documentos. Este es el mecanismo mediante el cual Nautilus, Evolution y otras aplicaciones deciden qué aplicación ejecutar cuando encuentran un documento que no pueden abrir ellos mismos.</para>
+
+    <para>Es importante que los usuarios puedan hacer doble pulsación sobre los documentos que ven en el escritorio, tales como archivos y mensajes de correo electrónico, y abrirlos con su aplicación favorita. Por lo tanto, la aplicación de GNOME debe asociarse en el momento de la instalación con todos los tipos de documentos que puede manejar. Los detalles técnicos sobre cómo hacer esto se pueden encontrar en la <ulink url="http://www.freedesktop.org/wiki/Specifications/shared-mime-info-spec"><citetitle>Especificación de información MIME compartida</citetitle></ulink> de Freedesktop y en la <ulink url="http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html"><citetitle>Especificación de entradas de escritorio</citetitle></ulink>.</para>
+
+    <!-- FIXME: need to cover things like the preferred list and when an application should add itself to the preferred list -->
+
+  </sect1>
+
+  <sect1 id="desktop-notification-area">
+	<title>Usar el área de notificación de estado</title>
+	<para>Usando el área de notificación de estado de aplicaciones, puede notificar al usuario sobre eventos no críticos (por ejemplo la llegada de un correo nuevo o la entrada de un amigo en una charla) y exponer el estado de los procesos del sistema (por ejemplo la impresión de un documento o la carga de la batería del portátil).</para>
+
+	<para>Seguir las guías de esta sección le ayudará a aclarar la diferencia en la mente del usuario entre la información presentada en el área de notificación y los controles y la información que se presentan en otras partes del panel.</para>
+
+		<warning><para>La utilidad del área de notificación disminuye rápidamente cuando existen más de cuatro iconos siempre presentes. Por esta razón se prefieren los iconos que aparecen solo de forma temporal, en respuesta de eventos.</para></warning>
+
+	<sect2 id="desktop-notification-or-applet"><title>¿Área de notificación o miniaplicación del panel?</title>
+	<para>Probablemente debería escribir una miniaplicación en lugar de usar el área de notificación si:</para>
+	<itemizedlist>
+		<listitem><para>pulsar en el icono de su área de notificación no hace otra cosa que abrir una ventana directamente asociada con el icono (por ejemplo, una ventana de la carpeta de correo para un icono de correo nuevo o una ventana de la cola de impresión para el icono de notificación de impresora), o</para></listitem>
+		<listitem><para>existen opciones específicas de icono en su menú contextual para hacer cualquier otra cosa</para></listitem> 
+		<listitem><para>su aplicación podría necesitar mostrar más de un icono de notificación al mismo tiempo</para></listitem>
+	</itemizedlist>
+	</sect2>
+
+	<sect2><title>Apariencia de los iconos</title>
+	<itemizedlist><title>Guías</title>
+		<listitem><para>Use perspectivas de tabla para iconos que representen dispositivos físicos, con la fuente de luz encima y a la izquierda del objeto representado. Por ejemplo, un icono de impresora durante la impresión. Para obtener más información acerca la perspectiva de tabla consulte la <xref linkend="icon_style_perspective"/>. </para></listitem>
+		<listitem><para>Use perspectiva de estantería, con sobrecarga ligera, para el resto de iconos. Por ejemplo, un sobre mostrado cuando llega correo nuevo. Para obtener más detalles acerca de la perspectiva de estantería, consulte <xref linkend="icon_style_perspective"/>.</para></listitem>	
+		<listitem><para>Para monitores o barras de progreso que cambian con el tiempo, tales como el monitor de carga de la batería, delimitar limpiamente el borde del área.</para></listitem>
+
+		</itemizedlist>
+
+		<itemizedlist><title>Guías</title>
+			<listitem><para>Solo los programas del núcleo de GNOME pueden mostrar siempre un icono en el área de estado.</para></listitem>
+			<listitem><para>Los programas que no sean parte del núcleo, para los que un icono perpetuo pueda ser útil, deben no mostrar el icono de forma predeterminada. Los usuarios pueden seleccionar activar el icono perpetuo como una opción. <remark>Standard way of presenting this option would be nice.</remark></para></listitem>
+		</itemizedlist>
+
+	</sect2>
+
+	<sect2 id="notification-area-animation">
+	<title>Animación</title>
+	
+	<itemizedlist><title>Guías</title>
+		<listitem><para>Los iconos no deben aparecer animados. Pueden cambiar para indicar un cambio de estado, pero no deben hacerlo si el cambio se produce con regularidad o rápidamente. Un indicador de estado de la batería por lo general cambia lentamente, por lo tanto un icono es lo apropiado. Por el contrario, un medidor de carga siempre está cambiando, por lo tanto, debe utilizar una imagen plana.</para></listitem>
+<!--		<listitem><para>Icons are permitted to blink under a few conditions.
+ An icon may blink for n (=5?) seconds when first displayed
+   if showing the icon is not caused by user action.
+   A printing-in-progress icon would be shown because the user
+   is printing a document, therefore it should not blink.
+   An incoming email or personal message (IM) would be shown
+   because something has changed absent the user, therefore it
+   may blink.</para></listitem>
+
+ 		<listitem><para>A icon may blink for n seconds if its conditions for initially
+   blinking recur. For example, an incoming email icon which was
+   shown and blinked when a message arrived and which has remained
+   visible may blink again when another message arrives.</para></listitem>
+-->
+ 		<listitem><para>Cualquier icono puede parpadear para indicar un error en deferencia a mostrar una alerta. Por ejemplo, un icono de impresora en progreso puede parpadear cuando hay papel atascado, pero no cuando la impresora está quemándose (ya que en su lugar debería mostrar una alerta).</para></listitem>
+		<listitem><para>No dependa de destellos o animaciones como medio para alertar al usuario sobre cualquier evento en particular.</para></listitem>
+		</itemizedlist>
+
+	</sect2>
+	
+	<sect2 id="notification-icon-interaction">
+	<title>Interacción</title>
+		<para>Los iconos deben responder a estas acciones de usuario. (Claro está que las pulsaciones de teclas sólo se aplican cuando el icono tiene el foco.)</para>
+		<itemizedlist><title>Guías</title>
+  			<listitem><para>Las teclas de pulsación doble o el <keysym>Espacio</keysym> deberían realizar la acción predeterminada del icono. Generalmente suele abrir una ventana con datos relevantes, por ejemplo: <itemizedlist>
+     				<listitem><para>la cola de impresión para un icono de progreso de impresión.</para></listitem>
+     				<listitem><para>el icono de la bandeja de entrada para un correo electrónico entrante</para></listitem>
+     				<listitem><para>el mensaje para un mensaje entrante</para></listitem>
+			</itemizedlist></para></listitem>
+  		<listitem><para>Pulsar con el botón derecho del ratón o <keycombo><keycap>Mayús</keycap><keycap>F10</keycap></keycombo> debería mostrar un menú que al menos contenga la acción predeterminada del icono.</para></listitem>
+
+		<listitem><para>Si se pueden alterar las propiedades del icono, debería tener un elemento de menú <guimenuitem>Propiedades</guimenuitem> en su menú, y mostrar su propiedad en respuesta a Alt+Intro.</para></listitem>
+
+		<listitem><para>Los iconos deben obedecer las convenciones normales para las sugerencias o consejos.</para></listitem>
+		</itemizedlist>
+	</sect2>
+ </sect1>
+
+</chapter>

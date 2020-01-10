@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="keyring" xml:lang="pt-BR">
+<info>
+  <link type="guide" xref="index" group="apps"/>
+  <desc>Secure storage for passwords and other data</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+</info>
+
+<title>Keyring</title>
+
+<p>GNOME provides a modern and secure keyring manager to store users'
+passwords and other sensitive data.  Applications can use the keyring
+manager library to store and access passwords, and users can manage
+their passwords using GNOME's <app>Seahorse</app>
+application.</p>
+
+<p>O gerenciador de chaveiros oferece uma porção de chaveiros, onde cada chaveiro pode conter qualquer quantidade de itens de chaveiro. Os itens em um chaveiro armazenam alguma porção de dados, geralmente uma senha. Cada chaveiro é trancado individualmente e os usuários precisam fornecer uma senha para destrancá-lo. Uma vez que o chaveiro seja destrancado, o usuário possui acesso a todos os itens daquele chaveiro.</p>
+
+<p>O gerenciador de chaveiros oferece acesso à listas de controles para cada item do chaveiro, controlando quais aplicativos possuem permissão para acessar aquele item. Se um aplicativo desconhecido tenta acessar um item do chaveiro, o gerenciador de chaveiros irá avisar ao usuário para permitir ou negar o acesso daquela aplicação. Isto ajuda prevenir programas maliciosos ou mal escritos de acessarem os dados sensíveis dos usuários.</p>
+
+<p>Os dados dos chaveiros armazenados no sistema de arquivos é encriptado com o cifrador de bloco AES e o SHA1 é utilizado para "hashear" os atributos do item. Usando os atributos de hash, o gerenciador de chaveiros é capaz de consultar os itens solicitados pelos aplicativos sem nunca ter que destrancar o chaveiro. O chaveiro tem que ser destrancado quando um item correspondente é encontrado e acessado.</p>
+
+<p>O gerenciador de chaveiros também oferece uma sessão de chaveiro. Itens na sessão de chaveiro nunca são armazenados no disco e são perdidos assim que a sessão do usuário seja encerrada. A sessão de chaveiro pode ser usada para armazenar senhas que serão utilizadas apenas na sessão atual.</p>
+
+<p>Se você usa GIO para acessar servidores remotos, você automaticamente obterá os benefícios do gerenciador de chaveiros. Toda vez que o GVFS precisa autenticar o usuário, ele fornece a opção de armazenar a senha, tanto no chaveiro padrão quanto na sessão do chaveiro.</p>
+
+<p>Você deveria usar o gerenciador de chaveiros toda vez que seu aplicativo precise armazenar senhas ou outros dados sensíveis para o usuários. Ao usar o gerenciador de chaveiros oferece-se uma melhor experiência de usuário enquanto ainda mantém os dados do usuário à salvo e em segurança.</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/gnome-keyring/stable/">gnome-keyring Reference Manual</link></p></item>
+  <item><p><link href="http://developer.gnome.org/libseahorse/stable/">libseahorse Reference Manual</link></p></item>
+</list>
+
+</page>

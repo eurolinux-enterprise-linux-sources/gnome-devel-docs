@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="guide" style="task" id="guitar-tuner.js" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" type="guide" style="task" id="guitar-tuner.js" xml:lang="es">
   <info>
   <title type="text">Afinador de guitarra (JavaScript)</title>
     <link type="guide" xref="js#examples"/>
@@ -7,22 +7,22 @@
 
     <credit type="author copyright">
       <name>Susanna Huhtanen</name>
-      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <email>ihmis.suski@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Usar GTK+ y GStreamer para construir un sencillo afinador de guitarra para GNOME.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -120,8 +120,8 @@ var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5
 
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
 
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -130,11 +130,11 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () {
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
   });
 }</code>
-   <p>Lo primero que se debe hacer es decidir qué tonos se quieren reproducir con la función playSound. A la función playSound se le pasa como argumento una frecuencia (que se ha definido en la lista de variables). Lo primero que se debe hacer es construir una tubería, con una fuente y un sumidero. Para la fuente se establece la frecuencia. A la tubería se añaden la fuente y el sumidero y se indica que la reproduzca. El último paso es usar la constante Mainloop para hacer que la tubería se pare después de 500ms.</p>
+   <p>Lo primero que se debe hacer es decidir qué tonos se quieren reproducir cuando se pulsa un botón. La lista de frecuencias se encargar de eso. Después de eso hay que hacer que la función playSound reproduzca los sonidos. A la fución playSound se le pasa como argumento una frecuencia (que se ha definido en la lista de variables). Lo primero que se debe hacer es construir una tubería, con una fuente y un sumidero. Para la fuente se establece la frecuencia. A la tubería se añaden la fuente y el sumidero y se indica que la reproduzca. El último paso es usar la constante Mainloop para hacer que la tubería se pare después de 500ms.</p>
    <p>Ahora ya funciona el método para reproducir un sonido cuando se pulsa un botón. Lo siguiente es hacer las conexiones para que al pulsar un botón se reproduzca el sonido correcto para ese botón.</p>
   </section>
   <section id="connecting">
@@ -192,8 +192,8 @@ var frequencies = {E: 329.63, A: 440,	D: 587.33,	G: 783.99,	B: 987.77,	e: 1318.5
 function playSound(frequency){
   var pipeline = new Gst.Pipeline({name: "note"});
 
-  var source = Gst.ElementFactory.make("audiotestsrc","source");
-  var sink = Gst.ElementFactory.make("autoaudiosink","output");
+  var source = new Gst.ElementFactory.make("audiotestsrc","source");
+  var sink = new Gst.ElementFactory.make("autoaudiosink","output");
 
   source.set_property('freq', frequency);
   pipeline.add(source);
@@ -202,7 +202,7 @@ function playSound(frequency){
   pipeline.set_state(Gst.State.PLAYING);
 
   Mainloop.timeout_add(500, function () {
-    pipeline.set_state(Gst.State.NULL);
+    pipeline.set_state(Gst.State.PAUSED);
 	  return false;
 });
 }

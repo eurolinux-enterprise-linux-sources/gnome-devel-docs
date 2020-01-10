@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox_multicolumn.py" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="combobox_multicolumn.py" xml:lang="es">
   <info>
     <title type="text">ComboBox (Python)</title>
     <link type="guide" xref="beginner.py#menu-combo-toolbar"/>
@@ -8,22 +8,22 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Un widget usado para elegir de una lista de elementos</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -49,9 +49,7 @@ actions = [["Select", None],
            ["Open", Gtk.STOCK_OPEN],
            ["Save", Gtk.STOCK_SAVE]]
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Welcome to GNOME", application=app)
         self.set_default_size(200, -1)
@@ -86,8 +84,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # the first row is the active one at the beginning
         combobox.set_active(0)
 
-        # connect the signal emitted when a row is selected to the callback
-        # function
+        # connect the signal emitted when a row is selected to the callback function
         combobox.connect("changed", self.on_changed)
 
         # add the combobox to the window
@@ -97,12 +94,11 @@ class MyWindow(Gtk.ApplicationWindow):
         # if the row selected is not the first one, write on the terminal
         # the value of the first column in the model
         if combo.get_active() != 0:
-            print("You chose " + str(actions[combo.get_active()][0]) + "\n")
+			print "You chose " + str(actions[combo.get_active()][0]) +"\n"
         return True
 
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 

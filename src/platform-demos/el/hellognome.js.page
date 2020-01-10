@@ -1,45 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="hellognome.js" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="hellognome.js" xml:lang="el">
   <info>
     <link type="guide" xref="beginner.js#tutorials"/>
     <revision version="0.1" date="2012-07-17" status="draft"/>
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
     <desc>Η πρώτη σας εφαρμογή σε GNOME!</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
   <title>1. Hello, GNOME!</title>
   <synopsis>
-    <p>Αυτό το μάθημα θα σας δείξει πώς να γράψετε την πρώτη σας εφαρμογή GNOME σε JavaScript. Θα χρησιμοποιήσετε JavaScript για να γράψετε για GNOME με τον ίδιο τρόπο που θα έπρεπε για τον ιστό. Κατόπιν, θα μάθετε πώς να χρησιμοποιήσετε "native" γραφικά στοιχεία, για να γράψετε εφαρμογές που δείχνουν και αισθάνονται σαν άλλες εφαρμογές GNOME.</p>
+    <p>Αυτό το μάθημα θα σας δείξει πώς να γράψετε την πρώτη σας εφαρμογή GNOME σε JavaScript. Θα χρησιμοποιήσετε JavaScript για να γράψετε για GNOME με τον ίδιο τρόπο που θα έπρεπε για τον ιστό. Κατόπιν, θα μάθετε πώς να χρησιμοποιήσετε "native" γραφικά συστατικά, για να γράψετε εφαρμογές που δείχνουν και αισθάνονται σαν άλλες εφαρμογές GNOME.</p>
     <note style="warning"><p>Έχετε πάρει τον υπολογιστή σας με εγκατεστημένο το GNOME και <link xref="set-up-gedit.js">gedit</link> ρυθμισμένο να γράφει κώδικα με ?. Θα θέλετε να κάνετε αυτά τα πράγματα πρώτα.</p></note>
   </synopsis>
 
@@ -104,7 +86,7 @@ const Webkit = imports.gi.WebKit;
 </code>
     <p>Πώς πρόσθετες βιβλιοθήκες όπως η jQuery μας επιτρέπουν να κάνουμε πρόσθετα πράγματα με την JavaScript, καθεμιά από αυτές τις βιβλιοθήκες μας δίνει νέες δυνατότητες για τις εφαρμογές μας στο GNOME:</p>
     <steps>
-      <item><p><file>Gtk</file> και <file>Lang</file> είναι βασικά μέρη κάθε εφαρμογής GNOME, που σας επιτρέπει να δημιουργήσετε παράθυρα και γραφικά στοιχεία και να τα συνδέσετε μαζί.</p></item>
+      <item><p><file>Gtk</file> και <file>Lang</file> είναι βασικά μέρη κάθε εφαρμογής GNOME, που σας επιτρέπει να δημιουργήσετε παράθυρα και γραφικά συστατικά και να τα συνδέσετε μαζί.</p></item>
       <item><p>Η <file>GLib</file> είναι μια βοηθητική βιβλιοθήκη, που επιτρέπει να κάνετε πράγματα όπως να πείτε στο GNOME πού είναι το αρχείο <file>hellognome.html</file>που δημιουργήσαμε.</p></item>
       <item><p>Και το <file>Webkit</file> είναι μια μηχανή απόδοσης ιστού, που θα χρησιμοποιήσουμε για να δημιουργήσουμε βασικά ένα παράθυρο περιηγητή για να ανοίξουμε το αρχείο μας HTML.</p></item>
     </steps>
@@ -117,21 +99,21 @@ const HelloGNOME = new Lang.Class ({
     <p>Αυτό θα δείχνει οικείο σε σας εάν έχετε δουλέψει με αντικειμενοστραφή JavaScript πριν. Αυτό είναι σωστό· όλη μας η εφαρμογή είναι μια κλάση που λέγεται HelloGNOME. Και όπως μπορείτε να δείτε, της δώσαμε μια ιδιότητα που λέει ποιο είναι το όνομά της.</p>
 
     <code mime="application/javascript">
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    // Create the application itself
     _init: function () {
         this.application = new Gtk.Application ();
 
-        // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+        // Connect 'activate' and 'startup' signals to the callback functions
         this.application.connect('activate', Lang.bind(this, this._onActivate));
         this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει παράθυρα όταν είναι ενεργή
+    // Callback function for 'activate' signal presents windows when active
     _onActivate: function () {
         this._window.present ();
     },
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    // Callback function for 'startup' signal builds the UI
     _onStartup: function () {
         this._buildUI ();
     },
@@ -147,10 +129,10 @@ const HelloGNOME = new Lang.Class ({
     <p>Στη συνάρτηση _buildUI, πρόκειται να πούμε στο GNOME για το παράθυρό μας και τα πράγματα μέσα του, ένα τη φορά. Μετά από αυτό, πρόκειται να συνδέσουμε το καθετί μαζί και να το βάλουμε όλο σε προβολή.</p>
 
     <code mime="application/javascript">
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    // Build the application's UI
     _buildUI: function () {
 
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow  ({
             application: this.application,
             title: "Welcome to GNOME",
@@ -161,28 +143,28 @@ const HelloGNOME = new Lang.Class ({
 
     <p>Το πρώτο αντικείμενο που δημιουργούμε είναι ένα ApplicationWindow. Χρειάζεται έναν τίτλο να μπει στη γραμμή τίτλου και η ιδιότητα εφαρμογής του χρειάζεται να είναι η εφαρμογή που δημιουργήσαμε, παραπάνω. Πέρα από αυτό, υπάρχουν ποικίλοι τρόποι προσαρμογής της εμφάνισης του, που η σελίδα αναφοράς <link xref="GtkApplicationWindow.js">ApplicationWindow</link> θα μπει σε περισσότερες λεπτομέρειες. Όπως μπορείτε να δείτε εδώ, του δίνουμε ένα προεπιλεγμένο ύψος και πλάτος (μετρημένο σε εικονοστοιχεία) και λέμε στο GNOME ότι θέλουμε το παράθυρο μας να εμφανιστεί στο κέντρο της οθόνης.</p>
     <code mime="application/javascript">
-        // Δημιουργία μιας προβολής ιστού για προβολή της εφαρμογής ιστού
+        // Create a webview to show the web app
         this._webView = new Webkit.WebView ();
 
-        // Τοποθέτηση της εφαρμογής ιστού στην προβολή ιστού
+        // Put the web app into the webview
         this._webView.load_uri (GLib.filename_to_uri (GLib.get_current_dir() +
             "/hellognome.html", null));
 </code>
     <p>Να θυμάστε πώς εισάγαμε το Webkit δεξιά στην αρχή. Εδώ δημιουργούμε ένα νέο στιγμιότυπο της κλάσης Webkit που λέγεται μια WebView, που είναι περισσότερο ή λιγότερο ένα παράθυρο περιηγητή όπου μπορείτε να βάλετε μέσα την εφαρμογή σας. Μετά από αυτό, του δίνουμε έπειτα την URI που θέλουμε να φορτώσει όταν η εφαρμογή ξεκινά.</p>
     <p>Θα <em>μπορούσαμε</em> να του δώσουμε μόνο μια URI ιστού, όπως <link href="http://gnome.org">http://gnome.org</link>. Αντίθετα, εδώ χρησιμοποιούμε λίγες βοηθητικές συναρτήσεις του GLib για να πούμε στο WebView που είναι το αρχείο μας <file>hellognome.html</file>. Ο GLib.get_current_dir επιστρέφει τον κατάλογο που εκτελείται η εφαρμογή μας και το GLib.filename_to_uri επιστρέφει τη διαδρομή του αρχείου μας και το όνομα αρχείου σε μια URI που η συνάρτηση load_uri της WebView καταλαβαίνει. (η δεύτερη παράμετρος filename_to_uri's πρέπει να είναι μηδέν εκτός και ξέρετε τι χρησιμοποιείται και έχετε έναν λόγο να το αλλάξετε.)</p>
     <code mime="application/javascript">
-        // Τοποθέτηση της προβολής ιστού στο παράθυρο
+        // Put the webview into the window
         this._window.add (this._webView);
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
     },
 
 });
 </code>
-    <p>Κάθε παράθυρο μπορεί να κρατήσει ένα και μόνο ένα γραφικό στοιχείο. Κανονικά, θα πρέπει να χρησιμοποιήσουμε έναν περιέκτη γραφικού στοιχείου όπως ένα <link xref="grid.js">πλέγμα</link> για να βάλουμε πολλαπλά γραφικά στοιχεία σε αυτό, έπειτα χρησιμοποιήστε τη συνάρτηση προσθήκης παραθύρου για να προσθέσετε το πλέγμα σε αυτό. Εδώ, προσθέτουμε απλά την WebView, έτσι ώστε να είναι ότι προσθέτουμε στο παράθυρο. Μετά από αυτό, ως το τελευταίο μέρος της συνάρτησης _buildUI που δημιουργεί το παράθυρο μας, λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και τα περιεχόμενά του.</p>
+    <p>Κάθε παράθυρο μπορεί να κρατήσει ένα και μόνο ένα γραφικό συστατικό. Κανονικά, θα πρέπει να χρησιμοποιήσουμε έναν περιέκτη γραφικού συστατικού όπως ένα <link xref="grid.js">πλέγμα</link> για να βάλουμε πολλαπλά γραφικά συστατικά σε αυτό, έπειτα χρησιμοποιήστε τη συνάρτηση προσθήκης παραθύρου για να προσθέσετε το πλέγμα σε αυτό. Εδώ, προσθέτουμε απλά την WebView, έτσι ώστε να είναι ότι προσθέτουμε στο παράθυρο. Μετά από αυτό, ως το τελευταίο μέρος της συνάρτησης _buildUI που δημιουργεί το παράθυρο μας, λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και τα περιεχόμενά του.</p>
     <code mime="application/javascript">
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new HelloGNOME ();
 app.application.run (ARGV);
 </code>
@@ -206,43 +188,43 @@ app.application.run (ARGV);
   <section id="whatsnext">
     <title>Ποιο είναι το επόμενο;</title>
 
-    <p><link xref="02_welcome_to_the_grid.js">Συνεχίστε με το επόμενο μάθημα</link> για να μάθετε πώς να δομήσετε "native" εφαρμογές GNOME που φαίνονται και αισθάνονται όπως οι άλλες, αντίθετα από μια προβολή ιστού με κώδικα HTML μέσα της. Ή ρίξτε μια ματιά σε κάποια <link xref="beginner.js#samples">δείγματα κώδικα</link>, εάν θα θέλατε να δείτε τον κώδικα του παραδείγματος για κάθε γραφικό στοιχείο Gtk.</p>
-    <p>Τελικά, εάν θέλετε να κατασκευάσετε απλά εφαρμογές GNOME χρησιμοποιώντας βιβλιοθήκες JavaScript που σχεδιάστηκαν για τον ιστό, μπορείτε βασικά να σταματήσετε εδώ και να πάτε να το κάνετε! Ελέγξετε <link xref="beginner.js#tutorials">τα τελευταία μαθήματα</link> εάν θα θέλατε να δείτε τη δημιουργία ενός αρχείου .desktop για την εφαρμογή σας, που θα επιτρέψει την εμφάνισή του στο μενού ενεργειών της επιφάνειας εργασίας σας με όλες τις άλλες εφαρμογές σας.</p>
+    <p><link xref="02_welcome_to_the_grid.js">Συνεχίστε με το επόμενο μάθημα</link> για να μάθετε πώς να δομήσετε "native" εφαρμογές GNOME που φαίνονται και αισθάνονται όπως οι άλλες, αντίθετα από μια προβολή ιστού με κώδικα HTML μέσα της. Ή ρίξτε μια ματιά σε κάποια <link xref="beginner.js#samples">δείγματα κώδικα</link>, εάν θα θέλατε να δείτε τον κώδικα του παραδείγματος για κάθε γραφικό συστατικό Gtk.</p>
+    <p>Τελικά, εάν θέλετε να κατασκευάσετε απλά εφαρμογές GNOME χρησιμοποιώντας βιβλιοθήκες JavaScript που σχεδιάστηκαν για τον ιστό, μπορείτε βασικά να σταματήσετε εδώ και να πάτε να το κάνετε! Ρίξτε μια ματιά στο δείγμα κώδικα <link xref="scrolledwindow.js">ScrolledWindow</link> εάν θα θέλατε να δείτε πώς να κάνετε ένα γραφικό συστατικό WebView που μπορεί να κυλίσει για εμφανίσει μέρη μιας μεγαλύτερης ιστοσελίδας και να ελέγξετε <link xref="beginner.js#tutorials">τα τελευταία μαθήματα</link> εάν θα θέλατε να δείτε τη δημιουργία ενός αρχείου .desktop για την εφαρμογή σας, που θα επιτρέψει την εμφάνισή του στο μενού ενεργειών της επιφάνειας εργασίας σας με όλες τις άλλες εφαρμογές σας.</p>
   </section>
 
   <section id="complete">
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
-
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 const Webkit = imports.gi.WebKit;
 
-class HelloGNOME {
+const HelloGNOME = new Lang.Class ({
+    Name: 'Hello GNOME',
 
     // Create the application itself
-    constructor() {
+    _init: function () {
         this.application = new Gtk.Application ();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate() {
-        this._window.present();
-    }
+    _onActivate: function () {
+        this._window.present ();
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function () {
+        this._buildUI ();
+    },
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function () {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow  ({
@@ -264,9 +246,9 @@ class HelloGNOME {
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-};
+});
 
 // Run the application
 let app = new HelloGNOME ();

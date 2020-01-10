@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="toolbars" lang="fr">
+  <title>Barres d'outils</title>
+  <para>Une barre d'outils est une bande de contrôles qui permet un accès pratique aux fonctions couramment utilisées. La plupart des barres d'outils contiennent seulement des boutons graphiques, mais, dans des applications plus complexes, d'autres types de contrôles comme des listes déroulantes peuvent être utilisés.</para>
+
+  <!-- This bit more relevant to the utility windows section
+  <note><para>Although the latter is just a side-effect of the fact that palettes can't be created with the standard toolbar widgets— it would be rather nice if they could, especially as they would then automatically feature in the toolbar keyboard navigation order.</para></note>
+  -->
+    
+  <figure id="mail-toolbar-example">
+    <title>Exemple de barre d'outils pour une simple application de courriel</title>
+    <mediaobject>
+      <imageobject><imagedata fileref="images/toolbars-mail.png" format="PNG" width="428" depth="48"/></imageobject>
+      <imageobject><imagedata fileref="images/toolbars-mail.eps" format="EPS"/></imageobject>
+      <textobject><phrase>Example mail application toolbar</phrase></textobject>
+    </mediaobject>
+  </figure>
+
+  <!-- Notes from GJM:
+  Text-on-the-side toolbars are now part of Gtk+.
+  Stock items have mnemonics/access keys. I don't think they should.
+  -->
+ 
+  <!-- CFB: Assuming for now therefore that we ought to be recommending Gtk toolbars, but trying to keep the text as widget-neutral as possible
+  <note>
+  <title>For discussion</title>
+  <para>A few people only want to recommend one type of toolbar.  Which should it be?  We can't really recommend the GAL one because it's not part of core GNOME.  On the other hand, the Gtk one is somewhat clunky, and projects like Evo, AbiWord etc. are unlikely to switch to it anyime soon.</para>
+  </note>
+  -->
+    
+  <para>Une conception de barre d'outils soignée et cohérente accélère la tâche de l'utilisateur en fournissant un accès direct aux fonctions qui sinon seraient cachées dans un menu. Utilisez-les néanmoins seulement pour les fonctions les plus importantes. Trop de contrôles dans la barre d'outils réduit son efficacité en les rendant plus difficiles à trouver et trop de lignes de barre d'outils réduisent la quantité d'espace disponible à l'écran pour le reste de l'application.</para>
+    
+  <sect1 id="toolbars-appearance">
+    <title>Apparence et contenu</title>
+      
+    <para>L'efficacité des barres d'outils est augmentée en maintenant un niveau de cohérence entre les différentes applications. La barre d'outils est une des premières parties de l'application que les utilisateurs voient au premier lancement, donc en fournissant une barre d'outils qui semble familière, vous pouvez immédiatement les mettre en confiance avec votre application.</para>
+      
+    <para>Suivez non seulement les recommandations et les exemples fournis dans cette section, mais également observez les barres d'outils dans les autres applications GNOME 2.0 bien conçues, pour vous guider dans vos décisions sur ce qu'il faut ou ne faut pas mettre dans la barre d'outils de votre application.</para>
+      
+    <para>Cependant beaucoup de barres d'outils ou de <link linkend="toolbox-windows">boîtes à outils</link> proposées par votre application, fournissent une barre d'outils principale par défaut qui contient un sous-ensemble représentatif des fonctionnalités globales de l'application. Beaucoup de boutons de cette barre d'outils seront les mêmes, indépendamment du type d'application.</para>
+      
+    <para>Par exemple, la barre d'outils principale dans une application de bureautique possèdera presque toujours les trois boutons <guilabel>Nouveau</guilabel>, <guilabel>Ouvrir</guilabel> et <guilabel>Enregistrer</guilabel> comme premiers boutons. De même les premiers boutons d'un navigateur doivent toujours inclure <guilabel>Reculer</guilabel>, <guilabel>Avancer</guilabel>, <guilabel>Arrêter</guilabel> et <guilabel>Recharger</guilabel> dans cet ordre.</para>
+      
+    <!-- CB-Fig: A composite figure for all the listitems might be useful. --> 
+    <itemizedlist><title>Conseils</title>
+	
+      <listitem><para>Ne mettez que les fonctions de l'application les plus fréquemment utilisées dans vos barres d'outils. Ne mettez pas un bouton pour chaque élément de menu.</para></listitem>
+		
+      <listitem><para>Par défaut, faites apparaître vos barres d'outils directement sous la barre de menu principale.</para></listitem>
+	
+      <listitem><para>Faites en sorte que vos barres d'outils puissent être affichées ou masquées dans la boîte de dialogue <guilabel>Préférences</guilabel> de votre application et en utilisant l'élément de menu <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Barre d'outils</guimenuitem></menuchoice>. S'il y a plus d'une barre d'outils, elles sont individuellement affichées ou masquées à l'aide d'entrées dans un sous-menu <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Barre d'outils</guimenuitem></menuchoice>.</para></listitem>
+	
+      <listitem><para>Toutes les fonctions qui apparaissent dans les barres d'outils doivent également être accessibles via la barre de menu principale, soit directement (i.e. un élément de menu équivalent) ou indirectement (par ex. dans la boîte de dialogue <menuchoice><guimenu>Options</guimenu><guimenuitem>Paramètres</guimenuitem></menuchoice>).</para></listitem>
+	
+      <listitem><para>Classez les boutons de la barre d'outils dans le même ordre et avec les mêmes groupements que leurs équivalents dans la barre de menu principale. En particulier, regroupez toujours les ensembles de boutons s'excluant mutuellement.</para></listitem>
+	
+      <listitem><para>N'ajoutez pas de boutons <guilabel>Aide</guilabel>, <guilabel>Fermer</guilabel> ou <guilabel>Quitter</guilabel> à votre barre d'outils par défaut : ils sont rarement utilisés et la place sera mieux employée avec des contrôles plus utiles. Ainsi, mettez les boutons <guilabel>Annuler</guilabel>, <guilabel>Refaire</guilabel> et les fonctions standards du presse-papier s'il y a assez d'espace sur la barre d'outils pour le faire sans sacrifier des contrôles plus utiles spécifiques à l'application.</para></listitem>
+	
+      <listitem><para>Fournissez des options pour afficher les boutons de la barre d'outils sous forme texte, icônes ou les deux — consultez la <xref linkend="view-toolbar"/> pour les menus à utiliser pour contrôler l'affichage de la barre d'outils. Prévoyez également une option pour remettre toutes les barres d'outils de votre application dans l'état défini par défaut dans le centre de contrôle pour ce réglage.</para></listitem>
+	
+      <listitem><para>Permettez aux utilisateurs de configurer les barres d'outils avec leur propre sélection de commandes dans l'ordre qu'ils préfèrent. Fournissez une option dans la boîte de dialogue de configuration qui remet les barres d'outils dans la configuration par défaut.</para></listitem>
+	
+      <listitem><para>Enregistrez la position et le contenu des barres d'outils comme une entité propre de la configuration de l'application et rétablissez-les lorsque l'application est lancée à nouveau.</para></listitem>
+	
+    </itemizedlist>
+      
+    <sect2 id="vertical-toolbars">
+      <title>Barres d'outils verticales</title>
+
+      <para>En général, n'utilisez pas de barre d'outils verticales. L'œil ne parcourt pas aussi facilement la verticale que l'horizontale, les regroupements de boutons qui s'excluent mutuellement sont moins évident et l'affichage des étiquettes de boutons est plus délicat et moins efficace en terme d'espace. De plus, certains contrôles de barre d'outils ne peuvent tout simplement pas être utilisés verticalement comme les listes déroulantes.</para>
+  	
+      <para>N'utilisez une barre d'outils verticale seulement si : </para> 
+	
+      <itemizedlist>
+
+	<listitem><para>la configuration de la fenêtre application implique qu'il y aurait beaucoup d'espace perdu si une barre horizontale était utilisée à la place ou</para></listitem>
+	<listitem><para>votre application nécessiterait autrement la présence de trois rangées (ou plus) de barres d'outils sous la barre de menu principale par défaut. Notez cependant que dans cette situation, la meilleure alternative serait d'afficher moins de barres d'outils par défaut.</para></listitem>
+
+      </itemizedlist>
+
+      <para>Si vous devez utiliser une barre d'outils verticale, assurez-vous que l'utilisateur puisse la disposer horizontalement s'il préfère.</para>
+      
+    </sect2>
+
+	<sect2 id="toolbars-media">
+		<title>Barres d'outils de lecture multimédia</title>
+		<para>Beaucoup d'applications sont capables de jouer du son ou une vidéo. Par cohérence, présentez toujours les boutons qui contrôlent la lecture dans le même ordre et avec la même collection d'icônes.</para>
+		<itemizedlist><title>Conseils</title>
+			<listitem><para>Affichez des boutons Arrêt et Pause distincts. Ne modifiez pas le bouton Jouer en bouton Pause pendant la lecture du morceau.</para></listitem>
+		</itemizedlist>
+		<para><remark>Suggested order: prev,rew,rec,play,stop,pause,fwd,next,eject.</remark></para>
+		<para><remark>gtk still doesn't have stock media icons, but CD player, sound recorder etc. all register icons with media-* IDs, should mention that here.</remark></para>
+		<para><remark>Should maybe also suggest here how to show volume and timeline controls.</remark></para>
+	</sect2>
+
+  </sect1>
+    
+  <sect1 id="toolbars-controlling-display">
+    <title>Contrôle de l'affichage et de l'apparence</title>
+      
+    <para>Pour chaque barre d'outils de votre application, l'utilisateur doit être capable de choisir d'afficher ou non cette barre d'outils et d'afficher son contenu sous forme d'icônes seulement, textes seulement ou les deux.</para>
+                  
+    <itemizedlist><title>Conseils</title>
+	
+      <listitem><para>Permettez à l'utilisateur de modifier les valeurs par défaut du centre de contrôle pour votre application dans la boîte de dialogue <guilabel>Préférences</guilabel> de l'application. En particulier, assurez-vous que l'utilisateur peut :</para>
+	  
+	<itemizedlist>
+	    
+	  <listitem><para>choisir séparément d'afficher chaque barre d'outils de l'application avec des icônes seulement, du texte seulement ou les deux,</para></listitem>
+	    
+	  <listitem><para>reconfigurer l'état icône/texte/les deux pour toutes les barres d'outils de l'application à la valeur par défaut du système,</para></listitem>
+
+	  <listitem><para>choisir d'afficher les étiquettes texte, soit sur le côté de certaines, soit en dessous de toutes les icônes de la barre d'outils et revenir aux paramètres par défaut du système,</para></listitem>
+	    
+	  <listitem><para>reconfigurer l'agencement et l'ordre de toutes les barres d'outils de l'application aux valeurs par défaut.</para></listitem>
+	    
+	</itemizedlist>
+	  
+      </listitem>
+	
+      <listitem><para>Si votre application possède une seule barre d'outils, permettez à l'utilisateur de l'afficher ou pas avec un élément de menu case à cocher <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Barre d'outils</guimenuitem></menuchoice>.</para></listitem>
+	
+      <listitem><para>Si votre application possède deux ou trois barres d'outils, permettez à l'utilisateur de les afficher ou pas individuellement en plaçant un élément de menu pour chacune d'elle dans le menu <guimenu>Affichage</guimenu> de l'application. Par exemple, <guimenuitem>Barre d'outils principale</guimenuitem>, <guimenuitem>Barre d'outils dessin</guimenuitem>, <guimenuitem>Barre d'outils format</guimenuitem>. Placez les éléments ensemble dans un seul groupe dans le menu, en mettant la <guimenuitem>Barre d'outils principale</guimenuitem> en premier (si votre application en possède une), suivie des autres dans l'ordre alphabétique.</para></listitem>
+	
+      <listitem><para>Si votre application possède plus de trois barres d'outils, permettez à l'utilisateur de les afficher ou pas individuellement en plaçant un élément de menu pour chacune d'elle dans un sous-menu <guimenu>Barre d'outils</guimenu> du menu <guisubmenu>Affichage</guisubmenu> de l'application. Placez l'élément <guimenuitem>Barre d'outils principale</guimenuitem> en premier (si votre application en possède une), suivi des autres dans l'ordre alphabétique.</para>
+	  
+	<figure id="view-toolbar">
+	  <title>Exemple d'extraits de menu Affichage pour applications avec barre d'outils : une (à gauche), deux ou trois (au milieu) et quatre ou plus (à droite)</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/toolbars-configure-menu.png" format="PNG" width="488" depth="135"/></imageobject>
+	    <imageobject><imagedata fileref="images/toolbars-congfigure-menu.eps" format="EPS"/></imageobject>
+	    <textobject><phrase>Example View menu for application with single toolbar</phrase></textobject>
+	  </mediaobject>
+	</figure>
+	  
+      </listitem>
+	
+    </itemizedlist>
+
+  </sect1>
+  <sect1 id="toolbars-labels-tooltips">
+    <title>Étiquettes et infobulles</title>
+      
+    <para>La plupart des contrôles qui apparaissent dans vos barres d'outils auront besoin d'une étiquette textuelle qui apparaît sur, dessous ou à côté d'eux. Conservez cette description aussi courte que possible, préférablement un seul verbe, par exemple <guibutton>Ouvrir</guibutton> ou <guibutton>Annuler</guibutton>.</para>
+      
+    <para>Tous les contrôles qui apparaissent dans vos barres d'outils devraient posséder une infobulle, que ce contrôle soit associé à une étiquette textuelle ou pas. Cette infobulle doit être une description concise du contrôle mais doit fournir plus d'informations que son étiquette textuelle si possible. Par exemple, <guibutton>Ouvre un document existant</guibutton> ou <guibutton>Annule la dernière opération</guibutton>.</para>
+            
+    <itemizedlist><title>Conseils</title>
+
+      <listitem><para>Pour les boutons qui correspondent directement aux éléments de menu, l'étiquette textuelle doit être la même que l'élément de menu mais sans point de suspension terminal, par exemple <guibutton>Ouvrir</guibutton>, <guibutton>Enregistrer</guibutton>.</para></listitem>
+
+      <listitem><para>Ne fournissez pas de touche d'accès pour les boutons de barre d'outils. Puisque les barres d'outils sont dans le même contexte de focus clavier que la barre de menu, il serait trop difficile de fournir des touches d'accès uniques pour chaque titre de menu et chaque contrôle de barre d'outils. Les barres d'outils sont essentiellement conçues comme des raccourcis pour les utilisateurs de la souris, bien qu'il soit possible de naviguer parmi elles grâce au clavier pour des raisons d'accessibilité.</para></listitem>
+	
+      <listitem><para>Si votre barre d'outils est configurée pour afficher les étiquettes sous les icônes des boutons, affichez une étiquette pour chaque contrôle de la barre d'outils. Par exemple :</para>
+	  
+	<figure>
+	  <title>Barre d'outils avec des étiquettes sous tous les boutons</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/toolbars-labels-below.png" format="PNG" width="381" depth="56"/></imageobject>
+	    <imageobject><imagedata fileref="images/toolbars-labels-below.eps" format="EPS"/></imageobject>
+	    <textobject><phrase>Toolbar showing labels under all controls</phrase></textobject>
+	  </mediaobject>
+	</figure>
+
+      </listitem>
+	
+      <listitem><para>Si votre barre d'outils est configurée pour afficher les étiquettes à côté du bouton plutôt qu'en dessous (en utilisant le réglage « texte prioritaire »), n'affichez pas les étiquettes de tous les boutons. Affichez les étiquettes seulement pour les boutons qui sont les plus fréquemment utilisés. Ne choisissez pas plus de quatre icônes de ce type par barre d'outils, sinon l'effet sera dilué et la barre d'outils deviendra trop étendue. Par exemple :</para>
+	  
+	<figure>
+	  <title>Barre d'outils avec des étiquettes « texte prioritaire » à côté des quelques premiers boutons seulement</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/toolbars-labels-beside.png" format="PNG" width="459" depth="35"/></imageobject>
+	    <imageobject><imagedata fileref="images/toolbars-labels-beside.eps" format="EPS"/></imageobject>
+	    <textobject><phrase>Toolbar with "priority text" labels beside the first few items only</phrase></textobject>
+	  </mediaobject>
+	</figure>
+
+	<para>Si vous n'êtes pas sûr des boutons les plus fréquemment utilisés, choisissez quelques boutons parmi les premiers de votre barre d'outils et ne mettez d'étiquettes qu'à ceux-là.</para>
+      </listitem>
+	
+      <listitem><para>Vérifiez que tous les contrôles de la barre d'outils possèdent des infobulles. L'infobulle doit être plus descriptive que l'élément correspondant du menu, s'il en possède une, mais néanmoins concise. Par exemple <guilabel>Ouvre un nouveau document</guilabel> pour le bouton de barre d'outils <guibutton>Ouvrir</guibutton>. Utilisez la mise en majuscule des phrases pour les infobulles — consultez la <xref linkend="layout-capitalization"/> pour plus d'informations.</para></listitem>
+	
+    </itemizedlist>
+      
+  </sect1>
+    
+  <!-- Removed for now until we decide how much/little specific guidance to give for application types
+    
+  <sect2>
+  <title>Default Toolbar Layout— Office Application</title>
+    
+  <para>However many toolbars or palette windows your application provides, by default there should be one main toolbar that provides a subset of the application's overall functionality.  Many of the buttons on this toolbar will be the same regardless of the type of application.</para>
+    
+  <para>The following operations should be included on the main toolbar in the following order, if your application supports them.  Application-specific functions should be slotted onto the toolbar according to the position on which they appear on the main menu bar.  For functions that don't appear on the <guimenu>File</guimenu>, <guimenu>Edit</guimenu> or <guimenu>Help</guimenu> menus, this means they will normally appear between the <guibutton>Replace</guibutton> and <guibutton>Help</guibutton> buttons.</para>
+    
+  <figure>
+  <title>Buttons that should appear on the main toolbar of an office application.</title>
+  <mediaobject>
+  <imageobject><imagedata fileref="images/GtkToolbar_productivitydefault.png" format="PNG" width="720" depth="54"/></imageobject>
+  <imageobject><imagedata fileref="images/GtkToolbar_productivitydefault.eps" format="EPS"/></imageobject>
+  <textobject>
+  <phrase>New-Open-Save|Print|Undo-Redo|Find-Replace|Cut-Copy-Paste-Delete</phrase>
+  </textobject>
+  </mediaobject>
+  </figure>
+    
+  <para>If your application supports all of these functions and you want to simplify your toolbar, consider leaving off the <guibutton>Undo</guibutton> and <guibutton>Redo</guibutton> buttons, or the <guibutton>Cut</guibutton>, <guibutton>Copy</guibutton>, <guibutton>Paste</guibutton> and <guibutton>Delete</guibutton> buttons, as most users prefer to use keyboard or menu for these functions.  However, you should include an option to re-add these buttons in your <menuchoice><guimenu>Toolbars</guimenu><guimenuitem>Customize</guimenuitem></menuchoice>... menu.</para>
+    
+  <para>If you wish to add a <guibutton>Help</guibutton> toolbar button, it should be placed last (rightmost, in western locales) on the main toolbar.  However, adding a <guibutton>Help</guibutton> button to the toolbar is not generally recommended, as usability studies suggest that it will be rarely used.  (N.B. This finding applies only to toolbars, not <guibutton>Help</guibutton> buttons in dialogs).</para>
+    
+    
+    
+  </sect2>
+    
+  <sect2>
+  <title>Default Toolbar Layout— Browser Applications</title>
+    
+  <para>Applications for browsing documents or other objects, such as web, file, help or documentation browsers, should use the following layout for their main toolbar:</para>
+    
+  <para>Back Forward [Other Navigation] Stop Reload | Home | [Other App-Specific]</para>
+    
+  <para>Application-specific buttons (other than navigation buttons) should be placed in the button group following <guibutton>Home</guibutton>, in the order that they appear on the main menu bar.</para>
+    
+  <para>Following this model, some current GNOME browser apps would have their toolbars re-ordered as follows:</para>
+    
+  <figure>
+  <title>Nautilus 1.0 toolbar rearranged to follow recommended standard toolbar layout for browser applications</title>
+  <mediaobject>
+  <imageobject><imagedata fileref="images/GtkToolbar_browserdefault.png" format="PNG" width="486" depth="58"/></imageobject>
+  <imageobject><imagedata fileref="images/GtkToolbar_browserdefault.eps" format="EPS"/></imageobject>
+	    <textobject>
+	      <phrase>Back Forward Up Stop Reload | Home | WebSearch Services</phrase>
+	    </textobject>
+	  </mediaobject>
+	</figure>
+	
+	<table>
+	  <title>Proposed toolbar re-ordering for Nautilus</title>
+	  <tgroup cols='2' align='left'>
+	    	    
+	    <tbody>
+	      <row>
+		<entry>Nautilus (1.0.x)</entry>
+		<entry>Back Forward Up Refresh Home WebSearch Services Stop</entry>
+	      </row>
+	      <row>
+		<entry>Nautilus (proposed)</entry>
+		<entry>Back Forward Up Stop Reload | Home | WebSearch Services </entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<table>
+	  <title>Proposed toolbar re-ordering for Galeon</title>
+	  <tgroup cols='2' align='left'>
+
+	    <tbody>
+	      <row>
+		<entry>Galeon (0.12.x)</entry>
+		<entry>Back Forward Reload Home Stop Zoom [URL] Go</entry>
+	      </row>
+	      <row>
+		<entry>Galeon (proposed)</entry>
+		<entry>Back Forward Stop Reload | Home | Zoom [URL] Go </entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+	
+	<table>
+	  <title>Proposed toolbar re-ordering for GNOME Help (deprecated, for illustration purposes only)</title>
+	  <tgroup cols='2' align='left'>
+
+	    <tbody>
+	      <row>
+		<entry>GNOME Help (0.4)</entry>
+		<entry>Back Forward Refresh Index History Bookmarks Help</entry>
+	      </row>
+	      <row>
+		<entry>GNOME Help (proposed)</entry>
+		<entry>Back Forward Stop Reload | Index History Bookmarks</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<para>Note: In browser applications, use <guilabel>Reload</guilabel> rather than <guilabel>Refresh</guilabel> when the data will be actually re-read from its original source, rather than just re-painted on the screen.</para>
+
+
+      </sect2>
+-->
+
+  </chapter>
+<!-- Note from GJM: I think palettes should go with toolboxes/utility windows. -->
+<!--
+<sect1 id="toolbars-palettes">
+<title>TODO : Palettes</title>
+  
+<para>A palette is much like a floating toolbar.  However, its size and shape is usually more customizable, and it typically has a titlebar of its own and appears in the GNOME task list.</para>
+  
+</sect1>
+</chapter>
+  -->

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="record-collection.js" xml:lang="ca">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="record-collection.js" xml:lang="ca">
 
   <info>
   <title type="text">Record collection (JavaScript)</title>
@@ -10,15 +10,15 @@
     <revision pkgversion="0.1" version="0.1" date="2011-02-22" status="review"/>
     <credit type="author">
       <name>Projecte de documentació del GNOME</name>
-      <email its:translate="no">gnome-doc-list@gnome.org</email>
+      <email>gnome-doc-list@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasettii@gmail.com</email>
+      <email>mmcasettii@gmail.com</email>
       <years>2013</years>
     </credit>
   </info>
@@ -84,7 +84,7 @@ Demo.prototype = {
   }
 }
 
-Gtk.init (null, null);
+Gtk.init (0, null);
 
 var demo = new Demo ();
 
@@ -166,9 +166,9 @@ Gtk.main ();]]></code>
     this.connection.open ();
 
     try {
-      var dm = this.connection.execute_select_command ("select * from demo");
+      var dm = Gda.execute_select_command (this.connection, "select * from demo");
     } catch (e) {
-      this.connection.execute_non_select_command ("create table demo (id integer, name varchar(100))");
+      Gda.execute_non_select_command (this.connection, "create table demo (id integer, name varchar(100))");
     }
   },]]></code>
   <list>
@@ -190,7 +190,7 @@ Gtk.main ();]]></code>
     <item><p>Línia 4: obre la connexió. Si no existeix la base dades el proveïdor de SQLite la crearà en aquest moment.</p></item>
     <item>
       <p>Línies 6 a 10: es realitza un «SELECT» simple per comprovar si existeix la taula (línia 7). Si no existeix (perquè s'acaba de crear la base de dades), aquesta línia generarà una excepció que es gestionarà en el bloc de codi <code>try</code>...<code>catch</code>. Si és el cas, s'executa la sentència per crear la taula (línia 9).</p>
-      <p>In order to run the SQL commands above we are using the GDA connection methods <code>execute_select_command</code> and <code>execute_non_select_command</code>. They are simple to use, and just require two arguments: The <code>Connection</code> object and the SQL command to be parsed.</p>
+      <p>Per executar les ordres SQL del codi de sobre utilitzem les funcions globals de la GDA <code>execute_select_command</code> i <code>execute_non_select_command</code>. Són molt senzilles d'utilitzar i només requereixen dos arguments: l'objecte <code>Connection</code> i l'ordre SQL que s'analitzarà.</p>
     </item>
   </list>
 
@@ -202,7 +202,7 @@ Gtk.main ();]]></code>
   <p>Després de connectar-se a la base de dades, el constructor de la demostració crida el mètode <code>selectData</code>. Aquest mètode és el responsable d'obtenir els registres de la taula i mostrar-los en el giny <code>TextView</code>. Ara es comentarà amb més detall:</p>
   <code mime="application/javascript" style="numbered"><![CDATA[
   selectData: function () {
-    var dm = this.connection.execute_select_command  ("select * from demo order by 1, 2");
+    var dm = Gda.execute_select_command (this.connection, "select * from demo order by 1, 2");
     var iter = dm.create_iter ();
 
     var text = "";
@@ -218,7 +218,7 @@ Gtk.main ();]]></code>
     this.count_label.label = "<i>" + dm.get_n_rows () + " record(s)</i>";
   },]]></code>
   <list>
-    <item><p>Line 2: The <code>SELECT</code> command. We are using the GDA connection's <code>execute_select_command</code> method for that. It returns a <code>DataModel</code> object, which is later used to retrieve the rows.</p></item>
+    <item><p>Línia 2: l'ordre <code>SELECT</code>. S'utilitza la funció global <code>execute_select_command</code> de la GDA, aquesta retorna un objecte <code>DataModel</code> que s'utilitza més endavant per recuperar les files.</p></item>
     <item><p>Línia 3: crea l'objecte <code>Iter</code> que s'utilitza per iterar sobre els registres de <code>DataModel</code>.</p></item>
     <item><p>Línia 7: itera sobre tots els registres, els recupera amb l'ajuda de l'objecte <code>Iter</code>. En aquest punt la variable <code>iter</code> conté les dades actuals recuperades de la base de dades. El seu mètode <code>move_next</code> retorna <code>false</code> quan arriba a l'últim registre.</p></item>
     <item>
@@ -255,9 +255,7 @@ Gtk.main ();]]></code>
     this._clearFields ();
     this.selectData ();
   },]]></code>
-  <p>
-    We have learned how to use the GDA connection's methods <code>execute_select_command</code> and <code>execute_non_select_command</code> to quickly execute SQL commands on the database. GDA allows one to build a SQL statement indirectly, by using its <code>SqlBuilder</code> object. What are the benefits of this? GDA will generate the SQL statement dynamically, and it will be valid for the connection provider used (it will use the same SQL dialect the provider uses). Let's study the code:
-  </p>
+  <p>Ja s'ha mostrat com fer servir les funcions facilitadores de la GDA <code>execute_select_command</code> i <code>execute_non_select_command</code> per executar ràpidament ordres SQL a la base de dades. La GDA permet que la construcció d'ordres SQL de forma indirecta utilitzant l'objecte <code>SqlBuilder</code>. Per què és útil? La GDA generarà l'ordre SQL dinàmicament i s'encarregarà que sigui vàlida pel proveïdor de la connexió que s'utilitzi (utilitzarà el mateix dialecte d'SQL que utilitzi el proveïdor). Ara segueix el codi:</p>
   <list>
     <item><p>Línies 2 i 3: comproven que l'usuari hagi emplenat tots els camps. El codi del mètode privat <code>_validateFields</code> és molt senzill i li podeu fer una ullada en el codi font sencer de la demostració.</p></item>
     <item><p>Línia 5: la forma ràpida de fer un <code>INSERT</code>. Està comentat perquè es vol mostrar com utilitzar l'objecte <code>SqlBuilder</code> per construir una ordre SQL que sigui vàlida per qualsevol base de dades.</p></item>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.c" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="guitar-tuner.c" xml:lang="es">
 
   <info>
     <title type="text">Afinador de guitarra (C)</title>
@@ -10,28 +10,28 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="review"/>
     <credit type="author">
       <name>Proyecto de documentación de GNOME</name>
-      <email its:translate="no">gnome-doc-list@gnome.org</email>
+      <email>gnome-doc-list@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -217,12 +217,12 @@ play_sound (gdouble frequency)
 static gboolean
 pipeline_stop (GstElement* pipeline)
 {
-	gst_element_set_state (pipeline, GST_STATE_NULL);
+	gst_element_set_state (pipeline, GST_STATE_PAUSED);
 	g_object_unref (pipeline);
 
 	return FALSE;
 }</code>
-  <p>La llamada a <code>gst_element_set_state</code> detiene la reproducción de la tubería y <code>g_object_unref</code> desreferencia la tubería, la destruye y libera su memoria.</p>
+  <p>La llamada a <code>gst_element_set_state</code> pausa la reproducción de la tubería y <code>g_object_unref</code> desreferencia la tubería, la destruye y libera su memoria.</p>
 </section>
 
 <section id="tones">
@@ -242,7 +242,8 @@ pipeline_stop (GstElement* pipeline)
 void on_button_clicked (GtkButton* button,
                         gpointer user_data)
 {
-	const gchar* text = gtk_button_get_label (button);
+	GtkWidget* label = gtk_bin_get_child (GTK_BIN (button));
+	const gchar* text = gtk_label_get_label (GTK_LABEL (label));
 
 	if (g_str_equal (text, _("E")))
 	    play_sound (NOTE_E);
@@ -258,8 +259,8 @@ void on_button_clicked (GtkButton* button,
 	    play_sound (NOTE_e);
 }
 </code>
-  <p>A <code>on_button_clicked</code> se le pasa como argumento (<code>button</code>) un puntero al <code>GtkButton</code> que se ha pulsado. Se puede obtener el texto de este botón usando <code>gtk_label_get_label</code>.</p>
-  <p>El texto se compara con las notas que se tiene usando <code>g_str_equal</code>, y se llama a <code>play_sound</code> con la frecuencia correspondiente a cada nota. Esto reproduce el tono; el afinador de guitarra ya está funcionando.</p>
+  <p>A <code>on_button_clicked</code> se le pasa como argumento (<code>button</code>) un puntero al <code>GtkButton</code> que se ha pulsado. Se puede obtener la etiqueta de este botón usando <code>gtk_bin_get_child</code> y obteniendo el texto de la etiqueta usando <code>gtk_label_get_label</code>.</p>
+  <p>La etiqueta de texto se compara con las notas que se tiene usando <code>g_str_equal</code>, y se llama a <code>play_sound</code> con la frecuencia correspondiente a cada nota. Esto reproduce el tono; el afinador de guitarra ya está funcionando.</p>
 </section>
 
 <section id="run">

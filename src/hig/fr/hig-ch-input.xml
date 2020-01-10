@@ -1,0 +1,1126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="input" lang="fr">
+<title>Entrée utilisateur</title>
+  <sect1 id="input-mouse">
+    <title>Interaction avec la souris</title>
+    
+    <sect2 id="mouse-buttons">
+      <title>Boutons</title>
+
+	<figure> <title>Pléthore de dispositifs de pointage : souris, boule de commande, souris contrôlée au pied, manette de jeu, pavé tactile et dispositif de pointage monté sur le doigt.</title>
+	  <mediaobject>
+	  <imageobject><imagedata fileref="images/input-pointing-devices.png" format="PNG" width="480" depth="80"/></imageobject>
+	  <imageobject><imagedata fileref="images/input-pointing-devices.eps" format="EPS"/></imageobject>
+	  <textobject><phrase>Pictures of different types of pointing device, including mouse, trackball, foot-operated mouse and joystick.</phrase></textobject>
+	  </mediaobject>
+	</figure>
+      
+<!-- CB-Ed: The following paragraphs are VERY GOOD because they lay out terms and definitions for the reader clearly and unequivocally. -->
+
+      <para>Pour la plupart des utilisateurs, la souris reste la façon la plus courante d'interagir avec les interfaces graphiques. Le terme « souris » est utilisé dans ce chapitre pour désigner tous les autres dispositifs de pointage qui peuvent être utilisés pour déplacer le pointeur à l'écran, comme les boules de commande, les pavés tactiles, boules 3-D, tablettes graphiques ou dispositifs de technologie d'assistance qui émulent la souris.</para>
+	
+      <para>Pour les utilisateurs droitiers, le bouton gauche d'une souris conventionnelle est utilisé pour la majorité des actions de souris. Nous l'appelons par conséquent <mousebutton>bouton gauche</mousebutton> ici, même si ce n'est pas physiquement le cas. Pour cette même raison, vous pouvez parfois voir ce bouton nommé « bouton 1 » ou « bouton de sélection » dans les codes et documentations.</para>
+
+      <para>De même pour les utilisateurs droitiers, le bouton droite d'une souris conventionnelle est utilisé pour les opérations impliquant des menus contextuels. Nous l'appelons par conséquent <mousebutton>bouton droit</mousebutton> dans ce chapitre. Vous pouvez parfois voir ce bouton nommé « bouton 3 » ou « bouton de menu » dans les codes et documentations.</para>
+
+      <para>Une souris conventionnelle à trois boutons possède normalement son troisième bouton (ou une molette qui agit comme un bouton lorsqu'elle est pressée) entre les boutons gauche et droite. Nous l'appelons par conséquent <mousebutton>bouton central</mousebutton> dans ce chapitre. Vous pouvez parfois voir ce bouton nommé « bouton 2 » ou « bouton de transfert » dans les codes et documentations.</para>
+
+	<itemizedlist><title>Conseils</title>
+	  
+	  <listitem><para>Votre application utilise les mouvements du bouton gauche pour sélectionner, activer des composants, déplacer et afficher les menus déroulants.</para></listitem>
+	  
+	  <listitem><para>Votre application utilise les mouvements du bouton droit pour afficher et sélectionner des actions dans un menu contextuel.</para></listitem>  
+	  
+	  <listitem><para>Votre application utilise le bouton central pour coller la sélection actuelle PRINCIPALE (habituellement la dernière mise en surbrillance) à la position du pointeur, comme suit :</para>
+	    
+	    <table frame="all">
+	      <title>Effet des touches modificatrices sur une opération de transfert avec le <mousebutton>bouton central</mousebutton></title>
+	      <tgroup cols="2" align="left">
+		<thead>
+		  <row>
+		    <entry>Modificateur</entry>
+		    <entry>Fonction</entry>
+		  </row>
+		</thead>
+		<tbody>
+		  <row>
+		    <entry>Sans modificateur</entry>
+		    <entry>Copier la sélection</entry>
+		  </row>
+		  <row>
+		    <entry><keycap>Ctrl</keycap></entry>
+		    <entry>Copier la sélection</entry>
+		  </row>
+		  <row>
+		    <entry><keycap>Shift</keycap></entry>
+		    <entry>Déplacer la sélection</entry>
+		  </row>
+		  <row>
+		    <entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap></keycombo></entry>
+		    <entry>Créer un lien, raccourci ou un alias de la sélection</entry>
+		</row>
+
+		</tbody>
+	      </tgroup>
+	    </table>
+
+	<para>Dans votre interface, ne sur-définissez cette fonctionnalité nulle part où l'action de transfert pourrait être utilisée. Si vous avez l'intention d'utiliser quelque part le bouton central dans un but différent, ne le faites que comme raccourci pour utilisateurs expérimentés et seulement pour les opérations impossibles à réaliser à l'aide du <mousebutton>bouton droit</mousebutton> ou du <mousebutton>bouton gauche</mousebutton>.</para></listitem>
+
+	<listitem><para>If present on the mouse, the scrollwheel should scroll the window or control under the pointer, if it supports scrolling. Initiating scrolling in this way should not move keyboard focus to the window or control being scrolled. <remark>If it supports both horizontal and vertical scrolling, perhaps suggest unmodified scrollwheel should scroll vertically, and <keycombo><keycap>Shift</keycap><mousebutton>scrollwheel</mousebutton></keycombo> should scroll horizontally.</remark></para></listitem>
+
+	<listitem><para><keycombo><keycap>Ctrl</keycap><mousebutton>molette vers le haut</mousebutton></keycombo> doit faire un zoom avant dans la fenêtre ou le contrôle sous le pointeur de la souris et <keycombo><keycap>Ctrl</keycap><mousebutton>molette vers le bas</mousebutton></keycombo> doit faire un zoom arrière. Faire un zoom de cette façon ne doit pas déplacer le focus clavier de la fenêtre ou du contrôle sous l'action du zoom.</para></listitem>
+
+	<listitem><para>Les entrées ne doivent pas dépendre du bouton central ou de droite. En plus d'être physiquement plus difficile à cliquer, certains dispositifs de pointage et de nombreux dispositifs de technologies d'assistance ne prennent en charge ou n'émulent que le bouton gauche de la souris. Certaines technologies d'assistance n'émulent même pas la souris du tout mais génèrent des évènements clavier à la place.</para></listitem>
+
+	<listitem><para>Assurez-vous que toutes les opérations de votre application pouvant être réalisées avec la souris peuvent être effectuées avec le clavier. Les seules exceptions à cela sont les actions où un contrôle moteur fin est une part essentielle de la tâche. Par exemple, le contrôle du mouvement dans certains types de jeux d'actions ou le dessin à main levée dans une application d'édition d'images.</para></listitem>
+
+	<listitem><para>Ne déformez pas le pointeur de la souris ou ne restreignez pas le mouvement de la souris à une partie de l'écran. Cela peut interférer avec les technologies d'assistance et est habituellement perturbant même pour les utilisateurs qui les n'utilisent pas.</para></listitem>
+
+	<listitem><para>N'exigez pas de l'utilisateur l'usage de combinaisons (enfoncement de plusieurs boutons de souris en même temps) pour une opération.</para></listitem>
+
+	<listitem><para>N'exigez pas de l'utilisateur l'usage d'actions à nombreux (triple ou quadruple) clics pour une opération à moins que vous ne fournissiez une méthode alternative pour réaliser la même action.</para></listitem>
+
+	<listitem><para>Permettez à toutes les opérations d'être annulées avant leur fin. Un appui sur la touche Échap doit annuler toute opération de la souris en cours telle qu'une action de glisser-déposer d'un fichier ou le dessin d'une forme dans une application de dessin.</para></listitem>
+
+	<listitem><para>N'attribuez aucune action exclusivement au bouton central d'une souris à trois boutons car toutes les souris n'en possèdent pas.</para></listitem>
+
+	<listitem><para>Ne codez pas de manière permanente les tailles des cibles de la souris ou ne les faites pas trop petites. Définissez toutes les cibles de souris pour qu'elles soient au moins aussi grande que le bouton flèche d'une zone de sélection numérique GtkSpinBox dans le thème gtk actuel. Gardez en tête qu'un utilisateur qui a des problèmes de dextérité ou de vision peut utiliser un thème dans lequel les composants sont beaucoup plus grands que dans le thème par défaut.</para></listitem>
+
+	<listitem><para>Ne faites pas référence à des boutons de souris précis dans votre interface à moins que cela ne soit absolument nécessaire. Tout le monde n'utilise pas une souris classique avec des boutons gauche, droite et milieu, donc un texte ou des diagrammes qui y font référence peuvent être perturbants.</para></listitem>
+
+      </itemizedlist>
+      
+    </sect2>
+
+    <sect2 id="selection">
+      <title>Sélection d'objets</title>
+      <sect3 id="mouse-keyboard-equivalents">
+	<title>Équivalence souris et clavier</title>
+
+	<para>Pour les contrôles ou fenêtres contenant un certain nombre d'objets que l'utilisateur peut sélectionner, soit un par un, soit plusieurs simultanément, vérifiez que les mécanismes suivants ont été mis en œuvre pour permettre de faire les sélections en utilisant, soit la souris, soit le clavier.</para>
+	
+	<table frame="all" pgwide="1">
+	  <title>Mécanismes standards de sélection avec la souris ou le clavier</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry/>
+		<entry>Souris</entry>
+		<entry>Clavier</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry>Sélectionner l'élément, désélectionner tous les autres</entry>
+		<entry>Clic</entry>
+		<entry><keysym>Space</keysym></entry>
+	      </row>
+	      <row>
+		<entry>Ajouter/supprimer l'élément de la sélection</entry>
+		<entry><keycap>Ctrl</keycap> click (toggles item's selected state)</entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keysym>Space</keysym></keycombo> (toggles focused item's selected state)</entry>
+	      </row>
+	      <row>
+		<entry>Étendre la sélection</entry>
+		<entry><keycap>Shift</keycap> click</entry>
+		<entry><keycombo><keycap>Shift</keycap><keysym>Space</keysym></keycombo>, <keycombo><keycap>Shift</keycap><keycap>Home</keycap></keycombo>, <keycombo><keycap>Shift</keycap><keycap>End</keycap></keycombo>, <keycombo><keycap>Shift</keycap><keycap>PageUp</keycap></keycombo>, or <keycombo><keycap>Shift</keycap><keycap>PageDown</keycap></keycombo></entry>
+	      </row>
+	      <row>
+		<entry>Déplacer le focus</entry>
+		<entry>Clic sur l'élément approprié pour le sélectionner</entry>
+		<entry>Cursor keys, <keycap>Home</keycap>, <keycap>End</keycap>, <keycap>PageUp</keycap>, and <keycap>PageDown</keycap> move focus and selection simultaneously.
+		<para><keycombo><keycap>Ctrl</keycap><keysym>cursor keys</keysym></keycombo>, <keycombo><keycap>Ctrl</keycap><keycap>Home</keycap></keycombo>,<keycombo><keycap>Ctrl</keycap><keycap>End</keycap></keycombo>, <keycombo><keycap>Ctrl</keycap><keycap>PageUp</keycap></keycombo>, and <keycombo><keycap>Ctrl</keycap><keycap>PageDown</keycap></keycombo> move focus without affecting current selection.</para></entry>
+	      </row>
+	      <row>
+		<entry>Tout sélectionner</entry>
+		<entry>Click first item, then <keycap>Shift</keycap> click last item</entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>A</keycap></keycombo></entry>
+	      </row>
+	      <row>
+		<entry>Tout désélectionner</entry>
+		<entry>Clic sur le conteneur en arrière-plan</entry>
+		<entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>A</keycap></keycombo></entry>
+	      </row>
+	      <row>
+		<entry>Activer la sélection</entry>
+		<entry>Double-click to activate a single selection.  <keycap>Shift</keycap> or <keycap>Ctrl</keycap> double-clicking extends or adds item to selection first before activating the entire selection.</entry>
+		<entry><keysym>Return</keysym> activates entire selection.  If nothing is currently selected, selects currently-focused item first.</entry>
+	      </row>
+	      <row>
+		<entry>Inverser la sélection</entry>
+		<entry>Pas d'équivalent avec la souris</entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>I</keycap></keycombo></entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+      </sect3>
+
+      <sect3 id="bounding-box-selection">
+	<title>Sélection par encadrement</title>
+
+	<para>For a container whose objects may be arranged in two dimensions, for example the icon view in a file manager, allow multiple selection by dragging a bounding box (sometimes called a "rubber band") around one or more objects.  <keycombo action="other" otheraction="drag"><keycap>Shift </keycap><mousebutton>left button</mousebutton></keycombo> <action>drag</action> should add all the objects within the bounding box to the existing selection.  <keycombo action="other" otheraction="drag"><keycap>Ctrl </keycap><mousebutton>left button</mousebutton></keycombo> <action>drag</action> should toggle the selected state of all the objects within the bounding box.</para>
+
+	<itemizedlist><title>Conseils</title>
+
+		<listitem><para><remark>This guideline needs to be so much better worded :) </remark>Allow a bounding box selection to begin only if the initial mouse button press is made:</para>
+		
+			<itemizedlist>
+				<listitem><para>à l'intérieur des limites de l'arrière-plan du conteneur et</para></listitem>
+				<listitem><para>à l'extérieur des limites de tout objet disposé dans le conteneur.</para></listitem>
+			</itemizedlist>
+			
+		<para>Dans une application de dessin, par exemple, cela signifie que le clic initial du pointeur de souris et son déplacement pour définir l'encadrement de sélection peut débuter dans une zone vide du canevas ou dans une forme préalablement bloquée pour éviter une modification accidentelle, mais pas dans une forme active qui serait déplacée par le glissement du pointeur de souris.</para></listitem>
+		
+		<listitem><para>Select any objects that lie wholly or partly within the bounding box when the mouse button is released. <remark>This is different from 1.0 advice, need to update figure 10.2 accordingly.</remark></para></listitem>
+
+		<listitem><para>Faites une mise en évidence dynamique pendant que vous faites glisser le pointeur de souris pour désigner les objets sélectionnés. N'attendez pas que le bouton de la souris soit relâché. Cela évite tout doute à propos des objets sélectionnés par l'encadrement.</para></listitem>
+
+		<listitem><para>Quand un encadrement est déplacé dans une fenêtre défilante, prenez en charge le défilement automatique de la fenêtre lorsque l'encadrement est déplacé à proximité du bord de la fenêtre.</para></listitem>
+
+	</itemizedlist>
+
+	<figure> <title>Exemples illustrant la mise en évidence dynamique de la sélection pendant la sélection par encadrement. Dans le premier exemple, la couleur du dossier et le surlignage de l'étiquette changent pour matérialiser la sélection. Dans le second, la sélection est indiquée par ajout de poignées de redimensionnement aux objets sélectionnés.</title>
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/input-drag-select-files.png" format="PNG" width="509" depth="166"/></imageobject>
+	    <imageobject><imagedata fileref="images/input-drag-select-files.eps" format="EPS"/></imageobject>
+	    <textobject><phrase>Example illustrating dynamic selection highlighting during bounding box selection</phrase></textobject>
+	  </mediaobject>
+
+	  <mediaobject>
+	    <imageobject><imagedata fileref="images/input-drag-select-graphics.png" format="PNG" width="598" depth="147"/></imageobject>
+	    <imageobject><imagedata fileref="images/input-drag-select-graphics.eps" format="EPS"/></imageobject>
+	    <textobject><phrase>Example illustrating dynamic selection highlighting during bounding box selection</phrase></textobject>
+	  </mediaobject>
+	  
+	</figure>
+
+      </sect3>
+    </sect2>
+
+    <sect2 id="drag-drop">
+      <title>Glisser-déposer</title>
+
+      <para>Le glisser-déposer est une technique de manipulation directe dans laquelle vous réalisez des actions sur les objets sélectionnés en les déplaçant à l'écran avec la souris. Vous faites « glisser » un objet en cliquant dessus et en maintenant enfoncé le bouton pendant que vous déplacez le pointeur vers l'emplacement cible de l'objet. L'objet est « déposé » à cet emplacement en relâchant le bouton de la souris.</para>
+      
+      <itemizedlist><title>Conseils</title>
+
+      	<listitem><para>N'utilisez le glisser-déposer que si l'utilisateur peut raisonnablement supposer qu'il est possible. Les utilisations les plus courantes sont :</para>
+		<itemizedlist>
+		<listitem><para>pour déplacer ou copier des objets d'un endroit vers un autre,</para></listitem>
+		<listitem><para>pour lier un objet à un autre,</para></listitem>
+		<listitem><para>pour réaliser une action sur les objets en les déposant sur une icône représentant cette action, telles qu'une icône de corbeille ou d'imprimante.</para></listitem>
+		</itemizedlist>
+	</listitem>
+      
+      	<listitem><para>Fournissez un retour visuel pendant toute la durée de l'opération de glisser-déposer. Mettez en évidence les cibles valides et modifiez le pointeur de la souris lorsqu'il passe au dessus d'elles. Utilisez le pointeur de souris « dépôt impossible » lorsque vous passez au dessus de cibles de dépôt non valides. Consultez également la <xref linkend="drag-drop-pointers"/>.</para></listitem>	
+
+	<listitem><para>Ajoutez au pointeur de la souris une représentation des objets en cours de déplacement. Conservez cette représentation petite et rendez la translucide afin de ne pas obscurcir les cibles de dépôts éventuelles en dessous d'elle. Consultez également la <xref linkend="drag-drop-pointers"/>.</para>
+
+		<figure>
+		<title>Exemple de pointeur copier agrémenté par une icône représentant le fichier en cours de copie</title>
+		<mediaobject>
+		<imageobject><imagedata fileref="images/input-drag-cursor.png" format="PNG" width="101" depth="129"/></imageobject>
+		<imageobject><imagedata fileref="images/input-drag-cursor.eps" format="EPS"/></imageobject>
+		<textobject><phrase>Copy pointer superimposed on icon representing a file being copied, to form a "copy file" pointer</phrase></textobject>
+		</mediaobject>
+		</figure>
+	  
+	    	<remark>The pointer shapes shown here aren't actually the current GTK defaults, they're the current KDE (and Windows) defaults.  Should we try and persuade GTK to change?</remark>
+	</listitem>
+
+	<listitem><para>N'autorisez que la copie des objets entre applications et pas le déplacement. Vous évitez ainsi toute confusion pour savoir à quelle application appartient la fonction <guimenuitem>Annuler</guimenuitem> qui annule l'opération.</para></listitem>
+
+	<listitem><para>Autorisez l'utilisateur à annuler une opération de glisser-déposer par toutes ces méthodes :</para> 
+		<itemizedlist>
+		<listitem><para>appui sur la touche <keycap>Échap</keycap> avant le relâchement du bouton de la souris,</para></listitem>
+		
+		<listitem><para>dépôt de l'objet sur sa propre position d'origine,</para></listitem>
+		
+		<listitem><para>réalisation d'un <action>dépôt avec requête</action> et sélection de <guimenuitem>Annuler</guimenuitem> dans le menu contextuel (consultez la <xref linkend="drag-drop-query"/>),</para></listitem>
+		
+		<listitem><para>dépôt de l'objet sur une cible de dépôt non valide.</para></listitem>
+		</itemizedlist>
+	</listitem>
+	
+	<listitem><para>Permettez à l'utilisateur d'annuler les effets d'une opération de glisser-déposer en sélectionnant <menuchoice><guimenu>Édition</guimenu><guimenuitem>Annuler</guimenuitem></menuchoice>.</para></listitem>
+	
+      	<listitem><para>Autorisez le dépôt de plusieurs objets en appuyant sur <keycap>Maj</keycap> ou <keycap>Ctrl</keycap> pendant la sélection, puis le dépôt de tous les objets sélectionnés.</para></listitem>
+
+	<listitem><para>Assurez-vous que les utilisateurs de clavier puissent reproduire toutes les actions d'un glisser-déposer en utilisant seulement des éléments de menu ou des raccourcis clavier tels que <guimenuitem>Copier</guimenuitem> (<keycombo><keycap>Ctrl</keycap><keycap>C</keycap></keycombo>) et <guimenuitem>Coller</guimenuitem> (<keycombo><keycap>Ctrl</keycap><keycap>V</keycap></keycombo>).</para></listitem>
+
+	<listitem><para>Quand un élément est déplacé dans une fenêtre qui peut défiler, prenez en charge le défilement automatique de cette fenêtre lorsque le pointeur de souris est situé à proximité du bord de la fenêtre.</para></listitem>
+	
+	<listitem><para>Faites apparaître un menu contextuel lorsque l'utilisateur tente de déposer plusieurs objets sur une cible qui n'en accepte qu'un seul. Dans le menu, faites la liste de tous les objets déplacés et ajoutez un élément <guimenuitem>Annuler</guimenuitem>.</para></listitem>
+
+	<!-- CFB commenting this one out for now because it doesn't mean much the way it's written, and we'd ideally like to aim for more consistency than this anyway
+	
+	<listitem><para>Move selected objects when the user drags them within a container.  Copy or link to selected objects when the user drags them between containers.  A "container" may be a boundary imposed by the user interface (e.g. a top-level application window), or a user interface representation of a physical container (e.g. a mail server or disk partition).</para>
+	
+	<para><remark>The whole "dragging between containers" thing concerns me, as it's not always obvious to users what constitues a "container", especially when it gets down to physical details that the user may not even know or care about (e.g. different disk partitions). This is why the right mouse drag menu we're now discrediting came into existence in the first place.  There are also exceptions to the rule, e.g. dragging anything into Trash should presumably move it rather than copy it.</remark></para></listitem>
+	-->
+	
+      </itemizedlist>
+
+	
+      
+      <sect3 id="drag-drop-override"><title>Sur-définir le comportement du glisser-déposer</title>
+      
+      	<sect4 id="drag-drop-modifiers"><title>Modificateurs clavier</title>
+      	<para>Permettez à l'utilisateur de modifier le comportement d'une opération de glisser-déposer en appuyant sur <keycap>Ctrl</keycap>, <keycap>Maj</keycap> ou les deux à la fois. Si l'utilisateur actionne les touches modificatrices au cours du glissement, modifiez le pointeur de la souris immédiatement et réalisez la nouvelle action lorsque le bouton de la souris est relâché.</para>
+
+	<table frame="all">
+	  <title>Effet des touches de modification pendant une opération de glisser-déposer</title>
+	  <tgroup cols="2" align="left">
+	    <thead>
+	      <row>
+		<entry>Modificateur</entry>
+		<entry>Fonction</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	    <row>
+	      <entry><keycap>Ctrl</keycap></entry>
+	      <entry>Copier</entry>
+	    </row>
+	    <row>
+	      <entry><keycap>Shift</keycap></entry>
+	      <entry>Déplacer</entry>
+	    </row>
+	    <row>
+	      <entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap></keycombo></entry>
+	      <entry>Créer un lien, un raccourci ou un alias</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+      </sect4>
+      
+      <sect4 id="drag-drop-query"><title>Glisser avec requête</title>
+      
+      	<para>Permettez à l'utilisateur de faire glisser les objets avec le <mousebutton>bouton central</mousebutton> ou avec <keycap>Alt</keycap><mousebutton>« bouton gauche »</mousebutton>. Faîtes apparaître un menu contextuel lorsque le bouton de la souris est relâché, proposant un choix parmi <guimenuitem>Copier</guimenuitem>, <guimenuitem>Déplacer</guimenuitem> et <guimenuitem>Lier</guimenuitem> (ou n'importe quel sous-ensemble disponible de ces actions) et <guimenuitem>Annuler</guimenuitem>. Un glisser-déposer de la sorte est connu sous le nom de <action>Glisser-déposer avec requête</action> : il demande confirmation à l'utilisateur avant d'opérer la modification.</para>
+
+      </sect4>
+      
+      </sect3>
+
+	<sect3 id="drag-drop-pointers">
+	  <title>Pointeurs de la souris à utiliser pour un glisser-déposer</title>
+	  
+	  <para>Utilisez les pointeurs GTK par défaut pour le glisser-déposer lors des opérations standards de transfert affichés ci-dessous. Grâce à cette cohérence, l'utilisateur sait exactement à quoi s'attendre lorsqu'il relâche le bouton de la souris. Si vous devez concevoir un pointeur pour une action de transfert non standard non affichée ici, conservez le style des pointeurs standards.</para>
+
+	  <table frame="all">
+	    <title>Pointeurs de la souris pour un glisser-déposer</title>
+	    <tgroup cols="2" align="left">
+	      <thead>
+		<row>
+		  <entry>Forme du pointeur</entry>
+		  <entry>Signification</entry>
+		</row>
+	      </thead>
+	      
+	      <tbody>
+		<row>
+		  <entry>
+	            <mediaobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-move.png" format="PNG" width="31" depth="32"/></imageobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-move.eps" format="EPS"/></imageobject>
+	              <textobject><phrase>"Move" pointer</phrase></textobject>
+	             </mediaobject>
+                  </entry>
+		  
+		  <entry>Déplacer la sélection. La sélection que l'on fait glisser est déplacée à l'endroit du déposer ; elle est enlevée de son emplacement initial.</entry>
+		</row>
+		
+		<row>
+		  <entry>
+                    <mediaobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-copy.png" format="PNG" width="33" depth="30"/></imageobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-copy.eps" format="EPS"/></imageobject>
+	              <textobject><phrase>"Copy" pointer</phrase></textobject>
+	             </mediaobject>
+                  </entry>
+		  <entry>Copier la sélection. La sélection que l'on fait glisser est copiée à l'emplacement du dépôt ; l'original est laissé intact.</entry>
+		</row>
+		<row>
+		  <entry>
+                    <mediaobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-link.png" format="PNG" width="37" depth="33"/></imageobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-link.eps" format="EPS"/></imageobject>
+	              <textobject><phrase>"Link" pointer</phrase></textobject>
+	             </mediaobject>
+                  </entry>
+		  <entry>Lier la sélection. Un lien vers la sélection est inséré à l'emplacement du déposer. Cependant la façon dont le lien est matérialisé dépend de l'application ; par exemple, le lien peut être, soit un hyperlien, soit une icône, soit encore une copie de la sélection de l'original .</entry>
+		</row>
+
+		<row>
+		  <entry>
+                    <mediaobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-query.png" format="PNG" width="28" depth="32"/></imageobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-query.eps" format="EPS"/></imageobject>
+	              <textobject><phrase>"Query drop" pointer</phrase></textobject>
+	             </mediaobject>
+                   </entry>
+		   <entry>Faire glisser à l'aide du bouton central ou la combinaison Alt-bouton gauche. Un menu contextuel apparaît à l'endroit du dépôt pour vous demandez si vous désirez déplacer, copier ou lier la sélection ou annuler l'opération.</entry>
+		  </row>
+	
+		<row>
+		  <entry>
+                     <mediaobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-nodrop.png" format="PNG" width="28" depth="32"/></imageobject>
+		      <imageobject><imagedata fileref="images/input-drag-cursor-nodrop.eps" format="EPS"/></imageobject>
+	              <textobject><phrase>"Can't drop here" pointer</phrase></textobject>
+	             </mediaobject>
+</entry>
+		  <entry>Impossible de déposer ici. Affichez ce pointeur lorsque le pointeur de souris passe sur une zone où la sélection ne peut pas être déposée.</entry>
+		</row>
+	      </tbody>
+	    </tgroup>
+	  </table>
+
+
+	</sect3>
+	</sect2>
+	
+	<sect2 id="mouse-interaction-applets">
+	  
+	  <title>Interaction de la souris avec le tableau de bord des applications (applets)</title>
+
+	  <para>Tous les objets sur le bureau doivent se comporter de manière cohérente. En dépit de leur nature particulière, les applets ne font pas exception.</para>
+	  
+	  <itemizedlist><title>Conseils</title>
+	    <listitem><para>Le bouton gauche de la souris sans modificateur doit être suffisant pour agir sur tous les contrôles de l'applet. Les applets doivent être suffisamment simples pour que les clics avec modificateur ou les clics avec d'autres boutons (excepté le menu contextuel de l'applet) ne soient pas nécessaires.</para>
+	      <remark>Suggestion: Clicking and dragging anywhere within the applet window whilst holding down the <keycap>Ctrl</keycap> and/or <keycap>Shift</keycap> keys could reposition the applet as if dragging with the middle mouse button (<keycombo action="other" otheraction="drag"><keycap>Ctrl</keycap><mousebutton>left</mousebutton></keycombo> <action>drag</action>=copy, if moving to another panel; <keycombo action="other" otheraction="drag"><keycap>Shift</keycap><mousebutton>left</mousebutton></keycombo> <action>drag</action>=move, if moving to another panel).</remark></listitem>
+	    
+	    <listitem><para>Un clic avec le bouton droit <emphasis>n'importe où</emphasis> dans la fenêtre d'encadrement de l'applet doit afficher, soit le menu contextuel de tout l'applet, soit le menu contextuel du contrôle sous le pointeur de la souris. Ne laissez pas dans l'applet de « zones mortes » qui ne répondent pas au clic droit.</para></listitem>
+	    
+	    <listitem><para>N'utilisez pas le bouton central pour autre chose que le déplacement de l'applet vers un autre emplacement. Un clic avec le bouton central et un glisser n'importe où dans la fenêtre de l'applet doit déplacer l'applet ; il n'est pas obligatoire d'avoir une barre de déplacement ou un dispositif similaire.</para>
+		<para><keycombo action="other" otheraction="drag"><keycap>Ctrl</keycap><mousebutton>left button</mousebutton></keycombo> <action>drag</action> should copy the applet, if moving to another panel; unmodified drag or <keycombo action="other" otheraction="drag"><keycap>Shift</keycap><mousebutton>left button</mousebutton></keycombo> <action>drag</action> should move the applet, if moving to another panel.  If moving within same panel, <keycap>Ctrl</keycap>=switched movement, <keycap>Shift</keycap>=push movement, <keycap>Alt</keycap>=free movement.</para></listitem>
+
+	  </itemizedlist>
+	  
+	</sect2>
+	
+    </sect1>
+    
+    
+    <sect1 id="input-keyboard">
+      <title>Interaction au clavier</title>
+      
+      
+      <sect2 id="keyboard-navigation">
+	<title>Navigation au clavier</title>
+	
+	<para>Une interface utilisateur bien conçue pour le clavier joue un rôle clé lors de la conception d'applications. Beaucoup d'utilisateurs potentiels préfèrent réaliser la plupart des opérations au clavier plutôt qu'à la souris. Les utilisateurs déficients visuels peuvent parcourir un logiciel plus efficacement en utilisant le clavier parce que l'utilisation de la souris dépend du retour visuel de l'emplacement du pointeur de la souris. De plus des problèmes de mobilité peuvent nuire à un contrôle correct de l'utilisateur en utilisant la souris à cause des besoins en une dextérité motrice fine.</para>
+	
+	<para>Rendez toutes les actions de la souris accessibles à partir du clavier et incluez un accès clavier à toutes les barres d'outils, menus, liens et boutons. Chaque fonction fournie par votre application doit être accessible en utilisant seulement le clavier. Une bonne façon de procéder est de cacher votre souris lorsque vous testez l'application !</para>
+	
+	
+	<figure>
+	  <title>Boîte de dialogue et menu avec indication de certaines de leurs touches d'accès et raccourcis</title>
+	  <mediaobject>
+	  <imageobject><imagedata fileref="images/input-accesskeys-shortcuts.png" format="PNG" width="497" depth="399"/></imageobject>
+	  <imageobject><imagedata fileref="images/input-accesskeys-shortcuts.eps" format="EPS"/></imageobject>
+	  <textobject><phrase>Screenshot of a dialog and a menu with some of their access keys and shortcut keys highlighted</phrase></textobject>
+	  </mediaobject>
+	</figure>
+
+	<para>Il est facile de rendre accessible la plupart des fonctionnalités à partir du clavier en utilisant des touches accès et des touches de raccourci, ainsi que les fonctions de navigation clavier intégrées aux boîtes à outils. Tous les contrôles avec étiquettes doivent posséder des touches d'accès et les éléments de menu fréquemment utilisés doivent posséder des touches de raccourci. Cependant, les actions fondées sur un glisser-déposer, par exemple, peuvent demander plus d'imagination pour les rendre accessibles au clavier.</para>
+		
+	<itemizedlist><title>Conseils</title>
+	  
+	  <listitem><para>Fournissez un accès clavier efficace pour toutes les caractéristiques de l'application. En particulier, assurez-vous que le focus peut être donné à tous les contrôles dans les menus et les boîtes de dialogue en utilisant des touches d'accès ou des raccourcis.</para></listitem>
+	  
+	  <listitem><para>Utilisez un ordre de navigation clavier logique. Lors d'une navigation dans une fenêtre avec la touche Tab, le focus clavier doit se déplacer entre les contrôles dans un ordre prévisible. Dans les environnements linguistiques occidentaux, c'est habituellement de la gauche vers la droite et de haut en bas.</para></listitem>
+	  
+	  <listitem><para>Assurez-vous que l'ordre de parcours des contrôles avec la touche « Tab » reste correct pour ceux dont l'état activé dépend de l'état d'une case à cocher, d'un bouton radio et d'un bouton bascule. Lorsqu'un bouton de ce type est sélectionné, tous les contrôles en dépendant doivent être activés et tous ceux qui dépendent d'un autre bouton du groupe doivent être désactivés. Lorsque l'utilisateur sélectionne une case à cocher, un bouton radio ou un bouton bascule qui possèdent des contrôles en dépendance, ne donnez pas automatiquement le focus au premier contrôle dépendant mais laissez plutôt le focus sur le bouton qui commande cette dépendance.</para></listitem>
+	  
+	  
+	  <listitem><para>Ne sur-définissez pas les caractéristiques existantes d'accessibilité au niveau système. Par exemple, la caractéristique MouseKeys de la boîte de dialogue de préférences GNOME <guilabel>Accessibilité clavier</guilabel> permet de simuler à l'aide du pavé numérique les déplacements de la souris et les clics de boutons . Par conséquent, vous ne pouvez pas ajouter des caractéristiques à l'application qui ne seraient atteintes qu'en utilisant le pavé numérique ; les utilisateurs comptant sur les fonctionnalités de MouseKeys ne pourraient pas les utiliser.</para></listitem>
+	  
+	  <listitem><para>Assurez-vous que tout texte pouvant être sélectionné avec la souris peut également l'être avec le clavier. C'est une facilité pour tous les utilisateurs, mais elle s'adresse plus spécialement à ceux qui ont des difficultés à contrôler finement le mouvement de la souris.</para></listitem>
+	  
+	  <listitem><para>Assurez-vous que les objets qui peuvent être redimensionnés ou déplacés par un glisser-déposer peuvent également l'être avec le clavier. Par exemple, les icônes ou les fenêtres sur le bureau. Lorsqu'un positionnement et un redimensionnement précis peut se révéler important, par ex. les formes dans un diagramme, pensez également à fournir, soit une boîte de dialogue dans laquelle l'utilisateur peut saisir des coordonnées, soit un moyen de placer les objets sur une grille définie par ce dernier.</para></listitem>
+	  
+	  <listitem><para>N'utilisez pas des fonctions générales de navigation pour déclencher des actions. Par exemple, n'utilisez pas l'usuelle navigation clavier avec la touche <keycap>Tab</keycap> dans une boîte de dialogue pour activer une action associée à un contrôle.</para></listitem>
+	  
+	  <listitem><para>Affichez les menus, fenêtres ou infobulles, appelés à l'aide du clavier, à proximité de l'objet auquel ils sont associés mais sans le masquer ou l'obscurcir. Dans GNOME, les menus contextuels sont activés par <keycombo><keycap>Maj</keycap><keycap>F10</keycap></keycombo> et les infobulles par <keycombo><keycap>Ctrl</keycap><keycap>F1</keycap></keycombo>.</para></listitem>
+	  
+	  <listitem><para>Fournissez plus d'une méthode pour réaliser les tâches au clavier lorsque c'est possible. Les utilisateurs peuvent trouver certaines touches ou combinaisons plus faciles que d'autres.</para></listitem>
+
+	  <listitem><para>N'attribuez pas de moyens d'accès complexes aux opérations clavier fréquemment utilisées. Certaines personnes ne peuvent utiliser qu'une seule main sur le clavier, donc les raccourcis utilisables facilement d'une seule main sont préférables pour les opérations courantes. Dans tous les cas, avoir à réaliser des extensions ou des positionnements difficiles sur le clavier augmente pour tous les utilisateurs le risque de se froisser un muscle, donc de douleurs ou de blessures.</para></listitem>
+	  
+	  <listitem><para>Ne demandez pas d'utilisations répétées d'appuis simultanés de touches. Certains utilisateurs ne sont capables que d'appuyer et tenir enfoncée une seule touche à la fois. Les technologies d'assistance telles que celles offertes dans la boîte de dialogue des préférences <guilabel>Accessibilité du clavier</guilabel> de GNOME permettent aux utilisateurs d'appuyer sur les touches de manière séquentielle plutôt que simultanément, mais bien sûr cela signifie que l'opération prendra plus de temps pour eux.</para></listitem>
+	</itemizedlist>
+	
+	  <remark>The point about not having Tab initiate any actions effectively rules out tab completion in dialogs, should we consider/recommend a "hands-free" auto-completion method instead, as offered by OpenOffice.org, Explorer etc.?  What does our new 2.0 file selection dialog do?</remark>
+	
+	</sect2>
+
+      <sect2 id="choosing-access-keys">
+	<title>Choix des touches d'accès</title>
+
+	<para>Donnez une touche d'accès (lettre soulignée) à tous les composants étiquetés, à l'exception des contrôles de barre d'outils : ils occuperaient beaucoup trop de combinaisons de touche d'accès.</para>
+
+<!-- Consensus was against giving OK and Cancel additional access keys, but they have them anyway and Owen refuses to remove them...
+
+	<note>
+	  <title>For discussion</title>
+	  <para>It's been suggested that even OK and Cancel should have access keys, as this is more obvious to newer users.  (KDE does this).  What do we think?  Advantages: means you do not always have to have an Enter-operated default button in dialogs where this might lead you to close the dialog by mistake.  Disadvantages: Adds an extra way for people to do things, potentially adding the "dither" factor; uses up O and C access keys, which could be awkward in larger/tabbed dialogs.</para>
+	</note>
+-->
+
+	<para>Choisissez les touches d'accès afin qu'elles soient aussi faciles à retenir que possible. Normalement l'utilisation de la première lettre de l'étiquette répond à ce critère. Mais dans les fenêtres complexes, le choix peut devenir plus difficile. Voici quelques règles simples :</para>
+
+	<orderedlist>
+	    <listitem><para>Attribuez des touches d'accès aux contrôles les plus fréquemment utilisés d'abord. Si ce n'est pas évident de savoir lesquels, attribuez les touches d'accès de la gauche vers la droite, du haut vers le bas (pour les environnements linguistiques occidentaux).</para></listitem>
+
+
+	  <listitem><para>Utilisez la première lettre de l'étiquette, ou de l'un des autres mots s'il y en a plus d'un. Toutefois, si une autre lettre représente une meilleure association (par ex. « x » dans <guilabel>Extra large</guilabel>) utilisez plutôt cette lettre.</para></listitem>
+
+	  <listitem><para>Si la première lettre n'est pas disponible, choisissez une consonne facile à se souvenir dans l'étiquette, par exemple « p » dans <guilabel>Remplacer</guilabel>.</para></listitem>
+ 
+	  <listitem><para>Si aucune consonne n'est disponible, choisissez n'importe quelle voyelle dans l'étiquette.</para></listitem>
+	</orderedlist>
+
+	   <para>Si un doublon de touches d'accès dans une fenêtre est inévitable, vous devez vous abstenir de dupliquer les touches d'accès d'un des boutons suivants s'ils apparaissent dans la même fenêtre : <guibutton>Valider</guibutton>, <guibutton>Annuler</guibutton>, <guibutton>Fermer</guibutton>, <guibutton>Appliquer</guibutton> ou <guibutton>Aide</guibutton>.</para>
+
+	   <para>Il est également préférable de ne pas attribuer de touches d'accès aux lettres « peu larges » (telles que i ou l minuscules) ou aux lettres avec des jambages (telles que g ou y minuscules) à moins que cela ne soit inévitable. Le souligné ne se distingue pas trop bien sous ces caractères dans certaines polices.</para>
+
+
+	<para>Les applications qui utilisent un système d'écriture non romain avec clavier classique peuvent avoir des étiquettes de contrôle préfixées de caractères romains en tant que touches d'accès.</para>
+	
+	</sect2>
+      
+      <sect2 id="shortcuts">
+	<title>Choix des touches de raccourcis</title>
+
+	<para>Les tableaux de la <xref linkend="standard-shortcuts"/> résument les touches de raccourci standards à utiliser lorsque votre application prend en charge ces fonctions. Votre application ne prendra pas nécessairement toutes ces fonctions, consultez la <xref linkend="menus-standard"/> pour plus d'informations. Cependant, utilisez les touches de raccourci recommandées pour les fonctions que vous prenez en charge.</para> 
+
+	<para>Vous voudrez certainement ajouter des touches de raccourci propres aux fonctions de l'application. Dans ce cas, outre le suivi des conseils suivants, jetez un coup d'œil aux autres applications similaires existantes pour voir les touches de raccourci qui y sont définies. Les utilisateurs de votre propre application se servent déjà peut-être de ces applications similaires ; donc, il est judicieux d'être cohérent lorsque c'est possible, car ils aborderont l'utilisation de votre application avec le bénéfice d'une expérience utilisateur déjà acquise.</para>
+
+	<itemizedlist><title>Conseils</title>
+
+	  <listitem><para>Utilisez <keycombo><keycap>Ctrl</keycap><keysym>lettre</keysym></keycombo> de préférence à d'autres combinaisons lorsque vous choisissez de nouvelles touches de raccourci.</para></listitem>
+
+	  <listitem><para>Les touches <keycap>Inser</keycap>, <keycap>Suppr</keycap>, <keycap>Début</keycap>, <keycap>Fin</keycap>, <keycap>Page haut</keycap> et <keycap>Page bas</keycap> sont des touches de raccourci acceptables pour des fonctions proches de l'usage classique de ces touches tel que défini par le système. Ne les attribuez pas à des fonctions sans rapport, uniquement parce que vous n'avez plus d'autres combinaisons de touches disponibles.</para></listitem>
+
+	  <listitem><para>N'attribuez des touches de raccourci qu'aux actions les plus couramment utilisées dans votre application. N'essayez pas d'attribuer une touche de raccourci à tout.</para></listitem>
+
+	  <listitem><para>Choisissez les nouvelles touches de raccourci les plus mnémoniques possible : elles seront plus faciles à apprendre et à se remémorer. Par exemple, <keycombo><keycap>Ctrl</keycap><keycap>P</keycap></keycombo> serait un bon raccourci pour un élément de menu nommé <guimenuitem>Modifier la page</guimenuitem>.</para></listitem>
+
+	  <listitem><para>Use <keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>letter</keycap></keycombo> for functions that reverse or extend another function.  For example, <keycombo><keycap>Ctrl</keycap><keycap>Z</keycap></keycombo> and <keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>Z</keycap></keycombo> for <guimenuitem>Undo</guimenuitem> and <guimenuitem>Redo</guimenuitem>.
+	<note><title>Unicode entry shortcuts</title><para>Note that you cannot use <keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>A-thru-F</keycap></keycombo> or <keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>0-thru-9</keycap></keycombo> for your own purposes, as these combinations are used to enter unicode characters in text fields.</para></note>
+	</para></listitem>
+	  
+	  <listitem><para>N'utilisez pas <keycombo><keycap>Ctrl</keycap><keycap>nombre</keycap></keycombo> ou des touches de fonction numérotées comme touche de raccourci à moins que le nombre n'ait un intérêt évident pour l'action. Par exemple, <keycombo><keycap>Ctrl</keycap><keycap>2</keycap></keycombo> et <keycombo><keycap>Ctrl</keycap><keycap>3</keycap></keycombo> peuvent être des touches de raccourci pour <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Affichage 2D</guimenuitem></menuchoice> et <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Affichage 3D</guimenuitem></menuchoice> dans une application de modélisation 3D.</para></listitem>
+	  	  
+	  <listitem><para>N'utilisez pas des combinaisons <keycombo><keycap>Alt</keycap><keycap>touche</keycap></keycombo> pour les touches de raccourcis car cela peut rentrer en conflit avec le gestionnaire de fenêtres ou les touches d'accès au menu.</para></listitem>
+
+	  <listitem><para>N'utilisez pas des symboles qui ont besoin de <keycap>Maj</keycap> ou d'autres modificateurs dans une partie du raccourci, par exemple <keycombo><keycap>Ctrl</keycap><keycap>%</keycap></keycombo>. Souvenez-vous que des symboles qui peuvent être atteints sans touche de modification sur votre clavier peuvent être plus difficiles à atteindre sur d'autres claviers internationaux.</para></listitem>
+	  
+	  <listitem><para>N'attribuez pas de touches de raccourci aux éléments de menu qui changent dans le temps, par exemple une liste de fenêtres ouvertes dans le menu <guimenu>Fenêtre</guimenu> ou une liste de fichiers récemment utilisés dans le menu <guimenu>Fichier</guimenu>. Attribuez plutôt des touches d'accès à ces éléments.</para></listitem>
+	  <listitem><para>N'utilisez aucune des touches de raccourci standards énumérées dans la <xref linkend="standard-shortcuts"/> pour vos propres besoins même si votre application ne prend pas en charge ces fonctions. Cela aide à renforcer la cohérence entre toutes les applications GNOME.</para></listitem>
+
+	</itemizedlist>
+   </sect2>	
+   
+   <sect2 id="standard-shortcuts">
+   	<title>Touches de raccourci standard d'application</title>	
+
+	<para>Si votre application utilise une des fonctions standards énumérées dans les tableaux suivants, utilisez le raccourci clavier standard recommandé pour cette fonction.</para>
+	
+	<table frame="all" pgwide="1">
+	  <title>Touches de raccourci et d'accès standards des applications GNOME - menu Fichier</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry>Fonction</entry>
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><guimenuitem><accel>N</accel>ew</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>N</keycap></keycombo></entry>
+		<entry>Crée un nouveau document</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>O</accel>pen</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>O</keycap></keycombo></entry>
+		<entry>Ouvre un document</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>S</accel>ave</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>S</keycap></keycombo></entry>
+		<entry>Enregistre le document actuel</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>P</accel>rint</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>P</keycap></keycombo></entry>
+		<entry>Imprime le document actuel</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>C</accel>lose</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>W</keycap></keycombo></entry>
+		<entry>Ferme le document actuel</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>Q</accel>uit</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>Q</keycap></keycombo></entry>
+		<entry>Quitte l'application</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<table frame="all" pgwide="1">
+	  <title>Touches de raccourci et d'accès standards des applications GNOME - menu Édition</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry>Fonction</entry>
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><guimenuitem><accel>U</accel>ndo</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>Z</keycap></keycombo></entry>
+		<entry>Annule la dernière opération</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>R</accel>edo</guimenuitem></entry>
+		<entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>Z</keycap></keycombo></entry>
+		<entry>Retablit la dernière opération annulée</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem>Cu<accel>t</accel></guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>X</keycap></keycombo></entry>
+		<entry>Coupe la zone sélectionnée et l'enregistre dans le presse-papier</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>C</accel>opy</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>C</keycap></keycombo></entry>
+		<entry>Copie la zone sélectionnée vers le presse-papier</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>P</accel>aste</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>V</keycap></keycombo></entry>
+		<entry>Colle le contenu du presse-papier à l'emplacement du curseur ou de la souris</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>D</accel>uplicate</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>U</keycap></keycombo></entry>
+		<entry>Duplique les éléments actuellement sélectionnés et les ajoute à la même fenêtre sans modifier le presse-papier</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem>Select <accel>A</accel>ll</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>A</keycap></keycombo></entry>
+		<entry>Sélectionne tous les éléments du contrôle ou de la fenêtre qui possèdent le focus</entry>
+	      </row>
+
+	    <!--  <row>
+		<entry><guimenuitem>Deselect All</guimenuitem></entry>
+		<entry><keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>A</keycap></keycombo></entry>
+		<entry>Deselect everything in focused control or window</entry>
+	      </row>-->
+	      
+	      <row>
+		<entry><guimenuitem>In<accel>v</accel>ert Selection</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>I</keycap></keycombo></entry>
+		<entry>Sélectionne tous les éléments du contrôle ou de la fenêtre qui ne possédaient pas le focus auparavant et désélectionne tous ceux qui étaient sélectionnés</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>D</accel>elete</guimenuitem></entry>
+		<entry><keycap>Del</keycap></entry>
+		<entry>Supprime la sélection</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>F</accel>ind...</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>F</keycap></keycombo></entry>
+		<entry>Trouve les occurrences correspondantes dans le document actuel, en les mettant en évidence in situ</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>S</accel>earch...</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>F</keycap></keycombo> (see note below)</entry>
+		<entry>Cherche les occurrences en correspondance dans plusieurs documents, fichiers ou d'autres sources externes</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem>Find Ne<accel>x</accel>t</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>G</keycap></keycombo></entry>
+		<entry>Recherche la prochaine occurrence</entry>
+	      </row>
+<!-- Replace may go depending on response to mpt's comment that Replace should be part of standard Find dialog functionality-->
+	      <row>
+		<entry><guimenuitem><accel>R</accel>eplace...</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>H</keycap></keycombo></entry>
+		<entry>Cherche et remplace les occurrences</entry>
+	      </row>
+		  <row>
+		<entry><guimenuitem>R<accel>e</accel>name</guimenuitem></entry>
+		<entry><keycap>F2</keycap></entry>
+		<entry>Bascule l'étiquette de l'élément sélectionné en mode édition, permettant à l'utilisateur de saisir un nouveau nom.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<note><title>Recherche et remplacement</title>
+		<para>Si votre application a besoin à la fois des éléments de menu <menuchoice><guimenu>Édition</guimenu><guimenuitem>Trouver</guimenuitem></menuchoice> et <menuchoice><guimenu>Édition</guimenu><guimenuitem>Rechercher</guimenuitem></menuchoice>, utilisez <keycombo><keycap>Maj</keycap><keycap>Ctrl</keycap><keycap>F</keycap></keycombo> comme raccourci pour <guimenuitem>Rechercher</guimenuitem>.</para>
+	</note>
+	
+<!--
+	<note><title>For discussion</title> -->
+
+<!-- Consensus was for "Deselect All" -->
+	  <!-- <para>czr currently proposing "Select None" rather than "Deselect All", which is better?  I prefer the latter because it's more visually distinct on a menu, in English at least.</para> -->
+	  <!-- Um, consensus was to be rid of the item, iirc. (GJM) -->
+	  <!--<para>Should we call it "Find Next" or "Find Again"?</para> -->
+
+	  <!--<para>czr currently proposing Ctrl+R for "Replace", but this clashes with "Reload" in most browser applications... not a problem until somebody writes a graphical HTML editor that you can also do search/replace in :o)  Ctrl+H is another common shortcut for "Replace", should we use this instead?  (It's not as easy to access with one hand, though, so maybe not).</para> -->
+
+	  <!--<para>mpt suggesting that Replace should be part of Find dialog, so shortcut for Replace may not be required at all.</para>-->
+
+	  <!-- Consensus is to keep Letter-based shortcut keys
+	  <para>Kenneth suggests a more F-key-based system, e.g. F5 for Refresh rather than Ctrl+R, as "Ctrl+R" is only memorable if you happen to speak English... what's our view on this?</para>-->
+
+<!--
+	  </note>-->
+
+	
+	
+
+	<table frame="all" pgwide="1">
+	  <title>Touches de raccourci et d'accès standards des applications GNOME - Menu Affichage</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry>Fonction</entry>
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><guimenuitem>Zoom <accel>I</accel>n</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keysym>Plus</keysym></keycombo></entry>
+		<entry>Zoom in on the document <remark>Should probably recommend that Ctrl-Equals work too</remark></entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem>Zoom <accel>O</accel>ut</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keysym>Minus</keysym></keycombo></entry>
+		<entry>Zoom arrière dans le document</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>N</accel>ormal Size</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keysym>0</keysym></keycombo></entry>
+		<entry>Rétablit le niveau de zoom à la taille normale (généralement 100 %)</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>R</accel>efresh</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>R</keycap></keycombo></entry>
+		<entry>Redessine la vue actuelle du document sans vérifier si le contenu été modifié</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>R</accel>eload</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>R</keycap></keycombo> (see note below)</entry>
+		<entry>Recharge le document actuel en mettant à jour à partir de la source si nécessaire</entry>
+	      </row>
+		  <row>
+		<entry><guimenuitem>Pr<accel>o</accel>perties</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>Enter</keycap></keycombo></entry>
+		<entry>Display the selected object's Properties window. May alternatively appear on the <guimenu>File</guimenu> menu if the document itself is the only object in the application whose properties can be inspected.</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	<note><title>Recharger et rafraîchir</title>
+		<para>Si votre application a besoin à la fois des éléments de menu <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Recharger</guimenuitem></menuchoice> et <menuchoice><guimenu>Affichage</guimenu><guimenuitem>Rafraîchir</guimenuitem></menuchoice>, utilisez <keycombo><keycap>Maj</keycap><keycap>Ctrl</keycap><keycap>R</keycap></keycombo> comme raccourci pour <guimenuitem>Recharger</guimenuitem>.</para>
+	</note>
+	
+	<table frame="all" pgwide="1">
+	  <title>Touches de raccourci et d'accès standards des applications GNOME - menu Signets</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry>Fonction</entry>
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><guimenuitem>Add <accel>B</accel>ookmark</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>D</keycap></keycombo></entry>
+		<entry>Ajoute un signet pour l'emplacement actuel</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>E</accel>dit Bookmarks...</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>B</keycap></keycombo> (see note below)</entry>
+		<entry>Ouvre une fenêtre dans laquelle l'utilisateur peut modifier et organiser les signets enregistrés</entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</table>
+	
+	<note><title>Graisse et modification des signets</title>
+		<para>Si votre application a besoin à la fois des éléments de menu <menuchoice><guimenu>Format</guimenu><guimenuitem>Gras</guimenuitem></menuchoice> et <menuchoice><guimenu>Signets</guimenu><guimenuitem>Modifier les signets</guimenuitem></menuchoice>, utilisez <keycombo><keycap>Maj</keycap><keycap>Ctrl</keycap><keycap>D</keycap></keycombo> comme raccourci pour <guimenuitem>Modifier les signets</guimenuitem>.</para>
+	</note>
+
+	<table frame="all" pgwide="1">
+	  <title>Touches de raccourci et d'accès standards des applications GNOME - menu Aller à</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry>Fonction</entry>
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><guimenuitem><accel>B</accel>ack</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keysym>Left</keysym></keycombo></entry>
+		<entry>Va à l'emplacement précédent dans la série de navigation</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem>Ne<accel>x</accel>t</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keysym>Right</keysym></keycombo></entry>
+		<entry>Va à l'emplacement suivant dans la série de navigation</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>U</accel>p</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keysym>Up</keysym></keycombo></entry>
+		<entry>Remonte d'un niveau dans la série de navigation</entry>
+		  </row>
+	    
+		  <row>
+		<entry><guimenuitem><accel>H</accel>ome</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keysym>Home</keysym></keycombo></entry>
+		<entry>Va à la page de démarrage définie par l'utilisateur ou l'application</entry>
+	      </row>
+		  <row>
+		<entry><guimenuitem><accel>L</accel>ocation...</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keysym>L</keysym></keycombo></entry>
+		<entry>Affiche ou donne le focus à un champ de saisi dans lequel l'utilisateur peut saisir une nouvelle adresse ou un nouvel emplacement à afficher</entry>
+		</row>
+	    </tbody>
+	  </tgroup>
+	</table>
+
+	
+	<table frame="all" pgwide="1">
+	  <title>Touches de raccourci et d'accès standards des applications GNOME - menu Format</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry>Fonction</entry>
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><guimenuitem><accel>B</accel>old</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>B</keycap></keycombo></entry>
+		<entry>Alterne la sélection de texte entre gras et normal</entry>
+		</row>
+	      <row>
+		<entry><guimenuitem><accel>U</accel>nderline</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>U</keycap></keycombo></entry>
+		<entry>Souligne/efface le souligné du texte sélectionné</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>I</accel>talic</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>I</keycap></keycombo></entry>
+		<entry>Alterne la sélection de texte entre italique et normal</entry>
+	      </row>  
+	    </tbody>
+	  </tgroup>
+	</table>
+
+<!--	<note><title>For discussion</title>
+	  <para>Is it acceptable to specify the same shortcut for <menuchoice><guimenu>Format</guimenu><guimenuitem>Bold</guimenuitem></menuchoice> and <menuchoice><guimenu>Bookmarks</guimenu><guimenuitem>Edit Bookmarks</guimenuitem></menuchoice>, given that the two aren't likely to occur in the same application?  Or could/should we provide a second choice for one of them on the off-chance that they do coincide?</para>
+	</note>
+-->
+
+	<table frame="all" pgwide="1">
+	  <title>Touches de raccourci et d'accès standards des applications GNOME - menu Aide</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry>Fonction</entry>
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><guimenuitem><accel>C</accel>ontents</guimenuitem></entry>
+		<entry><keycap>F1</keycap></entry>
+		<entry>Affiche la page de sommaire de l'aide de l'application actuelle</entry>
+	      </row>
+		  
+		  <!-- Doesn't appear on menus so probably doesn't belong in this table
+	      <row>
+		<entry><guimenuitem>(Context Help)</guimenuitem></entry>
+		<entry><keycombo><keycap>Shift</keycap><keycap>F1</keycap></keycombo></entry>
+		<entry>Show online help for the currently focused control or window</entry>
+	      </row>-->
+		  
+	    </tbody>
+	  </tgroup>
+	</table>
+
+<!--
+	<note>
+	  <title>For Discussion</title>
+	  <para>Greg suggested Ctrl+H for Search Help... this doesn't seem to me to be an important enough function to tie up Ctrl+H with, though, anyone got any other views/alternative suggestions?</para>
+	</note>
+-->	  
+
+    <sect3 id="window-manager-navigation">
+	<title>Touches de raccourci standard du gestionnaire de fichiers</title>
+	<para>Les touches de raccourci suivantes sont utilisées par beaucoup de gestionnaires de fichiers et ne doivent normalement pas être sur-définies par votre application.</para>
+
+<table frame="all" pgwide="1">
+	  <title>Touches de raccourci et d'accès standards du gestionnaire de fichiers</title>
+	  <tgroup cols="3" align="left">
+	    <thead>
+	      <row>
+		<entry>Fonction</entry>
+		<entry>Raccourci</entry>
+		<entry>Description</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry>Changement de fenêtre principale</entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>Tab</keycap></keycombo>, <keycombo><keycap>Shift</keycap><keycap>Alt</keycap><keycap>Tab</keycap></keycombo></entry>
+		<entry>Déplace le focus vers la prochaine ou la précédente fenêtre de premier niveau sur le bureau</entry>
+	      </row>
+
+	      <row>
+		<entry>Changement de tableau de bord</entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>Alt</keycap><keycap>Tab</keycap></keycombo>, <keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>Alt</keycap><keycap>Tab</keycap></keycombo></entry>
+		<entry>Déplace le focus vers le prochain ou le précédent tableau de bord sur le bureau</entry>
+	      </row>
+
+	      <row>
+		<entry>Se déconnecter</entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>Alt</keycap><keycap>Del</keycap></keycombo></entry>
+		<entry>Ouvre la boîte de dialogue de déconnexion de la session</entry>
+	      </row>
+
+	      <row>
+		<entry>Menu Fenêtre</entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>Space</keycap></keycombo></entry>
+		<entry>Ouvre le menu Fenêtre</entry>
+		</row>
+	      <row>
+		<entry><guimenuitem><accel>C</accel>lose</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>F4</keycap></keycombo></entry>
+		<entry>Ferme la fenêtre qui possède le focus</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>R</accel>estore</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>F5</keycap></keycombo></entry>
+		<entry>Restaure la fenêtre qui possède le focus à sa taille précédente</entry>
+	      </row>
+		<row>
+			<entry><guimenuitem><accel>S</accel>witch secondary windows</guimenuitem></entry>
+			<entry><keycombo><keycap>Alt</keycap><keycap>F6</keycap></keycombo>, <keycombo><keycap>Shift</keycap><keycap>Alt</keycap><keycap>F6</keycap></keycombo></entry>
+		<entry>Switch focus to the next or previous secondary window associated with the application (<remark>precise functionality for metacity TBD, see bug 94682</remark>)</entry>
+		</row>
+
+	      <row>
+		<entry><guimenuitem><accel>M</accel>ove</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>F7</keycap></keycombo></entry>
+		<entry>Déplace la fenêtre qui possède le focus</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem>Re<accel>s</accel>ize</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>F8</keycap></keycombo></entry>
+		<entry>Redimensionne la fenêtre qui possède le focus</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem>Mi<accel>n</accel>imize</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>F9</keycap></keycombo></entry>
+		<entry>Minimise la fenêtre qui possède le focus</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem>Ma<accel>x</accel>imize</guimenuitem></entry>
+		<entry><keycombo><keycap>Alt</keycap><keycap>F10</keycap></keycombo></entry>
+		<entry>Maximise la fenêtre qui possède le focus</entry>
+	      </row>
+	      <row>
+		<entry><guimenuitem><accel>F</accel>ull Screen</guimenuitem></entry>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>F11</keycap></keycombo></entry>
+		<entry>Affiche la fenêtre dans le mode plein écran, sans bordure, barre de menu, barre d'outils ou d'état</entry>
+	      </row>
+
+	    </tbody>
+	  </tgroup>
+	</table>
+	</sect3>
+
+      <sect3 id="widget-navigation">
+	<title>Touches de raccourci standards de navigation d'élément graphique</title>
+	<para>Les touches de raccourci suivantes sont réservées pour la navigation par clavier utilisées par divers éléments graphiques de GNOME et ne doivent normalement pas être sur-définis par votre application.</para>
+
+	<table frame="all" pgwide="1">
+	  <title>Touches standards de navigation clavier pour les éléments graphiques</title>
+	  <tgroup cols="2" align="left">
+	    <thead>
+	      <row>
+		<entry>Clé/Touche</entry>
+		<entry>Fonction</entry>
+	      </row>
+	    </thead>
+	    <tbody>
+	      <row>
+		<entry><keycap>Tab</keycap>, <keycombo><keycap>Shift</keycap><keycap>Tab</keycap></keycombo></entry>
+		<entry>Déplace le focus clavier vers le précédent/prochain contrôle</entry>
+	      </row>
+	      <row>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>Tab</keycap></keycombo>, <keycombo><keycap>Shift</keycap><keycap>Ctrl</keycap><keycap>Tab</keycap></keycombo></entry>
+		<entry>Déplace le focus clavier hors du composant graphique qui le contient vers le précédent/prochain contrôle dans les situations où la touche tab est utilisée pour une autre fonction (par ex. GtkTextView)</entry>
+	      </row>
+	      <row>
+		<entry><keycombo><keycap>Ctrl</keycap><keycap>F1</keycap></keycombo></entry>
+		<entry>Affiche une infobulle pour le contrôle qui possède actuellement le focus</entry>
+	      </row>
+	      <row>
+		<entry><keycombo><keycap>Shift</keycap><keycap>F1</keycap></keycombo></entry>
+		<entry>Affiche une aide sensible au contexte pour le contrôle ou la fenêtre qui possède actuellement le focus</entry>
+	      </row>
+	      <row>
+		<entry><keycap>F6</keycap>, <keycombo><keycap>Shift</keycap><keycap>F6</keycap></keycombo></entry>
+		<entry>Donne le focus au prochain/précédent panneau dans une fenêtre GtkPaned</entry>
+	      </row>
+	      <row>
+		<entry><keycap>F8</keycap></entry>
+		<entry>Donne le focus à la barre de séparation dans une fenêtre à panneau</entry>
+	      </row>
+	      <row>
+		<entry><keycap>F10</keycap></entry>
+		<entry>Donne le focus à la barre de menu de la fenêtre</entry>
+	      </row>
+	      <row>
+		<entry><keycombo><keycap>Shift</keycap><keycap>F10</keycap></keycombo></entry>
+		<entry>Affiche un menu contextuel pour les objets actuellement sélectionnés</entry>
+	      </row>
+	      <row>
+		<entry><keysym>Space</keysym></entry>
+		<entry>Bascule l'état de sélection de la case à cocher, du bouton radio ou du bouton bascule possédant le focus</entry>
+	      </row>
+	      <row>
+		<entry><keysym>Return</keysym></entry>
+		<entry>Active le bouton, l'élément de menu, etc. possèdant le focus</entry>
+	      </row>
+	      <row>
+		<entry><keycap>Home</keycap>, <keycap>End</keycap></entry>
+		<entry>Sélectionne/déplace le premier élément dans le composant graphique sélectionné</entry>
+	      </row>
+	      <row>
+		<entry><keycap>PageUp</keycap>, <keycombo><keycap>Ctrl</keycap><keycap>PageUp</keycap></keycombo>, <keycap>PageDown</keycap>, <keycombo><keycap>Ctrl</keycap><keycap>PageDown</keycap></keycombo></entry>
+		<entry>Fait défiler la vue sélectionnée page par page vers le haut/la gauche/le bas/la droite</entry>
+	      </row>
+ 	      </tbody>
+	  </tgroup>
+	</table>
+	     
+      </sect3>
+      
+	<sect3 id="additional-widget-navigation">
+	  <title>Touches supplémentaires de raccourci de navigation pour les éléments graphiques</title>
+	  
+	  <para>Les raccourcis de navigation suivants, dans le style emacs, sont toujours disponibles dans les champs de saisie de texte dans GNOME 2.0 (en sélectionnant le schéma « emacs » dans la boîte de dialogue des préférences de <guilabel>Raccourcis clavier</guilabel>) mais sont désactivées par défaut. Comme certains utilisateurs veulent toujours les utiliser, ne les sur-définissez pas pour vos propres besoins lorsqu'un contrôle de saisie de texte possède le focus.</para>
+
+	  <table frame="all" pgwide="1">
+	    <title>Touches de navigation style Emacs pour les éléments graphiques</title>
+	    <tgroup cols="2" align="left">
+	      <thead>
+		<row>
+		  <entry>Clé/Touche</entry>
+		  <entry>Fonction</entry>
+		</row>
+	      </thead>
+	      <tbody>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keycap>A</keycap></keycombo></entry>
+		  <entry>Déplace le curseur au début de la ligne</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keycap>D</keycap></keycombo></entry>
+		  <entry>Supprime le caractère suivant/sous le curseur</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keycap>E</keycap></keycombo></entry>
+		  <entry>Déplace le curseur à la fin de la ligne</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keycap>K</keycap></keycombo></entry>
+		  <entry>Supprime à partir du curseur jusqu'à la fin de la ligne</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keycap>U</keycap></keycombo></entry>
+		  <entry>Supprime la ligne actuelle</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keycap>W</keycap></keycombo></entry>
+		  <entry>Coupe vers le presse-papier</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keycap>Y</keycap></keycombo></entry>
+		  <entry>Colle à partir du presse-papier</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keysym>Space</keysym></keycombo></entry>
+		  <entry>Place une marque</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keycap>Del</keycap></keycombo>, <keycombo><keycap>Alt</keycap><keycap>D</keycap></keycombo></entry>
+		  <entry>Supprime à partir du curseur jusqu'à la fin du mot</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Ctrl</keycap><keysym>Backspace</keysym></keycombo></entry>
+		  <entry>Supprime à partir du curseur jusqu'au début du mot</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Alt</keycap><keysym>Space</keysym></keycombo></entry>
+		  <entry>Supprime tous les espaces autour du curseur en réinsérant un espace unique</entry>
+		</row>
+		<row>
+		  <entry><keycombo><keycap>Alt</keycap><keycap>\</keycap></keycombo></entry>
+		  <entry>Supprime tous les espaces autour du curseur</entry>
+		</row>
+	      </tbody>
+	    </tgroup>
+	  </table>
+	  
+	</sect3>
+	
+      </sect2>
+      
+      <sect2 id="keynav-applets">
+	<title>Interaction clavier avec les applications du tableau de bord (applets)</title>
+
+	<para>Il est possible de naviguer au clavier dans les tableaux de bord depuis GNOME 2.0. Puisque votre tableau de bord peut obtenir le focus clavier, vous devez vous assurer qu'il est possible d'y naviguer via le clavier.</para>
+
+	<para>Les règles pour la navigation clavier du tableau de bord de l'application sont quasiment les mêmes que celles des autres fenêtres. Cependant il y a une différence importante :</para>
+
+	<itemizedlist>
+	  <listitem><para>N'utilisez <emphasis>pas</emphasis> la touche <keycap>tab</keycap> car c'est le moyen de déplacer le focus entre les contrôles dans une application de tableau de bord. Utilisez les touches fléchées pour cela à la place.</para></listitem>
+	</itemizedlist>
+
+	<para>Lorsqu'un objet sur un tableau de bord possède le focus, la touche <keycap>Tab</keycap> déplace normalement le focus vers le prochain objet sur le tableau de bord. Si votre application de tableau de bord utilise également la touche <keycap>Tab</keycap> pour sa propre navigation interne, l'utilisateur devra à la place appuyer sur <keycombo><keycap>Ctrl</keycap><keycap>Tab</keycap></keycombo> pour déplacer le focus en dehors de votre application de tableau de bord. Cette incohérence se ferait au détriment de l'expérience de l'utilisateur.</para>
+	
+      </sect2>
+      
+  </sect1>
+  </chapter>

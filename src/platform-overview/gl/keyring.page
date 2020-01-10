@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="keyring" xml:lang="gl">
+<info>
+  <link type="guide" xref="index" group="apps"/>
+  <desc>Almacenamento seguro para so contrasinais e outros datos</desc>
+  <revision pkgversion="3.0" date="2011-04-05" status="candidate"/>
+
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Fran Dieguez</mal:name>
+      <mal:email>frandieguez@gnome.org</mal:email>
+      <mal:years>2009-2013.</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Leandro Regueiro</mal:name>
+      <mal:email>leandro.regueiro@gmail.com</mal:email>
+      <mal:years>2011.</mal:years>
+    </mal:credit>
+  </info>
+
+<title>Anel de chaves</title>
+
+<p>GNOME fornece un xestos de anel de chaves seguro e moderno para almacenar os contrasinais do usuario e outros datos sensíbeis. Os aplicativos poden usar a biblioteca do xestor do anel de chaves para almacenar e acceder aos contrasinais, e os usuarios poden xestionar os seus contrasinais usando o aplicativo de GNOME <app>Seahorse</app>.</p>
+
+<p>O xestor do anel de chaves fornece calquera número de aneis onde cada anel pode conter calquera número de elementos. Os elementos nun anel almacenan unha información, xeralmente un contrasinal. Cada anel está bloqueado individualmente e os usuarios deben fornecer unha chave para desbloquear o anel. Unha vez que o anel está desbloqueado, o usuario ten acceso a todos os elementos do anel.</p>
+
+<p>O xestor do anel de chaves fornece unha lista de control para cada elemento do anel, controlando a que aplicativos se lle permite o acceso a este elemento. Se un aplicativo do anel, o xestor de anel preguntará ao usuario se desexa permitir ou denegar o acceso a dito aplicativo. Isto axuda a previr que programas maliciosos ou probremente escritos accedan a información sensíbel do usuario.</p>
+
+<p>Os datos do anel de chaves almacenados no sistema de ficheiros están cifrados co cifrado de bloques AES, mentres que o SAH1 úsase para o «hash» dos atributos do elemento. Usando atributos «hash», o xestor de anel de chaves é capaz de mirar elementos que piden os aplicativos sen necesidade de desbloquear o anel. O anel desbloquéase cando se encontra un elemento coincidente e accédese a el.</p>
+
+<p>O xestor de anel de chaves tamén fornece un anel de chaves para a sesión. Os elementos no anel da sesión nunca se almacenan en disco e pérdense cando remata a sesión do usuario. O anel da sesión pódese usar para almacenar contrasinais que só van a usarse na sesión actual.</p>
+
+<p>Se usa GIO para acceder a servidores remotos, automaticamente obterá os beneficios do xestor de anel de chaves. Sempre que GFfs precise autenticar ao usuario, fornece a opción de almacenar o contrasinal, xa sexa no anel de chaves predeterminado ou no anel de chaves da sesión.</p>
+
+<p>Debería usar o xestor de anel de chaves sempre que o seu aplicativo necesite almacenar contrasinais ou outros datos sensíbeis dos usuarios. Ao usar o xestor de anel de chaves fornécese unha mellor experiencia ao usuario á vez que mantén seguros os datos do mesmo.</p>
+
+<list style="compact">
+  <item><p><link href="http://developer.gnome.org/gnome-keyring/stable/">Manual de referencia de gnome-keyring</link></p></item>
+  <item><p><link href="http://developer.gnome.org/libseahorse/stable/">Manual de referencia de libseahorse</link></p></item>
+</list>
+
+</page>

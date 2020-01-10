@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.c" xml:lang="ca">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="guitar-tuner.c" xml:lang="ca">
 
   <info>
     <title type="text">Guitar tuner (C)</title>
@@ -10,15 +10,15 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="review"/>
     <credit type="author">
       <name>Projecte de documentació del GNOME</name>
-      <email its:translate="no">gnome-doc-list@gnome.org</email>
+      <email>gnome-doc-list@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
   </info>
@@ -204,12 +204,12 @@ play_sound (gdouble frequency)
 static gboolean
 pipeline_stop (GstElement* pipeline)
 {
-	gst_element_set_state (pipeline, GST_STATE_NULL);
+	gst_element_set_state (pipeline, GST_STATE_PAUSED);
 	g_object_unref (pipeline);
 
 	return FALSE;
 }]]></code>
-  <p>The call to <code>gst_element_set_state</code> stops the playback of the pipeline and <code>g_object_unref</code> unreferences the pipeline, destroying it and freeing its memory.</p>
+  <p>The call to <code>gst_element_set_state</code> pauses the playback of the pipeline and <code>g_object_unref</code> unreferences the pipeline, destroying it and freeing its memory.</p>
 </section>
 
 <section id="tones">
@@ -229,7 +229,8 @@ pipeline_stop (GstElement* pipeline)
 void on_button_clicked (GtkButton* button,
                         gpointer user_data)
 {
-	const gchar* text = gtk_button_get_label (button);
+	GtkWidget* label = gtk_bin_get_child (GTK_BIN (button));
+	const gchar* text = gtk_label_get_label (GTK_LABEL (label));
 
 	if (g_str_equal (text, _("E")))
 	    play_sound (NOTE_E);
@@ -245,8 +246,8 @@ void on_button_clicked (GtkButton* button,
 	    play_sound (NOTE_e);
 }
 ]]></code>
-  <p>A pointer to the <code>GtkButton</code> that was clicked is passed as an argument (<code>button</code>) to <code>on_button_clicked</code>. We can get the text of that button using <code>gtk_button_get_label</code>.</p>
-  <p>The text is then compared to the notes that we have using <code>g_str_equal</code>, and <code>play_sound</code> is called with the frequency appropriate for that note. This plays the tone; we have a working guitar tuner!</p>
+  <p>A pointer to the <code>GtkButton</code> that was clicked is passed as an argument (<code>button</code>) to <code>on_button_clicked</code>. We can get the label of that button by using <code>gtk_bin_get_child</code>, and then get the text from that label using <code>gtk_label_get_label</code>.</p>
+  <p>The label text is then compared to the notes that we have using <code>g_str_equal</code>, and <code>play_sound</code> is called with the frequency appropriate for that note. This plays the tone; we have a working guitar tuner!</p>
 </section>
 
 <section id="run">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="model-view-controller.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:e="http://projectmallard.org/experimental/" type="guide" style="task" id="model-view-controller.py" xml:lang="el">
 
 <info>
     <title type="text">Η σχεδίαση προτύπου/προβολής/ελεγκτή (Python)</title>
@@ -10,37 +10,19 @@
   <desc>Η σχεδίαση προτύπου/προβολής/ελεγκτή</desc>
   <credit type="author copyright">
     <name>Sebastian Pölsterl</name>
-    <email its:translate="no">sebp@k-d-w.org</email>
+    <email>sebp@k-d-w.org</email>
     <years>2011</years>
   </credit>
   <credit type="author copyright editor">
     <name>Marta Maria Casetti</name>
-    <email its:translate="no">mmcasetti@gmail.com</email>
+    <email>mmcasetti@gmail.com</email>
     <years>2012</years>
   </credit>
 
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -51,7 +33,7 @@
 <section id="overview">
 <title>Επισκόπηση</title>
 
-<p>Αμφότερα τα γραφικά στοιχεία <link xref="treeview_simple_liststore.py">TreeView</link> και <link xref="combobox.py">ComboBox</link> κατασκευάζονται στη σχεδίαση <em>πρότυπο/προβολή/ελεγκτής</em>. Το <em>πρότυπο</em> (μια εφαρμογή του <code>Gtk.TreeModel</code>, συνήθως <code>Gtk.TreeStore</code> ή <code>Gtk.ListStore</code>) αποθηκεύει τα δεδομένα· η <em>προβολή</em> (π.χ. <code>Gtk.TreeView</code>, <code>Gtk.ComboBox</code>, ή <code>Gtk.ComboBoxText</code>) δέχεται ειδοποιήσεις αλλαγής και εμφανίζει το περιεχόμενο του προτύπου. Ο <em>ελεγκτής</em>, τελικά, αλλάζει την κατάσταση του προτύπου (μέσα από κάποιες μεθόδους στην εφαρμογή του προτύπου - όπως <code>append()</code> ή <code>remove()</code>) και ειδοποιεί την προβολή αυτών των αλλαγών (μέσα από σήματα όπως <code>"changed"</code>).</p>
+<p>Αμφότερα τα γραφικά συστατικά <link xref="treeview_simple_liststore.py">TreeView</link> και <link xref="combobox.py">ComboBox</link> κατασκευάζονται στη σχεδίαση <em>πρότυπο/προβολή/ελεγκτής</em>. Το <em>πρότυπο</em> (μια εφαρμογή του <code>Gtk.TreeModel</code>, συνήθως <code>Gtk.TreeStore</code> ή <code>Gtk.ListStore</code>) αποθηκεύει τα δεδομένα· η <em>προβολή</em> (π.χ. <code>Gtk.TreeView</code>, <code>Gtk.ComboBox</code>, ή <code>Gtk.ComboBoxText</code>) δέχεται ειδοποιήσεις αλλαγής και εμφανίζει το περιεχόμενο του προτύπου. Ο <em>ελεγκτής</em>, τελικά, αλλάζει την κατάσταση του προτύπου (μέσα από κάποιες μεθόδους στην εφαρμογή του προτύπου - όπως <code>append()</code> ή <code>remove()</code>) και ειδοποιεί την προβολή αυτών των αλλαγών (μέσα από σήματα όπως <code>"changed"</code>).</p>
 
 </section>
 
@@ -125,9 +107,9 @@
 <list>
   <item><p>Η στατική μέθοδος <code>new_with_entry()</code> δημιουργεί ένα νέο κενό <code>Gtk.ComboBox</code> με μια εισαγωγή· η στατική μέθοδος <code>new_with_model(model)</code> δημιουργεί μια νέα με το αρχικοποιημένο πρότυπο στο <code>model</code>· και η στατική μέθοδος <code>new_with_model_and_entry(model)</code> είναι ένας συνδυασμός των δύο.</p></item>
   <item><p>Η <code>get_active_iter()</code> επιστρέφει μια <code>Gtk.TreeIter</code> που δείχνει στο τρέχον ενεργό στοιχείο. Εάν δεν υπάρχει ενεργό στοιχείο, επιστρέφεται <code>None</code>.</p></item>
-  <item><p>Ο <code>set_model(model)</code> ορίζει το χρησιμοποιούμενο πρότυπο από αυτό το σύνθετο πλαίσιο για να είναι <code>model</code> και θα αναιρέσει ένα προηγούμενο πρότυπο συνόλου (εάν υπάρχει κάποιο). Εάν το <code>model</code> είναι <code>None</code>, τότε θα αναιρέσει το πρότυπο. Σημειώστε ότι αυτή η συνάρτηση δεν καθαρίζει τους απεικονιστές κελιών.</p></item>
+  <item><p>Ο <code>set_model(model)</code> ορίζει το χρησιμοποιούμενο πρότυπο από αυτό το σύνθετο πλαίσιο για να είναι <code>model</code> και θα αναιρέσει ένα προηγούμενο πρότυπο συνόλου (εάν υπάρχει κάποιο). Εάν το <code>model</code> είναι <code>None</code>, τότε θα αναιρέσει το πρότυπο. Σημειώστε ότι αυτή η συνάρτηση δεν καθαρίζει τους σχεδιαστές.</p></item>
   <item><p>Ο <code>set_entry_text_column(text_column)</code> ορίζει τη στήλη προτύπου την οποία αυτό το σύνθετο πλαίσιο πρέπει να χρησιμοποιήσει για να πάρει συμβολοσειρές από <code>text_column</code>. Η στήλη <code>text_column</code> σε αυτό το πρότυπο αυτού του σύνθετου πλαισίου πρέπει να είναι του τύπου <code>str</code> (αυτό είναι κατάλληλο μόνο εάν αυτό το σύνθετο πλαίσιο δημιουργήθηκε με την ιδιότητα “has-entry” ορισμένη σε αληθή).</p></item>
-  <item><p><code>set_wrap_width(width)</code> sets the wrap width of this combo box to be <code>width</code>. The wrap width is basically the preferred number of columns when you want the popup to be laid out in a grid.</p></item>
+  <item><p>Ο <code>set_wrap_width(width)</code> ορίζει το πλάτος αναδίπλωσης αυτού του σύνθετου πλαισίου να είναι <code>width</code>. Το πλάτος αναδίπλωσης είναι βασικά ο προτιμώμενος αριθμός των στηλών όταν θέλετε το αναδυόμενο να εμφανιστεί σε ένα πλέγμα.</p></item>
 </list>
 
 <p>Χρήσιμες μέθοδοι για ένα <code>Gtk.ComboBoxText</code>:</p>
@@ -140,7 +122,7 @@
 </section>
 
 <section id="cellrenderer">
-<title>Η προβολή: οι απεικονιστές κελιού</title>
+<title>Η προβολή: οι σχεδιαστές κελιού</title>
 
 <p>Η προβολή κάνει χρήση των <code>Gtk.CellRenderer</code> των ποικίλων τύπων σχεδίασης των δεδομένων.</p>
 
@@ -149,17 +131,17 @@
   <item><p><code>Gtk.CellRendererText</code> - αποδίδει κείμενο σε ένα κελί</p></item>
   <item><p><code>Gtk.CellRendererToggle</code> - αποδίδει μια εναλλαγή ή ραδιοπλήκτρο σε ένα κελί. Χρήσιμες μέθοδοι:</p>
     <list>
-    <item><p><code>set_active(setting)</code> - ενεργοποιεί ή απενεργοποιεί έναν απεικονιστή κελιών</p></item>
-    <item><p><code>get_active()</code> - επιστρέφει εάν ο απεικονιστής κελιών είναι ενεργός</p></item>
-    <item><p><code>set_radio(radio)</code> - εάν το ραδιοπλήκτρο είναι <code>True</code>, ο απεικονιστής κελιών αποδίδει μια εναλλαγή του ραδιοπλήκτρου (δηλαδή μια εναλλαγή σε μια ομάδα αμοιβαία αποκλειόμενων εναλλαγών)· εάν <code>False</code>, αποδίδει μια εναλλαγή ελέγχου (μια αυτόνομη επιλογή τιμής Μπουλ)</p></item>
+    <item><p><code>set_active(setting)</code> - ενεργοποιεί ή απενεργοποιεί έναν αποτυπωτή κελιών</p></item>
+    <item><p><code>get_active()</code> - επιστρέφει εάν ο σχεδιαστής κελιών είναι ενεργός</p></item>
+    <item><p><code>set_radio(radio)</code> - εάν το ράδιο είναι <code>True</code>, ο σχεδιαστής κελιών αποδίδει μια εναλλαγή ραδίου (δηλαδή μια εναλλαγή σε μια ομάδα αμοιβαία αποκλειόμενων εναλλαγών)· εάν <code>False</code>, αποδίδει μια εναλλαγή ελέγχου (μια αυτόνομη επιλογή τιμής Μπουλ)</p></item>
     <item><p><code>get_radio()</code> - επιστρέφει εάν αποδίδουμε ραδιοεναλλαγές αντί για πλαίσια ελέγχου.</p></item>
     </list>
   </item>
   <item><p><code>Gtk.CellRendererPixbuf</code> - αποδίδει μια εικόνα σε ένα κελί</p></item>
-  <item><p><code>Gtk.CellRendererCombo</code> - αποδίδει κείμενο σε ένα κελί· αλλά ενώ το <code>Gtk.CellRendererText</code> προσφέρει μια απλή εγγραφή για επεξεργασία του κειμένου, το <code>Gtk.CellRendererCombo</code> προσφέρει ένα γραφικό στοιχείο <code>Gtk.ComboBox</code> για επεξεργασία του κειμένου. Μπορεί να χρησιμοποιηθεί με και χωρίς ένα συσχετισμένο γραφικό στοιχείο Gtk.Entry, ανάλογα με την τιμή της ιδιότητας “has-entry”.</p></item>
+  <item><p><code>Gtk.CellRendererCombo</code> - αποδίδει κείμενο σε ένα κελί· αλλά ενώ το <code>Gtk.CellRendererText</code> προσφέρει μια απλή εγγραφή για επεξεργασία του κειμένου, το <code>Gtk.CellRendererCombo</code> προσφέρει ένα γραφικό συστατικό <code>Gtk.ComboBox</code> για επεξεργασία του κειμένου. Μπορεί να χρησιμοποιηθεί με και χωρίς ένα συσχετισμένο γραφικό συστατικό Gtk.Entry, ανάλογα με την τιμή της ιδιότητας “has-entry”.</p></item>
   <item><p><code>Gtk.CellRendererProgress</code> - αποδίδει μια αριθμητική τιμή ως μια γραμμή προόδου σε ένα κελί· μπορεί να εμφανίσει ένα κείμενο στην κορυφή της γραμμής προόδου</p></item>
-  <item><p><code>Gtk.CellRendererSpinner</code> - αποδίδει μια κίνηση μέτρησης σε ένα κελί</p></item>
-  <item><p><code>Gtk.CellRendererSpin</code> - αποδίδει ένα κουμπί περιστροφής σε ένα κελί</p></item>
+  <item><p><code>Gtk.CellRendererSpinner</code> - αποδίδει μια στρεφόμενη κίνηση σε ένα κελί</p></item>
+  <item><p><code>Gtk.CellRendererSpin</code> - αποδίδει ένα κουμπί στροβιλισμού σε ένα κελί</p></item>
   <item><p><code>Gtk.CellRendererAccel</code> - αποδίδει έναν επιταχυντή πληκτρολογίου σε ένα κελί</p></item>
 </list>
 
@@ -192,7 +174,7 @@ def on_tree_selection_changed(selection):
     <item><p><code>Gtk.SelectionMode.NONE</code> - καμιά επιλογή δεν είναι δυνατή</p></item>
     <item><p><code>Gtk.SelectionMode.SINGLE</code> - κανένα ή ένα στοιχείο μπορεί να επιλεγεί</p></item>
     <item><p><code>Gtk.SelectionMode.BROWSE</code> - ακριβώς ένα στοιχείο επιλέγεται. Σε μερικές περιπτώσεις, όπως αρχικά ή κατά τη διάρκεια μιας λειτουργίας αναζήτησης, είναι δυνατό να μην επιλεγεί κανένα στοιχείο. Αυτό που είναι πραγματικά υποχρεωτικό είναι να μην μπορεί να αποεπιλέξει ο χρήστης ένα τρέχον επιλεγμένο στοιχείο εκτός από την επιλογή ενός άλλου στοιχείου.</p></item>
-    <item><p><code>Gtk.SelectionMode.MULTIPLE</code> - οποιοσδήποτε αριθμός στοιχείων μπορεί να επιλεγεί. Το πάτημα εναλλάσσει την κατάσταση ενός στοιχείου. Το πλήκτρο Ctrl μπορεί να χρησιμοποιηθεί για μεγέθυνση της επιλογής και το πλήκτρο Shift για επιλογή μεταξύ εστίασης και του θυγατρικού στο οποίο δείχνει. Μερικά γραφικά στοιχεία μπορούν επίσης να επιτρέψουν πάτημα-μεταφορά για επιλογή μιας περιοχής στοιχείων.</p></item>
+    <item><p><code>Gtk.SelectionMode.MULTIPLE</code> - οποιοσδήποτε αριθμός στοιχείων μπορεί να επιλεγεί. Το πάτημα εναλλάσσει την κατάσταση ενός στοιχείου. Το πλήκτρο Ctrl μπορεί να χρησιμοποιηθεί για μεγέθυνση της επιλογής και το πλήκτρο Shift για επιλογή μεταξύ εστίασης και του θυγατρικού στο οποίο δείχνει. Μερικά γραφικά συστατικά μπορούν επίσης να επιτρέψουν πάτημα-μεταφορά για επιλογή μιας περιοχής στοιχείων.</p></item>
   </list>
   </item>
   <item><p><code>get_selected()</code> επιστρέφει μια πλειάδα <code>(model, treeiter)</code>, όπου <code>model</code> είναι το τρέχον πρότυπο και <code>treeiter</code> ένα <code>Gtk.TreeIter</code> που δείχνει στην τρέχουσα επιλεγμένη γραμμή, ή τίποτα εάν δεν επιλεγούν γραμμές. Η μέθοδος δεν δουλεύει εάν η κατάσταση επιλογής οριστεί σε <code>Gtk.SelectionMode.MULTIPLE</code>· σε αυτήν την περίπτωση, χρησιμοποιήστε <code>get_selected_rows()</code>, που επιστρέφει μια λίστα στιγμιοτύπων <code>Gtk.TreePath</code> όλων των επιλεγμένων γραμμών.</p></item>

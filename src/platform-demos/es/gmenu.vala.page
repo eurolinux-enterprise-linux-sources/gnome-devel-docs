@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.vala" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="gmenu.vala" xml:lang="es">
   <info>
   <title type="text">GMenu (Vala)</title>
 	  <link type="guide" xref="beginner.vala#menu-combo-toolbar"/>
@@ -8,27 +8,27 @@
 
     <credit type="author copyright">
       <name>Ryan Lortie</name>
-      <email its:translate="no">desrt@desrt.ca</email>
+      <email>desrt@desrt.ca</email>
       <years>2012</years>
    </credit>
 
     <credit type="author">
       <name>Tiffany Antopolski</name>
-      <email its:translate="no">tiffany.antopolski@gmail.com</email>
+      <email>tiffany.antopolski@gmail.com</email>
     </credit>
 
     <desc>Una implementación sencilla del GMenuModel</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -42,6 +42,9 @@
     <media type="image" mime="image/png" height="200" src="media/gmenu.vala.png"/>
     <note style="important">
        <p><em style="strong">Necesita ejecutar GTK+-3.4 o superior para que funcione</em></p>
+    </note>
+    <note style="bug">
+      <p>Este programa no compilará con la opción de «salir» conectada hasta que se resuelva el <link href="https://bugzilla.gnome.org/show_bug.cgi?id=674090">error nº 674090</link>. Por lo tanto, esa línea se ha comentado</p>
     </note>
     <p>Una GtkApplication con un GMenu sencillo y SimpleActions</p>
 
@@ -96,7 +99,7 @@ public class Application : Gtk.Application {
 		this.app_menu = menu;
 
 		var quit_action = new SimpleAction ("quit", null);
-		quit_action.activate.connect (this.quit);
+		//quit_action.activate.connect (this.quit);
 		this.add_action (quit_action);
 	}
 }

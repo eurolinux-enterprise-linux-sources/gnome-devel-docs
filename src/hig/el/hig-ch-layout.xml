@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="design" lang="el">
+
+  <title>Οπτικός σχεδιασμός</title>
+
+  <para>Ο οπτική σχεδίαση δεν είναι μόνο για να κάνετε την εφαρμογή σας να φαίνεται όμορφη. Η καλή οπτική σχεδίαση είναι για την επικοινωνία. Μια καλοσχεδιασμένη εφαρμογή διευκολύνει τον χρήστη να καταλάβει την πληροφορία που παρουσιάζεται και να του δείξει καθαρά πώς μπορεί να αλληλεπιδράσει με αυτήν την πληροφορία. Εάν μπορείτε να το πετύχετε, η εφαρμογή σας <emphasis>θα</emphasis> φαίνεται καλή στον χρήστη, ακόμα κι αν δεν έχει κανένα φανταχτερό γραφικό ή στρεφόμενους λογότυπους!</para>
+  <!-- GJM: This kind of folksy remark really is not appropriate at all. -->
+  <!-- TODO:
+  - More than any other section this needs to be liberally sprinkled with examples
+  -->
+
+  <!-- Color section based on Coleen's HTML draft -->
+
+  <sect1 id="design-color">
+    <title>Χρώμα</title>
+
+    <para>Το χρώμα είναι ένα εξαιρετικό εργαλείο για τη μεταφορά πληροφοριών σε μία διεπαφή χρήστη. Για παράδειγμα, μπορεί να χρησιμοποιηθεί για:</para>
+
+    <itemizedlist>
+      <listitem><para>ενίσχυση της εμφάνισης και της αίσθησης μίας επιφάνειας εργασίας βελτιώνοντας ένα θέμα</para></listitem>
+      <listitem><para>τονισμό μίας δυναμικής ειδοποίησης σε μία εφαρμογή διαχείρισης συστήματος</para></listitem>
+      <listitem><para>έμφαση ενός στοιχείου σε μία μεγάλη λίστα για να επισπεύδει τη σάρωση</para></listitem>
+      <listitem><para>προσθήκη λεπτομερειών αισθητικής ευχαρίστησης σε ένα εικονίδιο</para></listitem>
+    </itemizedlist>
+
+    <para>Όμως, το χρώμα θα πρέπει πάντα να θεωρείται ως μια χρήσιμη προσθήκη στον σχεδιασμό σας, όχι ως μια ανάγκη. Ποτέ να μην εξαρτάστε μόνο από τα χρώματα για την προβολή σημαντικών πληροφοριών και να θυμάστε ότι εάν τα χρώματα δεν μπορούν να κατανοηθούν σωστά (για παράδειγμα, ο χρήστης έχει ένα σύστημα 8 δυαδικών, ή έχει αχρωματοψία), η εφαρμογή σας πρέπει να είναι ακόμα αξιοποιήσιμη.</para>
+
+    <sect2 id="Palette">
+      <title>Παλέτα</title>
+      
+      <!-- primary contributor to the href="http://primates.ximian.com/~tigert/new_stock_project/" GNOME stock icon repository -->
+      
+      <para>Η παλέτα 32 χρωμάτων έχει αναπτυχθεί για την επιφάνεια εργασίας GNOME. Η παλέτα μπορεί να φορτωθεί από <ulink url="http://developer.gnome.org/projects/gup/images/ximian-palette">http://developer.gnome.org/projects/gup/images/ximian-palette</ulink>. Για να την χρησιμοποιήσετε στο GIMP, αποθηκεύστε τη στον φάκελο <filename>~/.gimp_1.2/palettes</filename> και επανεκκινήστε το GIMP. Μια μοναδική χρησιμοποιούμενη παλέτα με συνέχεια βοηθά να δώσει την ενιαία εμφάνιση και αίσθηση στην επιφάνεια εργασίας, ενώ ελαχιστοποιούνται οι οπτικές αποσπάσεις. Εάν χρειάζεστε ένα χρώμα που είναι πιο σκοτεινό ή πιο φωτεινό από τα χρώματα σε αυτήν τη βασική παλέτα (π.χ., για εξομάλυνση), επιλέξτε ένα χρώμα πολύ κοντά στην απόχρωση που χρειάζεστε, έπειτα κάντε το πιο σκοτεινό ή πιο φωτεινό όπως απαιτείται.</para>
+
+      <figure><title>Η βασική παλέτα 32-χρωμάτων του GNOME</title>
+	<mediaobject><imageobject><imagedata fileref="images/visdes-palette.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-palette.eps" format="EPS"/></imageobject> <textobject><phrase>Η βασική παλέτα χρωμάτων 32 δυαδικών</phrase></textobject></mediaobject>
+      </figure>
+      
+      <table frame="none"> 
+	<title>Τιμές RGB και δεκαεξαδικές για τη βασική παλέτα</title> 
+	<tgroup cols="8" colsep="1" rowsep="0" align="left">
+	  <thead> 
+	    <row rowsep="1" valign="top"> 
+	      <entry>Χρώμα</entry> 
+	      <entry>Περιγραφή</entry>
+	      <entry>RGB</entry>
+	      <entry>Δεκαεξαδικό</entry>
+	      <entry>Χρώμα</entry>
+	      <entry>Περιγραφή</entry>
+	      <entry>RGB</entry>
+	      <entry>Δεκαεξαδικό</entry>
+	    </row>
+	  </thead>
+	  <tbody valign="middle">
+	    <row>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-1.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-1.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Βασικό 3Δ έντονο</entry>
+	      <entry>234 232 227</entry>
+	      <entry>#EAE8E3</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-2.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-2.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Βασικό 3Δ μεσαίο</entry>
+	      <entry>186 181 171</entry>
+	      <entry>#BAB5AB</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-3.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-3.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Βασικό 3Δ σκούρο</entry>
+	      <entry>128 125 116</entry>
+	      <entry>#807D74</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-4.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-4.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>3Δ σκιά</entry>
+	      <entry>86 82 72</entry>
+	      <entry>#565248</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-5.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-5.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο πράσινο</entry>
+	      <entry>197 210 200</entry>
+	      <entry>#C5D2C8</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-6.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-6.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Μεσαίο πράσινο</entry>
+	      <entry>131 166 127</entry>
+	      <entry>#83A67F</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-7.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-7.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Σκούρο πράσινο</entry>
+	      <entry>93 117 85</entry>
+	      <entry>#5D7555</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-8.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-8.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Πράσινη σκιά</entry>
+	      <entry>68 86 50</entry>
+	      <entry>#445632</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-9.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-9.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο κόκκινο</entry>
+	      <entry>224 182 175</entry>
+	      <entry>#E0B6AF</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-10.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-10.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Μεσαίο κόκκινο</entry>
+	      <entry>193 102 90</entry>
+	      <entry>#C1665A</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-11.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-11.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Σκούρο κόκκινο</entry>
+	      <entry>136 70 49</entry>
+	      <entry>#884631</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-12.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-12.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Κόκκινη σκιά</entry>
+	      <entry>102 56 34</entry>
+	      <entry>#663822</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-13.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-13.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο πορφυρό</entry>
+	      <entry>173 167 200</entry>
+	      <entry>#ADA7C8</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-14.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-14.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Μεσαίο πορφυρό</entry>
+	      <entry>136 127 163</entry>
+	      <entry>#887FA3</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-15.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-15.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Σκούρο πορφυρό</entry>
+	      <entry>98 91 129</entry>
+	      <entry>#625B81</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-16.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-16.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Πορφυρή σκιά</entry>
+	      <entry>73 64 102</entry>
+	      <entry>#494066</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-17.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-17.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο γαλάζιο</entry>
+	      <entry>157 184 210</entry>
+	      <entry>#9DB8D2</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-18.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-18.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Μεσαίο γαλάζιο</entry>
+	      <entry>117 144 174</entry>
+	      <entry>#7590AE</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-19.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-19.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Σκούρο γαλάζιο</entry>
+	      <entry>75 105 131</entry>
+	      <entry>#4B6983</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-20.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-20.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Γαλάζια σκιά</entry>
+	      <entry>49 78 108</entry>
+	      <entry>#314E6C</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-21.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-21.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Δέρμα προσώπου έντονο</entry>
+	      <entry>239 224 205</entry>
+	      <entry>#EFE0CD</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-22.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-22.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Δέρμα προσώπου μεσαίο</entry>
+	      <entry>224 195 158</entry>
+	      <entry>#E0C39E</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-23.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-23.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Δέρμα προσώπου σκούρο</entry>
+	      <entry>179 145 105</entry>
+	      <entry>#B39169</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-24.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-24.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Δέρμα προσώπου με σκιά</entry>
+	      <entry>130 102 71</entry>
+	      <entry>#826647</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-25.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-25.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο κόκκινο</entry>
+	      <entry>223 66 30</entry>
+	      <entry>#DF421E</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-26.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-26.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο σκούρο κόκκινο</entry>
+	      <entry>153 0 0</entry>
+	      <entry>#990000</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-27.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-27.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο κίτρινο</entry>
+	      <entry>238 214 128</entry>
+	      <entry>#EED680</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-28.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-28.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο σκούρο κίτρινο</entry>
+	      <entry>209 148 12</entry>
+	      <entry>#D1940C</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-29.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-29.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο πράσινο</entry>
+	      <entry>70 160 70</entry>
+	      <entry>#46A046</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-30.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-30.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Έντονο σκούρο πράσινο</entry>
+	      <entry>38 199 38</entry>
+	      <entry>#267726</entry>
+	    </row>
+	    <row> 
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-31.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-31.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Άσπρο</entry>
+	      <entry>255 255 255</entry>
+	      <entry>#ffffff</entry>
+	      <entry><mediaobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-32.png" format="PNG"/></imageobject>
+		  <imageobject><imagedata fileref="images/visdes-palette-32.eps" format="EPS"/></imageobject>
+		</mediaobject></entry>
+	      <entry>Μαύρο</entry>
+	      <entry>0 0 0</entry>
+	      <entry>#000000</entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+      
+    </sect2>
+    
+    <sect2 id="hsv">
+      <title>Απόχρωση, φωτεινότητα, αντίθεση</title>
+      
+      <para>Οι χρήστες με διαταραχές όρασης, όπως αχρωματοψία ή κακή όραση, απαιτούν άλλες λύσεις στις προεπιλεγμένες ρυθμίσεις. Μια καλή διεπαφή χρήστη προβλέπει αυτές τις ανάγκες δίνοντας προσαρμόσιμες προτιμήσεις και υποστήριξη για προσβάσιμα θέματα. Ακόμα καλύτερα είναι μια εφαρμογή που ήδη ρυθμίστηκε με προσεκτικά επιλεγμένο χρώμα και προεπιλεγμένη αντίθεση.</para>
+
+      <para>Ένα εκτιμώμενο 11% του παγκόσμιου πληθυσμού έχει κάποιο είδος αχρωματοψίας. Αυτοί που επηρεάζονται έχουν τυπικά πρόβλημα διάκρισης μεταξύ συγκεκριμένων αποχρώσεων όπως κόκκινο και πράσινο (δευτερανωπία ή πρωτανωπία), ή γαλάζιο και κίτρινο (τριτανωπία). Συνεπώς είναι απαραίτητο να επιτρέπετε στον χρήστη την προσαρμογή των χρωμάτων σε οποιοδήποτε μέρος της εφαρμογής σας που μεταφέρει σημαντικές πληροφορίες. Αυτό σημαίνει ότι η εφαρμογή σας πρέπει να μεταφέρει αποτελεσματικά πληροφορίες χρησιμοποιώντας μόνο τα χρώματα από κάθε θέμα που επιλέγει ο χρήστης.</para>
+      
+      <para>Ένα χρήσιμο εργαλείο για αξιολόγηση πληροφοριών σχετικά με την αχρωματοψία και τον έλεγχο ευανάγνωσης εικόνων για αχρωματικούς χρήστες είναι το <ulink url="http://www.vischeck.com/">οπτικός έλεγχος</ulink>, ένα δικτυακό εργαλείο που προσομοιάζει τον τρόπο που μια εικόνα ή ιστοσελίδα μπορεί να εμφανιστεί σε έναν χρήστη που έχει δευτερανωπία, πρωτανωπία ή τριτανωπία.</para>
+
+      <figure><title>Πώς φαίνεται η γη για έναν χρήστη με κανονική χρωματική όραση (αριστερά), δευτερανωπία (μέση) και τριτανωπία (δεξιά). (Εικόνες από <ulink url="http://www.vischeck.com">http://www.vischeck.com</ulink>).</title>
+	
+	<informaltable frame="none">
+	  <tgroup cols="3" align="center">
+	    <tbody valign="top">
+	      <row>
+		<entry>
+	          <mediaobject><imageobject><imagedata fileref="images/visdes-colorblind-normal.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-colorblind-normal.eps" format="EPS"/></imageobject> <textobject><phrase>Φωτογραφία της γης όπως ένας χρήστης με κανονική όραση θα την έβλεπε</phrase></textobject></mediaobject>
+	        </entry>
+		
+		<entry>
+	          <mediaobject><imageobject><imagedata fileref="images/visdes-colorblind-deutan.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-colorblind-deutan.eps" format="EPS"/></imageobject> <textobject><phrase>Φωτογραφία της γης όπως ένας χρήστης με αχρωματοψία κόκκινου-πράσινου θα την έβλεπε</phrase></textobject></mediaobject>
+	        </entry>
+		<entry>
+	          <mediaobject><imageobject><imagedata fileref="images/visdes-colorblind-tritan.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-colorblind-tritan.eps" format="EPS"/></imageobject> <textobject><phrase>Φωτογραφία της γης όπως ένας χρήστης με αχρωματοψία γαλάζιου-κίτρινου θα την έβλεπε</phrase></textobject></mediaobject>
+	        </entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+      </figure>
+
+
+      <para>Άλλοι χρήστες έχουν περισσότερα προβλήματα με τα επίπεδα αντίθεσης παρά με την απόχρωση στην οθόνη τους. Μερικοί χρήστες απαιτούν ένα υψηλό επίπεδο αντίθεσης μεταξύ χρωμάτων παρασκηνίου και προσκηνίου, όπως μαύρο σε λευκό, λευκό σε μαύρο, ή κάποιο άλλο συνδυασμό υψηλής αντίθεσης. Άλλοι μπορεί να δοκιμάσουν δυσφορία εκτός και χρησιμοποιούν ρυθμίσεις χαμηλής αντίθεσης, όπως γκρίζο κείμενο σε ένα πιο φωτεινό παρασκήνιο γκρίζου.</para>
+
+      <para>Μπορείτε να συναντήσετε αυτές τις ανάγκες βεβαιώνοντας ότι η εφαρμογή σας υποστηρίζει τα προσβάσιμα θέματα GNOME (που βρίσκονται στο άρθρωμα θεμάτων gnome σε cvs), που περικλείει θέματα υψηλής και χαμηλής αντίθεσης και θέματα μεγάλης γραμματοσειράς. Αυτό σημαίνει ότι πρέπει να εφοδιάσετε με προεπιλεγμένα και μεγάλα μεγέθη υψηλής, χαμηλής και κανονικής αντίθεσης για τα σύνολα των εικονιδίων με την εφαρμογή σας.</para>
+
+      <itemizedlist><title>Κατευθυντήριες γραμμές</title>
+	<listitem><para>Χρησιμοποιήστε την χρωματική παλέτα GNOME. Εάν χρειάζεστε μια πιο σκοτεινή ή πιο φωτεινή σκιά, αρχίστε από ένα από τα χρώματα από την παλέτα και σκοτεινιάστε ή ανοίξτε όσο χρειάζεται.</para></listitem>
+
+	<listitem><para>Μην χρησιμοποιείτε το χρώμα ως το μόνο μέσο για διάκριση στοιχείων της πληροφορίας. Τέτοιες πληροφορίες πρέπει να παρέχονται από τουλάχιστον μια άλλη μέθοδο, όπως σχήμα, θέση ή κειμενική περιγραφή.</para></listitem>
+
+	<listitem><para>Βεβαιωθείτε ότι η εφαρμογή σας δεν εξαρτάται από ένα συγκεκριμένο θέμα. Δοκιμάστε το με διαφορετικά θέματα, ειδικά με θέματα πρόσβασης υψηλής και χαμηλής αντίθεσης, που χρησιμοποιούν λιγότερα χρώματα, για να βεβαιωθείτε ότι η εφαρμογή σέβεται τις ρυθμίσεις. Για παράδειγμα, όλο το κείμενο πρέπει να εμφανίζεται στο χρώμα προσκηνίου πάνω στο συγκεκριμένο χρώμα παρασκηνίου για το επιλεγμένο θέμα.</para></listitem>
+
+	<listitem><para>Επιλέξτε προσεκτικά τα χρώματα. Όταν χρειάζεται να αναγνωρίζονται διαφορετικά, επιλέξτε τα φωτεινά από πορτοκαλί, κίτρινο, πράσινο ή γαλαζοπράσινο και τα σκοτεινά από γαλάζιο, ιώδες, πορφυρό ή κόκκινο καθώς τα περισσότερα άτομα που επηρεάζονται από αχρωματοψία βλέπουν ήδη γαλάζιο, ιώδες, πορφυρό και κόκκινο πιο σκοτεινά από το κανονικό.</para></listitem>
+
+      </itemizedlist>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="design-window">
+    <title>Διάταξη παραθύρων</title>
+    
+    <sect2>
+      <title>Γενικά</title> 
+
+      <para>Τοποθέτηση των οπτικών συστατικών σε μια εφαρμογή είναι σημαντικό, επειδή οι σχέσεις μεταξύ στοιχείων εμφανίζονται από τις θέσεις τους. Αυτό καλείται "διάταξη" στον σχεδιασμό διεπαφής.</para>
+
+      <para>Μια καθαρή διάταξη είναι βασική για δημιουργία ομαλής οπτικής ροής της πληροφορίας στον χρήστη. Αυτή η ενότητα περιγράφει την κατάλληλη τοποθέτηση συστατικού και διακένου στις εφαρμογές GNOME. Τα κύρια εξεταζόμενα συστατικά είναι ετικέτες, εικονίδια, ραδιοπλήκτρα και πλαίσια ελέγχου, πεδία κειμένου, κουμπιά εντολών και πτυσσόμενα μενού.</para>
+
+    </sect2>
+
+    <sect2 id="layout-dialogs">
+      <title>Διάλογοι</title>
+      
+      <para>Όταν ένας χρήστης σαρώνει έναν σύνθετο διάλογο προτιμήσεων που αποτελείται από πολλές ετικέτες και αντίστοιχα πλαίσια ελέγχου, πεδία κειμένου και πτυσσόμενα σύνθετα πλαίσια, είναι εύκολο να δείτε πώς μπορεί γρήγορα να εμποδιστεί από φτωχή διάταξη στον οπτικό σχεδιασμό. Για πληροφορίες διευθέτησης ειδοποιήσεων, δείτε <xref linkend="alert-spacing"/></para>
+
+      <figure id="improved-layout-figure"><title>Βελτιωμένη διάταξη παραθύρων</title>
+	
+	<informaltable frame="none">
+	  <tgroup cols="2" align="center">
+	    <tbody valign="top">
+	      <row>
+		<entry>
+	          <mediaobject><imageobject><imagedata fileref="images/visdes-layout-poor.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-layout-poor.eps" format="EPS"/></imageobject> <textobject><phrase>Αρχική διάταξη με φτωχή στοίχιση και περιορισμένη χρήση του κενού χώρου</phrase></textobject></mediaobject>
+	        </entry>
+		
+		<entry>
+	          <mediaobject><imageobject><imagedata fileref="images/visdes-layout-good.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-layout-good.eps" format="EPS"/></imageobject> <textobject><phrase>Βελτιωμένη διάταξη με λιγότερα σημεία στοίχισης, τα πλαίσια αφαιρέθηκαν για να ανακουφίσουν την αταξία και πιο καθαρή ομαδοποίηση με χρήση του κενού χώρου</phrase></textobject></mediaobject>
+	        </entry>
+	      </row>
+	    </tbody>
+	  </tgroup>
+	</informaltable>
+      </figure>
+
+      <!-- picture here of a complex preferences dialog, badly designed: right-aligned similar length labels, very little spacing between elements (vertically), varying spaces between elements (horizontally) -->
+
+      <para>Στο <xref linkend="improved-layout-figure"/>, ο διάλογος στα αριστερά παρουσιάζει ετικέτες που δεν είναι στοιχισμένες αριστερά. Δεν δίνεται ένα κατάλληλο στήριγμα στο μάτι του χρήστη για να σαρώσει τον διάλογο γρήγορα.</para>
+
+      <para>Καθώς οι ετικέτες είναι όλες παρόμοιες σε μήκος, πρέπει να στοιχιστούν αριστερά. Τώρα ο χρήστης έχει ένα στέρεο αριστερό περιθώριο να στηρίξει το μάτι και να σαρώσει τη λίστα των στοιχείων κάθετα πιο εύκολα. Εάν οι περισσότερες ετικέτες σε μια ομάδα διαφέρουν πολύ σε μήκος, στοιχίστε τες δεξιά, έτσι ώστε οι έλεγχοι να μην τελειώνουν υπερβολικά μακριά από τις αντίστοιχες ετικέτες τους.</para>
+
+      <para>Η χρήση πλαισίων με ορατά περιγράμματα για διακριτές ομάδες μέσα σε ένα παράθυρο είναι παρωχημένη. Χρησιμοποιήστε διάκενο και έντονες κεφαλίδες. Αυτό είναι πιο αποτελεσματικό επειδή υπάρχουν λιγότερες περιττές γραμμές να αποσπάσουν τον χρήστη από το κύριο περιεχόμενο στο παράθυρο. Δείτε <xref linkend="controls-frames"/> για περισσότερες λεπτομέρειες.</para>
+
+      <para>Δοκιμάστε να κρατήσετε τα συστατικά σύμφωνα μεταξύ τους σε όρους μεγέθους και στοίχισης. Αυτό είναι ιδιαίτερα σημαντικό μέσα σε μια ομάδα ελέγχων, έτσι ώστε η δυνατότητα του χρήστη για γρήγορη σάρωση πληροφοριών να μην θυσιάζεται. Ελαχιστοποιήστε όσο το δυνατό την ανάγκη το μάτι του χρήστη να κάνει άλματα όταν σαρώνει μια διάταξη.</para>
+      
+      <figure id="layout-callouts-figure"><title>Προδιαγραφές διάταξης</title>
+	
+	<mediaobject><imageobject><imagedata fileref="images/visdes-layout-annotated.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-layout-annotated.eps" format="EPS"/></imageobject> <textobject><phrase>Βελτιωμένη διάταξη με λιγότερα σημεία στοίχισης, τα πλαίσια αφαιρέθηκαν για να ανακουφιστεί η αταξία και πιο καθαρή ομαδοποίηση με τη χρήση κενού χώρου</phrase></textobject></mediaobject>
+      </figure>
+      
+      <!-- Figure here of the above paragraph, giving examples -->
+
+      <itemizedlist> <title>Κατευθυντήριες γραμμές</title>
+	<listitem><para>Αφήστε ένα περίγραμμα 12 εικονοστοιχείων μεταξύ της άκρης του παραθύρου και των πλησιέστερων ελέγχων.</para></listitem>
+	<listitem><para>Αφήστε ένα οριζόντιο κενό 12 εικονοστοιχείων μεταξύ ενός ελέγχου και της ετικέτας του. (Το κενό μπορεί να είναι μεγαλύτερο για άλλους ελέγχους στην ίδια ομάδα, λόγω των διαφορών στα μήκη των ετικετών.)</para></listitem>
+	<listitem><para>Οι ετικέτες πρέπει να είναι σύντομες και να έχουν νόημα όταν βγουν από το περιεχόμενο. Αλλιώς, οι χρήστες που στηρίζονται σε αναγνώστες οθόνης ή παρόμοιες τεχνολογίες υποβοήθησης δεν θα μπορούν απαραίτητα να καταλάβουν άμεσα τη σχέση μεταξύ ενός ελέγχου και αυτών που το περιβάλλουν.</para></listitem>
+	<!--		<listitem><para>Assign access keys to all editable controls.  Ensure that labels immediately precede their associated control in the tab order, so that the access key will focus to or activate the correct control when pressed.</para></listitem>
+	<remark>GJM: I almost missed this instance of this error which is repeated below; except that it says mnemonic instead of access key. This entire section is a repeat, it seems. Adding restated listitem.</remark>
+	-->
+	<listitem><para>Δώστε πλήκτρα πρόσβασης σε όλους τους επεξεργάσιμους ελέγχους. Βεβαιωθείτε ότι η χρήση του πλήκτρου πρόσβασης εστιάζει στον συσχετισμένο του έλεγχο.</para></listitem>
+      </itemizedlist>
+
+    </sect2>
+
+<!-- 
+I'm commenting out this section for the HIG 2.8 release pending "still needs more work" -Seth
+
+    <sect2 id="layout-window-size">
+	<title>Size</title>
+	<remark>This section taken from Alan's draft in bug #111772, still needs some work</remark>
+	<para>GNOME is used on by many different people on a wide variety of
+different hardware.  This includes people with older hardware and 
+small displays.  Laptop users and users of other portable devices also
+need to be able to work on smaller screens. Users who require large fonts, or assistive technologies that take over part of the screen, also have a correspondingly smaller area in which to display application windows and dialogs.</para> 
+
+<para>While these space restrictions are intended primarily to allow people
+with smaller displays to use Gnome it is also good discipline to keep
+windows and dialogs clear with not to many concepts all at once. 
+<remark>The sentiment of this
+paragraph might be useful although it would need to be massively
+rephrased-AH.</remark></para>
+
+	<itemizedlist><title>Guidelines</title>
+
+	<listitem><para>Try to ensure that the size of a window is no larger than 480 pixels
+wide and 640 pixels hight in the default theme (including window
+decorations).  Ideally your application should be usable at 600 by 400
+pixels which leaves enough room for both top and bottom Panels.</para></listitem>  
+
+	<listitem><para>The Ratio of the screen width to height is 2:3 and things will look
+aesthetically pleasing if we can keep (near to) this proportion. <remark>This ratio isn't always the case these days, with widescreen monitors and PDA-type devices becoming more common-CB</remark>.  
+<remark> The
+space take by window decorations largely spoils this idealism-AH.</remark>
+Dialogs [like a properties dialog] should [probably] be 300 by 400.  
+Message Dialogs should be 600 by 200.<remark> I'm not sure specifying pixel dimensions for anything we don't really have to is such a good plan- perhaps just stick to the 'golden ratio' guideline that currently lives in next section?- CB.</remark></para></listitem>
+	</itemizedlist>
+
+	</sect2>
+
+-->
+
+    <sect2 id="window-layout-spacing">
+      <title>Διάστιχο και στοίχιση</title>
+      
+      <para>Δώστε αρκετό χώρο μεταξύ ελέγχων και ομάδων ελέγχων. Αυτός ο κενός χώρος θα διευκολύνει τον χρήστη να βρει την απαιτούμενη πληροφορία.</para>
+
+      <itemizedlist><title>Κατευθυντήριες γραμμές</title>
+
+	<listitem><para>Ως ένας βασικός πρόχειρος κανόνας, αφήστε χώρο μεταξύ των συστατικών της διεπαφής χρήστη σε βήματα των 6 εικονοστοιχείων, αυξάνοντας καθώς η σχέση μεταξύ σχετικών στοιχείων γίνεται πιο μακρινή. Για παράδειγμα, μεταξύ ετικετών εικονιδίου και συσχετισμένων γραφικών μέσα σε ένα εικονίδιο, 6 εικονοστοιχεία είναι αρκετά. Μεταξύ ετικετών και συσχετισμένων συστατικών, αφήστε 12 οριζόντια εικονοστοιχεία. Για κάθετο διάκενο μεταξύ ομάδων συστατικών, 18 εικονοστοιχεία είναι αρκετά. Μια γενική συμπλήρωση 12 εικονοστοιχείων συνιστάται μεταξύ των περιεχομένων ενός παραθύρου διαλόγου και των περιγραμμάτων παραθύρου.</para></listitem>
+	
+	<listitem><para>Διαιρέστε μεγάλες λίστες επιλογών σε μικρότερες ομάδες. Για λίστες μικρότερες από περίπου οκτώ στοιχεία, χρησιμοποιήστε ραδιοπλήκτρα ή πλαίσια ελέγχου. Για μεγαλύτερες λίστες, χρησιμοποιήστε έναν έλεγχο λίστας ή πτυσσόμενη λίστα.</para></listitem>
+	
+	<listitem><para>Δοκιμάστε να κρατήσετε τα στοιχεία του ίδιου τύπου αριστερά στοιχισμένα μεταξύ τους. Για παράδειγμα, στους <xref linkend="layout-callouts-figure"/>, οι τίτλοι ομάδας (<guilabel>γενικά</guilabel> και <guilabel>ενέργειες</guilabel>) είναι αριστερά στοιχισμένοι και μεταξύ τους.</para></listitem>
+
+	<listitem><para>Βάλτε εσοχή 12 εικονοστοιχείων στα μέλη ομάδας εσοχής για να δείξουν ιεραρχία και σχέση.</para></listitem>
+	<listitem><para>Ελαχιστοποιήστε τον αριθμό των σημείων στοίχισης στο παράθυρό σας. Ένα σημείο ευθυγράμμισης είναι μια φανταστική κάθετη ή οριζόντια γραμμή μέσα από το παράθυρό σας που ακουμπά την άκρη μιας ή περισσότερων ετικετών ή ελέγχων στο παράθυρο.</para></listitem>
+
+	<listitem><para>Η δεξιά στοίχιση μέσα στις ομάδες του γενικού παραθύρου (όπως δείχνει η γραμμή με ετικέτα "στοίχιση" στο <xref linkend="layout-callouts-figure"/> είναι ευχάριστη στο μάτι, αλλά όχι βασική.</para></listitem>
+	
+	<listitem><para>Τακτοποιήστε τα συστατικά από αριστερά προς τα δεξιά, από πάνω προς τα κάτω. Γενικά, το πρώτο στοιχείο που ο χρήστης πρέπει να αντιμετωπίσει είναι στα επάνω αριστερά και το τελευταίο στα κάτω δεξιά. Να θυμόσαστε ότι όταν τοπικοποιείτε για μη δυτικά τοπικά, οι διεπαφές μπορεί να αντιστραφούν έτσι ώστε να διαβάζονται από δεξιά προς τα αριστερά.</para></listitem>
+	
+	<listitem><para>Χρησιμοποιώντας "λευκό" ή κενό διάστημα και εσοχή για σκιαγράφηση ομάδων είναι πιο καθαρό και προτιμητέο από τη χρήση γραφικών διαχωριστών όπως τα πλαίσια.</para></listitem>
+	
+	<listitem><para>Στοιχίστε τους ελέγχους στη διάταξή σας <emphasis>ακριβώς</emphasis>. Το μάτι είναι πολύ ευαίσθητο σε στοιχισμένα ή όχι αντικείμενα. Εάν τίποτα δεν ευθυγραμμίζεται με κάτι άλλο σε ένα παράθυρο, θα είναι πολύ δύσκολο για τον χρήστη να σαρώσει τα περιεχόμενα και να βρει την πληροφορία που θέλει. Δύο πράγματα που σχεδόν ευθυγραμμίζονται, αλλά όχι πλήρως, αποσπούν εξίσου.</para></listitem>
+	
+	<listitem><para>Να είστε συνεπής. Χρησιμοποιήστε το ίδιο διάκενο, στοίχιση και μεγέθη συστατικού σε όλους τους διαλόγους που εμφανίζονται στην εφαρμογή σας. Τα κουμπιά <guibutton>εντάξει</guibutton> και <guibutton>ακύρωση</guibutton>, για παράδειγμα, πρέπει όλα να εμφανίζονται ακριβώς 12 εικονοστοιχεία κάθετα και οριζόντια από την κάτω δεξιά γωνία κάθε παραθύρου διαλόγου.</para></listitem>
+	
+	<listitem><para>Βεβαιωθείτε ότι φωτεινές και σκοτεινές περιοχές καθώς και διάκενο είναι εξίσου κατανεμημένα γύρω από το παράθυρο. Να θυμόσαστε ότι κάθε έλεγχος ή ομάδα ελέγχων στο παράθυρο σας έχει ένα οπτικό "βάρος", ανάλογα με το συνολικό του μέγεθος, χρώμα και πόσο κενό χώρο περιλαμβάνει. Πιο σκοτεινές, μεγαλύτερες περιοχές είναι "πιο βαριές", ενώ πιο χλομές, μικρότερες περιοχές είναι "ελαφριές".</para></listitem>
+	
+	<listitem><para>Μην σχεδιάζετε παράθυρα που είναι μεγαλύτερα από 50% στο μήκος σε μια διάσταση από ότι στην άλλη. Τα άτομα είναι πιο άνετα κοιτώντας σε παράθυρα και διαλόγους των οποίων οι διαστάσεις παραμένουν μέσα στον χρυσό κανόνα (περίπου 1,6 έως 1), ένας λόγος που καλλιτέχνες και αρχιτέκτονες χρησιμοποιούν για να δημιουργήσουν αισθητικά ευχάριστους πίνακες και κατασκευές για χιλιάδες χρόνια.</para></listitem>
+	
+	<!-- <para><listitem>Do not resize components to fit arbitrary or uncommon layout needs. Make it a practice to use GtkTables, GtkVBox and GtkHBox container widgets at their default /* Calum, is there such a thing? */ row, column and border sizes. This will help ensure that a lot of layout and alignment work is done for you automatically.</para></listitem>-->
+	
+      </itemizedlist>
+      <!--
+      <note id="frame-layout-tech"><title>Technical Details for Proper Layout</title>
+      <para>Set <property>Border Width</property> for the GtkDialog to <userinput>12</userinput>. Place a GtkVBox containing as many rows as you wish to have categories inside the control area of the GtkDialog, and set the <property>Spacing</property> for the GtkVBox to <userinput>18</userinput>.</para>
+      <para>In turn, each category should be composed of a GtkVBox with two rows. Set the <property>Spacing</property> to <userinput>6</userinput>.
+      <itemizedlist>
+      <listitem><para>In the top row, place a label for the category header. Make the label bold using the Pango markup <programlisting>&lt;span weight="bold"&gt;<replaceable>Category Header</replaceable>&lt;/span&gt;</programlisting> Set the label property <property>Use Markup</property> to <userinput>Yes</userinput>, and <property>X Align</property> to <userinput>0.0</userinput> to left align the label.</para></listitem>
+      <listitem><para>Place a 2-columned GtkHBox in the lower row of the top-level GtkVBox.
+      <itemizedlist>
+      <listitem><para>In the left column, place a label containing four space characters. This will serve to indent the category contents.</para></listitem>
+      <listitem><para>In the right column, place a GtkVBox containing a row per control you wish to place in the category. Set the <property>Spacing</property> to <userinput>6</userinput>.
+      <itemizedlist>
+      <listitem><para>For left-side labelled controls such as text boxes, drop-down lists, and many others, place a 2 columned GtkHBox inside the row with a label in the left column and the corresponding control in the right. Set the <property>Spacing</property> on the GtkHBox to <userinput>6</userinput>. Place all labels such as this (for the whole window) in the same GtkSizeGroup (there is currently no way to do this using only Glade, you will have to use code as well). This will align the controls to their right, even between categories, which is important for allowing quick visual scans.</para></listitem>
+      <listitem><para>For right-side labelled controls such as check boxes and radio buttons, simply place them directly in the row.</para></listitem>
+    </itemizedlist>
+    </para></listitem>
+    </itemizedlist>
+    </para></listitem>
+    </itemizedlist>
+    </para>
+    </note>
+      -->
+    </sect2>
+    
+  </sect1>
+
+  <sect1 id="design-text-labels">
+    <title>Ετικέτες κειμένου</title>
+    
+    <para>Σε ένα χρήστη με κανονική όραση, η κειμενική έξοδος παρέχει την πλειοψηφία των πληροφοριών και ανάδραση στις περισσότερες εφαρμογές. Για έναν οπτικά εξασθενημένο χρήστη που δεν μπορεί να δει ή να καταλάβει οποιαδήποτε πρόσθετη γραφική έξοδο, ο καθαρισμός της κειμενικής εξόδου είναι κρίσιμος. Πρέπει συνεπώς να επιλέξετε την θέση του κειμένου προσεκτικά στην οθόνη και να αφήσετε την επιλογή των γραμματοσειρών και μεγεθών στον χρήστη, για να επιβεβαιώσει ότι όλοι οι χρήστες μπορούν να χρησιμοποιήσουν την εφαρμογή τους αποτελεσματικά.</para>
+
+    <sect2 id="layout-label-position">
+      
+      <title>Διάστιχο και στοίχιση</title>
+
+      <para>Χρησιμοποιήστε διάκενο και στοίχιση του κειμένου ομοιόμορφα κατά τη διάρκεια της εφαρμογή σας. Ένας βασικός πρόχειρος κανόνας είναι να βάλετε χώρο μεταξύ συστατικών διεπαφής χρήστη σε βήματα των 6 εικονοστοιχείων, αυξάνοντας καθώς η σχέση μεταξύ σχετικών στοιχείων γίνεται πιο μακρινή.</para>
+
+      <table id="label-placement-example">
+	<title>Στοίχιση και διάστιχο για διαφορετικά στοιχεία κειμένου</title>
+	<tgroup cols="3" align="left">
+	  <thead>
+	    <row>
+	      <entry>Στοιχείο</entry>
+	      <entry>Τοποθέτηση</entry>
+	      <entry>Παράδειγμα</entry>
+	    </row>
+	  </thead>
+	  
+	  <tbody>
+	    <row>
+	      <entry>Μεγάλα εικονίδια (περιηγητής ιστού)</entry>
+	      <entry>Κεντραρισμένο οριζόντια και κάτω από το μεγάλο εικονίδιο (6 εικονοστοιχεία, αν είναι απαραίτητη η προδιαγραφή)</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject><imageobject><imagedata fileref="images/visdes-large-icon-label.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-large-icon-label.eps" format="EPS"/></imageobject> <textobject><phrase>Μεγάλο εικονίδιο με ετικέτα κειμένου κεντραρισμένη από κάτω</phrase></textobject></mediaobject>
+	      </entry>
+	    </row>
+	    
+	    <row>
+	      <entry>Μικρά εικονίδια (εργαλειοθήκη)</entry>
+	      <entry>Κεντραρισμένο κάθετα και στα δεξιά των μικρών εικονιδίων (6 εικονοστοιχεία, αν είναι απαραίτητη η προδιαγραφή)</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject><imageobject><imagedata fileref="images/visdes-small-icon-label.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-small-icon-label.eps" format="EPS"/></imageobject> <textobject><phrase>Μικρό εικονίδιο με ετικέτα κειμένου στα δεξιά</phrase></textobject></mediaobject>
+	      </entry>
+	    </row>
+	    
+	    <row>
+	      <entry>Ετικέτα ελέγχου λίστας</entry>
+	      <entry>6 εικονοστοιχεία από πάνω και στοιχισμένο οριζόντια αριστερά με έλεγχο λίστας ή 12 εικονοστοιχεία στα αριστερά και στοιχισμένο πάνω οριζόντια με έλεγχο λίστας</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject><imageobject><imagedata fileref="images/visdes-list-label.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-list-label.eps" format="EPS"/></imageobject> <textobject><phrase>Έλεγχος λίστας με ετικέτα κειμένου οριζόντια στοιχισμένη από πάνω</phrase></textobject></mediaobject>
+	      </entry>
+	    </row>
+
+	    <row>
+	      <entry>Ραδιοπλήκτρο και ετικέτες πλαισίου ελέγχου</entry>
+	      <entry>6 εικονοστοιχεία στα δεξιά και στοιχισμένο κάθετα στο κέντρο με ραδιοπλήκτρο</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject><imageobject><imagedata fileref="images/visdes-radiobutton-label.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-radiobutton-label.eps" format="EPS"/></imageobject> <textobject><phrase>Ραδιοπλήκτρο με ετικέτα κειμένου στα δεξιά του</phrase></textobject></mediaobject>
+	      </entry>
+
+	    </row>
+
+	    <row> 
+	      <entry>Ετικέτες πεδίου κειμένου</entry>
+	      <entry>6 εικονοστοιχεία στα αριστερά και στοιχισμένο κάθετα στο κέντρο με τον έλεγχο του πεδίου κειμένου</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject><imageobject><imagedata fileref="images/visdes-textbox-label.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-textbox-label.eps" format="EPS"/></imageobject> <textobject><phrase>Πλαίσιο κειμένου με ετικέτα κειμένου στα αριστερά του</phrase></textobject></mediaobject>
+	      </entry>
+	    </row>
+	    
+	    <row>
+	      <entry>Ετικέτες κουμπιών</entry>
+	      <entry>12 εικονοστοιχεία συμπλήρωσης σε κάθε πλευρά κεντραρισμένου κειμένου (και οποιουδήποτε συνοδευτικού γραφικού). Εάν εμφανιστεί σε μια ομάδα κουμπιών, η μακρύτερη ετικέτα κουμπιού ορίζει το μέγεθος του κουμπιού, κεντράρετε όλες τις άλλες ετικέτες κουμπιού και τα συνοδευτικά γραφικά σε κουμπιά ίδιου μεγέθους</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject><imageobject><imagedata fileref="images/visdes-button-label.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-button-label.eps" format="EPS"/></imageobject> <textobject><phrase>Κουμπιά με κεντραρισμένο κείμενο</phrase></textobject></mediaobject>
+	      </entry>
+	    </row>
+	    <row> 
+	      <entry>Άλλες ετικέτες στοιχείων (π.χ. πλαίσια με βέλη, πεδία κειμένου</entry>
+	      <entry>12 εικονοστοιχεία μεταξύ της μακρύτερης ετικέτας κειμένου και του συσχετισμένου συστατικού της, όλες οι άλλες ετικέτες κειμένου στην ομαδοποίηση του συστατικού στοιχίζονται αριστερά με την μακρύτερη ετικέτα. Όλες οι κάθετα κεντραρισμένες ετικέτες στοιχίζονται με τα συσχετισμένα συστατικά</entry>
+	      <entry align="center" valign="middle">
+		<mediaobject><imageobject><imagedata fileref="images/visdes-other-labels.png" format="PNG"/></imageobject> <imageobject><imagedata fileref="images/visdes-other-labels.eps" format="EPS"/></imageobject> <textobject><phrase>Πτυσσόμενη λίστα με ετικέτα στα αριστερά του</phrase></textobject></mediaobject>
+	      </entry>
+	    </row>
+	  </tbody>
+	</tgroup>
+      </table>
+
+      
+
+      <itemizedlist><title>Κατευθυντήριες γραμμές</title>
+	<listitem><para>Εάν η ετικέτα προηγείται του ελέγχου που ονομάζει, τελειώστε την ετικέτα με άνω-κάτω τελεία. Για παράδειγμα, <guilabel>μήνυμα:</guilabel> για να ονομάσετε ένα πεδίο κειμένου στο οποίο ο χρήστης πρέπει να πληκτρολογεί τη διεύθυνση αλληλογραφίας του. Αυτό βοηθά την ταυτοποίησή του ως μια ετικέτα ελέγχου αντί για ένα ανεξάρτητο στοιχείο κειμένου. Μερικά βοηθήματα επιθεώρησης οθόνης βοηθητικής τεχνολογίας μπορεί επίσης να χρησιμοποιούν την παρουσία μιας άνω-κάτω τελείας για ταυτοποίηση κειμένου ως μια ετικέτα ελέγχου.</para></listitem>
+	
+	<!--	<listitem><para>When you use static text to label a control, ensure that the label immediately precedes that control in the Tab order. This will ensure that the access key (underlined character) you assign to the label will move focus to or activate the correct control when pressed.</para></listitem> 
+	<remark>GJM: This is just wrong. Glade may have an "auto" target for labels with mnemonics that
+	works this way, but it isn't part of GTK+. Adding the next listitem, though it could be better written.</remark>
+	-->
+	<listitem><para>Βεβαιωθείτε ότι μια ετικέτα με μνημονική συσχετίζεται με τον έλεγχο που ονομάζει.</para></listitem>
+
+	<listitem><para>Αριστερή στοίχιση συστατικών και ετικετών, εκτός και όλες οι ετικέτες σε μια ομάδα έχουν πολύ διαφορετικά μήκη. Εάν συμβαίνει αυτό, ευθυγραμμίστε δεξιά τις ετικέτες, για να βεβαιωθείτε ότι κανένας έλεγχος δεν τελειώνει πολύ μακριά από τις αντίστοιχες ετικέτες του.</para></listitem>
+
+	<listitem><para>Επιλέξτε ονόματα ετικέτας προσεκτικά. Ονομάστε τα αντικείμενα με ονόματα που έχουν νόημα όταν βγαίνουν από το περιεχόμενο. Οι χρήστες που στηρίζονται σε αναγνώστες οθόνης ή παρόμοιες τεχνολογίες υποβοήθησης δεν θα μπορούν απαραίτητα να καταλάβουν άμεσα τη σχέση μεταξύ ενός ελέγχου και αυτών που το περιβάλλουν.</para></listitem>
+
+	<listitem><para>Να είστε συνεπής με τη χρήση ετικετών και σημασιολογίας. Για παράδειγμα, εάν χρησιμοποιείτε την ίδια ετικέτα σε διαφορετικά παράθυρα, θα βοηθήσει εάν σημαίνει το ίδιο πράγμα και στα δυο παράθυρα. Επίσης, μην χρησιμοποιείτε ετικέτες που γράφονται διαφορετικά αλλά ακούγονται το ίδιο, π.χ., "χήρα" και "χείρα", καθώς αυτό θα μπορούσε να μπερδέψει τους χρήστες που βασίζονται σε αναγνώστες οθόνης.</para></listitem>
+
+	<listitem><para>Μην χρησιμοποιείτε την ίδια ετικέτα περισσότερο από μια φορά στο ίδιο παράθυρο. Αυτό κάνει δύσκολη τη ζωή για χρήστες που βασίζονται σε εργαλεία όπως μεγεθυντές σε αναγνώστες οθόνης, που δεν μπορούν πάντα να μεταφέρουν το περιβάλλον περιεχόμενο στον χρήστη.</para></listitem>
+	
+	<listitem><para>Μην κωδικοποιείτε μόνιμα τις τεχνοτροπίες και μεγέθη γραμματοσειράς. Ο χρήστης πρέπει να μπορεί να ρυθμίσει όλα τα μεγέθη και τύπους γραφής.</para></listitem>
+	
+	<listitem><para>Μην χρησιμοποιείτε περισσότερες από δύο ή τρεις διαφορετικές γραμματοσειρές και μεγέθη στην εφαρμογή σας και επιλέξτε οπτικά διακριτές παρά παρόμοιες γραμματοσειρές σε ένα παράθυρο. Υπερβολικά μεγέθη και τεχνοτροπίες γραμματοσειρών θα κάνουν τη διεπαφή να φαίνεται άτακτη και αντιεπαγγελματική και θα είναι πιο δύσκολο να διαβαστεί. Γενικά, χρησιμοποιείτε πάντα γραμματοσειρές από το τρέχον θέμα και ορίστε σχετικά αντί για απόλυτα μεγέθη.</para></listitem>
+	
+	<listitem><para>Μην χρησιμοποιείτε γραφικά παρασκήνια ή "υδατογραφήματα" πίσω από το κείμενο, άλλα από αυτά που ορίστηκαν από το επιλεγμένο θέμα του χρήστη. Αυτά ανακατεύονται με την αντίθεση μεταξύ του κειμένου και του παρασκηνίου του. Αυτό μπορεί να δυσκολέψει χρήστες με οπτικές εξασθενίσεις, που θα επιλέγουν κανονικά θέματα που χρησιμοποιούν πάντα απλά παρασκήνια.</para></listitem>
+	
+      </itemizedlist>
+      
+    </sect2>
+    
+    
+    <sect2 id="layout-capitalization">
+      
+      <title>Κεφαλαιοποίηση</title>
+
+      <para>Δύο τεχνοτροπίες κεφαλαιοποίησης χρησιμοποιούνται στα στοιχεία διεπαφής χρήστη στο GNOME: <variablelist> 
+	  <varlistentry> 
+	    <term>Κεφαλαιοποίηση επικεφαλίδας</term> 
+	    <listitem> 
+	      <para>Κεφαλαιοποιήστε όλες τις λέξεις στο στοιχείο, με τις ακόλουθες εξαιρέσεις: <itemizedlist> 
+		  <listitem> 
+		    <para>Άρθρα: <emphasis>ένας, ενός, έναν, ένα</emphasis>, <emphasis>μία, μιας</emphasis>, <emphasis>ο, η, το, του, της, τον, την</emphasis>.</para>
+		  </listitem> 
+		  <listitem> 
+		    <para>Σύνδεσμοι: <emphasis>και</emphasis>, <emphasis>αλλά</emphasis>, <emphasis>για</emphasis>, <emphasis>όχι</emphasis>, <emphasis>έτσι</emphasis>, <emphasis>ακόμα</emphasis> ...</para>
+		  </listitem> 
+		  <listitem> 
+		    <para>Προθέσεις τριών ή λιγότερων γραμμάτων: <emphasis>στο</emphasis>, <emphasis>για</emphasis>, <emphasis>από</emphasis>, <emphasis>σε</emphasis>, <emphasis>προς</emphasis> ...</para>
+		  </listitem> 
+		</itemizedlist></para>
+	    </listitem> 
+	  </varlistentry> 
+	  <varlistentry> 
+	    <term>Κεφαλαιοποίηση πρότασης</term> 
+	    <listitem> 
+	      <para>Κεφαλαίο στο πρώτο γράμμα της πρώτης λέξης και σε κάθε άλλη λέξη που κανονικά είναι με κεφαλαίο στις προτάσεις, όπως ονόματα εφαρμογών.</para>
+	    </listitem> 
+	  </varlistentry> 
+	</variablelist></para>
+     
+	<para>Ο ακόλουθος πίνακας υποδεικνύει τον τύπο κεφαλαιοποίησης που θα χρησιμοποιείται για κάθε τύπο στοιχείου διεπαφής χρήστη.</para>
+
+      <table frame="topbot"> 
+	<title>Οδηγίες τύπων κεφαλαιοποίησης για στοιχεία διεπαφής χρήστη</title> 
+	<tgroup cols="2" colsep="0" rowsep="0" align="left">
+	  <thead>
+	    <row rowsep="1" valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Στοιχείο</entry> 
+	      <entry colname="col2" valign="top" align="left">Τύπος</entry>
+	    </row> 
+	  </thead> 
+	  <tbody> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες πεδίων ελέγχου</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες για κουμπιά εντολών</entry> 
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες για επικεφαλίδες στηλών</entry> 
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry> 
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Ετικέτες για αντικείμενα του παρασκηνίου της επιφάνειας εργασίας</entry>
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Μηνύματα διαλόγου</entry>
+	      <entry colname="col2" valign="top">Πρόταση</entry>
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες πεδίων εκπίπτοντος συνδυασμού</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες πτυσσόμενου πεδίου λίστας</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες πεδίων</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Ονόματα αρχείων</entry>
+	      <entry colname="col2" valign="top">Πρόταση</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Γραφικό ισοδύναμο κειμένου: για παράδειγμα, κείμενο Alt σε όλες τις ιστοσελίδες</entry>
+	      <entry colname="col2" valign="top">Πρόταση</entry>
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες πεδίων ή πλαισίων ομάδας</entry> 
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Στοιχεία στα πτυσσόμενα σύνθετα πλαίσια, στα πτυσσόμενα πεδία λίστας και στα πεδία λίστας</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες πεδίων λίστας</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Στοιχεία μενού</entry>
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Στοιχεία μενού σε εφαρμογές</entry>
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Τίτλοι μενού σε εφαρμογές</entry>
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry>
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες ραδιοπλήκτρων</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες ολισθητή</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row> 
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες πλαισίου με βέλη</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row> 
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Τίτλοι για ενότητες καρτελών</entry>
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry>
+	    </row>
+	    <row valign="top"> 
+	      <entry colname="col1" align="left" valign="top">Ετικέτες πλαισίων κειμένου</entry> 
+	      <entry colname="col2" valign="top">Πρόταση</entry> 
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Ετικέτες γραμμών τίτλου</entry>
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Ετικέτες κουμπιών εργαλειοθήκης</entry>
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry>
+	    </row>
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Συμβουλές οθόνης</entry>
+	      <entry colname="col2" valign="top">Πρόταση</entry>
+	    </row>
+
+	    <row valign="top">
+	      <entry colname="col1" align="left" valign="top">Τίτλοι ιστοσελίδων και στοιχεία περιήγησης</entry>
+	      <entry colname="col2" valign="top">Επικεφαλίδα</entry>
+	    </row> 
+	  </tbody> 
+	</tgroup> 
+      </table> 
+	 <note><title>Οδηγίες κεφαλαιοποίησης σε άλλες γλώσσες</title>
+	<para>Άλλες γλώσσες πέρα από τα αγγλικά μπορεί να έχουν διαφορετικούς κανόνες για την κεφαλαιοποίηση. Για παράδειγμα, τα σουηδικά δεν υπάρχει η έννοια κεφαλαιοποίηση κεφαλίδας. Επικοινωνήστε με το <ulink url="http://developer.gnome.org/projects/gtp/contact.html">έργο μετάφρασης του GNOME</ulink> εάν αμφιβάλετε για το πώς κεφαλοποιούνται οι ετικέτες σε μια συγκεκριμένη γλώσσα.</para>
+	</note>
+
+    </sect2>
+  </sect1>
+
+  <sect1 id="design-fonts">
+    <title>Γραμματοσειρές</title>
+    <para>Χρησιμοποιήστε μόνο τις γραμματοσειρές που ο χρήστης έχει καθορίσει στο θέμα του και με μεγέθη σχετικά με το προεπιλεγμένο μέγεθος που ορίστηκε στο θέμα του. Αυτό θα επιβεβαιώσει μέγιστη ανάγνωση και πρόσβαση για όλους τους χρήστες.</para>
+    <para>Μην αναμειγνύετε περισσότερα από δύο ή τρία μεγέθη γραμματοσειρών και τεχνοτροπιών (υπογραμμισμένα, έντονα, πλάγια) σε ένα παράθυρο, καθώς αυτό θα φαίνεται αντιεπαγγελματικό και αποσπά τον χρήστη από την μεταφερόμενη πληροφορία.</para>
+    <para>Δώστε εναλλακτικές λύσεις σε WYSIWYG, όπου είναι δυνατό. Μερικοί χρήστες μπορεί να χρειάζεται να τυπώσουν κείμενο σε μια μικρή γραμματοσειρά, αλλά να το επεξεργαστούν σε μια μεγαλύτερη γραμματοσειρά οθόνης, για παράδειγμα. Δυνατές λύσεις περιλαμβάνουν εμφάνιση όλου του κειμένου στην ίδια γραμματοσειρά και μέγεθος (αμφότερα επιλεγμένα από τον χρήστη)· μια επιλογή "αναδίπλωσης στο παράθυρο" που επιτρέπει την ανάγνωση όλου του κειμένου σε ένα παράθυρο χωρίς οριζόντια κύλιση· προβολή μονής στήλης που εμφανίζει τα περιεχόμενα του παραθύρου σε μια μονή στήλη ακόμα κι αν θα τυπωθούν σε πολλές στήλες· και μια προβολή μόνο κειμένου, όπου τα γραφικά εμφανίζονται ως δεσμευτικά θέσεων ή περιγραφές κειμένου.</para>
+  </sect1>
+  </chapter>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chapter id="principles" lang="de">
+    
+    <title>Prinzipien der Benutzerfreundlichkeit</title>
+
+    <para>Dieser Abschnitt erläutert die Grundprinzipien, die hinter den in diesem Dokument empfohlenen technischen Richtlinien stehen. Wir glauben, dass diese Prinzipien für jegliche Entwicklung von Anwendungen bedeutsam sind.</para>
+
+    <sect1 id="principles-people">
+      <title>Design für Menschen</title>
+
+      <para>Vergessen Sie nie, dass jede Anwendungssoftware es einer Gruppe von Menschen ermöglichen soll, eine bestimmte Art von Aufgaben auszuführen. Daher sollten Sie beim Entwurf Ihrer Anwendung zunächst über Folgendes nachdenken:</para>
+
+	<orderedlist>
+		<listitem><para>wer Ihre Benutzer sind</para></listitem>
+		<listitem><para>welche Art von Aufgaben sie erledigen sollen</para></listitem>
+	</orderedlist>
+
+      <para>Beispielsweise wollen Sie eine Anwendung entwerfen, mit deren Hilfe Ingenieure (Software-, Elektro- oder Maschinenbau-) Diagramme erstellen können. Oder Sie wollen eine Anwendung für Systemverwalter schreiben, damit diese eine Webserver einrichten und überwachen können. Oder eine Anwendung für Grundschüler zum Erlernen der Mathematik.</para>
+
+      <para>Von Bedeutung ist hier, dass Sie Ihr Publikum kennen und sowohl dessen Ziele als auch die Aufgabenstellungen zum Erreichen dieser Ziele verstehen. Es gibt eine große Zahl von Büchern, die sich mit dem Design interaktiver Anwendungen beschäftigen, weiterhin Kurse über Designmethoden, die in diesem Prozess hilfreich sein können. Viele sind sehr nützlich, eine Auswahl davon finden Sie in <xref linkend="bibliography"/>. Wie auch immer, die meisten dieser Methoden gehen den spezifischen Erfordernissen des Verstehens Ihrer Benutzer auf den Grund, den Aufgaben, deren Lösung Sie ihnen ermöglichen wollen sowie dem Auffinden von Wegen, wie Ihre Anwendung diese Aufgaben unterstützen kann.</para>
+
+    </sect1>
+    <sect1 id="principles-broad-userbase">
+      <title>Begrenzen Sie nicht Ihr Zielpublikum</title>
+
+      <para>Wenn Sie eine Anwendung für Ingenieure, Kinder oder Systemverwalter entwerfen, stellen Sie bitte sicher, dass diese Anwendung von <emphasis>allen</emphasis> Ingenieuren, Kindern oder Systemverwaltern benutzt werden kann, einschließlich denjenigen mit Behinderungen oder denen, die Ihre eigene Sprache nicht sprechen. Denken Sie an die Integration von Hilfstechnologien und die Internationalisierung. Vieles davon wird in den vorliegenden Richtlinien näher erläutert.</para>
+
+      <sect2 id="accessibility">
+	<title>Barrierefreiheit</title>
+
+	<para>Barrierefreiheit (manchmal <emphasis>a11y</emphasis> genannt) bedeutet, es Personen mit Behinderung bestimmter Art zu ermöglichen, an Aktivitäten des Lebens teilzunehmen: In diesem Fall, Ihre Software zu nutzen. Zum Beispiel:</para>
+
+	<itemizedlist>
+		<listitem><para>Farbenblinde können möglicherweise nicht ihre Anwendung nutzen, falls sie nur Farbkodierung nutzen, um zwischen verschiedenen Typen von Informationen zu unterscheiden.</para></listitem>
+		<listitem><para>Schwerhörige oder gehörlose Benutzer werden Ihre Anwendung nicht benutzen können, wenn Sie Klänge ausgeben lassen, um kritische Informationen anzuzeigen</para></listitem>
+		<listitem><para>Benutzer mit eingeschränkter Bewegungsfreiheit können möglicherweise nicht in der Lage sein Ihre Anwendung zu nutzen, falls Sie keine tastaturähnlichen Eingabemöglichkeiten für Befehle bereitstellen.</para></listitem>
+	</itemizedlist>
+
+	<para>Ihre Software sollte auch für Audiooberflächen, Bildschirmlesern wie <ulink url="http://projects.gnome.org/orca/">Orca</ulink>, alternativen Eingabemethoden und anderen Hilfstechnologien nutzbar sein. Die Standard-GNOME-Bibliotheken machen die meiste Arbeit für Sie, aber mit einer kleinen, zusätzlichen Anstrengung, können Sie Ihre Anwendung gleichwertig für jene Benutzer machen, die auf diese Technologien angewiesen sind, wie für jene, die darauf nicht angewiesen sind.</para>
+
+	<para>GNOME has excellent inbuilt support for accessibility by means of the ATK and GAIL libraries, which in many cases can do most of the work for you. More information on accessibility in GNOME can be found at the <ulink url="http://projects.gnome.org/accessibility">GNOME Accessibility Project</ulink>.</para>
+
+      </sect2>
+      <sect2 id="internationalization">
+	<title>Internationalisierung und Lokalisierung</title>
+
+	<para>Internationalization means designing software so that it can function in different language environments.  Localization is the process of actually translating the messages, labels, and other interface elements of an application into another language.</para>
+
+	<para>GNOME has excellent support for both internationalization (also referred to as i18n) and localization (also referred to as l10n).  In most cases, simply using standard GNOME APIs for displaying text and messages will allow you or others to localize your application for other locales.  For more information on how to make your application localizable, see the <ulink url="http://www.pango.org">Pango project home page</ulink> (Pango is the GNOME library for rendering internationalized text), the <ulink url="http://www.gnome.org/i18n/">GNOME Translations page</ulink>, and the <ulink url="http://developer.gnome.org/projects/gtp/">GNOME Translation Project page</ulink>.</para>
+	
+	<para>Sensitivity to cultural and political issues is also an important consideration. Designing icons and sounds, and even choosing colors requires some understanding of the connotations they might have to a user from a different part of the world.</para>
+	<para>Beispiele für Elemente, die aus diesen Gründen gemieden werden sollten:</para>
+	<itemizedlist>
+		<listitem><para>Abbildungen von Flaggen und Währungen</para></listitem>
+		<listitem><para>Maps showing political boundaries or contentious location names</para></listitem>
+		<listitem><para>Liste von Ländern oder Städten in nicht-alphabetischer Sortierung, es  sei denn, dies ist speziell gefordert oder im Kontext unumgänglich</para></listitem> 
+		<listitem><para>Symbole, die Tiere darstellen</para></listitem>
+		<listitem><para>Symbole, die nur Hände oder Füße darstellen</para></listitem>
+	</itemizedlist>
+
+      </sect2>
+    
+    </sect1>
+
+    <sect1 id="principles-match">
+      <title>Erstellen Sie eine Übereinstimmung Ihrer Anwendung  mit der realen Welt</title>
+
+      <para id="use-users-language">Always use words, phrases, and concepts that are familiar to the user rather than terms from the underlying system.  Use terms that relate to the user's knowledge of the tasks your application supports.  For example, in medicine, the paper folder that contains all information about a specific patient is called a "chart."  Hence, a medical application might refer to a patient record that contains the same information as a paper chart as a "patient chart" rather than as a "patient database record."</para>
+
+      <para>You can often take advantage of your users' knowledge of the real world by using metaphor— that is, a familiar concept from the outside world— to represent elements within your application.  For example:</para>
+
+	<itemizedlist>
+		<listitem><para>an image of a file folder suggests a container into which documents can be placed</para></listitem>
+		<listitem><para>a waste basket suggests a container into which items can be placed when they are no longer needed</para></listitem>
+	</itemizedlist>
+
+      <para>When using metaphors, however, it is important to neither take the metaphor too literally, nor to extend the metaphor beyond its reasonable use.  For example, the capacity of a file folder should not be limited to the capacity of a physical file folder, which presumably could contain only a few documents before becoming unwieldy.  On the other hand, a waste basket should not be used for anything other than holding discarded files.  It should not be used, for example, to eject a removable disk such as a floppy or CD.</para>
+    </sect1>
+
+    <sect1 id="principles-consistency">
+      <title>Machen Sie Ihre Anwendung konsistent</title>
+
+      <para>Make your application consistent with itself and with other applications, in both its appearance and its behavior. This is one of the most important design principles, and probably the most famous, but it is also frequently ignored. While this document serves as the basis for consistency between GNOME applications, you are encouraged to look at and follow other application's conventions where this document provides no guidelines.</para>
+
+      <para>Consistency enables users to apply their existing knowledge of their computing environment and other applications to understanding a new application.  This not only allows users to become familiar with new applications more quickly, but also helps create a sense of comfort and trust in the overall environment.  Most of the recommendations in the GNOME HI Guidelines are designed to help you create applications that are consistent with the GNOME environment and other GNOME applications.</para>
+
+      <para>A word of caution: a mis-applied or incomplete consistency is often worse than inconsistency.  If your application includes an <guimenuitem>Undo</guimenuitem> menu item for consistency, but it is always disabled because your application does not actually support Undo, this will reduce the user's trust in the availability of Undo in other applications on their desktop.  Either make your application support Undo, or eliminate the <guimenuitem>Undo</guimenuitem> menu item.</para>
+
+    </sect1>
+
+    <sect1 id="principles-feedback">
+      <title>Halten Sie den Benutzer auf dem Laufenden</title>
+
+      <para>Always let the user know what is happening in your application by using appropriate feedback at an appropriate time.  The user should never have to guess about the status of the system or of your application.  When the user performs an action, provide feedback to indicate that the system has received the input and is operating on it. Feedback can be visual, audio, or both. If the system will take a long time to process the request, provide as much feedback as possible about how lengthy the operation will be. Types of helpful feedback include but are not limited to: cursor changes, animated "throbbers", progress indicators, audio feedback such as a beep, and error messages. Error messages should use simple language, clearly state the problem, and provide solutions or tell the user how to get out of the current situation if possible.</para>
+
+      <para>It is critical that feedback be <emphasis>accurate</emphasis> and <emphasis>precise</emphasis>.  If you display a determinate progress indicator to display the state of completion of a task and it is inaccurate, the user will lose faith in progress indicators, and they will find the environment less usable.  If you display a generic error message that indicates that there is a problem but fails to provide enough information to diagnose or solve the problem, your users will be unable to continue with their task.</para>
+      <para>Weitere Informationen über Rückmeldungen finden Sie in <xref linkend="feedback"/> und <xref linkend="windows-alert"/>.</para>
+    </sect1>
+
+    <sect1 id="principles-simplicity">
+      <title>Keep It Simple and Pretty</title>
+
+      <para>Your application should enable the user to concentrate on the task at hand.  So, design your application to show only useful and relevant information and interface elements.  Every extra piece of information or interface control competes with the truly relevant bits of information and distracts the user from important information.  Hence, don't clutter your interface, and don't overload the user with buttons, menu options, icons, or irrelevant information.  Instead, use progressive disclosure and other techniques to limit what the user sees at any given moment.</para>
+
+      <para>Finally, present your information and interface elements in an aesthetically pleasing manner.  A disorganized, cluttered-looking interface with a few elements can be just as distracting as an organized interface with too much information.  Make sure that dialog elements are cleanly-aligned, and do not overuse or misuse color or graphics.  If you know a graphic designer, seek their advice if possible— the guidelines in this document will help you with the basics, but there is no substitute for a trained eye.</para>
+
+	<para>Siehe <xref linkend="design"/> und <xref linkend="icons"/> für weitere Informationen über das Design des visuellen Erscheinungsbildes Ihrer Anwendung.</para>
+
+    </sect1>
+
+    <sect1 id="principles-user-control">
+      <title>Dem Benutzer die Kontrolle geben</title>
+
+      <para>Erinnern Sie sich daran, dass Computer dem Menschen dienen. Ein Benutzer sollte immer das Gefühl haben, die volle Kontrolle zu besitzen das zu tun, was er tun will. Dies bedeutet, dass grundsätzlich Moden vermeiden sollen; Benutzer sollten immer in der Lage sein, zwischen verschiedenen Aufgaben (und besonders zwischen verschiedenen Fenstern) zu jeder Zeit zu wechseln.  Lesen Sie <xref linkend="window-props-modality"/> für weitere Informationen zu Moden.</para>
+
+      <para>Der Benutzer sollte die Möglichkeit haben, Aspekte ihrer Arbeitsumgebung auf ihre persönliche Vorlieben abzustimmen. Dennoch ist es sehr wichtig, dass Sie vermeiden, zu viele Einstellungsmöglichkeiten oder die Einstellung von Parametern, welche die meisten Benutzer nicht verstehen oder nützlich finden zu bearbeiten, zu erlauben. Wo immer es möglich ist, benutzen Sie visuelle und verhaltensbezogene Parameter aus den globalen Einstellungen, wie die des aktuellen GTK+-Themas.</para>
+    </sect1>
+
+    <sect1 id="principles-forgiveness">
+      <title>Vergeben Sie dem Benutzer</title>
+
+      <para>Wir alle machen Fehler. Ob wir nun gerade den Umgang mit unserem System erlernen oder schon Experten sind, wir drücken doch einmal die falsche Taste, schließlich sind wir alle Menschen. Ihre Anwendung sollte es daher den Benutzern gestatten, ohne viel Aufwand die Ergebnisse ihrer Aktionen rückgängig zu machen.</para>
+
+      <para>Falls eine Aktion besonders gefährlich ist und nicht rückgängig gemacht werden kann, warnen Sie den Benutzer und bitten Sie um Bestätigung. Tun Sie dies nur in Extremfällen! Falls Sie dem Benutzer öfter solche Bestätigungsanfragen präsentieren, beginnt er sie zu ignorieren, wodurch sie nutzlos werden.</para>
+
+      <para>In allen Fällen ist die Arbeit des Benutzers unantastbar. Um keinen Preis sollte Ihre Anwendung die Arbeit des Benutzers ohne dessen expliziten Eingriff vernichten oder beschädigen. Unter anderem kann das erreicht werden, indem Sie Dokumente automatisch speichern lassen oder mehrere Ebenen zum Zurücknehmen von Aktionen bereitstellen.</para>
+
+    </sect1>
+
+    <sect1 id="principles-direct-manipulation">
+      <title>Stellen Sie direkte Bearbeitungsmöglichkeiten bereit</title>
+
+      <para>Wo immer es möglich ist, erlauben Sie Benutzern direkt auf Objekte und Dateien einzuwirken, anstatt durch Dialoge und explizite Befehle. Zum Beispiel ist es intuitiver, ein Kreisobjekt in einem Diagramm rundherum zu bewegen, anstatt ein »Verschieben«-Befehl aus einem Menü auszuwählen, während der Kreis ausgewählt ist. Gleichermaßen sollten Sie dem Benutzer in einer E-Mail-Anwendung erlauben, Dateien anzuhängen, indem diese aus dem Datei-Manager gezogen und dann in das Nachrichtenfenster fallen gelassen werden, falls diese es so wünschen.</para>
+
+	<para>Siehe <xref linkend="input"/> für weitere Informationen über direkte Manipulation.</para>
+
+    </sect1>
+
+  </chapter>

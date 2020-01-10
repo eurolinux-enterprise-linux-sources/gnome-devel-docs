@@ -12,7 +12,7 @@ class GUI:
 	LENGTH = 500
 	# Frequencies of the strings
 	frequencies = {
-		'E': 329.63,
+		'E': 369.23,
 		'A': 440,
 		'D': 587.33,
 		'G': 783.99,
@@ -37,7 +37,7 @@ class GUI:
 		Gtk.main_quit()
 
 	def pipeline_stop(self, pipeline):
-		pipeline.set_state(Gst.State.NULL)
+		pipeline.set_state(Gst.State.PAUSED)
 		return False
 
 	def play_sound(self, frequency):

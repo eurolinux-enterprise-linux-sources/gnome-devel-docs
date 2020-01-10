@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="02_welcome_to_the_grid.js" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="02_welcome_to_the_grid.js" xml:lang="es">
   <info>
     <link type="guide" xref="beginner.js#tutorials"/>
     <link type="seealso" xref="grid.js"/>
@@ -9,22 +9,22 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
     <desc>Aprenda cómo distribuir componentes de la IU, como imágenes y etiquetas.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -57,38 +57,40 @@
     <code mime="application/javascript">
 #!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 </code>
-    <p>Esta parte siempre va al inicio del código. Dependiendo de qué va a hacer con él, puede querer declarar más importaciones aquí. Este ejemplo es bastante básico, por lo que esto es todo lo que necesita; «Gtk» para los widgets, usando la versión estable 3.0 de la API.</p>
+    <p>Esta parte siempre va al inicio del código. Dependiendo de qué va a hacer con él, puede querer declarar más importaciones aquí. Este ejemplo es bastante básico, por lo que esto es todo lo que necesita; «Gtk» para los widgets, y «Lang» para poder usar «Lang.bind» para conectar las señales de activación e inicio de la aplicación a las funciones requeridas.</p>
     <p>Hablando de eso:</p>
     <code mime="application/javascript">
-class WelcomeToTheGrid {
+const WelcomeToTheGrid = new Lang.Class({
+    Name: 'Welcome to the Grid',
+
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
+    _onStartup: function() {
         this._buildUI ();
-    }
+    },
 </code>
     <p>Este es el inicio de la aplicación en sí, y la función «_init» que la crea. Le dice a «_buildUI» que cree una «ApplicationWindow», a la que se llamará «_window», y le dice a la ventana que se presente cuando se la necesite.</p>
     <p>Esta parte, nuevamente, es principalmente copiar y pegar, pero siempre querrá darle a su aplicación un nombre único.</p>
 
     <code mime="application/javascript">
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -149,7 +151,7 @@ class WelcomeToTheGrid {
         this._window.show_all();
     }
 
-};
+});
 
 // Run the application
 let app = new WelcomeToTheGrid ();
@@ -260,7 +262,7 @@ app.application.run (ARGV);
     <p>Eso da esto, cuando se ejecuta:</p>
     <media type="image" mime="image/png" src="media/02_jsgrid_08.png"/>
 
-    <p>Así se ve el icono del almacén «About». Puede ver una lista de todos los elementos del almacén comenzando con «gtk-about» en la <link href="https://developer.gnome.org/gtk3/3.4/gtk3-Stock-Items.html#GTK-STOCK-ABOUT:CAPS">documentación del desarrollador de GNOME</link>. Se escribió para programadores de C, pero no necesita saber C para usarla; simplemente consulte la parte entre comillas, como "gtk-about", y copie esa parte para usar el icono junto a ella.</p>
+    <p>Así se ve el icono del almacén «About». Puede ver una lista de todos los elementos del almacén comenzando con «gtk-about» en la <link href="http://developer.gnome.org/gtk/2.24/gtk-Stock-Items.html#GTK-STOCK-ABOUT:CAPS">documentación del desarrollador de GNOME</link>. Se escribió para programadores de C, pero no necesita saber C para usarla; simplemente consulte la parte entre comillas, como "gtk-about", y copie esa parte para usar el icono junto a ella.</p>
     <note style="tip"><p>Se ponen comillas simples alrededor de «gtk-about» aquí porque, a diferencia de cadenas de texto que tienen comillas dobles, esa parte nunca necesitará traducirse a otro lenguaje. En realidad, si se <em>tradujera</em> rompería el icono, porque su nombre todavía es «gtk-about» sin importar el lenguaje en el que habla.</p></note>
   </section>
 
@@ -279,7 +281,7 @@ app.application.run (ARGV);
         this._grid.attach (this._button, 1, 1, 1, 1);
 </code>
 
-    <p>Así es, se convirtió la etiqueta en un botón simplemente cambiándole el nombre. Si ejecuta la aplicación y la pulsa, sin embargo, verá que no hace nada. ¿Cómo hacer para que el botón haga algo? Eso es lo que descubrirá, en <link xref="03_getting_the_signal.js">el próximo tutorial</link>.</p>
+    <p>Así es, se convirtió la etiqueta en un botón simplemente cambiándole el nombre. Si ejecuta la aplicación y la pulsa, sin embargo, encontrará que no hace nada. ¿Cómo hacer para que el botón haga algo? Eso es lo que descubrirá, en <link xref="getting_the_signal.js">el próximo tutorial</link>.</p>
     <p>Si quiere, siéntase libre de experimentar con rejillas, etiquetas, e imágenes, incluyendo imágenes del almacén.</p>
     <note style="tip"><p>Un truco que puede usar para hacer distribuciones más complejas es anidar rejillas una dentro de otra. Esto le permite agrupar widgets interrelacionados, y reorganizarlos fácilmente. Eche un vistazo a la muestra de código del <link xref="radiobutton.js">botón de radio</link> si quiere ver cómo se hace esto.</p></note>
   </section>
@@ -288,32 +290,35 @@ app.application.run (ARGV);
     <title>Código de ejemplo completo</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class WelcomeToTheGrid {
+const WelcomeToTheGrid = new Lang.Class({
+    Name: 'Welcome to the Grid',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
     // Connect 'activate' and 'startup' signals to the callback functions
-    this.application.connect('activate', this._onActivate.bind(this));
-    this.application.connect('startup', this._onStartup.bind(this));
-    }
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
+    _onStartup: function() {
         this._buildUI ();
-    }
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -364,7 +369,7 @@ class WelcomeToTheGrid {
         this._window.show_all();
     }
 
-};
+});
 
 // Run the application
 let app = new WelcomeToTheGrid ();

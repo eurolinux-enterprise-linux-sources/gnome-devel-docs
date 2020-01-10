@@ -2,9 +2,7 @@ from gi.repository import Gtk
 from gi.repository import Gdk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="ColorButton", application=app)
         self.set_default_size(150, 50)
@@ -36,11 +34,9 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # if a new color is chosen, we print it as rgb(r,g,b) in the terminal
     def on_color_chosen(self, user_data):
-        print("You chose the color: " + self.button.get_rgba().to_string())
-
+        print "You chose the color: " + self.button.get_rgba().to_string()
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -48,8 +44,8 @@ class MyApplication(Gtk.Application):
         win = MyWindow(self)
         win.show_all()
 
-    def do_startup(self):
-        Gtk.Application.do_startup(self)
+    def do_startup (self):
+        Gtk.Application.do_startup (self)
 
 app = MyApplication()
 exit_status = app.run(sys.argv)

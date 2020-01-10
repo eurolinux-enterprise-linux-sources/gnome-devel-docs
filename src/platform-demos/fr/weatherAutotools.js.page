@@ -1,51 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" style="task" id="weatherAutotools.js" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" style="task" id="weatherAutotools.js" xml:lang="fr">
   <info>
     <link type="guide" xref="weatherApp.js#main" group="#last"/>
     <revision version="0.1" date="2012-03-09" status="stub"/>
 
     <credit type="author copyright">
       <name>Susanna Huhtanen</name>
-      <email its:translate="no">ihmis.suski@gmail.com</email>
+      <email>ihmis.suski@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc/>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
   </info>
 
   <title>Autotools et icônes</title>
   <synopsis>
-    <p>Dans cette partie du guide, nous allons construire les « autotools » et personnaliser les icônes dont nous avons besoin pour que l'application météo fasse partie intégrante de notre bureau. Pour écrire et lancer tous les exemples de code, vous avez besoin d'un éditeur pour écrire le code, de l'application Terminal et d'un ordinateur sur lequel GNOME 3 ou supérieur est installé. Dans ce guide, nous illustrerons les éléments suivants :</p>
+    <p>Dans cette partie du guide, nous allons construire les « autotools » et personnaliser les icônes dont nous avons besoin pour que l'application météo fasse partie intégrante de notre bureau. Pour écrire et lancer tous les exemples de code vous-même, vous avez besoin d'un éditeur pour écrire le code, de Terminal et d'un ordinateur sur lequel GNOME 3 ou supérieur est installé. Dans ce guide, nous illustrerons les éléments suivants :</p>
 
     <list>
       <item><p><link xref="#autotools"> Autotools</link></p></item>
@@ -57,8 +27,7 @@
 
   <section id="autotools">
   <title>Autotools et fichiers nécessaires</title>
-  <p>Having more than one file in your folder makes using autotools a bit tricky. You need the .desktop file, autogen.sh, Makefile.am, configure.ac and as a new file: myapp.sh.in file. Hacking the autotools file is a complicated field. More information can be found in many different sources, <link href="http://en.wikipedia.org/wiki/GNU_build_system">the wikipedia article</link> provides a good overview on the subject.
-  </p>
+  <p>Le fait d'avoir plus d'un seul fichier dans votre dossier rend l'usage d'autotools un peu complexe. Vous avez besoin des fichiers .desktop, de autogen.sh, Makefile.am, configure.ac et d'un nouveau fichier : monapplication.sh.in. Détailler le fichier autotools est un peu compliqué. Vous trouverez plus d'informations dans de nombreuses autres sources, <link href="http://en.wikipedia.org/wiki/GNU_build_system">cet article sur wikipédia</link> fournit un bon aperçu sur le sujet.</p>
     <list>
       <item><p>weatherapp.desktop</p></item>
       <item><p>weatherapp.sh.in</p></item>
@@ -86,7 +55,7 @@ Categories=GNOME;GTK;Utility;]]></code>
 #!/bin/sh
 export GJS_PATH=@bindir@
 gjs @bindir@/weatherapp.js]]></code>
-    <p>Ce fichier est un modèle que le fichier Makefile va créer pour être lancé à partir de .desktop.</p>
+    <p>This file is a template to the file Makefile will do to be run from .desktop.</p>
 
     <p>Makefile.am</p>
     <code mime="text/am" style="numbered"><![CDATA[
@@ -149,11 +118,11 @@ install-icons:
 	done
 
 install-data-local: install-icons]]></code>
-    <p>Ceci nécessite un peu plus d'explications. Comparé au Makefile.am de Helloworld, celui-ci a été fortement modifié. Parcourons tous les nouveaux blocs :</p>
+    <p>Ceci nécessite un peu plus d'explication. Comparé au Makefile.am de Helloworld, celui-ci a été fortement modifié. Parcourons tous les nouveaux blocs :</p>
     <p>« bin_scripts » sont les fichiers nécessaires pour exécuter votre application. Dans ce cas, les deux premiers fichiers sont les programmes eux-mêmes et le troisième est le script qui lance l'application.</p>
     <p>EXTRA_DIST sont les fichiers qui doivent être distribués.</p>
     <p>le bloc « do_subst » est quelque chose qui a besoin d'être là où il est.</p>
-    <p>after the comment #icons in the application there are all the icons that are used by the program. For them to be useful you need to install the icons in correct places and that is done by the install-icons: bit</p>
+    <p>Après le commentaire « #icons in the application » se trouvent tous les icônes qui sont utilisées par le programme. Pour qu'elles soient utiles, vous devez installer les icônes aux emplacements corrects, ce qui est réalisé par la partie « install-icons ».</p>
 
     <p>configure.ac</p>
     <code mime="text/ac" style="numbered"><![CDATA[
@@ -170,8 +139,8 @@ autoreconf --force --install]]></code>
   </section>
   <section id="icons">
   <title>Icônes personnalisées pour votre application</title>
-  <p>Lorsque vous pensez icônes personnalisées, une bonne règle est : souhaitez-vous que cette icône puisse être utilisée autre part ou est-elle privée ? Dans le premier cas (par ex. des icônes dans le fichier desktop qui sont affichées par le shell) alors vous avez besoin de /usr/share/hicolor sinon (par ex. les icônes météo de votre application) /usr/share/$application/bla/bla</p>
-  <p>Pour utiliser autotools, vous devez apporter quelques modifications à vos fichiers .desktop et Makefile. Dans le fichier desktop, modifiez le nom de l'icône Icon=weather-icon. Dans le fichier Makefile.am, ajoutez ces deux lignes à la fin de votre application #the application icon.</p>
+  <p>Lorsque vous pensez icônes personnalisées, une bonne règle empirique est : souhaitez-vous que cette icône puisse être utilisée autre part ou est-elle privée ? Dans le premier cas (par ex. des icônes dans le fichier desktop qui sont affichées par le shell) alors vous avez besoin de /usr/share/hicolor sinon (par ex. les icônes météo de votre application) /usr/share/$application/bla/bla</p>
+  <p>Pour utiliser autotools, vous devez faire quelques modifications à vos fichiers .desktop et Makefile. Dans le fichier desktop, modifiez le nom de l'icône Icon=weather-icon. Dans le fichier Makefile.am, ajoutez ces deux lignes à la fin de votre application #the application icon.</p>
   <p>appicondir=$(datadir)/icons/hicolor/scalable/apps</p>
   <p>appicon_DATA=weather-icon.svg</p>
   </section>

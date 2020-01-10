@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.py" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="entry.py" xml:lang="es">
   <info>
     <title type="text">Entry (Python)</title>
     <link type="guide" xref="beginner.py#entry"/>
@@ -9,27 +9,27 @@
 
     <credit type="author copyright editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no"/>
+      <email/>
       <years>2012</years>
     </credit>
 
     <credit type="author copyright">
       <name>Sebastian Pölsterl</name>
-      <email its:translate="no">sebp@k-d-w.org</email>
+      <email>sebp@k-d-w.org</email>
       <years>2011</years>
     </credit>
     <desc>Un campo de entrada de texto de una sola línea</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -50,9 +50,7 @@
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="What is your name?", application=app)
         self.set_default_size(300, 100)
@@ -70,13 +68,11 @@ class MyWindow(Gtk.ApplicationWindow):
     # the content of the entry is used to write in the terminal
     def cb_activate(self, entry):
         # retrieve the content of the widget
-        name = entry.get_text()
-        # print it in a nice form in the terminal
-        print("Hello " + name + "!")
-
+		name = entry.get_text()
+		# print it in a nice form in the terminal
+		print "Hello " + name + "!"
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -101,7 +97,7 @@ sys.exit(exit_status)
       <item><p><code>get_text()</code> y <code>set_text("texto")</code> pueden usarse para obtener y establecer el contenido de la entrada.</p></item>
       <item><p><code>get_text_length()</code> obtiene la longitud del texto.</p></item>
       <item><p><code>get_text_area()</code> obtiene el área en la que se dibuja el texto de la entrada.</p></item>
-      <item><p>Si se establece <code>set_visibility(False)</code>, los caracteres en la entrada se muestran como caracteres invisibles. Esto es el mejor disponible en la tipografía actual, pero puede cambiarse con <code>set_invisible_char(ch)</code>, donde <code>ch</code> es un carácter Unicode. El último método se revierte con <code>unset_invisbile_char()</code>.</p></item>
+      <item><p>Si se establece <code>set_visibility(False)</code>, los caracteres en la entrada se muestran como caracteres invisibles. Este es el mejor disponible en la tipografía actual, pero puede cambiarse con <code>set_invisible_char(ch)</code>, donde <code>ch</code> es un carácter Unicode. El último método se revierte con <code>unset_invisbile_char()</code>.</p></item>
       <item><p><code>set_max_length(int)</code>, donde <code>int</code> es un entero, trunca todas las entradas más largas que <code>int</code> para tener la longitud máxima deseada.</p></item>
       <item><p>De manera predeterminada, si presiona la tecla «Intro», el «Gtk.Entry» emite la señal <code>«activate»</code>. Si quisiera activar el widget predeterminado de la ventana (establecido usando <code>set_default(widget)</code> en la ventana), entonces use <code>set_activates_default(True)</code>.</p></item>
       <item><p>Para poner un marco alrededor de la entrada: <code>set_has_frame(True)</code>.</p></item>

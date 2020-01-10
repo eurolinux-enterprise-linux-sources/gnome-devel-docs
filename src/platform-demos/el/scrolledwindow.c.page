@@ -1,46 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scrolledwindow.c" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scrolledwindow.c" xml:lang="el">
   <info>
     <title type="text">ScrolledWindow (C)</title>
-    <link type="guide" xref="c#scrolling"/>
+    <link type="guide" xref="beginner.c#scrolling"/>
     <link type="seealso" xref="textview.c"/>
     <link type="seealso" xref="image.c"/>
     <revision version="0.1" date="2012-08-20" status="draft"/>
 
     <credit type="author copyright">
       <name>Monica Kochofar</name>
-      <email its:translate="no">monicakochofar@gmail.com</email>
+      <email>monicakochofar@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Προσθέτει γραμμές κύλισης στο θυγατρικό του γραφικό στοιχείου</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Προσθέτει γραμμές κύλισης στο θυγατρικό του γραφικό συστατικού</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Κυλιόμενο παράθυρο (ScrolledWindow)</title>
+  <title>ScrolledWindow</title>
 
   <media type="image" mime="image/png" src="media/scrolledwindow.png"/>
   <p>Μια εικόνα σε κυλιόμενο παράθυρο.</p>
@@ -54,38 +36,38 @@ static void
 activate (GtkApplication *app,
           gpointer        user_data)
 {
-  /* Declare variables */
-  GtkWidget *window;
-  GtkWidget *scrolled_window;
-  GtkWidget *image;
+  /* Δήλωση μεταβλητών */
+  GtkWidget *window·
+  GtkWidget *scrolled_window·
+  GtkWidget *image·
 
-  /* Create a window with a title, and a default size */
-  window = gtk_application_window_new (app);
-  gtk_window_set_title (GTK_WINDOW (window), "ScrolledWindow Example");
-  gtk_window_set_default_size (GTK_WINDOW (window), 220, 200);
+  /* Δημιουργία παραθύρου με τίτλο και προεπιλεγμένο μέγεθος */
+  window = gtk_application_window_new (app)·
+  gtk_window_set_title (GTK_WINDOW (window), "ScrolledWindow Example")·
+  gtk_window_set_default_size (GTK_WINDOW (window), 220, 200)·
 
-  /* Create the scrolled window. Usually NULL is passed for both parameters so
-   * that it creates the horizontal/vertical adjustments automatically. Setting
-   * the scrollbar policy to automatic allows the scrollbars to only show up
-   * when needed.
+  /* Δημιουργία κυλιόμενου παραθύρου. Συνήθως το NULL περνά και για τις δύο παραμέτρους έτσι
+   * δημιουργεί τις οριζόντιες/κάθετες ρυθμίσεις αυτόματα. Ορίζοντας
+   * το είδος της γραμμής κύλισης σε αυτόματη επιτρέπει στις γραμμές κύλισης να εμφανίζονται μόνον
+   * όταν χρειάζονται.
    */
-  scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-  /* Set the border width */
-  gtk_container_set_border_width (GTK_CONTAINER (scrolled_window), 10);
-  /* Extract our desired image from a file that we have */
-  image = gtk_image_new_from_file ("gnome-image.png");
-  /* And add it to the scrolled window */
-  gtk_container_add (GTK_CONTAINER (scrolled_window), image);
-  /* Set the policy of the horizontal and vertical scrollbars to automatic.
-   * What this means is that the scrollbars are only present if needed.
+  scrolled_window = gtk_scrolled_window_new (NULL, NULL)·
+  /* Ορισμός του πλάτους του περιθωρίου */
+  gtk_container_set_border_width (GTK_CONTAINER (scrolled_window), 10)·
+  /* Εξαγωγή της επιθυμητής μας εικόνας από ένα αρχείο που έχουμε */
+  image = gtk_image_new_from_file ("gnome-image.png")·
+  /* Και προσθήκη του στο κυλιόμενο παράθυρο */
+  gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scrolled_window), image)·
+  /* Ορίζει το είδος των οριζόντιων και κάθετων κυλιόμενων γραμμών σε αυτόματο.
+   * Αυτό σημαίνει ότι οι γραμμές κύλισης εμφανίζονται μόνον όταν χρειάζονται.
    */
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
                                   GTK_POLICY_AUTOMATIC,
-                                  GTK_POLICY_AUTOMATIC);
+                                  GTK_POLICY_AUTOMATIC)·
 
-  gtk_container_add (GTK_CONTAINER (window), scrolled_window);
+  gtk_container_add (GTK_CONTAINER (window), scrolled_window)·
 
-  gtk_widget_show_all (window);
+  gtk_widget_show_all (window)·
 }
 
 
@@ -93,15 +75,15 @@ activate (GtkApplication *app,
 int
 main (int argc, char **argv)
 {
-  GtkApplication *app;
-  int status;
+  GtkApplication *app·
+  int status·
 
-  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
-  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
-  status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE)·
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL)·
+  status = g_application_run (G_APPLICATION (app), argc, argv)·
+  g_object_unref (app)·
 
-  return status;
+  return status·
 }
 </code>
 <p>Σε αυτό το παράδειγμα χρησιμοποιήσαμε τα παρακάτω:</p>
@@ -109,6 +91,6 @@ main (int argc, char **argv)
   <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplication.html">GtkApplication</link></p></item>
   <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkWindow.html">GtkWindow</link></p></item>
   <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkScrolledWindow.html">GtkScrolledWindow</link></p></item>
-  <item><p><link href="http://developer.gnome.org/gtk/stable/gtk3-Standard-Enumerations.html#GtkPolicyType">GtkPolicyType</link></p></item>
+  <item><p><link href="http://developer.gnome.org/gtk/stable/gtk-Standard-Enumerations.html#GtkPolicyType">GtkPolicyType</link></p></item>
 </list>
 </page>

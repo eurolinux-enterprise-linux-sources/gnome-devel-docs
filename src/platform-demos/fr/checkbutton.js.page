@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="checkbutton.js" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="checkbutton.js" xml:lang="fr">
   <info>
   <title type="text">CheckButton (JavaScript)</title>
     <link type="guide" xref="beginner.js#buttons"/>
@@ -7,47 +7,17 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
-    <desc>Une case que l'on peut cocher ou décocher</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>A box which can be checked or unchecked</desc>
   </info>
 
   <title>CheckButton</title>
   <media type="image" mime="image/png" src="media/checkbutton.png"/>
-  <p>Cette application possède un CheckButton. L'état de la case – cochée ou non – indique s'il y a quelque chose d'affiché ou non dans la barre de titre de la fenêtre.</p>
-  <p>Un CheckButton envoie le signal d'inversion « toggled » quand il est cochée ou décochée. Tant qu'il est coché, la propriété « active » est vraie et tant qu'elle ne l'est pas, elle est fausse.</p>
+  <p>This application has a CheckButton. Whether the box is checked dictates whether the window's title bar shows anything.</p>
+  <p>A CheckButton sends the "toggled" signal when it's checked or unchecked. While it's checked, the "active" property is true. While it's not, "active" tests as false.</p>
     <links type="section"/>
 
   <section id="imports">
@@ -55,44 +25,45 @@
     <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
-
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 ]]></code>
-    <p>Ce sont les bibliothèques que nous devons importer pour faire fonctionner cette application. N'oubliez pas que la ligne qui informe GNOME que nous allons utiliser Gjs doit toujours se trouver au début.</p>
+    <p>These are the libraries we need to import for this application to run. Remember that the line which tells GNOME that we're using Gjs always needs to go at the start.</p>
     </section>
 
   <section id="applicationwindow">
-    <title>Création de la fenêtre de l'application</title>
+    <title>Creating the application window</title>
     <code mime="application/javascript"><![CDATA[
-class CheckButtonExample {
+const CheckButtonExample = new Lang.Class({
+    Name: 'CheckButton Example',
+
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jscheckbutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
     // Connect 'activate' and 'startup' signals to the callback functions
-    this.application.connect('activate', this._onActivate.bind(this));
-    this.application.connect('startup', this._onStartup.bind(this));
-    }
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
+    _onStartup: function() {
         this._buildUI ();
-    }
+    },
 ]]></code>
-    <p>Tout le code de cet exemple va dans la classe CheckButtonExample. Le code ci-dessus crée une <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> qui contiendra la fenêtre et nos composants graphiques.</p>
+    <p>All the code for this sample goes in the CheckButtonExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
     <code mime="application/javascript"><![CDATA[
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -103,11 +74,11 @@ class CheckButtonExample {
             border_width: 10,
             title: "CheckButton Example"});
 ]]></code>
-    <p>Mettons tout le code nécessaire à la création de l'interface utilisateur dans la fonction _buildUI. Créons maintenant une nouvelle <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link> pour y mettre tous nos composants graphiques.</p>
+    <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link href="GtkApplicationWindow.js.page">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
   </section>
 
   <section id="button">
-    <title>Création de la case à cocher</title>
+    <title>Creating the checkbutton</title>
     <code mime="application/javascript"><![CDATA[
         // Create the check button
         this._button = new Gtk.CheckButton ({label: "Show Title"});
@@ -117,21 +88,21 @@ class CheckButtonExample {
         this._button.set_active (true);
 
         // Connect the button to a function that does something when it's toggled
-        this._button.connect ("toggled", this._toggledCB.bind(this));
+        this._button.connect ("toggled", Lang.bind (this, this._toggledCB));
 ]]></code>
-    <p>Ce code ne génère que la case à cocher. Pour créer l'étiquette à côté de la case à cocher, il faut donner à la case à cocher la propriété « label » et lui assigner une valeur de chaîne. Comme la case à cocher s'inverse selon que le titre de la fenêtre s'affiche ou non (et nous le mettons en position affiché pour commencer), il faut que la case soit cochée par défaut. Ensuite, à chaque fois que l'utilisateur coche ou décoche la case, nous appelons la fonction _toggledCB.</p>
+    <p>This code creates the checkbutton itself. The label next to the checkbutton is created by giving the checkbutton the "label" property and assigning a string value to it. Since this checkbutton toggles whether the window title is on or off, and the window title will be on to start with, we want the box to be checked by default. Whenever the user checks or unchecks the box, we call the _toggledCB function.</p>
     <code mime="application/javascript"><![CDATA[
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 ]]></code>
-    <p>Ce code termine la création de l'interface utilisateur en indiquant à la fenêtre de s'afficher toute seule avec tous ses composants graphiques enfants (il n'y a que la case à cocher dans cet exemple).</p>
+    <p>This code finishes up creating the UI, by telling the window to show itself and all child widgets (which is just the checkbutton in this case).</p>
   </section>
 
   <section id="function">
-    <title>Fonction prenant en charge l'inversion de la case à cocher</title>
+    <title>Function which handles the checkbutton's toggling</title>
     <code mime="application/javascript"><![CDATA[
-    _toggledCB() {
+    _toggledCB: function () {
 
         // Make the window title appear or disappear when the checkbox is toggled
         if (this._button.get_active() == true)
@@ -141,52 +112,54 @@ class CheckButtonExample {
 
     }
 
-};
+});
 ]]></code>
-    <p>Nous voulons que le titre de la fenêtre disparaisse quand la case à cocher devient décochée, et qu'elle réapparaisse quand elle devient cochée. Pour savoir quel est son état, il nous faut la tester. Nous appellerons pour cela la méthode get_active() dans un bloc if ou else.</p>
+    <p>If the checkbutton is toggled from on to off, we want the window title to disappear. If it's toggled from off to on, we want it to reappear. We can tell which way it was toggled by testing to see whether it's active (checked) or not afterwards. A simple if / else statement which calls the checkbutton's get_active() method will work for this.</p>
     <code mime="application/javascript"><![CDATA[
 // Run the application
 let app = new CheckButtonExample ();
 app.application.run (ARGV);
 ]]></code>
-    <p>Enfin, nous créons un nouvel exemple de la classe CheckButtonExample et démarrons l'application.</p>
+    <p>Finally, we create a new instance of the finished CheckButtonExample class, and set the application running.</p>
   </section>
 
   <section id="complete">
-    <title>Exemple complet de code</title>
+    <title>Complete code sample</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
-
-imports.gi.versions.Gtk = '3.0';
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class CheckButtonExample {
+const CheckButtonExample = new Lang.Class({
+    Name: 'CheckButton Example',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jscheckbutton',
             flags: Gio.ApplicationFlags.FLAGS_NONE
         });
 
-        // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -205,13 +178,15 @@ class CheckButtonExample {
         this._button.set_active (true);
 
         // Connect the button to a function that does something when it's toggled
-        this._button.connect ("toggled", this._toggledCB.bind(this));
+        this._button.connect ("toggled", Lang.bind (this, this._toggledCB));
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _toggledCB() {
+
+
+    _toggledCB: function () {
 
         // Make the window title appear or disappear when the checkbox is toggled
         if (this._button.get_active() == true)
@@ -221,7 +196,7 @@ class CheckButtonExample {
 
     }
 
-};
+});
 
 // Run the application
 let app = new CheckButtonExample ();
@@ -230,7 +205,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>Documentation approfondie</title>
+    <title>In-depth documentation</title>
 <list>
   <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>
   <item><p><link href="http://developer.gnome.org/gtk3/stable/GtkApplicationWindow.html">Gtk.ApplicationWindow</link></p></item>

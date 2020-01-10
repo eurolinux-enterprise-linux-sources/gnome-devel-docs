@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scale.js" xml:lang="fr">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scale.js" xml:lang="fr">
   <info>
   <title type="text">Scale (JavaScript)</title>
     <link type="guide" xref="beginner.js#entry"/>
@@ -7,47 +7,17 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
-    <desc>Une glissière qui correspond à une valeur numérique</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Rebert,</mal:name>
-      <mal:email>traduc@rebert.name</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Alain Lojewski,</mal:name>
-      <mal:email>allomervan@gmail.com</mal:email>
-      <mal:years>2011-2012</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luc Pionchon</mal:name>
-      <mal:email>pionchon.luc@gmail.com</mal:email>
-      <mal:years>2011</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Bruno Brouard</mal:name>
-      <mal:email>annoa.b@gmail.com</mal:email>
-      <mal:years>2011-12</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Luis Menina</mal:name>
-      <mal:email>liberforce@freeside.fr</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
+    <desc>A slider which corresponds to a numerical value</desc>
   </info>
 
   <title>Échelle</title>
   <media type="image" mime="image/png" src="media/scalepenguins.png"/>
-  <p>Une échelle est une glissière horizontale ou verticale représentant une valeur comprise dans une fourchette numérique. Pour créer une échelle, vous devez définir sa position par défaut, son étendue numérique et le pas auquel elle avance ou recule. Au lieu d'être obligé de tout recommencer à chaque fois que vous créez une nouvelle échelle, vous pouvez inclure toutes ces données dans un objet nommé Adjustment et qui garde en mémoire tous les paramètres. Ensuite, à chaque création d'une nouvelle échelle, il suffit de lui indiquer de prendre ces réglages.</p>
-  <p>Cette échelle est un simple élément graphique permettant d'ajuster la taille d'un iceberg sur lequel vivent des pingouins. Le nombre de pingouins sur l'iceberg est le produit des valeurs des deux glissières. Faites des essais en modifiant les valeurs et observez le résultat.</p>
+  <p>A Scale is a horizontal or vertical slider, that represents a value inside a numerical range. When you create a new Scale, you set what its default position is, what the numbers at the top and bottom of the range are, and things like how much it moves up or down when you click on the Scale to either side of the knob. To keep from having to type all that in every time you create a new Scale, you can create an object called an Adjustment which keeps track of all that, then tell each new Scale to use that Adjustment.</p>
+  <p>This scale is a simple widget that lets you adjust the size of an iceberg that penguins live on. The number of penguins on the iceberg is the product of the values of the two sliders. Try playing with them and seeing what happens.</p>
     <links type="section"/>
 
   <section id="imports">
@@ -59,11 +29,11 @@ const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 ]]></code>
-    <p>Ce sont les bibliothèques que nous devons importer pour faire fonctionner cette application. N'oubliez pas que la ligne qui informe GNOME que nous allons utiliser Gjs doit toujours se trouver au début.</p>
+    <p>These are the libraries we need to import for this application to run. Remember that the line which tells GNOME that we're using Gjs always needs to go at the start.</p>
     </section>
 
   <section id="applicationwindow">
-    <title>Création de la fenêtre de l'application</title>
+    <title>Creating the application window</title>
     <code mime="application/javascript"><![CDATA[
 const ScaleExample = new Lang.Class({
     Name: 'Scale Example',
@@ -89,7 +59,7 @@ const ScaleExample = new Lang.Class({
         this._buildUI ();
     },
 ]]></code>
-    <p>Tout le code de cet exemple va dans la classe ScaleExemple. Le code ci-dessus crée une <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> pour nos éléments graphiques et la fenêtre qui les contient.</p>
+    <p>All the code for this sample goes in the ScaleExample class. The above code creates a <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> for our widgets and window to go in.</p>
     <code mime="application/javascript"><![CDATA[
     // Build the application's UI
     _buildUI: function() {
@@ -101,11 +71,11 @@ const ScaleExample = new Lang.Class({
             border_width: 20,
             title: "Birds on a Floe"});
 ]]></code>
-    <p>La fonction _buildUI est l'endroit où nous mettons tout le code nécessaire à la création de l'interface utilisateur de l'application. La première étape consiste à créer une <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> pour y mettre tous nos éléments graphiques.</p>
+    <p>The _buildUI function is where we put all the code to create the application's user interface. The first step is creating a new <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> to put all our widgets into.</p>
   </section>
 
   <section id="button">
-    <title>Création des échelles</title>
+    <title>Creating the scales</title>
     <code mime="application/javascript"><![CDATA[
         // Create the horizontal scale
         this._hScale = Gtk.Scale.new_with_range (Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
@@ -115,8 +85,8 @@ const ScaleExample = new Lang.Class({
         // this._hScale.set_draw_value (false);
 ]]></code>
 
-    <p>La méthode new_with_range est l'un des moyens pour créer un nouvel élément graphique échelle. Les paramètres qu'elle utilise sont <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Orientation.html">Gtk.Orientation</link>, la valeur minimum et l'incrément pour une seule graduation. Ensuite, nous utilisons les méthodes de l'échelle pour définir sa valeur de départ et en combien de fractions décimales la diviser. Dans ce cas, il nous faut aussi définir son alignement vertical pour la placer dans la fenêtre.</p>
-    <p>Nous pouvons aussi lui indiquer s'il faut afficher ou non le nombre à côté de la glissière avec la méthode set_draw_value. Les explications se trouvent dans cet exemple.</p>
+    <p>The new_with_range method is one way to create a new Scale widget. The parameters it takes are a <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Orientation.html">Gtk.Orientation</link>, the minimum value, the maximum value, and the increment for a single step. After that we use the Scale's methods to set its starting value, and how many decimal places it runs to. We also set its vertical alignment in this case, to control where it appears in the window.</p>
+    <p>We can use the set_draw_value method to tell it whether or not to show the number next to the sliding scale. It's commented out in this example.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Create a master adjustment to use for the vertical (or any other) scale
@@ -128,7 +98,7 @@ const ScaleExample = new Lang.Class({
             page_increment: 10 });
 ]]></code>
 
-    <p>Un Adjustment est un objet permettant de simplifier la procédure de création d'une nouvelle échelle. La propriété « valeur » de l'Adjustment est la valeur par défaut de l'échelle alors que les valeurs « superieure » et « inferieure » en représentent le début et la fin. Entre les deux, les valeurs de l'incrément définissent le pas auquel l'échelle se déplace lorsque vous cliquez dessus.</p>
+    <p>An Adjustment is an object we can use to simplify things when creating a new Scale. The Adjustment's "value" property is what the Scale's default value is, while "upper" and "lower" make the high and low ends of the numerical range. Meanwhile, the increment values show how much the slider moves when you do things like click on it.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Create a vertical scale using the adjustment we just made
@@ -140,7 +110,7 @@ const ScaleExample = new Lang.Class({
             margin_left: 10 });
 ]]></code>
 
-    <p>Ici, nous créons un nouvel objet échelle en utilisant _adjustment comme étant sa propriété d'« ajustement ». Cela est un raccourci important. Cependant, il nous faut encore lui indiquer comment arrondir les décimales. Notez que nous y expliquons aussi la propriété draw_value : comment lui indiquer de ne pas afficher le nombre à côté de l'échelle lorsque vous décidez cette façon de faire.</p>
+    <p>Here we create a new Scale object using _adjustment as its "adjustment" property. This is a great shortcut. We still have to tell it to round off the decimal place, though. Note that the draw_value property is commented out; this is how you tell it not to show the number next to the Scale when you're creating one this way.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Create the label that shows the product of the two values
@@ -156,8 +126,8 @@ const ScaleExample = new Lang.Class({
         this._vScale.connect ("value-changed", Lang.bind (this, this._recalc));
 ]]></code>
 
-    <p>La méthode get_value permet de trouver la valeur numérique à laquelle une échelle est définie. Ensuite, nous pouvons en faire ce que nous voulons, y compris multiplier les valeurs des deux échelles et obtenir une <link xref="label.js">étiquette</link> affichant le produit. Paramétrons le texte avec retour à la ligne, car nous avons aussi un message stupide à afficher.</p>
-    <p>Ensuite, connectons les deux signaux « value-changed » à la fonction _recalc, qui recalcule le nombre de pingouins sur l'iceberg et affiche un nouveau message.</p>
+    <p>We can use the get_value method to find out the numerical value a Scale is set at. We can then do whatever we want with it, including multiply the two Scales' values together and have a <link xref="label.js">Label</link> show us the product. We set the label's text to wrap around, because we're having it display a silly message too.</p>
+    <p>After we create the Label, we connect the two Scales' "value-changed" signals to _recalc, a function that will recalculate the number of penguins on the iceberg and come up with a new message.</p>
 
     <code mime="application/javascript"><![CDATA[
         // Create a grid to arrange things in
@@ -172,7 +142,7 @@ const ScaleExample = new Lang.Class({
         this._UIGrid.attach (this._hScale, 0, 1, 1, 1);
         this._UIGrid.attach (this._vScale, 1, 0, 1, 1);
 ]]></code>
-    <p>Ici, nous créons une <link xref="grid.js">grille</link> pour tout y mettre et nous lui lions tous nos éléments graphiques. Notez que cette fois (et pour quelques éléments graphiques) nous utilisons des marges pour espacer proprement les éléments.</p>
+    <p>Here we create a <link xref="grid.js">Grid</link> to put everything in, then attach all our widgets to it. Note that here and on some of the widgets themselves we're using margins to keep things neatly spaced.</p>
     <code mime="application/javascript"><![CDATA[
         // Add the grid to the window
         this._window.add (this._UIGrid);
@@ -181,11 +151,11 @@ const ScaleExample = new Lang.Class({
         this._window.show_all();
     },
 ]]></code>
-    <p>Enfin, nous ajoutons la grille à la fenêtre et indiquons à celle-ci de s'afficher toute seule avec tout son contenu.</p>
+    <p>Finally, we add the Grid to the window, then tell the window to show itself and all the widgets inside of it.</p>
     </section>
 
     <section id="scales-handler">
-    <title>Fonction prenant en charge les modifications de valeurs de l'échelle</title>
+    <title>Function which handles the scales' values changing</title>
 
     <code mime="application/javascript"><![CDATA[
     _recalc: function() {
@@ -215,50 +185,52 @@ const ScaleExample = new Lang.Class({
 
 });
 ]]></code>
-    <p>Souvenez-vous, nous pouvons obtenir la valeur d'une échelle avec la méthode get_value. Ici, nous ne faisons que recalculer le produit des deux valeurs après qu'une des deux échelles a bougé, ajouter un message stupide en fonction du nombre de pingouins restant et modifier le texte de l'étiquette avec le nouveau nombre et le message.</p>
+    <p>Remember, we can get a Scale's value using its get_value method. Here we simply recalculate what the product of the two values is after one of the Scales is moved, add in a silly message depending on how many penguins are left, and change the wording on _label to show the new number and message.</p>
 
     <code mime="application/javascript"><![CDATA[
 // Run the application
 let app = new ScaleExample ();
 app.application.run (ARGV);
 ]]></code>
-    <p>Enfin, nous créons un nouvel exemple de la classe ScaleExemple et démarrons l'application.</p>
+    <p>Finally, we create a new instance of the finished ScaleExample class, and set the application running.</p>
   </section>
 
   <section id="complete">
-    <title>Exemple complet de code</title>
+    <title>Complete code sample</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
-
-imports.gi.versions.Gtk = '3.0';
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class ScaleExample {
+const ScaleExample = new Lang.Class({
+    Name: 'Scale Example',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jsscale'
         });
 
-        // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -299,8 +271,8 @@ class ScaleExample {
             wrap: true});
 
         // Connect the two scales to functions which recalculate the label
-        this._hScale.connect ("value-changed", this._recalc.bind(this));
-        this._vScale.connect ("value-changed", this._recalc.bind(this));
+        this._hScale.connect ("value-changed", Lang.bind (this, this._recalc));
+        this._vScale.connect ("value-changed", Lang.bind (this, this._recalc));
 
         // Create a grid to arrange things in
         this._UIGrid = new Gtk.Grid ({
@@ -319,9 +291,11 @@ class ScaleExample {
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _recalc() {
+
+
+    _recalc: function() {
 
         // Figure out what the product of the two scales' values is
         var product = (this._hScale.get_value() * this._vScale.get_value());
@@ -343,8 +317,10 @@ class ScaleExample {
 
         // Set ._label's new text
         this._label.set_label (String (product) + " penguins on the iceberg. " + comment);
+
     }
-};
+
+});
 
 // Run the application
 let app = new ScaleExample ();
@@ -353,7 +329,7 @@ app.application.run (ARGV);
   </section>
 
   <section id="in-depth">
-    <title>Documentation approfondie</title>
+    <title>In-depth documentation</title>
 <list>
   <item><p><link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Adjustment.html">Gtk.Adjustment</link></p></item>
   <item><p><link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link></p></item>

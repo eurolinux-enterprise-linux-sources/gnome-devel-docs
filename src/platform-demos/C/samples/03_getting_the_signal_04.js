@@ -1,34 +1,37 @@
 #!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -47,7 +50,7 @@ class GettingTheSignal {
             label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create the label
         this._cookieLabel = new Gtk.Label ({
@@ -70,9 +73,11 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Did you spell "cookie" correctly?
         if ((this._spellCookie.get_text()).toLowerCase() == "cookie") {
@@ -85,7 +90,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();

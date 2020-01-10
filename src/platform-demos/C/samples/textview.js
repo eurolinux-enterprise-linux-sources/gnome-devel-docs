@@ -1,33 +1,35 @@
 #!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class TextViewExample {
+const TextViewExample = new Lang.Class ({
+    Name: 'TextView Example',
 
     // Create the application itself
-    constructor() {
-        this.application = new Gtk.Application({
-            application_id: 'org.example.jstextview'
-        });
+    _init: function () {
+        this.application = new Gtk.Application ({
+            application_id: 'org.example.jstextview' });
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents windows when active
-    _onActivate() {
-        this._window.present();
-    }
+    _onActivate: function () {
+        this._window.present ();
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function () {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function () {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow  ({
@@ -77,7 +79,7 @@ class TextViewExample {
             halign: Gtk.Align.END,
             margin_top: 20,
             label: "Send" });
-        this._send.connect ('clicked', this._chat.bind(this));
+        this._send.connect ('clicked', Lang.bind (this, this._chat));
 
         // Create a grid that will have the other grid on top and the button on bottom
         this._mainGrid = new Gtk.Grid ({
@@ -93,9 +95,11 @@ class TextViewExample {
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _chat() {
+
+
+    _chat: function () {
 
         // Create a random number to determine what the penguin says
         this.number = Math.floor ((Math.random() * 3) + 1);
@@ -140,8 +144,10 @@ class TextViewExample {
 
         // Give focus back to the textview so you don't have to click it again
         this._textView.has_focus = true;
+
     }
-};
+
+});
 
 // Run the application
 let app = new TextViewExample ();

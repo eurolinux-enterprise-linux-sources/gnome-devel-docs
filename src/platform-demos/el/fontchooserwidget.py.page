@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="fontchooserwidget.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="fontchooserwidget.py" xml:lang="el">
   <info>
     <title type="text">FontChooserWidget (Python)</title>
     <link type="guide" xref="beginner.py#font-selectors"/>
@@ -9,34 +9,16 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
-    <desc>Ένα γραφικό στοιχείο για επιλογή μιας γραμματοσειράς</desc>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
+    <desc>Ένα γραφικό συστατικό για επιλογή μιας γραμματοσειράς</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -52,9 +34,7 @@
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="FontChooserWidget", application=app)
 
@@ -63,8 +43,7 @@ class MyWindow(Gtk.ApplicationWindow):
         # a default font
         self.font_chooser.set_font("Sans")
         # a text to preview the font
-        self.font_chooser.set_preview_text(
-            "This is an example of preview text!")
+        self.font_chooser.set_preview_text("This is an example of preview text!")
 
         # connect signal from the font chooser to the callback function
         self.font_chooser.connect("notify::font", self.font_cb)
@@ -75,11 +54,9 @@ class MyWindow(Gtk.ApplicationWindow):
     # callback function:
     def font_cb(self, event, user_data):
         # print in the terminal
-        print("You chose the font " + self.font_chooser.get_font())
-
+        print "You chose the font " + self.font_chooser.get_font()
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -97,7 +74,7 @@ sys.exit(exit_status)
   </section>
   <section id="methods">
     <title>Χρήσιμες μέθοδοι για ένα FontChooserWidget</title>
-    <p>Στη γραμμή 16 το σήμα <code>"notify::font"</code> από το γραφικό στοιχείο συνδέεται με τη συνάρτηση επανάκλησης <code>font_cb()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
+    <p>Στη γραμμή 16 το σήμα <code>"notify::font"</code> από το γραφικό συστατικό συνδέεται με τη συνάρτηση επανάκλησης <code>font_cb()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
     <list>
       <item><p>Για ορισμό της γραμματοσειράς που αρχικά επιλέχτηκε, χρησιμοποιήστε <code>set_font(font)</code> (όπου <code>font</code> είναι το όνομα της γραμματοσειράς) ή <code>set_font_desc(font)</code> (όπου <code>font</code> είναι η PangoFontDescription).</p></item>
       <item><p>Για τη λήψη της επιλεγμένης γραμματοσειράς χρησιμοποιήστε <code>get_font()</code> ή <code>get_font_desc()</code>.</p></item>

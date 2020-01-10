@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="radiobutton.py" xml:lang="gl">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="radiobutton.py" xml:lang="gl">
   <info>
     <title type="text">RadioButton (Python)</title>
     <link type="guide" xref="beginner.py#buttons"/>
@@ -9,7 +9,7 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
@@ -33,9 +33,7 @@
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="RadioButton Example", application=app)
         self.set_default_size(250, 100)
@@ -59,8 +57,7 @@ class MyWindow(Gtk.ApplicationWindow):
 
         # another radiobutton, in the same group as button1,
         # with label "Button 3"
-        button3 = Gtk.RadioButton.new_with_label_from_widget(
-            button1, "Button 3")
+        button3 = Gtk.RadioButton.new_with_label_from_widget(button1, "Button 3")
         # connect the signal "toggled" emitted by the radiobutton
         # with the callback function toggled_cb
         button3.connect("toggled", self.toggled_cb)
@@ -69,9 +66,9 @@ class MyWindow(Gtk.ApplicationWindow):
 
         # a grid to place the buttons
         grid = Gtk.Grid.new()
-        grid.attach(button1, 0, 0, 1, 1)
-        grid.attach(button2, 0, 1, 1, 1)
-        grid.attach(button3, 0, 2, 1, 1)
+        grid.attach(button1, 0, 0, 1, 1);
+        grid.attach(button2, 0, 1, 1, 1);
+        grid.attach(button3, 0, 2, 1, 1);
         # add the grid to the window
         self.add(grid)
 
@@ -87,11 +84,9 @@ class MyWindow(Gtk.ApplicationWindow):
             state = "off"
         # whenever the function is called (a button is turned on or off)
         # print on the terminal which button was turned on/off
-        print(button.get_label() + " was turned " + state)
-
+        print button.get_label() + " was turned " + state
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -116,7 +111,7 @@ sys.exit(exit_status)
     <code>
 button1 = Gtk.RadioButton()
 button1.set_label("Button 1").</code>
-    <p>Yet another way to create a new RadioButton with a label is <code>button1 = Gtk.RadioButton.new_with_label(None, "Button 1")</code> (the first argument is the group of the radiobuttons, which we can get with <code>get_group()</code>, the second argument is the label).</p>
+    <p>Yet another way to create a new RadioButton with a label is <code>button1 = Gtk.RadioButton.new_with_label(None, "Button 1")</code> (the first arguement is the group of the radiobuttons, which we can get with <code>get_group()</code>, the second argument is the label).</p>
   </section>
 
   <section id="references">

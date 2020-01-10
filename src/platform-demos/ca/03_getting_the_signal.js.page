@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="03_getting_the_signal.js" xml:lang="ca">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="topic" style="task" id="03_getting_the_signal.js" xml:lang="ca">
   <info>
     <link type="guide" xref="beginner.js#tutorials"/>
     <link type="seealso" xref="button.js"/>
@@ -10,7 +10,7 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
@@ -38,33 +38,35 @@
     <code mime="application/javascript"><![CDATA[
 #!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
+
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
+    _onStartup: function() {
         this._buildUI ();
-    }
+    },
 ]]></code>
-    <p>Take a look at the part that uses our application's connect method and bind, to connect its activate and startup signals to the functions that present the window and build the UI. We're going to do the same thing with our Button when we get to it, except that we're going to connect its "clicked" signal instead.</p>
+    <p>Take a look at the part that uses our application's connect method and Lang.bind, to connect its activate and startup signals to the functions that present the window and build the UI. We're going to do the same thing with our Button when we get to it, except that we're going to connect its "clicked" signal instead.</p>
   </section>
 
   <section id="button">
@@ -73,7 +75,7 @@ class GettingTheSignal {
     <p>As usual, we'll put all the code to create our Button and other widgets inside the _buildUI function, which is called when the application starts up.</p>
     <code mime="application/javascript"><![CDATA[
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 ]]></code>
 
     <p>First, we create the window itself:</p>
@@ -100,7 +102,7 @@ class GettingTheSignal {
         this._cookieButton = new Gtk.Button ({ label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 ]]></code>
     <p>Finally, we create a Grid, attach the Label and Button to it, add it to the window and tell the window to show itself and its contents. That's all we need inside the _buildUI function, so we close it with a bracket, as well as a comma that tells GNOME to go on to the next function. Note that even though we wrote the code for the Label first, we can still attach it to the Grid in a way that will put it on the bottom.</p>
     <code mime="application/javascript"><![CDATA[
@@ -120,7 +122,7 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 ]]></code>
     <p>Now, we write the _getACookie function. Whenever our Button sends out its "clicked" signal, the code in this function will run. In this case, all it does is increase the number of cookies by 1, and update the Label to show the new number of cookies. We do this using the Label's set_label method.</p>
     <note style="tip"><p>Many widgets have the same properties and methods. Both Labels and Buttons, for instance, have a label property that says what text is inside them, and get_label and set_label methods that let you check what that text is and change it, respectively. So if you learn how one widget works, you'll also know how others like it work.</p></note>
@@ -133,7 +135,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 ]]></code>
 
     <p>Finally, we run the application, using the same kind of code as in our last tutorial.</p>
@@ -152,6 +154,8 @@ app.application.run (ARGV);
 
     <p>A Switch has two positions, Off and On. When a Switch is turned on, its text and background color change, so you can tell which position it's in.</p>
 
+    <media type="image" mime="image/png" src="media/03_jssignal_02b.png"/>
+
     <p>You may have seen Switches like these in GNOME's accessibility menu, which let you turn features like large text and the on-screen keyboard on and off. In this case, the Switch controls our imaginary cookie dispenser. If the Switch is turned on, you can get cookies by clicking the "Get a cookie" Button. If it's turned off, clicking the Button won't do anything.</p>
     <note style="tip"><p>You can get to the accessibility menu by clicking on the outline of a human, near your name in the upper-right corner of the screen.</p></note>
     <p>Here's how we create the Switch:</p>
@@ -163,7 +167,7 @@ app.application.run (ARGV);
     <p>We don't actually need to connect the Switch to anything. All we need to do is write an if statement in our _getACookie function, to check to see if the Switch is turned on. If we wanted to make something happen as soon as you flip the Switch, though, we would connect its notify::active signal, like so:</p>
     <code mime="application/javascript"><![CDATA[
         // Connect the switch to the function that handles it
-        this._cookieSwitch.connect ('notify::active', this._cookieDispenser.bind(this));
+        this._cookieSwitch.connect ('notify::active', Lang.bind (this, this._cookieDispenser));
 ]]></code>
 
     <p>A Switch is set to the off position by default. If we wanted the Switch to start out turned on, we would set the value of its active property to true when we create it.</p>
@@ -201,7 +205,7 @@ app.application.run (ARGV);
     <p>Now we change the _getACookie function so that it checks to see if the cookie dispenser is turned on. We do that by using the Switch's get_active method. It returns true if the Switch is turned on, and false if the Switch is turned off.</p>
     <note style="tip"><p>When a method is used in an if statement like this, the code inside the if statement is executed if the method returns true.</p></note>
     <code mime="application/javascript"><![CDATA[
-    _getACookie() {
+    _getACookie: function() {
 
         // Is the cookie dispenser turned on?
         if (this._cookieSwitch.get_active()) {
@@ -239,11 +243,11 @@ app.application.run (ARGV);
     <p>After that, we create the RadioButtons. Remember how they're created in groups? The way we do that, is we set each new RadioButton's group property to the name of another RadioButton.</p>
     <code mime="application/javascript"><![CDATA[
         // Create the radio buttons
-        this._cookieRadio = new Gtk.RadioButton ({ label: "Cookie" });
+        this._cookieButton = new Gtk.RadioButton ({ label: "Cookie" });
         this._notCookieOne = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
         this._notCookieTwo = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
 ]]></code>
 
     <p>Next, we create a Grid for the RadioButtons. Remember, we don't have to arrange things in Grids in the same order that we create them in.</p>
@@ -251,7 +255,7 @@ app.application.run (ARGV);
         // Arrange the radio buttons in their own grid
         this._radioGrid = new Gtk.Grid ();
         this._radioGrid.attach (this._notCookieOne, 0, 0, 1, 1);
-        this._radioGrid.attach (this._cookieRadio, 0, 1, 1, 1);
+        this._radioGrid.attach (this._cookieButton, 0, 1, 1, 1);
         this._radioGrid.attach (this._notCookieTwo, 0, 2, 1, 1);
 ]]></code>
 
@@ -272,10 +276,10 @@ app.application.run (ARGV);
 
     <p>And then we change our _getACookie function to test to see if the cookie button is the one that's selected.</p>
     <code mime="application/javascript"><![CDATA[
-    _getACookie() {
+    _getACookie: function() {
 
         // Did you select "cookie" instead of "not cookie"?
-        if (this._cookieRadio.get_active()) {
+        if (this._cookieButton.get_active()) {
 
             // Increase the number of cookies by 1 and update the label
             cookies++;
@@ -312,7 +316,7 @@ app.application.run (ARGV);
     <p>And now we modify _getACookie's if statement again, using the Entry's get_text method to retrieve the text that you entered into it and see if you spelled "cookie" right. We don't care whether you capitalize "cookie" or not, so we use JavaScript's built-in toLowerCase method to change the Entry's text to all lower case inside the if statement.</p>
     <note style="tip"><p>An Entry widget doesn't have a label property, which is a set text string that the user can't change. (You can't normally change the label on a Button, for instance.) Instead, it has a text property, which changes to match what the user types in.</p></note>
     <code mime="application/javascript"><![CDATA[
-    _getACookie() {
+    _getACookie: function() {
 
         // Did you spell "cookie" correctly?
         if ((this._spellCookie.get_text()).toLowerCase() == "cookie") {
@@ -330,7 +334,7 @@ app.application.run (ARGV);
 
   <section id="whats_next">
     <title>What's next?</title>
-    <p>Keep reading, if you'd like to see the complete code for each version of our cookie maker application.</p>
+    <p><link xref="04_popup_dialog_boxes.js">Click here</link> to go on to the next tutorial. Or keep reading, if you'd like to see the complete code for each version of our cookie maker application.</p>
     <note style="tip"><p>The main JavaScript tutorials page has <link xref="beginner.js#buttons">more detailed code samples</link> for each input widget, including several not covered here.</p></note>
 
   </section>
@@ -345,35 +349,38 @@ app.application.run (ARGV);
       <media type="image" mime="image/png" src="media/03_jssignal_01.png"/>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -391,7 +398,7 @@ class GettingTheSignal {
         this._cookieButton = new Gtk.Button ({ label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create a grid to arrange everything inside
         this._grid = new Gtk.Grid ({
@@ -409,9 +416,11 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Increase the number of cookies by 1 and update the label
         cookies++;
@@ -419,7 +428,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();
@@ -432,35 +441,38 @@ app.application.run (ARGV);
       <media type="image" mime="image/png" src="media/03_jssignal_02.png"/>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -479,7 +491,7 @@ class GettingTheSignal {
             label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create the switch that controls whether or not you can win
         this._cookieSwitch = new Gtk.Switch ();
@@ -514,9 +526,11 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Is the cookie dispenser turned on?
         if (this._cookieSwitch.get_active()) {
@@ -529,7 +543,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();
@@ -542,35 +556,38 @@ app.application.run (ARGV);
       <media type="image" mime="image/png" src="media/03_jssignal_03.png"/>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -582,16 +599,16 @@ class GettingTheSignal {
             title: "Choose the one that says 'cookie'!"});
 
         // Create the radio buttons
-        this._cookieRadio = new Gtk.RadioButton ({ label: "Cookie" });
+        this._cookieButton = new Gtk.RadioButton ({ label: "Cookie" });
         this._notCookieOne = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
         this._notCookieTwo = new Gtk.RadioButton ({ label: "Not cookie",
-            group: this._cookieRadio });
+            group: this._cookieButton });
 
         // Arrange the radio buttons in their own grid
         this._radioGrid = new Gtk.Grid ();
         this._radioGrid.attach (this._notCookieOne, 0, 0, 1, 1);
-        this._radioGrid.attach (this._cookieRadio, 0, 1, 1, 1);
+        this._radioGrid.attach (this._cookieButton, 0, 1, 1, 1);
         this._radioGrid.attach (this._notCookieTwo, 0, 2, 1, 1);
 
         // Set the button that will be at the top to be active by default
@@ -602,7 +619,7 @@ class GettingTheSignal {
             label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create the label
         this._cookieLabel = new Gtk.Label ({
@@ -625,12 +642,14 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Did you select "cookie" instead of "not cookie"?
-        if (this._cookieRadio.get_active()) {
+        if (this._cookieButton.get_active()) {
 
             // Increase the number of cookies by 1 and update the label
             cookies++;
@@ -640,7 +659,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();
@@ -653,35 +672,38 @@ app.application.run (ARGV);
       <media type="image" mime="image/png" src="media/03_jssignal_04.png"/>
       <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 // We start out with 0 cookies
 var cookies = 0;
 
-class GettingTheSignal {
+const GettingTheSignal = new Lang.Class({
+    Name: 'Getting the Signal',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application();
 
         // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+        this.application.connect('activate', Lang.bind(this, this._onActivate));
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -700,7 +722,7 @@ class GettingTheSignal {
             label: "Get a cookie" });
 
         // Connect the cookie button to the function that handles clicking it
-        this._cookieButton.connect ('clicked', this._getACookie.bind(this));
+        this._cookieButton.connect ('clicked', Lang.bind (this, this._getACookie));
 
         // Create the label
         this._cookieLabel = new Gtk.Label ({
@@ -723,9 +745,11 @@ class GettingTheSignal {
         // Show the window and all child widgets
         this._window.show_all();
 
-    }
+    },
 
-    _getACookie() {
+
+
+    _getACookie: function() {
 
         // Did you spell "cookie" correctly?
         if ((this._spellCookie.get_text()).toLowerCase() == "cookie") {
@@ -738,7 +762,7 @@ class GettingTheSignal {
 
     }
 
-};
+});
 
 // Run the application
 let app = new GettingTheSignal ();

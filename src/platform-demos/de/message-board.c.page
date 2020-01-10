@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="message-board.c" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="message-board.c" xml:lang="de">
 
   <info>
     <title type="text">Message board (C)</title>
@@ -10,12 +10,12 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-06" status="draft"/>
     <credit type="author copyright">
       <name>Shaun McCance</name>
-      <email its:translate="no">shaunm@gnome.org</email>
+      <email>shaunm@gnome.org</email>
       <years>2010</years>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
   
@@ -45,7 +45,7 @@
 <links type="section"/>
 
 <section id="create">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
 
   <p>The GNOME platform includes WebKitGTK+, built on top of the powerful
   WebKit HTML framework. WebKit is used throughout GNOME, not just to view
@@ -102,7 +102,7 @@
   them both into a window. Find the function <code>create_window</code> and
   replace it with the following:</p>
 
-<code style="numbered" mime="text/C">
+<code style="numbered" mime="text/C"><![CDATA[
 static GtkWidget*
 create_window (void)
 {
@@ -127,7 +127,7 @@ create_window (void)
     view = webkit_web_view_new ();
     gtk_container_add (GTK_CONTAINER (scroll), view);
     webkit_web_view_load_string (WEBKIT_WEB_VIEW (view),
-                                 "&lt;html&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;",
+                                 "<html><body></body></html>",
                                  "text/html",
                                  "UTF-8",
                                  NULL);
@@ -135,7 +135,7 @@ create_window (void)
     gtk_widget_show_all (GTK_WIDGET (box));
     return window;
 }
-</code>
+]]></code>
 
   <p>You first create a <code>GtkWindow</code> object and set its title and
   default size. You also connect the <code>gtk_main_quit</code> function to the
@@ -225,14 +225,14 @@ create_window (void)
   <key>Enter</key> in the entry. Add the following into <code>create_window</code>,
   anywhere after both <code>entry</code> and <code>view</code> have been defined:</p>
 
-<code>
+<code><![CDATA[
 g_signal_connect (entry, "activate", G_CALLBACK (entry_activate_cb), view);
-</code>
+]]></code>
 
   <p>You then have to actually define <code>entry_activate_cb</code>. Define
   it as follows, anywhere above <code>create_window</code>:</p>
 
-<code style="numbered">
+<code style="numbered"><![CDATA[
 static void
 entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
 {
@@ -250,7 +250,7 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
                                   NULL);
     gtk_entry_set_text (entry, "");
 }
-</code>
+]]></code>
 
   <p>The first thing you do is get a <code>WebKitDOMDocument</code> object
   that represents the HTML document displayed in <code>view</code>. The DOM
@@ -264,12 +264,23 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
   element in the document using CSS selectors. This keeps you from having to
   write tedious loops to traverse the document.</p>
 
+  <comment>
+    <cite>shaunm</cite>
+    <p>FIXME: Is this true? Does query_selector take CSS, CSSish, or what?</p>
+  </comment>
+
   <p>Next, you create a new <code>div</code> element to hold the message. Every
   element you create has to be attached to a document, so the function to create
   an element takes the <code>WebKitDOMDocument</code> as its first arguments.
   You then set the text content of the element to the contents of the text entry.
   Because <code>gtk_entry_get_text</code> returns a <code>const gchar*</code>,
   you don't have to free the result.</p>
+
+  <comment>
+    <cite>shaunm</cite>
+    <p>Not passing the GError**, but we should give it a quick mention and
+    link to somewhere that explains how GError-handling works.</p>
+  </comment>
 
   <p>Finally, you append the new <code>div</code> element to the body and
   clear out the text entry so you can type something new. Build and run the
@@ -296,7 +307,7 @@ entry_activate_cb (GtkEntry *entry, WebKitWebView *view)
   just to keep everything in one file for this demo, we'll use a trick called a
   data URI. First, define the CSS as a static string near the top of your file.</p>
 
-<code>
+<code><![CDATA[
 static const guchar CSS[] =
 "body { margin: 0; padding: 0; }\n"
 "div { "
@@ -307,7 +318,7 @@ static const guchar CSS[] =
 " -webkit-box-shadow: 0px 0px 2px #c6c6c6;"
 " margin: 12px; padding: 6px;"
 "}";
-</code>
+]]></code>
 
   <p>All you have in this example are <code>div</code> elements inside a
   <code>body</code> element. If you created more complicated HTML, you could
@@ -318,7 +329,9 @@ static const guchar CSS[] =
   <code>create_window</code> function, anywhere after <code>view</code> has
   already been defined.</p>
 
-<code>
+  <comment><cite>shaunm</cite><p>g_base64_encode has bad args</p></comment>
+
+<code><![CDATA[
 tmp = g_base64_encode (CSS, strlen((gchar *) CSS));
 css = g_strconcat ("data:text/css;charset=utf-8;base64,",
                    tmp, NULL);
@@ -326,7 +339,7 @@ g_object_set (webkit_web_view_get_settings (WEBKIT_WEB_VIEW (view)),
               "user-stylesheet-uri", css, NULL);
 g_free (css);
 g_free (tmp);
-</code>
+]]></code>
 
   <p>Also, make sure to add variable declarations for <code>tmp</code>
   and <code>css</code> to the top of <code>create_window</code>.</p>
@@ -371,12 +384,17 @@ gchar *tmp, *css;
 
     <item><p>Right now, you lose all your messages whenever you close the
     message board. Try saving the HTML contents after each post, and loading
-    the saved file (if it exists) on startup.</p></item>
+    the saved file (if it exists) on startup.</p>
+    <comment>
+      <cite>shaunm</cite><p>Link to method to get HTML from DOM and to
+      GIO APIs.</p>
+    </comment></item>
 
     <item><p>If you keep your messages around for a long time, you'll start
     wondering when you posted them. Add a timestamp to each message when it's
     posted. You'll probably want to create some additional child <code>div</code>
     elements with different classes that you can style in the CSS.</p>
+    <comment><cite>shaunm</cite><p>Link to strftime or something</p></comment>
     </item>
 
     <item><p>This program keeps messages around forever. Think about ways

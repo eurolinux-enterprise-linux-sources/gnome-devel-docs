@@ -188,7 +188,7 @@ state_callback (GSimpleAction *simple,
          GVariant      *parameter,
          gpointer       user_data)
 {
-   /* The two possibilities in this case for the "answer" variable are either
+   /* The two possibilies in this case for the "answer" variable are either
     * "on" or "off".
     */
    const gchar *answer = g_variant_get_string (parameter, NULL);
@@ -235,7 +235,7 @@ startup (GApplication *app,
 
   GtkBuilder *builder;
 
-  GError *error = NULL;
+  GError **error;
 
   /* Begin creating the "new" action.
    * Note that it is an action without a state.
@@ -276,13 +276,12 @@ startup (GApplication *app,
   builder = gtk_builder_new ();
   /* Get the file (if it is there):
    * Note: you must make sure that the file is in the current directory for
-   * this to work. The function used here returns a non-null value within
-   * our variable "error" if an error is indeed found.
+   * this to work. The function used here returns a value within our variable
+   * "error", and it is equal to zero if an error is indeed found.
    */
-  gtk_builder_add_from_file (builder, "menubar.ui", &error);
-  if (error != NULL) {
-     g_print ("%s\n", error->message);
-     g_error_free (error);
+  gtk_builder_add_from_file (builder, "menubar.ui", error);
+  if (error == 0) {
+     g_print ("File not found.\n");
   }
 
   /* Extract the menubar */

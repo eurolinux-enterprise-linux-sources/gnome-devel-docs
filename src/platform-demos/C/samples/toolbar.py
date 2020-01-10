@@ -3,9 +3,7 @@ from gi.repository import Gdk
 from gi.repository import Gio
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="Toolbar Example", application=app)
         self.set_default_size(400, 200)
@@ -45,7 +43,7 @@ class MyWindow(Gtk.ApplicationWindow):
         toolbar = Gtk.Toolbar()
 
         # which is the primary toolbar of the application
-        toolbar.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR)
+        toolbar.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
 
         # create a button for the "new" action, with a stock image
         new_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW)
@@ -74,8 +72,7 @@ class MyWindow(Gtk.ApplicationWindow):
         undo_button.set_action_name("win.undo")
 
         # button for the "fullscreen/leave fullscreen" action
-        self.fullscreen_button = Gtk.ToolButton.new_from_stock(
-            Gtk.STOCK_FULLSCREEN)
+        self.fullscreen_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_FULLSCREEN)
         self.fullscreen_button.set_is_important(True)
         toolbar.insert(self.fullscreen_button, 3)
         self.fullscreen_button.set_action_name("win.fullscreen")
@@ -85,14 +82,12 @@ class MyWindow(Gtk.ApplicationWindow):
 
     # callback method for undo
     def undo_callback(self, action, parameter):
-        print("You clicked \"Undo\".")
+        print "You clicked \"Undo\"."
 
     # callback method for fullscreen / leave fullscreen
     def fullscreen_callback(self, action, parameter):
-        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which
-        # is a bit flag
-        is_fullscreen = self.get_window().get_state(
-        ) & Gdk.WindowState.FULLSCREEN != 0
+        # check if the state is the same as Gdk.WindowState.FULLSCREEN, which is a bit flag
+        is_fullscreen = self.get_window().get_state() & Gdk.WindowState.FULLSCREEN != 0
         if not is_fullscreen:
             self.fullscreen_button.set_stock_id(Gtk.STOCK_LEAVE_FULLSCREEN)
             self.fullscreen()
@@ -100,9 +95,7 @@ class MyWindow(Gtk.ApplicationWindow):
             self.fullscreen_button.set_stock_id(Gtk.STOCK_FULLSCREEN)
             self.unfullscreen()
 
-
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -128,11 +121,11 @@ class MyApplication(Gtk.Application):
 
     # callback method for new
     def new_callback(self, action, parameter):
-        print("You clicked \"New\".")
+        print "You clicked \"New\"."
 
     # callback method for open
     def open_callback(self, action, parameter):
-        print("You clicked \"Open\".")
+        print "You clicked \"Open\"."
 
 app = MyApplication()
 exit_status = app.run(sys.argv)

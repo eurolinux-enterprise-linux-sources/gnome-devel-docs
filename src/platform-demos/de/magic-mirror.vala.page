@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="magic-mirror.vala" xml:lang="de">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="magic-mirror.vala" xml:lang="de">
 
   <info>
-  <title type="text">Magischer Spiegel (Vala)</title>
+  <title type="text">Magic mirror (Vala)</title>
     <link type="guide" xref="vala#examples"/>
 
     <desc>Use your webcam as a mirror using the GStreamer framework and GTK+</desc>
@@ -10,15 +10,15 @@
     <revision pkgversion="0.1" version="0.1" date="2011-03-19" status="review"/>
     <credit type="author">
       <name>Daniel G. Siegel</name>
-      <email its:translate="no">dgsiegel@gnome.org</email>
+      <email>dgsiegel@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
   
@@ -29,7 +29,7 @@
     </mal:credit>
   </info>
 
-<title>Magischer Spiegel</title>
+<title>Magic mirror</title>
 
 <synopsis>
   <p><em>Your mirror just fell off the wall and broke into a thousand pieces — but you need a mirror to shave your beard off or add some makeup! You only have 15 minutes left before catching the bus to work. So what can you do?</em></p>
@@ -50,14 +50,14 @@
 <media type="image" mime="image/png" src="media/magic-mirror.png"/>
 
 <section id="anjuta">
-  <title>Erstellen eines Projekts in Anjuta</title>
+  <title>Create a project in Anjuta</title>
   <p>Before you start coding, you'll need to set up a new project in Anjuta. This will create all of the files you need to build and run the code later on. It's also useful for keeping everything together.</p>
   <steps>
     <item>
     <p>Start Anjuta and click <guiseq><gui>File</gui><gui>New</gui><gui>Project</gui></guiseq> to open the project wizard.</p>
     </item>
     <item>
-    <p>Choose <gui>GTK+ (simple)</gui> from the <gui>Vala</gui> tab, click <gui>Forward</gui>, and fill out your details on the next few pages. Use <file>magic-mirror</file> as project name and directory.</p>
+    <p>Choose <gui>GTK+ (simple)</gui> from the <gui>Vala</gui> tab, click <gui>Forward</gui>, and fill out your details on the next few pages. Use <file>guitar-tuner</file> as project name and directory.</p>
    	</item>
    	<item>
     <p>Disable <gui>Use GtkBuilder for user interface</gui> as we will
@@ -70,9 +70,9 @@
     </item>
     <item>
     <p>Click <gui>Apply</gui> and the project will be created for you. Open <file>src/magic_mirror.vala</file> from the <gui>Project</gui> or <gui>File</gui> tabs. You should see some code which starts with the lines:</p>
-    <code mime="text/x-csharp">
+    <code mime="text/x-csharp"><![CDATA[
 using GLib;
-using Gtk;</code>
+using Gtk;]]></code>
     </item>
   </steps>
 </section>
@@ -101,7 +101,7 @@ using Gtk;</code>
  <title>Access the webcam video stream with GStreamer</title>
  <p>The GStreamer multimedia framework is able to handle video from webcams. Let's add GStreamer to our application and so we can access the video stream.</p>
 
-<code mime="text/x-csharp" style="numbered">
+<code mime="text/x-csharp" style="numbered"><![CDATA[
 using GLib;
 using Gtk;
 
@@ -124,7 +124,7 @@ public class Main : Object
 		return 0;
 	}
 }
-</code>
+]]></code>
  <steps>
  <item><p>First we remove the window we created before because GStreamer will
  take care of showing the picture on screen.</p>
@@ -137,7 +137,7 @@ public class Main : Object
   our use case! With <code>this.camerabin.set_state (Gst.State.PLAYING)</code>
   we tell the GStreamer pipeline we just created to start playing. Easy, no?
   </p>
-  <p>Of course it is also possible to integrate the video more tightly into other
+  <p>Of course it is also possible to integrate the video more tighly into other
   windows but that is an advanced topic that includes some details of the X Window
   System we will omit here.
   </p>

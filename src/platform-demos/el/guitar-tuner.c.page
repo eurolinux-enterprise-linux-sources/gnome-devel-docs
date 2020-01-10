@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.c" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="guitar-tuner.c" xml:lang="el">
 
   <info>
     <title type="text">Συντονιστής κιθάρας (C)</title>
@@ -10,40 +10,22 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="review"/>
     <credit type="author">
       <name>Έργο τεκμηρίωσης GNOME</name>
-      <email its:translate="no">gnome-doc-list@gnome.org</email>
+      <email>gnome-doc-list@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
@@ -113,23 +95,23 @@
 
 <section id="ui">
   <title>Δημιουργία της διεπαφής χρήστη</title>
-  <p>Μια περιγραφή της διεπαφής χρήστη (UI) περιέχεται στο αρχείο GtkBuilder. Για να επεξεργαστείτε τη διεπαφή χρήστη, ανοίξτε το <file>src/guitar_tuner.ui</file>. Θα βρεθείτε στο σχεδιαστή διεπαφής. Το παράθυρο σχεδίασης είναι στο κέντρο· τα γραφικά στοιχεία και οι ρυθμίσεις τους είναι στα αριστερά, η παλέτα με τα διαθέσιμα γραφικά στοιχεία στα δεξιά.</p>
+  <p>Μια περιγραφή της διεπαφής χρήστη (UI) περιέχεται στο αρχείο GtkBuilder. Για να επεξεργαστείτε τη διεπαφή χρήστη, ανοίξτε το <file>src/guitar_tuner.ui</file>. Θα βρεθείτε στο σχεδιαστή διεπαφής. Το παράθυρο σχεδίασης είναι στο κέντρο· τα γραφικά συστατικά και οι ρυθμίσεις τους είναι στα αριστερά, η παλέτα με τα διαθέσιμα γραφικά συστατικά στα δεξιά.</p>
   <p>Η διάταξη κάθε διεπαφής χρήστη σε Gtk+ οργανώνεται σε κουτιά και πίνακες. Ας χρησιμοποιήσουμε εδώ ένα κάθετο <gui>GtkButtonBox</gui> για να τοποθετήσουμε έξι <gui>GtkButtons</gui>, ένα για κάθε μία από τις χορδές της κιθάρας.</p>
 
 <media type="image" mime="image/png" src="media/guitar-tuner-glade.png"/>
 
   <steps>
    <item>
-   <p>Διαλέξτε ένα <gui>GtkButtonBox</gui> από το τμήμα <gui>Container</gui> στην <gui>Παλέτα</gui> στο δεξιά και προσθέστε το στο παράθυρο. Στο φάτνωμα <gui>Ιδιότητες</gui> καθορίστε τον αριθμό των στοιχείων σε 6 (για τις έξι χορδές της κιθάρας) και τον προσανατολισμό σε κάθετο.</p>
+   <p>Διαλέξτε ένα <gui>GtkButtonBox</gui> από το τμήμα <gui>Container</gui> στην <gui>Παλέτα</gui> στο δεξιά και προσθέστε το στο παράθυρο. Στην καρτέλα <gui>Ιδιότητες</gui> καθορίστε τον αριθμό των στοιχείων σε 6 (για τις έξι χορδές της κιθάρας) και τον προσανατολισμό σε κάθετο.</p>
    </item>
    <item>
     <p>Τώρα, διαλέξτε ένα <gui>GtkButton</gui> από την παλέτα και βάλτε το στο πρώτο μέρος του κουτιού.</p>
    </item>
    <item>
-    <p>Έχοντας το κουμπί ακόμα επιλεγμένο, αλλάξτε την <gui>Ετικέτα</gui> στην καρτέλα <gui>Γραφικά στοιχεία</gui> σε <gui>E</gui>. Αυτή θα είναι η χαμηλή χορδή Ε.</p>
+    <p>Έχοντας το κουμπί ακόμα επιλεγμένο, αλλάξτε την <gui>Ετικέτα</gui> στην καρτέλα <gui>Γραφικά συστατικά</gui> σε <gui>E</gui>. Αυτή θα είναι η χαμηλή χορδή Ε.</p>
     </item>
     <item>
-     <p>Πηγαίνετε στην καρτέλα <gui>Σήματα</gui> (μέσα στην καρτέλα <gui>Γραφικά στοιχεία</gui>) και βρείτε το σήμα <code>clicked</code> του κουμπιού. Μπορείτε να το χρησιμοποιήσετε για να συνδέσετε έναν χειριστή σημάτων που θα καλείται όταν πατηθεί το κουμπί από τον χρήστη. Για να το κάνετε αυτό, πατήστε πάνω στο σήμα και πληκτρολογήστε <code>on_button_clicked</code> στη στήλη <gui>χειριστής</gui> και πατήστε <key>Επιστροφή</key>.</p>
+     <p>Πηγαίνετε στην καρτέλα <gui>Σήματα</gui> (μέσα στην καρτέλα <gui>Γραφικά συστατικά</gui>) και βρείτε το σήμα <code>clicked</code> του κουμπιού. Μπορείτε να το χρησιμοποιήσετε για να συνδέσετε έναν χειριστή σημάτων που θα καλείται όταν πατηθεί το κουμπί από τον χρήστη. Για να το κάνετε αυτό, πατήστε πάνω στο σήμα και πληκτρολογήστε <code>on_button_clicked</code> στη στήλη <gui>χειριστής</gui> και πατήστε <key>Επιστροφή</key>.</p>
     </item>
     <item>
     <p>Επαναλάβετε τα παραπάνω βήματα για τα υπόλοιπα κουμπιά, προσθέστε τις επόμενες 5 χορδές με τα ονόματα <em>A</em>, <em>D</em>, <em>G</em>, <em>B</em>, και <em>e</em>.</p>
@@ -156,7 +138,7 @@ void on_button_clicked (GtkWidget* button, gpointer user_data)
 <section id="gstreamer">
   <title>Διοχετεύσεις GStreamer</title>
   <p>Το Gtreamer είναι ο σκελετός πολυμέσων του GNOME — μπορείτε να το χρησιμοποιήσετε για να αναπαράγετε, ηχογραφήσετε, και να επεξεργαστείτε βίντεο, ήχο, ροές βίντεο και τα λοιπά. Εδώ, θα το χρησιμοποιήσουμε για να παράγουμε μονές-συχνότητες τόνων.</p>
-  <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείς μια <em>διοχέτευση</em> που περιέχει διάφορα επεξεργαζόμενα στοιχεία που πηγαίνουν από την <em>πηγή</em> στην <em>έξοδο</em>. Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή και μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι ένα γραφικό στοιχείο ή η κάρτα ήχου.</p>
+  <p>Εννοιολογικά, το GStreamer λειτουργεί ως εξής: δημιουργείς μια <em>διοχέτευση</em> που περιέχει διάφορα επεξεργαζόμενα στοιχεία που πηγαίνουν από την <em>πηγή</em> στην <em>έξοδο</em>. Η πηγή μπορεί να είναι ένα αρχείο εικόνας, βίντεο, ή και μουσικής, για παράδειγμα, και η έξοδος μπορεί να είναι ένα γραφικό συστατικό ή η κάρτα ήχου.</p>
   <p>Ανάμεσα στην πηγή και στην έξοδο, μπορείτε να εφαρμόσετε διάφορα φίλτρα και οι μετατροπείς να χειριστούν εφέ, μετατροπές μορφών και λοιπά. Κάθε στοιχείο της διοχέτευσης έχει ιδιότητες που μπορούν να χρησιμοποιηθούν για να αλλάξουν τη συμπεριφορά τους.</p>
   <media type="image" mime="image/png" src="media/guitar-tuner-pipeline.png">
     <p>Ένα παράδειγμα διοχέτευσης GStreamer.</p>
@@ -223,7 +205,7 @@ play_sound (gdouble frequency)
 static gboolean
 pipeline_stop (GstElement* pipeline)
 {
-	gst_element_set_state (pipeline, GST_STATE_NULL);
+	gst_element_set_state (pipeline, GST_STATE_PAUSED);
 	g_object_unref (pipeline);
 
 	return FALSE;
@@ -248,7 +230,8 @@ pipeline_stop (GstElement* pipeline)
 void on_button_clicked (GtkButton* button,
                         gpointer user_data)
 {
-	const gchar* text = gtk_button_get_label (button);
+	GtkWidget* label = gtk_bin_get_child (GTK_BIN (button));
+	const gchar* text = gtk_label_get_label (GTK_LABEL (label));
 
 	if (g_str_equal (text, _("E")))
 	    play_sound (NOTE_E);
@@ -264,8 +247,8 @@ void on_button_clicked (GtkButton* button,
 	    play_sound (NOTE_e);
 }
 </code>
-  <p>Ο δείκτης στο <code>Gtk.Button</code> που πατήθηκε περνά ως όρισμα (<code>button</code>) στο <code>on_button_clicked</code>. Μπορούμε να πάρουμε το κείμενο αυτού του κουμπιού χρησιμοποιώντας <code>gtk_button_get_label</code>.</p>
-  <p>Το κείμενο έπειτα συγκρίνεται με τις νότες που έχουμε χρησιμοποιήσει <code>g_str_equal</code> και <code>play_sound</code> καλείται με την κατάλληλη συχνότητα για αυτήν την νότα. Αυτό παίζει τον τόνο· ο συντονιστής κιθάρας είναι έτοιμος!</p>
+  <p>Ο δείκτης στο <code>Gtk.Button</code> που πατήθηκε περνά ως όρισμα (<code>button</code>) στο <code>on_button_clicked</code>. Μπορούμε να πάρουμε την ετικέτα αυτού του κουμπιού χρησιμοποιώντας το <code>gtk_bin_get_child</code> και έπειτα να πάρουμε το κείμενο από αυτήν την ετικέτα χρησιμοποιώντας <code>gtk_label_get_label</code>.</p>
+  <p>Το κείμενο της ετικέτας συγκρίνεται τότε με τις νότες που χρησιμοποιούμε <code>g_str_equal</code> και <code>play_sound</code> καλείται με την κατάλληλη συχνότητα για αυτήν την νότα. Αυτό παίζει τον τόνο· ο συντονιστής κιθάρας είναι έτοιμος!</p>
 </section>
 
 <section id="run">

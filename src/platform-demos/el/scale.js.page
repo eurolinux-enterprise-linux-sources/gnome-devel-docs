@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scale.js" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="scale.js" xml:lang="el">
   <info>
   <title type="text">Κλίμακα (JavaScript)</title>
     <link type="guide" xref="beginner.js#entry"/>
@@ -7,41 +7,23 @@
 
     <credit type="author copyright">
       <name>Taryn Fox</name>
-      <email its:translate="no">jewelfox@fursona.net</email>
+      <email>jewelfox@fursona.net</email>
       <years>2012</years>
     </credit>
 
     <desc>Ένας ολισθητής που αντιστοιχεί σε μια αριθμητική τιμή</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
     </mal:credit>
   </info>
 
   <title>Κλίμακα</title>
   <media type="image" mime="image/png" src="media/scalepenguins.png"/>
   <p>Μια κλίμακα είναι ένας οριζόντιος ή κάθετος ολισθητής, που αναπαριστά μια τιμή μέσα σε μια αριθμητική περιοχή. Όταν δημιουργείτε μια νέα κλίμακα, ορίζετε ποια είναι η προεπιλεγμένη της θέση, ποιοι είναι οι αριθμοί στην κορυφή και στον πάτο της περιοχής και πράγματα όπως πόσο μετακινείται πάνω ή κάτω όταν πατάτε σε μία κλίμακα σε οποιαδήποτε πλευρά του κουμπιού. Για να συνεχίσετε να έχετε να πληκτρολογήσετε όλο αυτό κάθε φορά δημιουργείτε μια νέα κλίμακα, μπορείτε να δημιουργήσετε ένα αντικείμενο που λέγεται ρύθμιση και ανιχνεύει όλο αυτό, έπειτα πείτε σε κάθε νέα σκάλα να χρησιμοποιήσει αυτήν τη ρύθμιση.</p>
-  <p>Αυτή η κλίμακα είναι ένα απλό γραφικό στοιχείο που σας επιτρέπει να ρυθμίσετε το μέγεθος ενός παγόβουνου όπου ζουν οι πιγκουίνοι. Ο αριθμός των πιγκουίνων στο παγόβουνο είναι το γινόμενο των τιμών των δύο ολισθητών. Δοκιμάστε να παίξετε μαζί τους και να δείτε τι συμβαίνει.</p>
+  <p>Αυτή η κλίμακα είναι ένα απλό γραφικό συστατικό που σας επιτρέπει να ρυθμίσετε το μέγεθος ενός παγόβουνου όπου ζουν οι πιγκουίνοι. Ο αριθμός των πιγκουίνων στο παγόβουνο είναι το γινόμενο των τιμών των δύο ολισθητών. Δοκιμάστε να παίξετε μαζί τους και να δείτε τι συμβαίνει.</p>
     <links type="section"/>
 
   <section id="imports">
@@ -62,46 +44,46 @@ const Lang = imports.lang;
 const ScaleExample = new Lang.Class({
     Name: 'Scale Example',
 
-    // Δημιουργία της εφαρμογής αυτής καθεαυτής
+    // Create the application itself
     _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jsscale'
         });
 
-    // Σύνδεση των σημάτων 'activate' και 'startup' με τις συναρτήσεις επανάκλησης
+    // Connect 'activate' and 'startup' signals to the callback functions
     this.application.connect('activate', Lang.bind(this, this._onActivate));
     this.application.connect('startup', Lang.bind(this, this._onStartup));
     },
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'activate' παρουσιάζει ένα παράθυρο όταν είναι ενεργή
+    // Callback function for 'activate' signal presents window when active
     _onActivate: function() {
         this._window.present();
     },
 
-    // Η συνάρτηση επανάκλησης για το σήμα 'startup' δομεί τη διεπαφή χρήστη
+    // Callback function for 'startup' signal builds the UI
     _onStartup: function() {
         this._buildUI ();
     },
 </code>
-    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση ScaleExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά στοιχεία μας και τα παράθυρα.</p>
+    <p>Όλος ο κώδικας για αυτό το παράδειγμα πηγαίνει στην κλάση ScaleExample. Ο παραπάνω κώδικας δημιουργεί μια <link href="http://www.roojs.com/seed/gir-1.2-gtk-3.0/gjs/Gtk.Application.html">Gtk.Application</link> για να μπουν μέσα τα γραφικά συστατικά μας και τα παράθυρα.</p>
     <code mime="application/javascript">
-    // Δόμηση της διεπαφής χρήστη της εφαρμογής
+    // Build the application's UI
     _buildUI: function() {
 
-        // Δημιουργία του παραθύρου της εφαρμογής
+        // Create the application window
         this._window = new Gtk.ApplicationWindow({
             application: this.application,
             window_position: Gtk.WindowPosition.CENTER,
             border_width: 20,
             title: "Birds on a Floe"});
 </code>
-    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά στοιχεία μας.</p>
+    <p>Η συνάρτηση _buildUI είναι εκεί που βάζουμε όλον τον κώδικα για να δημιουργήσουμε τη διεπαφή χρήστη της εφαρμογής. Το πρώτο βήμα δημιουργεί ένα νέο <link xref="GtkApplicationWindow.js">Gtk.ApplicationWindow</link> για να βάλουμε μέσα τα γραφικά συστατικά μας.</p>
   </section>
 
   <section id="button">
     <title>Δημιουργία των κλιμάκων</title>
     <code mime="application/javascript">
-        // Δημιουργία της οριζόντιας κλίμακας
+        // Create the horizontal scale
         this._hScale = Gtk.Scale.new_with_range (Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
         this._hScale.set_valign (Gtk.Align.START);
         this._hScale.set_value (50);
@@ -109,11 +91,11 @@ const ScaleExample = new Lang.Class({
         // this._hScale.set_draw_value (false);
 </code>
 
-    <p>Η μέθοδος new_with_range είναι ένας τρόπος δημιουργίας ενός νέου γραφικού στοιχείου κλίμακας. Οι παράμετροι που παίρνει είναι μια <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Orientation.html">Gtk.Orientation</link>, η ελάχιστη τιμή, η μέγιστη τιμή και η αύξηση για ένα μόνο βήμα. Κατόπιν χρησιμοποιούμε τις μεθόδους κλίμακας για να ορίσουμε την αρχική της τιμή και πόσες δεκαδικές θέσεις διατρέχει. Επίσης ορίζουμε την κάθετη της στοίχιση σε αυτήν την περίπτωση, για τον έλεγχο πού εμφανίζεται στο παράθυρο.</p>
+    <p>Η μέθοδος new_with_range είναι ένας τρόπος δημιουργίας ενός νέου γραφικού συστατικού κλίμακας. Οι παράμετροι που παίρνει είναι μια <link href="http://www.roojs.org/seed/gir-1.2-gtk-3.0/gjs/Gtk.Orientation.html">Gtk.Orientation</link>, η ελάχιστη τιμή, η μέγιστη τιμή και η αύξηση για ένα μόνο βήμα. Κατόπιν χρησιμοποιούμε τις μεθόδους κλίμακας για να ορίσουμε την αρχική της τιμή και πόσες δεκαδικές θέσεις διατρέχει. Επίσης ορίζουμε την κάθετη της στοίχιση σε αυτήν την περίπτωση, για τον έλεγχο πού εμφανίζεται στο παράθυρο.</p>
     <p>Μπορούμε να χρησιμοποιήσουμε τη μέθοδο set_draw_value για να του πούμε εάν θα εμφανίσει ή όχι τον αριθμό δίπλα στην κινητή κλίμακα. Σχολιάζεται σε αυτό το παράδειγμα.</p>
 
     <code mime="application/javascript">
-        // Δημιουργία μιας κύριας προσαρμογής για χρήση με την κάθετη (ή οποιαδήποτε άλλη)κλίμακα
+        // Create a master adjustment to use for the vertical (or any other) scale
         this._adjustment = new Gtk.Adjustment ({
             value: 95,
             lower: 0,
@@ -125,7 +107,7 @@ const ScaleExample = new Lang.Class({
     <p>Μια ρύθμιση είναι ένα αντικείμενο που μπορούμε να χρησιμοποιήσουμε για απλοποίηση των πραγμάτων όταν δημιουργείτε μια νέα κλίμακα. Η ιδιότητα της ρύθμισης "value" είναι η προεπιλεγμένη τιμή της κλίμακας, ενώ "upper" και "lower" κάνουν το πάνω και κάτω άκρο της αριθμητικής περιοχής. Στο μεταξύ, οι τιμές αύξησης εμφανίζουν πόσο μετακινείται ο ολισθητής όταν κάνετε πράγματα όπως το πάτημα πάνω του.</p>
 
     <code mime="application/javascript">
-        // Δημιουργία μιας κάθετης κλίμακας χρησιμοποιώντας την προσαρμογή που μόλις φτιάξαμε
+        // Create a vertical scale using the adjustment we just made
         this._vScale = new Gtk.Scale ({
             orientation: Gtk.Orientation.VERTICAL,
             adjustment: this._adjustment,
@@ -137,7 +119,7 @@ const ScaleExample = new Lang.Class({
     <p>Εδώ δημιουργούμε ένα νέο αντικείμενο κλίμακας χρησιμοποιώντας _adjustment ως ιδιότητα "adjustment". Αυτό είναι μια μεγάλη συντόμευση. Πρέπει ακόμα να του πούμε να στρογγυλέψει τις δεκαδικές θέσεις, όμως. Σημειώστε ότι η ιδιότητα draw_value είναι σχολιασμένη· έτσι του λέτε να μην εμφανίσει τον αριθμό δίπλα στην κλίμακα όταν δημιουργείτε μία κλίμακα με αυτόν τον τρόπο.</p>
 
     <code mime="application/javascript">
-        // Δημιουργία της ετικέτας που εμφανίζει το γινόμενο των δύο τιμών
+        // Create the label that shows the product of the two values
         this._product = (this._hScale.get_value() * this._vScale.get_value());
         this._label = new Gtk.Label ({
             label: (String(this._product) + " penguins on the iceberg."),
@@ -145,37 +127,37 @@ const ScaleExample = new Lang.Class({
             width_request: 200,
             wrap: true});
 
-        // Σύνδεση των δύο κλιμάκων με συναρτήσεις που επανυπολογίζουν την ετικέτα
+        // Connect the two scales to functions which recalculate the label
         this._hScale.connect ("value-changed", Lang.bind (this, this._recalc));
         this._vScale.connect ("value-changed", Lang.bind (this, this._recalc));
 </code>
 
-    <p>Μπορούμε να χρησιμοποιήσουμε τη μέθοδο get_value για να βρούμε την αριθμητική τιμή ορισμού μιας κλίμακας. Μπορούμε έπειτα να κάνουμε οτιδήποτε θέλουμε μαζί της, συμπεριλαμβάνοντας πολλαπλασιασμό των τιμών των δύο κλιμάκων μαζί και να έχουμε μια <link xref="label.js">ετικέτα</link> που μας δείχνει το γινόμενο. Ορίζουμε το κείμενο της ετικέτας να αναδιπλώνεται, επειδή έχουμε την εμφάνιση ενός χαζού μηνύματος επίσης.</p>
+    <p>Μπορούμε να χρησιμοποιήσουμε τη μέθοδο get_value για να βρούμε την αριθμητική τιμή ορισμού μιας κλίμακας. Μπορούμε έπειτα να κάνουμε οτιδήποτε θέλουμε μαζί της, συμπεριλαμβάνοντας πολλαπλασιασμό των τιμών των δύο κλιμάκων μαζί και να έχουμε μια <link xref="label.js">ετικέτα</link> που μας δείχνει το γινόμενο. Ορίζουμε το κείμενο της ετικέτας να αναδιπλώνεται, επειδή έχουμε την εμφάνιση ενός ανόητου μηνύματος επίσης.</p>
     <p>Αφού δημιουργήσουμε την ετικέτα, συνδέουμε τα σήματα "value-changed" των δύο κλιμάκων στο _recalc, μια συνάρτηση που θα ξαναϋπολογίσει τον αριθμό των πιγκουίνων στο παγόβουνο και δίνει ένα νέο μήνυμα.</p>
 
     <code mime="application/javascript">
-        // Δημιουργία ενός πλέγματος για τακτοποίηση των πραγμάτων μέσα του
+        // Create a grid to arrange things in
         this._UIGrid = new Gtk.Grid ({
             halign: Gtk.Align.CENTER,
             valign: Gtk.Align.CENTER,
             margin_top: 20,
             margin_left: 20});
 
-        // Προσάρτηση όλων στο πλέγμα
+        // Attach everything to the grid
         this._UIGrid.attach (this._label, 0, 0, 1, 1);
         this._UIGrid.attach (this._hScale, 0, 1, 1, 1);
         this._UIGrid.attach (this._vScale, 1, 0, 1, 1);
 </code>
-    <p>Εδώ δημιουργούμε ένα <link xref="grid.js">πλέγμα</link> για να τα βάλουμε όλα μέσα, έπειτα προσκολλάμε όλα τα γραφικά στοιχεία μας. Σημειώστε ότι εδώ και για μερικά από τα ίδια τα γραφικά στοιχεία χρησιμοποιούμε περιθώρια για να κρατήσουμε τα πράγματα τοποθετημένα με τάξη.</p>
+    <p>Εδώ δημιουργούμε ένα <link xref="grid.js">πλέγμα</link> για να τα βάλουμε όλα μέσα, έπειτα προσκολλάμε όλα τα γραφικά συστατικά μας. Σημειώστε ότι εδώ και για μερικά από τα ίδια τα γραφικά συστατικά χρησιμοποιούμε περιθώρια για να κρατήσουμε τα πράγματα τοποθετημένα με τάξη.</p>
     <code mime="application/javascript">
-        // Προσθήκη του πλέγματος στο παράθυρο
+        // Add the grid to the window
         this._window.add (this._UIGrid);
 
-        // Εμφάνιση του παραθύρου και όλων των θυγατρικών γραφικών στοιχείων
+        // Show the window and all child widgets
         this._window.show_all();
     },
 </code>
-    <p>Τελικά, προσθέτουμε το πλέγμα στο παράθυρο, έπειτα λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και όλα τα γραφικά στοιχεία μέσα του.</p>
+    <p>Τελικά, προσθέτουμε το πλέγμα στο παράθυρο, έπειτα λέμε στο παράθυρο να εμφανίσει τον εαυτόν του και όλα τα γραφικά συστατικά μέσα του.</p>
     </section>
 
     <section id="scales-handler">
@@ -184,13 +166,13 @@ const ScaleExample = new Lang.Class({
     <code mime="application/javascript">
     _recalc: function() {
 
-        // Υπολογισμός του γινομένου των δύο τιμών των κλιμάκων
+        // Figure out what the product of the two scales' values is
         var product = (this._hScale.get_value() * this._vScale.get_value());
 
-        // Δημιουργία μιας κενής γραμμής σχολίου σε περίπτωση που δεν υπάρχει ένα χαζό σχόλιο να γίνει
+        // Create a blank comment line in case there isn't a silly comment to make
         var comment = "";
 
-        // Δημιουργία ενός χαζού σχολίου με βάση τον αριθμό των πιγκουίνων
+        // Make a silly comment based on the number of penguins
         if (product &gt; 9000) {
             comment = "It's over 9000!";
         }
@@ -202,17 +184,17 @@ const ScaleExample = new Lang.Class({
         }
         else comment = "";
 
-        // Νέο κείμενο του Set ._label
+        // Set ._label's new text
         this._label.set_label (String (product) + " penguins on the iceberg. " + comment);
 
     }
 
 });
 </code>
-    <p>Να θυμάστε, μπορούμε να πάρουμε μια τιμή κλίμακας χρησιμοποιώντας τη μέθοδο του get_value. Εδώ απλά ξαναϋπολογίζουμε ποιο είναι το γινόμενο των δύο τιμών μετά τη μετακίνηση μιας από τις κλίμακες, προσθέτουμε ένα χαζό μήνυμα ανάλογα με το πόσοι πιγκουίνοι απέμειναν και αλλάζουμε τη διατύπωση στην _label για να δείξουμε το νέο αριθμό και το μήνυμα.</p>
+    <p>Να θυμάστε, μπορούμε να πάρουμε μια τιμή κλίμακας χρησιμοποιώντας τη μέθοδο του get_value. Εδώ απλά ξαναϋπολογίζουμε ποιο είναι το γινόμενο των δύο τιμών μετά τη μετακίνηση μιας από τις κλίμακες, προσθέτουμε ένα ανόητο μήνυμα ανάλογα με το πόσοι πιγκουίνοι απέμειναν και αλλάζουμε τη διατύπωση στην _label για να δείξουμε το νέο αριθμό και το μήνυμα.</p>
 
     <code mime="application/javascript">
-// Εκτέλεση της εφαρμογής
+// Run the application
 let app = new ScaleExample ();
 app.application.run (ARGV);
 </code>
@@ -223,36 +205,38 @@ app.application.run (ARGV);
     <title>Δείγμα πλήρους κώδικα</title>
 <code mime="application/javascript" style="numbered">#!/usr/bin/gjs
 
-imports.gi.versions.Gtk = '3.0';
-
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
-class ScaleExample {
+const ScaleExample = new Lang.Class({
+    Name: 'Scale Example',
 
     // Create the application itself
-    constructor() {
+    _init: function() {
         this.application = new Gtk.Application({
             application_id: 'org.example.jsscale'
         });
 
-        // Connect 'activate' and 'startup' signals to the callback functions
-        this.application.connect('activate', this._onActivate.bind(this));
-        this.application.connect('startup', this._onStartup.bind(this));
-    }
+    // Connect 'activate' and 'startup' signals to the callback functions
+    this.application.connect('activate', Lang.bind(this, this._onActivate));
+    this.application.connect('startup', Lang.bind(this, this._onStartup));
+    },
 
     // Callback function for 'activate' signal presents window when active
-    _onActivate() {
+    _onActivate: function() {
         this._window.present();
-    }
+    },
 
     // Callback function for 'startup' signal builds the UI
-    _onStartup() {
-        this._buildUI();
-    }
+    _onStartup: function() {
+        this._buildUI ();
+    },
+
+
 
     // Build the application's UI
-    _buildUI() {
+    _buildUI: function() {
 
         // Create the application window
         this._window = new Gtk.ApplicationWindow({
@@ -293,8 +277,8 @@ class ScaleExample {
             wrap: true});
 
         // Connect the two scales to functions which recalculate the label
-        this._hScale.connect ("value-changed", this._recalc.bind(this));
-        this._vScale.connect ("value-changed", this._recalc.bind(this));
+        this._hScale.connect ("value-changed", Lang.bind (this, this._recalc));
+        this._vScale.connect ("value-changed", Lang.bind (this, this._recalc));
 
         // Create a grid to arrange things in
         this._UIGrid = new Gtk.Grid ({
@@ -313,9 +297,11 @@ class ScaleExample {
 
         // Show the window and all child widgets
         this._window.show_all();
-    }
+    },
 
-    _recalc() {
+
+
+    _recalc: function() {
 
         // Figure out what the product of the two scales' values is
         var product = (this._hScale.get_value() * this._vScale.get_value());
@@ -337,8 +323,10 @@ class ScaleExample {
 
         // Set ._label's new text
         this._label.set_label (String (product) + " penguins on the iceberg. " + comment);
+
     }
-};
+
+});
 
 // Run the application
 let app = new ScaleExample ();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="radiobutton.py" xml:lang="el">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:xi="http://www.w3.org/2001/XInclude" type="guide" style="task" id="radiobutton.py" xml:lang="el">
   <info>
-    <title type="text">Ραδιοπλήκτρο (RadioButton) (Python)</title>
+    <title type="text">RadioButton (Python)</title>
     <link type="guide" xref="beginner.py#buttons"/>
     <link type="seealso" xref="grid.py"/>
     <link type="next" xref="buttonbox.py"/>
@@ -9,38 +9,20 @@
 
     <credit type="author copyright">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2012</years>
     </credit>
 
     <desc>Αμοιβαία αποκλειόμενα κουμπιά.</desc>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Ελληνική μεταφραστική ομάδα GNOME</mal:name>
-      <mal:email>team@gnome.gr</mal:email>
-      <mal:years>2012-2015</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Δημήτρης Σπίγγος</mal:name>
       <mal:email>dmtrs32@gmail.com</mal:email>
       <mal:years>2012, 2013</mal:years>
     </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Μαρία Θουκιδίδου</mal:name>
-      <mal:email>marablack3@gmail.com</mal:email>
-      <mal:years>2014</mal:years>
-    </mal:credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Θάνος Τρυφωνίδης</mal:name>
-      <mal:email>tomtryf@gmail.com</mal:email>
-      <mal:years>2014, 2015</mal:years>
-    </mal:credit>
   </info>
 
-  <title>Ράδιοπλήκτρο (RadioButton)</title>
+  <title>RadioButton</title>
   <media type="image" mime="image/png" src="media/radiobutton.png"/>
   <p>Τρία RadioButtons. Μπορείτε να δείτε στον τερματικό εάν είναι ανενεργά ή ενεργά.</p>
 
@@ -51,9 +33,7 @@
     <code mime="text/x-python" style="numbered">from gi.repository import Gtk
 import sys
 
-
 class MyWindow(Gtk.ApplicationWindow):
-
     def __init__(self, app):
         Gtk.Window.__init__(self, title="RadioButton Example", application=app)
         self.set_default_size(250, 100)
@@ -77,8 +57,7 @@ class MyWindow(Gtk.ApplicationWindow):
 
         # another radiobutton, in the same group as button1,
         # with label "Button 3"
-        button3 = Gtk.RadioButton.new_with_label_from_widget(
-            button1, "Button 3")
+        button3 = Gtk.RadioButton.new_with_label_from_widget(button1, "Button 3")
         # connect the signal "toggled" emitted by the radiobutton
         # with the callback function toggled_cb
         button3.connect("toggled", self.toggled_cb)
@@ -87,9 +66,9 @@ class MyWindow(Gtk.ApplicationWindow):
 
         # a grid to place the buttons
         grid = Gtk.Grid.new()
-        grid.attach(button1, 0, 0, 1, 1)
-        grid.attach(button2, 0, 1, 1, 1)
-        grid.attach(button3, 0, 2, 1, 1)
+        grid.attach(button1, 0, 0, 1, 1);
+        grid.attach(button2, 0, 1, 1, 1);
+        grid.attach(button3, 0, 2, 1, 1);
         # add the grid to the window
         self.add(grid)
 
@@ -105,11 +84,9 @@ class MyWindow(Gtk.ApplicationWindow):
             state = "off"
         # whenever the function is called (a button is turned on or off)
         # print on the terminal which button was turned on/off
-        print(button.get_label() + " was turned " + state)
-
+        print button.get_label() + " was turned " + state
 
 class MyApplication(Gtk.Application):
-
     def __init__(self):
         Gtk.Application.__init__(self)
 
@@ -127,7 +104,7 @@ sys.exit(exit_status)
   </section>
 
   <section id="methods">
-    <title>Χρήσιμες μέθοδοι για ένα γραφικό στοιχείο RadioButton</title>
+    <title>Χρήσιμες μέθοδοι για ένα γραφικό συστατικό RadioButton</title>
     <p>Στη γραμμή 16 το σήμα <code>"toggled"</code> συνδέεται με τη συνάρτηση επανάκλησης <code>toggled_cb()</code> χρησιμοποιώντας <code><var>widget</var>.connect(<var>signal</var>, <var>callback function</var>)</code>. Δείτε <link xref="signals-callbacks.py"/> για μια πιο λεπτομερή εξήγηση.</p>
 
     <p>Όπως φαίνεται στο <link xref="properties.py"/>, αντί για <code>button1 = Gtk.RadioButton(label="Button 1")</code> μπορούμε να δημιουργήσουμε το κουμπί και την ετικέτα του μαζί</p>

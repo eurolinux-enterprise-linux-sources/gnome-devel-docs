@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" type="topic" id="guitar-tuner.py" xml:lang="es">
+<page xmlns="http://projectmallard.org/1.0/" type="topic" id="guitar-tuner.py" xml:lang="es">
 
   <info>
     <title type="text">Afinador de guitarra (Python)</title>
@@ -10,33 +10,33 @@
     <revision pkgversion="0.1" version="0.1" date="2010-12-02" status="stub"/>
     <credit type="author">
       <name>Proyecto de documentación de GNOME</name>
-      <email its:translate="no">gnome-doc-list@gnome.org</email>
+      <email>gnome-doc-list@gnome.org</email>
     </credit>
     <credit type="author">
       <name>Johannes Schmid</name>
-      <email its:translate="no">jhs@gnome.org</email>
+      <email>jhs@gnome.org</email>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
     <credit type="editor">
       <name>Marta Maria Casetti</name>
-      <email its:translate="no">mmcasetti@gmail.com</email>
+      <email>mmcasetti@gmail.com</email>
       <years>2013</years>
     </credit>
-  
-    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
-      <mal:name>Daniel Mustieles</mal:name>
-      <mal:email>daniel.mustieles@gmail.com</mal:email>
-      <mal:years>2011 - 2017</mal:years>
-    </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
       <mal:name>Nicolás Satragno</mal:name>
       <mal:email>nsatragno@gmail.com</mal:email>
       <mal:years>2012 - 2013</mal:years>
+    </mal:credit>
+  
+    <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
+      <mal:name>Daniel Mustieles</mal:name>
+      <mal:email>daniel.mustieles@gmail.com</mal:email>
+      <mal:years>2011-2013</mal:years>
     </mal:credit>
   
     <mal:credit xmlns:mal="http://projectmallard.org/1.0/" type="translator copyright">
@@ -199,14 +199,14 @@ def play_sound(self, frequency):
   <p>Ahora se escribirá el código de la función <code>pipeline_stop</code>, llamada por <code>GObject.timeout_add</code>. Inserte el código siguiente <em>encima</em> de la función <code>play_sound</code>:</p>
   <code mime="test/x-python">
 def pipeline_stop(self, pipeline):
-	pipeline.set_state(Gst.State.NULL)
+	pipeline.set_state(Gst.State.PAUSED)
 	return False
 </code>
   <p>Necesita definir la constante <code>LENGTH</code> dentro de la clase, por lo que debe añadir este código al principio de la clase principal:</p>
   <code mime="test/x-python">
 LENGTH = 500
 </code>
-  <p>La llamada a <code>pipeline.set_state</code> detiene la reproducción de la tubería.</p>
+  <p>La llamada a <code>pipeline.set_state</code> pausa la reproducción de la tubería</p>
 </section>
 
 <section id="tones">
